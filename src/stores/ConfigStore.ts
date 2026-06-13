@@ -329,15 +329,17 @@ const ConfigStore = types
         });
       },
       get webUiUrl(): string {
+        // Credentials are intentionally NOT embedded here. Browsers don't
+        // reliably apply URL-embedded credentials to a page's background
+        // requests, which made the Web UI load with an empty torrent list.
+        // The background injects an Authorization header for this server
+        // instead (see webUiAuthRule).
         const urlObject: url.UrlObject = {
           protocol: self.ssl ? 'https' : 'http',
           port: self.port,
           hostname: self.hostname,
           pathname: self.webPathname,
         };
-        if (self.authenticationRequired) {
-          urlObject.auth = [self.login, self.password].join(':');
-        }
         return url.format(urlObject);
       },
       get activeTorrentColumns() {

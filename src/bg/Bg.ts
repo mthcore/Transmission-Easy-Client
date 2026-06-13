@@ -4,6 +4,7 @@ import ContextMenu from './ContextMenu';
 import BgStore, { IBgStore } from '../stores/BgStore';
 import { autorun } from 'mobx';
 import TransmissionClient from './TransmissionClient';
+import updateWebUiAuthRule from './webUiAuthRule';
 import MobxPatchLine from '../tools/MobxPatchLine';
 import { serializeError } from 'serialize-error';
 import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
@@ -88,6 +89,25 @@ class Bg {
             autorunLogger.error('client', 'updateTorrents error', err);
           });
         }
+      });
+
+      autorun(() => {
+        autorunLogger.info('webUiAuthRule');
+        const config = this.bgStore.config;
+        if (!config) return;
+
+        // Inject HTTP Basic auth into requests to the Transmission server so
+        // the Web UI tab loads authenticated without credentials in the URL.
+        updateWebUiAuthRule({
+          ssl: config.ssl,
+          hostname: config.hostname,
+          port: config.port,
+          authenticationRequired: config.authenticationRequired,
+          login: config.login,
+          password: config.password,
+        }).catch((err) => {
+          autorunLogger.error('webUiAuthRule', err);
+        });
       });
 
       autorun(() => {

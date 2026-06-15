@@ -485,7 +485,9 @@ class TorrentService {
               this.notifier.torrentErrorNotify(chrome.i18n.getMessage('fileSizeError'));
               throw err;
             }
-            if (!/^https?:/.test(url)) {
+            // Magnet links can't be downloaded; pass the URI straight to
+            // Transmission's torrent-add (filename) like the context-menu flow does.
+            if (!/^(https?|magnet):/.test(url)) {
               this.notifier.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
               throw err;
             }

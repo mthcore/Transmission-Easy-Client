@@ -1,7 +1,5 @@
-import 'whatwg-fetch';
 import getLogger from '../tools/getLogger';
 import downloadFileFromTab from '../tools/downloadFileFromTab';
-import isFirefox from '../tools/isFirefox';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
 import type { IBgForContextMenu, Folder } from '../types';
 
@@ -44,18 +42,9 @@ class ContextMenu {
   }
 
   onCreateFolder(): void {
-    if (isFirefox()) {
-      chrome.tabs.create({ url: '/options.html#/ctx' });
-      return;
-    }
-
-    const firstFolder = this.bg.bgStore.config.folders[0];
-    const promptPath = prompt(chrome.i18n.getMessage('enterNewDirPath'), firstFolder?.path);
-    if (promptPath) {
-      if (!this.bg.bgStore.config.hasFolder(promptPath)) {
-        this.bg.bgStore.config.addFolder(promptPath);
-      }
-    }
+    // prompt() doesn't exist in a MV3 service worker (it used to throw on
+    // Chrome); open the options page to add a folder instead, on all browsers
+    chrome.tabs.create({ url: '/options.html#/ctx' });
   }
 
   async onSendLink(

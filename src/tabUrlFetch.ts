@@ -1,4 +1,3 @@
-import 'whatwg-fetch';
 import { arrayBufferToBase64 } from './tools/binaryConversion';
 import getLogger from './tools/getLogger';
 import ErrorWithCode from './tools/ErrorWithCode';

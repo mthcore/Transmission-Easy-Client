@@ -5,6 +5,7 @@ import DirectorySelect from '../DirectorySelect';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import { MAX_FETCH_SIZE } from '../../constants';
 import type { Folder } from '../../types/bg';
 
 interface PutFilesDialogStore {
@@ -42,19 +43,34 @@ const PutFilesDialog = observer(({ dialogStore }: PutFilesDialogProps) => {
         }
       }
 
-      const files = dialogStore.files;
+      // Same size cap as the tab-fetch path: oversized files would be read
+      // fully into memory before upload
+      const files = dialogStore.files.filter((file: File) => file.size <= MAX_FETCH_SIZE);
+      if (files.length < dialogStore.files.length) {
+        showError(
+          chrome.i18n.getMessage('OV_FL_ERROR') || 'File too large',
+          new Error('FILE_SIZE_EXCEEDED')
+        );
+        if (!files.length) {
+          dialogStore.close();
+          return;
+        }
+      }
       const urls = files.map((file: File) => URL.createObjectURL(file));
 
-      client?.sendFiles(urls, directory?.path ?? undefined).then(() => {
-        for (const url of urls) {
-          URL.revokeObjectURL(url);
-        }
-      }).catch((err) => {
-        for (const url of urls) {
-          URL.revokeObjectURL(url);
-        }
-        showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to send files', err);
-      });
+      client
+        ?.sendFiles(urls, directory?.path ?? undefined)
+        .then(() => {
+          for (const url of urls) {
+            URL.revokeObjectURL(url);
+          }
+        })
+        .catch((err) => {
+          for (const url of urls) {
+            URL.revokeObjectURL(url);
+          }
+          showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to send files', err);
+        });
 
       dialogStore.close();
     },

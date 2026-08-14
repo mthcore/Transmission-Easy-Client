@@ -69,7 +69,10 @@ describe('chromeStorage', () => {
         (cb as () => void)();
       });
       await storageRemove(['key1', 'key2']);
-      expect(chrome.storage.local.remove).toHaveBeenCalledWith(['key1', 'key2'], expect.any(Function));
+      expect(chrome.storage.local.remove).toHaveBeenCalledWith(
+        ['key1', 'key2'],
+        expect.any(Function)
+      );
     });
 
     it('rejects on runtime error', async () => {

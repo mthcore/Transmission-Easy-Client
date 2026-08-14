@@ -2,6 +2,11 @@ import React, { useState, useCallback, useRef, useEffect, type MouseEvent } from
 import getLogger from '../../tools/getLogger';
 import { storageGet, storageSet, storageRemove } from '../../tools/chromeStorage';
 import { migrateConfig } from '../../tools/loadConfig';
+import {
+  BACKUP_EXCLUDE_KEYS,
+  getConnectionChanges,
+  sanitizeRestoreConfig,
+} from '../../tools/backupSanitize';
 
 const logger = getLogger('BackupRestoreOptions');
 
@@ -14,9 +19,6 @@ interface StorageData {
   configVersion?: number;
   [key: string]: unknown;
 }
-
-// Keys that are transient/local-only and should not be included in backups
-const BACKUP_EXCLUDE_KEYS = ['_notifiedIds', '_activeIds'];
 
 const BackupRestoreOptions = () => {
   const refPage = useRef<HTMLDivElement>(null);
@@ -130,7 +132,27 @@ const BackupRestoreOptions = () => {
         config.configVersion = 2;
         migrateConfig(config as Record<string, unknown>, config as Record<string, unknown>);
       }
-      await storageSet(config);
+      // Only known config keys may enter storage
+      const { config: cleanConfig, droppedKeys } = sanitizeRestoreConfig(
+        config as Record<string, unknown>
+      );
+      if (droppedKeys.length) {
+        logger.info('restore: ignored unknown keys', droppedKeys);
+      }
+      // A restore that repoints the extension at another server deserves its
+      // own explicit confirmation (the Basic-auth header follows the hostname)
+      const current = await storageGet({ hostname: '', port: 0, ssl: true, pathname: '' });
+      const connectionChanges = getConnectionChanges(cleanConfig, current);
+      if (connectionChanges.length) {
+        const changeMessage =
+          chrome.i18n.getMessage('restoreConnectionChanged', connectionChanges.join(', ')) ||
+          `This backup changes the server connection: ${connectionChanges.join(', ')}. Continue?`;
+        if (!window.confirm(changeMessage)) {
+          setRestoreState('idle');
+          return;
+        }
+      }
+      await storageSet(cleanConfig);
       if (!refPage.current) return;
       setRestoreState('done');
       setTimeout(() => {
@@ -151,6 +173,7 @@ const BackupRestoreOptions = () => {
       <div className="backup-section">
         <h3>{chrome.i18n.getMessage('backup')}</h3>
         <p className="section-hint">{chrome.i18n.getMessage('backupHint')}</p>
+        <p className="section-hint">{chrome.i18n.getMessage('backupIncludesCredentials')}</p>
         <div className="backup-actions">
           <button type="button" onClick={handleLoadConfig} disabled={loadState === 'pending'}>
             {loadState === 'pending' ? '...' : chrome.i18n.getMessage('loadCurrentConfig')}

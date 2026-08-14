@@ -47,6 +47,8 @@ const ClientOptions = observer(() => {
 
   const [clientStatus, setClientStatus] = useState<ClientStatus>(null);
   const [clientStatusText, setClientStatusText] = useState('');
+  const [sslChecked, setSslChecked] = useState(configStore.ssl);
+  const [authChecked, setAuthChecked] = useState(configStore.authenticationRequired);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -159,7 +161,8 @@ const ClientOptions = observer(() => {
             <input
               type="checkbox"
               name="authenticationRequired"
-              defaultChecked={configStore.authenticationRequired}
+              checked={authChecked}
+              onChange={(e) => setAuthChecked(e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </span>
@@ -171,10 +174,18 @@ const ClientOptions = observer(() => {
         <label>
           <span>{chrome.i18n.getMessage('useSSL')}</span>
           <span className="toggle-switch">
-            <input type="checkbox" name="ssl" defaultChecked={configStore.ssl} />
+            <input
+              type="checkbox"
+              name="ssl"
+              checked={sslChecked}
+              onChange={(e) => setSslChecked(e.target.checked)}
+            />
             <span className="toggle-slider"></span>
           </span>
         </label>
+        {authChecked && !sslChecked && (
+          <p className="red">{chrome.i18n.getMessage('warningBasicAuthNoSsl')}</p>
+        )}
         <label>
           <span>{chrome.i18n.getMessage('path')}</span>
           <input type="text" name="pathname" defaultValue={configStore.pathname} />

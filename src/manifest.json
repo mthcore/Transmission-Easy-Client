@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "minimum_chrome_version": "88",
+    "minimum_chrome_version": "101",
     "action": {
         "default_icon": {
             "16": "assets/icons/icon_16.png",
@@ -18,7 +18,14 @@
         "48": "assets/icons/icon_48.png",
         "128": "assets/icons/icon_128.png"
     },
-    "permissions": ["storage", "notifications", "contextMenus", "scripting", "alarms"],
+    "permissions": [
+        "storage",
+        "notifications",
+        "contextMenus",
+        "scripting",
+        "alarms",
+        "declarativeNetRequestWithHostAccess"
+    ],
     "host_permissions": ["http://*/*", "https://*/*"],
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",

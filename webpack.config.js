@@ -147,8 +147,6 @@ const config = {
     },
     alias: {
       "process/browser": require.resolve("process/browser.js"),
-      // Force all lodash imports to use lodash-es for better tree-shaking
-      "lodash": "lodash-es",
     }
   },
   plugins: [
@@ -169,7 +167,7 @@ const config = {
               delete manifest.minimum_chrome_version;
               manifest.browser_specific_settings = {
                 gecko: {
-                  strict_min_version: '109.0'
+                  strict_min_version: '113.0'
                 }
               };
             }

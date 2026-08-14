@@ -46,6 +46,9 @@ const chromeMock = {
       addListener: vi.fn(),
     },
   },
+  declarativeNetRequest: {
+    updateDynamicRules: vi.fn().mockResolvedValue(undefined),
+  },
   contextMenus: {
     create: vi.fn(),
     removeAll: vi.fn(),

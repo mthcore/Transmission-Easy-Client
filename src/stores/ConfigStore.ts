@@ -329,15 +329,16 @@ const ConfigStore = types
         });
       },
       get webUiUrl(): string {
+        // Credentials are deliberately NOT embedded in the URL: browsers leak
+        // them into DOM/history and don't apply them to the page's background
+        // RPC requests. Authentication is injected as an Authorization header
+        // by the background declarativeNetRequest rule (src/bg/webUiAuthRule.ts).
         const urlObject: url.UrlObject = {
           protocol: self.ssl ? 'https' : 'http',
           port: self.port,
           hostname: self.hostname,
           pathname: self.webPathname,
         };
-        if (self.authenticationRequired) {
-          urlObject.auth = [self.login, self.password].join(':');
-        }
         return url.format(urlObject);
       },
       get activeTorrentColumns() {

@@ -1,22 +1,57 @@
-/** RPC version where Transmission switched to snake_case (4.1+) */
-export const RPC_VERSION_SNAKE_CASE = 18;
+import ErrorWithCode from './ErrorWithCode';
 
-/** Convert a key to snake_case: kebab-case → snake, camelCase → snake */
-function toSnakeCase(key: string): string {
-  if (key.includes('-')) return key.replace(/-/g, '_');
-  return key.replace(/[A-Z]/g, (ch) => `_${ch.toLowerCase()}`);
+/**
+ * RPC version compatibility.
+ *
+ * The extension always speaks the legacy bespoke protocol on
+ * /transmission/rpc with the legacy camelCase/kebab-case argument names,
+ * which every daemon from 2.x through 4.2 accepts (snake_case is only
+ * mandatory for the new JSON-RPC 2.0 protocol introduced in 4.1).
+ * Feature availability is gated on the daemon's reported rpc-version.
+ */
+
+/** Transmission 4.0.0: groups, default-trackers, trackerList, script-torrent-added, ... */
+export const RPC_VERSION_4 = 17;
+/** Transmission 4.1.0: sequential download, port-test ip-protocol, ... */
+export const RPC_VERSION_4_1 = 18;
+
+export interface RpcFeatures {
+  groups: boolean;
+  defaultTrackers: boolean;
+  trackerList: boolean;
+  scriptTorrentAdded: boolean;
+  extendedFileInfo: boolean;
+  sequentialDownload: boolean;
+  portTestIpProtocol: boolean;
 }
 
-/** Convert all argument keys to snake_case (outgoing, for Transmission 4.1+) */
-export function toSnakeCaseKeys(args: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(args)) {
-    result[toSnakeCase(k)] = v;
+/** Feature availability for a daemon rpc-version; all false while unknown (0). */
+export function getRpcFeatures(rpcVersion: number): RpcFeatures {
+  return {
+    groups: rpcVersion >= RPC_VERSION_4,
+    defaultTrackers: rpcVersion >= RPC_VERSION_4,
+    trackerList: rpcVersion >= RPC_VERSION_4,
+    scriptTorrentAdded: rpcVersion >= RPC_VERSION_4,
+    extendedFileInfo: rpcVersion >= RPC_VERSION_4,
+    sequentialDownload: rpcVersion >= RPC_VERSION_4_1,
+    portTestIpProtocol: rpcVersion >= RPC_VERSION_4_1,
+  };
+}
+
+/**
+ * Backstop guard for calls the UI should already have hidden: throws when the
+ * daemon version is known and too old. Version 0 (not yet known) passes.
+ */
+export function assertRpcVersion(rpcVersion: number, min: number, what: string): void {
+  if (rpcVersion > 0 && rpcVersion < min) {
+    throw new ErrorWithCode(
+      `${what} requires Transmission RPC ${min}+ (daemon reports ${rpcVersion})`,
+      'UNSUPPORTED_RPC_VERSION'
+    );
   }
-  return result;
 }
 
-/** Read a key trying snake_case then kebab-case (incoming from Transmission 4.1+) */
+/** Read a key trying snake_case then kebab-case (defensive incoming read) */
 export function readKey<T>(obj: Record<string, unknown>, kebabKey: string, fallback: T): T {
   const snakeKey = kebabKey.replace(/-/g, '_');
   return (obj[snakeKey] ?? obj[kebabKey] ?? fallback) as T;

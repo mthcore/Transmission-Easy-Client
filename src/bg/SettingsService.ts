@@ -1,5 +1,5 @@
 import type TransmissionTransport from './TransmissionTransport';
-import { readKey } from '../tools/rpcCompat';
+import { readKey, assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
 import type { SessionStatistics, BandwidthGroup } from '../types/transmission';
 
 export interface NormalizedSettings {
@@ -51,6 +51,7 @@ export interface NormalizedSettings {
   scriptTorrentDoneSeedingEnabled?: boolean;
   scriptTorrentDoneSeedingFilename?: string;
   defaultTrackers?: string;
+  rpcVersion: number;
   rpcVersionSemver?: string;
   version?: string;
 }
@@ -106,9 +107,13 @@ class SettingsService {
         unknown
       >;
       return {
-        activeTorrentCount: (args['active_torrent_count'] ?? args['activeTorrentCount'] ?? 0) as number,
+        activeTorrentCount: (args['active_torrent_count'] ??
+          args['activeTorrentCount'] ??
+          0) as number,
         downloadSpeed: (args['download_speed'] ?? args['downloadSpeed'] ?? 0) as number,
-        pausedTorrentCount: (args['paused_torrent_count'] ?? args['pausedTorrentCount'] ?? 0) as number,
+        pausedTorrentCount: (args['paused_torrent_count'] ??
+          args['pausedTorrentCount'] ??
+          0) as number,
         torrentCount: (args['torrent_count'] ?? args['torrentCount'] ?? 0) as number,
         uploadSpeed: (args['upload_speed'] ?? args['uploadSpeed'] ?? 0) as number,
         cumulativeStats: this.normalizeStatistics(cumulative),
@@ -133,24 +138,45 @@ class SettingsService {
       });
   }
 
+  /** Rejects when the daemon version is known and below `min` (backstop for UI gating). */
+  private requireRpc(min: number, what: string): Promise<void> {
+    return Promise.resolve().then(() => assertRpcVersion(this.transport.rpcVersion, min, what));
+  }
+
   // Bandwidth groups (v4.0.0+)
   getGroups(names?: string[]): Promise<NormalizedBandwidthGroup[]> {
     const args: Record<string, unknown> = {};
     if (names) {
       args.group = names;
     }
-    return this.transport
-      .sendAction({ method: 'group-get', arguments: args })
+    return this.requireRpc(RPC_VERSION_4, 'group-get')
+      .then(() => this.transport.sendAction({ method: 'group-get', arguments: args }))
       .then((response) => {
         const result = response.arguments as { group: BandwidthGroup[] };
         return (result.group || []).map(
           (g): NormalizedBandwidthGroup => ({
             name: g.name,
             honorsSessionLimits: g.honorsSessionLimits,
-            speedLimitDown: readKey<number>(g as unknown as Record<string, unknown>, 'speed-limit-down', 0),
-            speedLimitDownEnabled: readKey<boolean>(g as unknown as Record<string, unknown>, 'speed-limit-down-enabled', false),
-            speedLimitUp: readKey<number>(g as unknown as Record<string, unknown>, 'speed-limit-up', 0),
-            speedLimitUpEnabled: readKey<boolean>(g as unknown as Record<string, unknown>, 'speed-limit-up-enabled', false),
+            speedLimitDown: readKey<number>(
+              g as unknown as Record<string, unknown>,
+              'speed-limit-down',
+              0
+            ),
+            speedLimitDownEnabled: readKey<boolean>(
+              g as unknown as Record<string, unknown>,
+              'speed-limit-down-enabled',
+              false
+            ),
+            speedLimitUp: readKey<number>(
+              g as unknown as Record<string, unknown>,
+              'speed-limit-up',
+              0
+            ),
+            speedLimitUpEnabled: readKey<boolean>(
+              g as unknown as Record<string, unknown>,
+              'speed-limit-up-enabled',
+              false
+            ),
           })
         );
       });
@@ -175,7 +201,9 @@ class SettingsService {
     if (options.speedLimitUp !== undefined) args['speed-limit-up'] = options.speedLimitUp;
     if (options.speedLimitUpEnabled !== undefined)
       args['speed-limit-up-enabled'] = options.speedLimitUpEnabled;
-    return this.transport.sendAction({ method: 'group-set', arguments: args }).then(() => {});
+    return this.requireRpc(RPC_VERSION_4, 'group-set')
+      .then(() => this.transport.sendAction({ method: 'group-set', arguments: args }))
+      .then(() => {});
   }
 
   private thenUpdateSettings = (): Promise<void> => {
@@ -308,25 +336,45 @@ class SettingsService {
 
   // v4.0.0+ session-set methods
   setScriptTorrentAddedEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-added-enabled': enabled });
+    this.requireRpc(RPC_VERSION_4, 'script-torrent-added-enabled').then(() =>
+      this.setSessionSetting({ 'script-torrent-added-enabled': enabled })
+    );
 
   setScriptTorrentAddedFilename = (filename: string): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-added-filename': filename });
+    this.requireRpc(RPC_VERSION_4, 'script-torrent-added-filename').then(() =>
+      this.setSessionSetting({ 'script-torrent-added-filename': filename })
+    );
 
   setScriptTorrentDoneSeedingEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-done-seeding-enabled': enabled });
+    this.requireRpc(RPC_VERSION_4, 'script-torrent-done-seeding-enabled').then(() =>
+      this.setSessionSetting({ 'script-torrent-done-seeding-enabled': enabled })
+    );
 
   setScriptTorrentDoneSeedingFilename = (filename: string): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-done-seeding-filename': filename });
+    this.requireRpc(RPC_VERSION_4, 'script-torrent-done-seeding-filename').then(() =>
+      this.setSessionSetting({ 'script-torrent-done-seeding-filename': filename })
+    );
 
   setDefaultTrackers = (trackers: string): Promise<void> =>
-    this.setSessionSetting({ 'default-trackers': trackers });
+    this.requireRpc(RPC_VERSION_4, 'default-trackers').then(() =>
+      this.setSessionSetting({ 'default-trackers': trackers })
+    );
 
-  portTest(): Promise<boolean> {
-    return this.transport.sendAction({ method: 'port-test' }).then((response) => {
-      const args = response.arguments as Record<string, unknown>;
-      return readKey<boolean>(args, 'port-is-open', false);
-    });
+  portTest(ipProtocol?: 'ipv4' | 'ipv6'): Promise<boolean> {
+    const args: Record<string, unknown> = {};
+    // ip-protocol argument exists since Transmission 4.1 (rpc 18)
+    if (ipProtocol && this.transport.rpcVersion >= RPC_VERSION_4_1) {
+      args['ip-protocol'] = ipProtocol;
+    }
+    return this.transport
+      .sendAction({
+        method: 'port-test',
+        ...(Object.keys(args).length ? { arguments: args } : {}),
+      })
+      .then((response) => {
+        const responseArgs = response.arguments as Record<string, unknown>;
+        return readKey<boolean>(responseArgs, 'port-is-open', false);
+      });
   }
 
   blocklistUpdate(): Promise<{ blocklistSize: number }> {
@@ -368,7 +416,9 @@ class SettingsService {
       peerLimitGlobal: readKey<number>(settings, 'peer-limit-global', 200),
       peerLimitPerTorrent: readKey<number>(settings, 'peer-limit-per-torrent', 50),
       seedRatioLimit: (settings['seed_ratio_limit'] ?? settings['seedRatioLimit'] ?? 2.0) as number,
-      seedRatioLimited: (settings['seed_ratio_limited'] ?? settings['seedRatioLimited'] ?? false) as boolean,
+      seedRatioLimited: (settings['seed_ratio_limited'] ??
+        settings['seedRatioLimited'] ??
+        false) as boolean,
       idleSeedingLimit: readKey<number>(settings, 'idle-seeding-limit', 30),
       idleSeedingLimitEnabled: readKey<boolean>(settings, 'idle-seeding-limit-enabled', false),
       peerPort: readKey<number>(settings, 'peer-port', 51413),
@@ -396,12 +446,23 @@ class SettingsService {
       scriptTorrentDoneEnabled: readKey<boolean>(settings, 'script-torrent-done-enabled', false),
       scriptTorrentDoneFilename: readKey<string>(settings, 'script-torrent-done-filename', ''),
       // v4.0.0+ fields (optional, undefined on older versions)
-      scriptTorrentAddedEnabled: readKey<boolean | undefined>(settings, 'script-torrent-added-enabled', undefined) ?? undefined,
-      scriptTorrentAddedFilename: readKey<string | undefined>(settings, 'script-torrent-added-filename', undefined) ?? undefined,
-      scriptTorrentDoneSeedingEnabled: readKey<boolean | undefined>(settings, 'script-torrent-done-seeding-enabled', undefined) ?? undefined,
-      scriptTorrentDoneSeedingFilename: readKey<string | undefined>(settings, 'script-torrent-done-seeding-filename', undefined) ?? undefined,
-      defaultTrackers: readKey<string | undefined>(settings, 'default-trackers', undefined) ?? undefined,
-      rpcVersionSemver: readKey<string | undefined>(settings, 'rpc-version-semver', undefined) ?? undefined,
+      scriptTorrentAddedEnabled:
+        readKey<boolean | undefined>(settings, 'script-torrent-added-enabled', undefined) ??
+        undefined,
+      scriptTorrentAddedFilename:
+        readKey<string | undefined>(settings, 'script-torrent-added-filename', undefined) ??
+        undefined,
+      scriptTorrentDoneSeedingEnabled:
+        readKey<boolean | undefined>(settings, 'script-torrent-done-seeding-enabled', undefined) ??
+        undefined,
+      scriptTorrentDoneSeedingFilename:
+        readKey<string | undefined>(settings, 'script-torrent-done-seeding-filename', undefined) ??
+        undefined,
+      defaultTrackers:
+        readKey<string | undefined>(settings, 'default-trackers', undefined) ?? undefined,
+      rpcVersion: readKey<number>(settings, 'rpc-version', 0),
+      rpcVersionSemver:
+        readKey<string | undefined>(settings, 'rpc-version-semver', undefined) ?? undefined,
       version: (settings['version'] as string) ?? undefined,
     };
   };

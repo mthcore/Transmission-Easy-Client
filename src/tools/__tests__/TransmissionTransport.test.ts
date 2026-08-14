@@ -45,6 +45,23 @@ describe('TransmissionTransport', () => {
     expect(onConnected).toHaveBeenCalled();
   });
 
+  it('sends legacy argument names unchanged even when the daemon is 4.1+ (rpc 18)', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ result: 'success', arguments: {} }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    transport.rpcVersion = 18;
+    await transport.sendAction({
+      method: 'session-set',
+      arguments: { 'speed-limit-down': 100, seedRatioLimit: 2 },
+    });
+
+    const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(sentBody.arguments).toEqual({ 'speed-limit-down': 100, seedRatioLimit: 2 });
+  });
+
   it('throws on non-success result', async () => {
     vi.stubGlobal(
       'fetch',

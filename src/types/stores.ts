@@ -40,6 +40,7 @@ export interface TorrentSnapshot {
   peersConnected?: number;
   labels?: string[];
   bandwidthPriority?: number;
+  sequentialDownload?: boolean;
 }
 
 // Torrent store views (computed properties)
@@ -60,6 +61,7 @@ export interface TorrentViews {
   readonly etaIdleStr: string;
   readonly metadataStatusStr: string;
   readonly uploadedStr: string;
+  readonly sharedStr: string;
   readonly downloadedStr: string;
   readonly addedTimeStr: string;
   readonly completedTimeStr: string;

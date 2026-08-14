@@ -1,5 +1,5 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
-import { toSnakeCaseKeys, RPC_VERSION_SNAKE_CASE } from '../tools/rpcCompat';
+import { toBasicAuthValue } from '../tools/basicAuth';
 
 export interface TransmissionResponse {
   result: string;
@@ -54,9 +54,8 @@ class TransmissionTransport {
     body: Record<string, unknown>,
     customParser?: (text: string) => TransmissionResponse
   ): Promise<TransmissionResponse> {
-    if (this.rpcVersion >= RPC_VERSION_SNAKE_CASE && body.arguments) {
-      body = { ...body, arguments: toSnakeCaseKeys(body.arguments as Record<string, unknown>) };
-    }
+    // Legacy argument names are sent as-is: the bespoke /transmission/rpc
+    // endpoint accepts them on every daemon from 2.x through 4.2+.
     return this.retryIfTokenInvalid(() => {
       return this.fetchWithRetry(body, customParser);
     }).then((response) => {
@@ -136,8 +135,10 @@ class TransmissionTransport {
       if (!fetchOptions.headers) {
         fetchOptions.headers = {};
       }
-      (fetchOptions.headers as Record<string, string>).Authorization =
-        'Basic ' + btoa([config.login, config.password].join(':'));
+      (fetchOptions.headers as Record<string, string>).Authorization = toBasicAuthValue(
+        config.login,
+        config.password
+      );
     }
     return fetchOptions;
   }

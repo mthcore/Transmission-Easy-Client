@@ -40,6 +40,14 @@ interface Settings {
   scriptTorrentAddedFilename: string;
   scriptTorrentDoneSeedingEnabled: boolean;
   scriptTorrentDoneSeedingFilename: string;
+  rpcVersion: number;
+  version?: string;
+  daemonVersionStr: string;
+  features: {
+    scriptTorrentAdded: boolean;
+    sequentialDownload: boolean;
+    portTestIpProtocol: boolean;
+  };
 }
 
 interface ClientStore {
@@ -295,6 +303,8 @@ const ServerOptions = observer(() => {
   return (
     <div className="page server">
       <h2>{chrome.i18n.getMessage('optServer')}</h2>
+
+      {settings.daemonVersionStr && <p className="daemon-version">{settings.daemonVersionStr}</p>}
 
       <h3>{chrome.i18n.getMessage('generalSettings')}</h3>
 
@@ -718,62 +728,71 @@ const ServerOptions = observer(() => {
         </label>
       )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('scriptTorrentAddedEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(
-              rootStore.client.setScriptTorrentAddedEnabled,
-              settings.scriptTorrentAddedEnabled
-            )}
-            type="checkbox"
-            checked={settings.scriptTorrentAddedEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      {/* script-torrent-added / done-seeding need Transmission 4.0+ (rpc 17) */}
+      {settings.features.scriptTorrentAdded && (
+        <>
+          <label>
+            <span>{chrome.i18n.getMessage('scriptTorrentAddedEnabled')}</span>
+            <span className="toggle-switch">
+              <input
+                onChange={handleToggle(
+                  rootStore.client.setScriptTorrentAddedEnabled,
+                  settings.scriptTorrentAddedEnabled
+                )}
+                type="checkbox"
+                checked={settings.scriptTorrentAddedEnabled}
+              />
+              <span className="toggle-slider"></span>
+            </span>
+          </label>
 
-      {settings.scriptTorrentAddedEnabled && (
-        <label>
-          <span>{chrome.i18n.getMessage('scriptTorrentAddedFilename')}</span>
-          <div className="blocklist-url-row">
-            <input type="text" value={scriptAddedFilename} onChange={handleScriptAddedFilenameChange} />
-            <button type="button" onClick={handleApplyScriptAddedFilename}>
-              {chrome.i18n.getMessage('DLG_BTN_APPLY')}
-            </button>
-          </div>
-        </label>
-      )}
+          {settings.scriptTorrentAddedEnabled && (
+            <label>
+              <span>{chrome.i18n.getMessage('scriptTorrentAddedFilename')}</span>
+              <div className="blocklist-url-row">
+                <input
+                  type="text"
+                  value={scriptAddedFilename}
+                  onChange={handleScriptAddedFilenameChange}
+                />
+                <button type="button" onClick={handleApplyScriptAddedFilename}>
+                  {chrome.i18n.getMessage('DLG_BTN_APPLY')}
+                </button>
+              </div>
+            </label>
+          )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('scriptTorrentDoneSeedingEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(
-              rootStore.client.setScriptTorrentDoneSeedingEnabled,
-              settings.scriptTorrentDoneSeedingEnabled
-            )}
-            type="checkbox"
-            checked={settings.scriptTorrentDoneSeedingEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+          <label>
+            <span>{chrome.i18n.getMessage('scriptTorrentDoneSeedingEnabled')}</span>
+            <span className="toggle-switch">
+              <input
+                onChange={handleToggle(
+                  rootStore.client.setScriptTorrentDoneSeedingEnabled,
+                  settings.scriptTorrentDoneSeedingEnabled
+                )}
+                type="checkbox"
+                checked={settings.scriptTorrentDoneSeedingEnabled}
+              />
+              <span className="toggle-slider"></span>
+            </span>
+          </label>
 
-      {settings.scriptTorrentDoneSeedingEnabled && (
-        <label>
-          <span>{chrome.i18n.getMessage('scriptTorrentDoneSeedingFilename')}</span>
-          <div className="blocklist-url-row">
-            <input
-              type="text"
-              value={scriptDoneSeedingFilename}
-              onChange={handleScriptDoneSeedingFilenameChange}
-            />
-            <button type="button" onClick={handleApplyScriptDoneSeedingFilename}>
-              {chrome.i18n.getMessage('DLG_BTN_APPLY')}
-            </button>
-          </div>
-        </label>
+          {settings.scriptTorrentDoneSeedingEnabled && (
+            <label>
+              <span>{chrome.i18n.getMessage('scriptTorrentDoneSeedingFilename')}</span>
+              <div className="blocklist-url-row">
+                <input
+                  type="text"
+                  value={scriptDoneSeedingFilename}
+                  onChange={handleScriptDoneSeedingFilenameChange}
+                />
+                <button type="button" onClick={handleApplyScriptDoneSeedingFilename}>
+                  {chrome.i18n.getMessage('DLG_BTN_APPLY')}
+                </button>
+              </div>
+            </label>
+          )}
+        </>
       )}
 
       <h3>{chrome.i18n.getMessage('blocklist')}</h3>

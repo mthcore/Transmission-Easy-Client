@@ -11,6 +11,7 @@ import TorrentDetailsSeedLimitsTab from './tabs/TorrentDetailsSeedLimitsTab';
 
 interface RootStore {
   client: {
+    settings: { features: { trackerList: boolean } } | null;
     getPeers: (id: number) => Promise<PeerData[]>;
     getTorrentDetails: (id: number) => Promise<TorrentDetailData>;
     setTrackerList: (ids: number[], trackerList: string) => Promise<void>;
@@ -220,6 +221,7 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
               trackerSaving={trackerSaving}
               trackerWidths={trackerResize.widths}
               getTrackerResizeProps={trackerResize.getResizeProps}
+              canEditTrackers={rootStore.client.settings?.features.trackerList ?? false}
             />
           )}
 

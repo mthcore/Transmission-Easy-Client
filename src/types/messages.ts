@@ -45,7 +45,8 @@ export type BgMessage =
   | PortTestMessage
   | GetTorrentDetailsMessage
   | SetTrackerListMessage
-  | SetSeedLimitsMessage;
+  | SetSeedLimitsMessage
+  | SetSequentialDownloadMessage;
 
 // Store sync messages
 export interface GetBgStoreDeltaMessage {
@@ -241,9 +242,10 @@ export interface ScriptTorrentDoneSeedingFilenameMessage {
   filename: string;
 }
 
-// Port test
+// Port test (ipProtocol needs Transmission 4.1+, ignored on older daemons)
 export interface PortTestMessage {
   action: 'portTest';
+  ipProtocol?: 'ipv4' | 'ipv6';
 }
 
 // Torrent details (on-demand)
@@ -257,6 +259,13 @@ export interface SetTrackerListMessage {
   action: 'setTrackerList';
   ids: TorrentId[];
   trackerList: string;
+}
+
+// Sequential download (v4.1.0+, rpc 18)
+export interface SetSequentialDownloadMessage {
+  action: 'setSequentialDownload';
+  ids: TorrentId[];
+  enabled: boolean;
 }
 
 // Per-torrent seed limits

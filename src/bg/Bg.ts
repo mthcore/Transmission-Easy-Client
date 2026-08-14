@@ -4,6 +4,7 @@ import ContextMenu from './ContextMenu';
 import BgStore, { IBgStore } from '../stores/BgStore';
 import { autorun } from 'mobx';
 import TransmissionClient from './TransmissionClient';
+import updateWebUiAuthRule from './webUiAuthRule';
 import MobxPatchLine from '../tools/MobxPatchLine';
 import { serializeError } from 'serialize-error';
 import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
@@ -81,13 +82,35 @@ class Bg {
           this.bgStore.flushClient();
           // Cast needed for TransmissionClient's Bg interface expectations
           this.client = new TransmissionClient(this as never);
-          this.client.updateSettings().catch((err) => {
-            autorunLogger.error('client', 'updateSettings error', err);
-          });
-          this.client.updateTorrents().catch((err) => {
-            autorunLogger.error('client', 'updateTorrents error', err);
-          });
+          // session-get first so the daemon's rpc-version is known before the
+          // first torrent-get; still poll torrents if session-get fails
+          this.client
+            .updateSettings()
+            .catch((err) => {
+              autorunLogger.error('client', 'updateSettings error', err);
+            })
+            .then(() => this.client?.updateTorrents())
+            .catch((err) => {
+              autorunLogger.error('client', 'updateTorrents error', err);
+            });
         }
+      });
+
+      autorun(() => {
+        autorunLogger.info('webUiAuthRule');
+        const config = this.bgStore.config;
+        if (!config) return;
+
+        updateWebUiAuthRule({
+          ssl: config.ssl,
+          hostname: config.hostname,
+          port: config.port,
+          authenticationRequired: config.authenticationRequired,
+          login: config.login,
+          password: config.password,
+        }).catch((err) => {
+          autorunLogger.error('webUiAuthRule', 'update error', err);
+        });
       });
 
       autorun(() => {
@@ -310,7 +333,11 @@ class Bg {
         break;
       }
       case 'portTest': {
-        promise = this.whenReady().then(() => this.requireClient().portTest());
+        promise = this.whenReady().then(() => this.requireClient().portTest(message.ipProtocol));
+        break;
+      }
+      case 'setSequentialDownload': {
+        promise = this.requireClient().setSequentialDownload(message.ids, message.enabled);
         break;
       }
       case 'getTorrentDetails': {

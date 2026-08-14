@@ -951,5 +951,26 @@
     },
     "scriptTorrentDoneSeedingFilename": {
         "message": "Script path (done seeding)"
+    },
+    "sequentialDownload": {
+        "message": "Sequential download"
+    },
+    "fileCount": {
+        "message": "File count"
+    },
+    "primaryMimeType": {
+        "message": "Content type"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Warning: without SSL, your login and password are sent unencrypted over the network."
+    },
+    "backupIncludesCredentials": {
+        "message": "The backup includes your server login and password."
+    },
+    "restoreConnectionChanged": {
+        "message": "This backup changes the server connection: $changes$. Continue?",
+        "placeholders": {
+            "changes": { "content": "$1" }
+        }
     }
 }

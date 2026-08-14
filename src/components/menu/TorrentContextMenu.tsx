@@ -38,6 +38,7 @@ interface Torrent {
   directory: string;
   labelsStr: string;
   actions: string[];
+  sequentialDownload?: boolean;
 }
 
 const TorrentMenuContent = observer(() => {
@@ -267,6 +268,17 @@ const TorrentMenuContent = observer(() => {
             <ContextMenu.Item className="context-menu-item" onSelect={handleReannounce}>
               {chrome.i18n.getMessage('reannounce')}
             </ContextMenu.Item>
+            {client.settings?.features.sequentialDownload && (
+              <ContextMenu.Item
+                className="context-menu-item"
+                onSelect={() =>
+                  client.setSequentialDownload(selectedIds, !firstTorrent?.sequentialDownload)
+                }
+              >
+                {(firstTorrent?.sequentialDownload ? '✓ ' : '') +
+                  chrome.i18n.getMessage('sequentialDownload')}
+              </ContextMenu.Item>
+            )}
           </ContextMenu.SubContent>
         </ContextMenu.Portal>
       </ContextMenu.Sub>

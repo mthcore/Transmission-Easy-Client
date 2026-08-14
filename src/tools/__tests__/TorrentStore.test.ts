@@ -262,17 +262,22 @@ describe('TorrentStore computed views', () => {
   });
 
   describe('addedTimeStr / completedTimeStr', () => {
-    it('returns infinity for zero addedTime', () => {
-      expect(createTorrent({ addedTime: 0 }).addedTimeStr).toBe('∞');
+    it('returns a dash for zero addedTime', () => {
+      expect(createTorrent({ addedTime: 0 }).addedTimeStr).toBe('-');
     });
 
     it('returns formatted date for non-zero addedTime', () => {
       const t = createTorrent({ addedTime: 1700000000 });
-      expect(t.addedTimeStr).not.toBe('∞');
+      expect(t.addedTimeStr).not.toBe('-');
     });
 
-    it('returns infinity for zero completedTime', () => {
-      expect(createTorrent({ completedTime: 0 }).completedTimeStr).toBe('∞');
+    it('returns a dash for zero completedTime', () => {
+      expect(createTorrent({ completedTime: 0 }).completedTimeStr).toBe('-');
+    });
+
+    it('formats the share ratio with two decimals', () => {
+      expect(createTorrent({ shared: 123 }).sharedStr).toBe('0.12');
+      expect(createTorrent({ shared: 1000 }).sharedStr).toBe('1.00');
     });
   });
 

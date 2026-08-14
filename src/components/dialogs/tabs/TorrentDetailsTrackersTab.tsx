@@ -16,6 +16,8 @@ interface TorrentDetailsTrackersTabProps {
   trackerSaving: boolean;
   trackerWidths: Record<string, number>;
   getTrackerResizeProps: (key: string) => ResizeHandleProps;
+  /** trackerList editing needs Transmission 4.0+ (rpc 17); read-only below that */
+  canEditTrackers: boolean;
 }
 
 function trackerHostname(url: string): string {
@@ -35,6 +37,7 @@ const TorrentDetailsTrackersTab = ({
   trackerSaving,
   trackerWidths,
   getTrackerResizeProps,
+  canEditTrackers,
 }: TorrentDetailsTrackersTabProps) => (
   <div className="tracker-scroll">
     {details && details.trackerStats.length > 0 && (
@@ -84,16 +87,12 @@ const TorrentDetailsTrackersTab = ({
       </table>
     )}
 
-    {detailsLoading && !details && (
-      <div className="torrent-details-peers-header">Loading...</div>
-    )}
+    {detailsLoading && !details && <div className="torrent-details-peers-header">Loading...</div>}
 
-    {details && (
+    {details && canEditTrackers && (
       <div className="tracker-list-edit">
         <label>{chrome.i18n.getMessage('DT_TRACKER_LIST')}</label>
-        <div className="tracker-list-help">
-          {chrome.i18n.getMessage('DT_TRACKER_LIST_HELP')}
-        </div>
+        <div className="tracker-list-help">{chrome.i18n.getMessage('DT_TRACKER_LIST_HELP')}</div>
         <textarea
           className="tracker-list-textarea"
           value={trackerListText}

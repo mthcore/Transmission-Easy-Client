@@ -40,6 +40,7 @@ const TorrentStore = types
     peersConnected: types.optional(types.number, 0),
     labels: types.optional(types.array(types.string), []),
     bandwidthPriority: types.optional(types.number, 0),
+    sequentialDownload: types.maybe(types.boolean),
   })
   .views((self) => {
     return {
@@ -116,26 +117,29 @@ const TorrentStore = types
       get uploadedStr(): string {
         return formatBytes(self.uploaded);
       },
+      get sharedStr(): string {
+        return (self.shared / 1000).toFixed(2);
+      },
       get downloadedStr(): string {
         return formatBytes(self.downloaded);
       },
       get addedTimeStr(): string {
         if (!self.addedTime) {
-          return '∞';
+          return '-';
         } else {
           return new Date(self.addedTime * 1000).toLocaleString();
         }
       },
       get completedTimeStr(): string {
         if (!self.completedTime) {
-          return '∞';
+          return '-';
         } else {
           return new Date(self.completedTime * 1000).toLocaleString();
         }
       },
       get activityDateStr(): string {
         if (!self.activityDate) {
-          return '∞';
+          return '-';
         } else {
           return new Date(self.activityDate * 1000).toLocaleString();
         }

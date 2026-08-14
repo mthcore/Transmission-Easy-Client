@@ -2,6 +2,8 @@ import getLogger from '../tools/getLogger';
 import readBlobAsArrayBuffer from '../tools/readBlobAsArrayBuffer';
 import { arrayBufferToBase64 } from '../tools/binaryConversion';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
+import { parseTransmissionResponse } from '../tools/safeJsonParse';
+import { assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
 import { RECENTLY_ACTIVE_THRESHOLD } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 import type { TransmissionResponse } from './TransmissionTransport';
@@ -79,6 +81,9 @@ export interface TorrentDetailData {
   uploadLimit: number;
   uploadLimited: boolean;
   honorsSessionLimits: boolean;
+  // v4.0.0+ (rpc 17), undefined on older daemons
+  fileCount?: number;
+  primaryMimeType?: string;
 }
 
 export interface NormalizedTorrent {
@@ -118,6 +123,7 @@ export interface NormalizedTorrent {
   peersConnected: number;
   labels: string[];
   bandwidthPriority: number;
+  sequentialDownload?: boolean;
 }
 
 interface TorrentStore {
@@ -182,51 +188,56 @@ class TorrentService {
       isRecently = true;
     }
 
+    const listFields = [
+      'id',
+      'name',
+      'totalSize',
+      'sizeWhenDone',
+      'percentDone',
+      'downloadedEver',
+      'uploadedEver',
+      'rateUpload',
+      'rateDownload',
+      'eta',
+      'etaIdle',
+      'peersSendingToUs',
+      'peersGettingFromUs',
+      'queuePosition',
+      'addedDate',
+      'doneDate',
+      'activityDate',
+      'startDate',
+      'editDate',
+      'downloadDir',
+      'recheckProgress',
+      'status',
+      'error',
+      'errorString',
+      'trackerStats',
+      'magnetLink',
+      'uploadRatio',
+      'hashString',
+      'isStalled',
+      'isPrivate',
+      'isFinished',
+      'metadataPercentComplete',
+      'peersConnected',
+      'labels',
+      'bandwidthPriority',
+    ];
+    if (this.transport.rpcVersion >= RPC_VERSION_4_1) {
+      listFields.push('sequential_download');
+    }
+
     const requestPromise = this.transport.sendAction(
       {
         method: 'torrent-get',
         arguments: {
-          fields: [
-            'id',
-            'name',
-            'totalSize',
-            'sizeWhenDone',
-            'percentDone',
-            'downloadedEver',
-            'uploadedEver',
-            'rateUpload',
-            'rateDownload',
-            'eta',
-            'etaIdle',
-            'peersSendingToUs',
-            'peersGettingFromUs',
-            'queuePosition',
-            'addedDate',
-            'doneDate',
-            'activityDate',
-            'startDate',
-            'editDate',
-            'downloadDir',
-            'recheckProgress',
-            'status',
-            'error',
-            'errorString',
-            'trackerStats',
-            'magnetLink',
-            'uploadRatio',
-            'hashString',
-            'isStalled',
-            'isPrivate',
-            'isFinished',
-            'metadataPercentComplete',
-            'peersConnected',
-            'labels',
-            'bandwidthPriority',
-          ],
+          fields: listFields,
           ids: isRecently ? 'recently-active' : undefined,
         },
       },
-      safeParser
+      parseTransmissionResponse
     );
 
     return Promise.all([requestPromise, this._notifiedIdsPromise]).then(
@@ -271,28 +282,6 @@ class TorrentService {
         return response;
       }
     );
-
-    function safeParser(text: string): TransmissionResponse {
-      try {
-        return JSON.parse(text);
-      } catch {
-        return JSON.parse(
-          text.replace(
-            /"(announce|scrape|lastAnnounceResult|lastScrapeResult)":"([^"]+)"/g,
-            safeValue
-          )
-        );
-      }
-    }
-
-    function safeValue(_match: string, key: string, value: string): string {
-      try {
-        JSON.parse(`"${value}"`);
-      } catch {
-        value = encodeURIComponent(value);
-      }
-      return `"${key}":"${value}"`;
-    }
   }
 
   start(ids: number[]): Promise<TransmissionResponse> {
@@ -441,8 +430,11 @@ class TorrentService {
         if (options.priorityLow) query.arguments['priority-low'] = options.priorityLow;
         if (options.priorityNormal) query.arguments['priority-normal'] = options.priorityNormal;
         if (options.labels) query.arguments['labels'] = options.labels;
-        if (options.sequentialDownload !== undefined)
-          query.arguments['sequentialDownload'] = options.sequentialDownload;
+        // sequential download exists since Transmission 4.1 (rpc 18); the key
+        // was born in the snake_case era, so snake is its canonical name
+        if (options.sequentialDownload !== undefined && transport.rpcVersion >= RPC_VERSION_4_1) {
+          query.arguments['sequential_download'] = options.sequentialDownload;
+        }
       }
       return query;
     }
@@ -554,40 +546,44 @@ class TorrentService {
   }
 
   getTorrentDetails(id: number): Promise<TorrentDetailData> {
+    const detailFields = [
+      'id',
+      'comment',
+      'creator',
+      'dateCreated',
+      'pieceCount',
+      'pieceSize',
+      'corruptEver',
+      'desiredAvailable',
+      'secondsDownloading',
+      'secondsSeeding',
+      'webseeds',
+      'trackerList',
+      'trackerStats',
+      'seedRatioLimit',
+      'seedRatioMode',
+      'seedIdleLimit',
+      'seedIdleMode',
+      'peersFrom',
+      'downloadLimit',
+      'downloadLimited',
+      'uploadLimit',
+      'uploadLimited',
+      'honorsSessionLimits',
+    ];
+    if (this.transport.rpcVersion >= RPC_VERSION_4) {
+      detailFields.push('file-count', 'primary-mime-type');
+    }
     return this.transport
       .sendAction(
         {
           method: 'torrent-get',
           arguments: {
-            fields: [
-              'id',
-              'comment',
-              'creator',
-              'dateCreated',
-              'pieceCount',
-              'pieceSize',
-              'corruptEver',
-              'desiredAvailable',
-              'secondsDownloading',
-              'secondsSeeding',
-              'webseeds',
-              'trackerList',
-              'trackerStats',
-              'seedRatioLimit',
-              'seedRatioMode',
-              'seedIdleLimit',
-              'seedIdleMode',
-              'peersFrom',
-              'downloadLimit',
-              'downloadLimited',
-              'uploadLimit',
-              'uploadLimited',
-              'honorsSessionLimits',
-            ],
+            fields: detailFields,
             ids: [id],
           },
         },
-        safeTrackerParser
+        parseTransmissionResponse
       )
       .then((response) => {
         type RawTrackerStat = {
@@ -632,6 +628,8 @@ class TorrentService {
           uploadLimit?: number;
           uploadLimited?: boolean;
           honorsSessionLimits?: boolean;
+          'file-count'?: number;
+          'primary-mime-type'?: string;
         };
         const torrents = (response.arguments as { torrents: RawTorrent[] }).torrents;
         const torrent = torrents.find((t) => t.id === id);
@@ -669,30 +667,10 @@ class TorrentService {
           uploadLimit: torrent.uploadLimit ?? 0,
           uploadLimited: torrent.uploadLimited ?? false,
           honorsSessionLimits: torrent.honorsSessionLimits ?? true,
+          fileCount: torrent['file-count'],
+          primaryMimeType: torrent['primary-mime-type'],
         };
       });
-
-    function safeTrackerParser(text: string): TransmissionResponse {
-      try {
-        return JSON.parse(text);
-      } catch {
-        return JSON.parse(
-          text.replace(
-            /"(announce|scrape|lastAnnounceResult|lastScrapeResult)":"([^"]+)"/g,
-            safeTrackerValue
-          )
-        );
-      }
-    }
-
-    function safeTrackerValue(_match: string, key: string, value: string): string {
-      try {
-        JSON.parse(`"${value}"`);
-      } catch {
-        value = encodeURIComponent(value);
-      }
-      return `"${key}":"${value}"`;
-    }
   }
 
   setDownloadLimit(ids: number[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
@@ -741,11 +719,28 @@ class TorrentService {
   }
 
   setGroup(ids: number[], group: string): Promise<TransmissionResponse> {
-    return this.transport
-      .sendAction({
-        method: 'torrent-set',
-        arguments: { ids, group },
-      })
+    return Promise.resolve()
+      .then(() => assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'torrent-set group'))
+      .then(() =>
+        this.transport.sendAction({
+          method: 'torrent-set',
+          arguments: { ids, group },
+        })
+      )
+      .then(this.thenUpdateTorrents);
+  }
+
+  setSequentialDownload(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+    return Promise.resolve()
+      .then(() =>
+        assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4_1, 'sequential download')
+      )
+      .then(() =>
+        this.transport.sendAction({
+          method: 'torrent-set',
+          arguments: { ids, sequential_download: enabled },
+        })
+      )
       .then(this.thenUpdateTorrents);
   }
 
@@ -786,8 +781,12 @@ class TorrentService {
     const shared = uploadRatio >= 0 ? Math.round(uploadRatio * 1000) : 0;
     const uploadSpeed = torrent.rateUpload as number;
     const downloadSpeed = torrent.rateDownload as number;
-    const eta = (torrent.eta as number) < 0 ? 0 : (torrent.eta as number);
+    // Preserve sentinels: -1 = not available/infinite, -2 = unknown
+    const eta = (torrent.eta as number) ?? -1;
     const etaIdle = (torrent.etaIdle as number) ?? -1;
+    const sequentialDownload = (torrent.sequential_download ?? torrent.sequentialDownload) as
+      | boolean
+      | undefined;
 
     let _peers = 0;
     let _seeds = 0;
@@ -864,6 +863,7 @@ class TorrentService {
       peersConnected,
       labels,
       bandwidthPriority,
+      sequentialDownload,
     };
   };
 }

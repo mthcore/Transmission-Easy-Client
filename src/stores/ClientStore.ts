@@ -4,6 +4,7 @@ import { speedToStr, formatBytes } from '../tools/format';
 import TorrentStore, { ITorrentStore } from './TorrentStore';
 import callApi from '../tools/callApi';
 import getLogger from '../tools/getLogger';
+import { getRpcFeatures, type RpcFeatures } from '../tools/rpcCompat';
 import type { PeerData, TorrentDetailData } from '../bg/TorrentService';
 
 const logger = getLogger('ClientStore');
@@ -69,9 +70,21 @@ const SettingsStore = types
     scriptTorrentAddedFilename: types.optional(types.string, ''),
     scriptTorrentDoneSeedingEnabled: types.optional(types.boolean, false),
     scriptTorrentDoneSeedingFilename: types.optional(types.string, ''),
+    defaultTrackers: types.maybe(types.string),
+    rpcVersion: types.optional(types.number, 0),
+    rpcVersionSemver: types.maybe(types.string),
+    version: types.maybe(types.string),
   })
   .views((self) => {
     return {
+      get features(): RpcFeatures {
+        return getRpcFeatures(self.rpcVersion);
+      },
+      get daemonVersionStr(): string {
+        if (!self.version) return '';
+        const rpc = self.rpcVersion > 0 ? ` (RPC ${self.rpcVersion})` : '';
+        return `Transmission ${self.version}${rpc}`;
+      },
       get downloadSpeedLimitStr(): string {
         return speedToStr(self.downloadSpeedLimit * 1024);
       },
@@ -536,6 +549,11 @@ const ClientStore = types
       },
       setBandwidthPriority(ids: number[], priority: number): Promise<unknown> {
         return callApi({ action: 'setBandwidthPriority', ids, priority })
+          .then(...exceptionLog())
+          .then(thenSyncClient);
+      },
+      setSequentialDownload(ids: number[], enabled: boolean): Promise<unknown> {
+        return callApi({ action: 'setSequentialDownload', ids, enabled })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },

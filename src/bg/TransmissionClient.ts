@@ -81,9 +81,27 @@ class TransmissionClient {
     );
   }
 
+  private versionPromise: Promise<void> | null = null;
+
+  /**
+   * Ensure the daemon's rpc-version is known before version-dependent calls.
+   * Covers MV3 service-worker wake-ups where the alarm fires updateTorrents
+   * before any session-get has resolved. Self-heals: on failure the next poll
+   * retries, and the current cycle proceeds ungated (rpcVersion 0).
+   */
+  private ensureVersion(): Promise<void> {
+    if (this.transport.rpcVersion > 0) return Promise.resolve();
+    if (!this.versionPromise) {
+      this.versionPromise = this.settingsService.updateSettings().catch(() => {
+        this.versionPromise = null;
+      });
+    }
+    return this.versionPromise;
+  }
+
   // Torrent operations
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
-    return this.torrentService.updateTorrents(force);
+    return this.ensureVersion().then(() => this.torrentService.updateTorrents(force));
   }
   start(ids: number[]): Promise<TransmissionResponse> {
     return this.torrentService.start(ids);
@@ -114,6 +132,9 @@ class TransmissionClient {
   }
   setBandwidthPriority(ids: number[], priority: number): Promise<TransmissionResponse> {
     return this.torrentService.setBandwidthPriority(ids, priority);
+  }
+  setSequentialDownload(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+    return this.torrentService.setSequentialDownload(ids, enabled);
   }
   reannounce(ids: number[]): Promise<TransmissionResponse> {
     return this.torrentService.reannounce(ids);
@@ -308,8 +329,8 @@ class TransmissionClient {
     this.settingsService.setScriptTorrentDoneSeedingFilename(filename);
   setDefaultTrackers = (trackers: string): Promise<void> =>
     this.settingsService.setDefaultTrackers(trackers);
-  portTest(): Promise<boolean> {
-    return this.settingsService.portTest();
+  portTest(ipProtocol?: 'ipv4' | 'ipv6'): Promise<boolean> {
+    return this.settingsService.portTest(ipProtocol);
   }
 
   destroy(): void {

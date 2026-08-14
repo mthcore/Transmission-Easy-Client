@@ -947,5 +947,26 @@
     },
     "scriptTorrentDoneSeedingFilename": {
         "message": "Chemin du script (fin de partage)"
+    },
+    "sequentialDownload": {
+        "message": "Téléchargement séquentiel"
+    },
+    "fileCount": {
+        "message": "Nombre de fichiers"
+    },
+    "primaryMimeType": {
+        "message": "Type de contenu"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Attention : sans SSL, vos identifiants transitent en clair sur le réseau."
+    },
+    "backupIncludesCredentials": {
+        "message": "La sauvegarde inclut l'identifiant et le mot de passe du serveur."
+    },
+    "restoreConnectionChanged": {
+        "message": "Cette sauvegarde modifie la connexion au serveur : $changes$. Continuer ?",
+        "placeholders": {
+            "changes": { "content": "$1" }
+        }
     }
 }

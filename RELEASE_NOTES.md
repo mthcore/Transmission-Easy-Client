@@ -1,5 +1,24 @@
 # Release Notes - Transmission Easy Client
 
+## Version 3.3.0 (August 2026)
+
+**Transmission 4.x support & security hardening.** A full audit pass covering
+protocol compatibility, credential handling, and dozens of latent bugs.
+
+- **Transmission 4.0-4.2 support, with 2.x/3.x compatibility kept** - the
+  client now reports the daemon's RPC version and gates every 4.x-only
+  feature on it instead of guessing; older daemons keep working exactly as
+  before
+- **Sequential download** - new toggle in the torrent context menu (Transmission 4.1+)
+- **Daemon version** shown in Server settings; file count and content type shown in torrent details (Transmission 4.0+)
+- **Web UI login fixed** - opening the Web UI tab from the popup no longer shows an empty torrent list on first load; credentials are now injected as a request header instead of being embedded in the URL (which also stopped leaking the password into the browser's address bar and history)
+- **Backup/restore hardened** - restoring a backup validates its content and warns before it silently repoints the extension at a different server
+- **All 24 languages fully translated** - every locale was previously missing 35-40% of its strings and falling back to English; all locales now match, letter for letter
+- **Crash fix** - Server settings could crash on load ("Rendered fewer hooks than expected") right after opening a fresh profile; fixed and covered by a regression test
+- **Correctness fixes**: port test for IPv6, ETA display for stalled/unknown torrents, upload ratio rounding, several background actions that could hang instead of reporting an error after a browser restart
+- **Security**: safer parsing of daemon responses, tightened Web UI authentication scope, pinned release-pipeline dependencies
+- **351 tests** (up from 157), covering the sync protocol between the extension's background and UI, the message dispatcher, folder-tree building, and the first React component tests
+
 ## Version 3.2.0 (February 2026)
 
 - **Torrent Details dialog** - New tabbed interface (Info, Trackers, Seed Limits) with detailed torrent info: creator, creation date, pieces, time seeding/downloading, webseeds, and more

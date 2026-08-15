@@ -19,21 +19,22 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
 - **Dark mode** with system preference detection
 - **Search/filter** torrents by name
 - **Keyboard shortcuts** for power users
+- **Transmission 4.x support** - sequential download toggle, daemon version display, file count/content type in torrent details, while staying fully compatible with older 2.x/3.x daemons
+- **Torrent Details dialog** with tabbed info, tracker management, and per-torrent seed limits
+- Secure Web UI login (no credentials in the URL) and hardened backup/restore
 
 ## Supported Browsers
 
-- Google Chrome (88+)
-- Mozilla Firefox
+- Google Chrome (101+)
+- Mozilla Firefox (113+)
 - Opera
 
 ## Supported Languages
 
-- English (en)
-- French (fr)
-- Spanish (es)
-- Portuguese - Brazil (pt_BR)
-- Chinese - Simplified (zh_CN)
-- Russian (ru)
+All 24 languages are fully translated: Czech, Danish, Dutch, English, French,
+German, Greek, Hebrew, Hungarian, Indonesian, Italian, Norwegian Bokmål,
+Polish, Portuguese (Brazil), Romanian, Russian, Simplified Chinese, Spanish,
+Swedish, Thai, Traditional Chinese, Turkish, Ukrainian, Vietnamese.
 
 ## Installation
 
@@ -41,8 +42,8 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
 
 ```bash
 # Clone the repository
-git clone https://github.com/mthcore/transmission_extension.git
-cd Transmission
+git clone https://github.com/mthcore/Transmission-Easy-Client.git
+cd Transmission-Easy-Client
 
 # Install dependencies
 npm install
@@ -96,26 +97,23 @@ The built extension will be in the `./dist` folder.
 
 ## Changelog
 
-> See [RELEASE_NOTES.md](RELEASE_NOTES.md) for detailed release notes.
+> See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the full release history.
 
-### Version 3.1.0 (January 2026)
+### Version 3.3.0 (August 2026)
 
-- **Dark mode** with system preference detection
-- **Search bar** to filter torrents by name
-- **Keyboard shortcuts** for power users
-- Progress bar with dynamic text color
-- Bug fixes
+- **Transmission 4.0-4.2 support**, with 2.x/3.x compatibility kept
+- **Sequential download** toggle, daemon version display, file count/content type in torrent details
+- **Web UI login fixed** and hardened - credentials injected as a header instead of leaking into the URL
+- **Backup/restore hardened**, with validation before repointing the extension at a different server
+- **All 24 languages fully translated**
+- Crash fix on the Server settings page, plus numerous correctness and security fixes
+- 351 tests (up from 157)
 
-### Version 3.0.0
+### Version 3.2.0 (February 2026)
 
-Major modernization since fork:
-
-- Manifest V3 migration
-- React 19, MobX 6, Webpack 5
-- Radix UI context menus
-- SCSS architecture (replaced LESS)
-- SVG icons (replaced PNG)
-- GitHub Actions CI/CD
+- **Torrent Details dialog** with tabbed info (Info, Trackers, Seed Limits)
+- **Tracker management** and **per-torrent seed limits**
+- **Label filtering**, **resizable columns**, and 17 new server settings
 
 ### Version 2.2.2 (Original)
 

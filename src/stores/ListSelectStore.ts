@@ -76,8 +76,6 @@ const ListSelectStore = types
     };
   })
   .views((self) => {
-    const _autorun: IReactionDisposer | null = null;
-
     return {
       get _sortedIds(): number[] {
         throw new Error('Overwrite me!');

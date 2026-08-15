@@ -57,6 +57,94 @@ const ServerOptions = observer(() => {
     }
   }, [fetchSettings, settings]);
 
+  // All hooks below must run unconditionally on every render — the actual
+  // "not ready yet" branching happens only in the JSX at the very end, so the
+  // hook count never differs between the loading and loaded renders (a
+  // mismatch there is what "Rendered fewer hooks than expected" means).
+
+  const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
+  }, []);
+
+  const handleApplyUrl = useCallback(() => {
+    client?.setBlocklistUrl(url);
+  }, [client, url]);
+
+  const handleUpdate = useCallback(() => {
+    if (!client) return;
+    setUpdating(true);
+    client.blocklistUpdate().then(
+      () => setUpdating(false),
+      () => setUpdating(false)
+    );
+  }, [client]);
+
+  const handleEncryptionChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      client?.setEncryption(e.target.value);
+    },
+    [client]
+  );
+
+  const handleIncompleteDirChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setIncompleteDirInput(e.target.value);
+  }, []);
+
+  const handleApplyIncompleteDir = useCallback(() => {
+    client?.setIncompleteDir(incompleteDir);
+  }, [client, incompleteDir]);
+
+  const handleScriptFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setScriptFilenameInput(e.target.value);
+  }, []);
+
+  const handleApplyScriptFilename = useCallback(() => {
+    client?.setScriptTorrentDoneFilename(scriptFilename);
+  }, [client, scriptFilename]);
+
+  const handleScriptAddedFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setScriptAddedFilenameInput(e.target.value);
+  }, []);
+
+  const handleApplyScriptAddedFilename = useCallback(() => {
+    client?.setScriptTorrentAddedFilename(scriptAddedFilename);
+  }, [client, scriptAddedFilename]);
+
+  const handleScriptDoneSeedingFilenameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setScriptDoneSeedingFilenameInput(e.target.value);
+    },
+    []
+  );
+
+  const handleApplyScriptDoneSeedingFilename = useCallback(() => {
+    client?.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename);
+  }, [client, scriptDoneSeedingFilename]);
+
+  const handlePortTest = useCallback(() => {
+    if (!client) return;
+    setPortTesting(true);
+    setPortTestResult(null);
+    client.portTest().then(
+      (isOpen) => {
+        setPortTestResult(isOpen);
+        setPortTesting(false);
+      },
+      () => {
+        setPortTestResult(false);
+        setPortTesting(false);
+      }
+    );
+  }, [client]);
+
+  const handleDayToggle = useCallback(
+    (dayBit: number) => () => {
+      if (!settings) return;
+      client?.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
+    },
+    [client, settings]
+  );
+
   if (!client || !settings) {
     return (
       <div className="page server">
@@ -118,86 +206,6 @@ const ServerOptions = observer(() => {
         setter(val);
       }
     };
-
-  const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  }, []);
-
-  const handleApplyUrl = useCallback(() => {
-    client.setBlocklistUrl(url);
-  }, [client, url]);
-
-  const handleUpdate = useCallback(() => {
-    setUpdating(true);
-    client.blocklistUpdate().then(
-      () => setUpdating(false),
-      () => setUpdating(false)
-    );
-  }, [client]);
-
-  const handleEncryptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      client.setEncryption(e.target.value);
-    },
-    [client]
-  );
-
-  const handleIncompleteDirChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setIncompleteDirInput(e.target.value);
-  }, []);
-
-  const handleApplyIncompleteDir = useCallback(() => {
-    client.setIncompleteDir(incompleteDir);
-  }, [client, incompleteDir]);
-
-  const handleScriptFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setScriptFilenameInput(e.target.value);
-  }, []);
-
-  const handleApplyScriptFilename = useCallback(() => {
-    client.setScriptTorrentDoneFilename(scriptFilename);
-  }, [client, scriptFilename]);
-
-  const handleScriptAddedFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setScriptAddedFilenameInput(e.target.value);
-  }, []);
-
-  const handleApplyScriptAddedFilename = useCallback(() => {
-    client.setScriptTorrentAddedFilename(scriptAddedFilename);
-  }, [client, scriptAddedFilename]);
-
-  const handleScriptDoneSeedingFilenameChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setScriptDoneSeedingFilenameInput(e.target.value);
-    },
-    []
-  );
-
-  const handleApplyScriptDoneSeedingFilename = useCallback(() => {
-    client.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename);
-  }, [client, scriptDoneSeedingFilename]);
-
-  const handlePortTest = useCallback(() => {
-    setPortTesting(true);
-    setPortTestResult(null);
-    client.portTest().then(
-      (isOpen) => {
-        setPortTestResult(isOpen);
-        setPortTesting(false);
-      },
-      () => {
-        setPortTestResult(false);
-        setPortTesting(false);
-      }
-    );
-  }, [client]);
-
-  const handleDayToggle = useCallback(
-    (dayBit: number) => () => {
-      client.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
-    },
-    [client, settings.altSpeedTimeDay]
-  );
 
   const handleTimeChange =
     (setter: (minutes: number) => Promise<unknown>) => (e: React.ChangeEvent<HTMLInputElement>) => {

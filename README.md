@@ -40,6 +40,8 @@ Swedish, Thai, Traditional Chinese, Turkish, Ukrainian, Vietnamese.
 
 ### From Source
 
+Requires Node.js 22.22+, 24.15+, or 26+ (an Active or Maintenance LTS line).
+
 ```bash
 # Clone the repository
 git clone https://github.com/mthcore/Transmission-Easy-Client.git

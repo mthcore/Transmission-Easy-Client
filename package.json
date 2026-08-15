@@ -1,6 +1,9 @@
 {
   "name": "transmission-easy-client",
   "version": "3.3.0",
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
   "sideEffects": [
     "*.css",
     "*.scss",
@@ -72,7 +75,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "html-webpack-plugin": "^5.6.6",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "lint-staged": "^17.3.0",
     "mini-css-extract-plugin": "^2.10.0",
     "path-browserify": "^1.0.1",

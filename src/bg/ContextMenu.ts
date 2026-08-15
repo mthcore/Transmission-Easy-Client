@@ -3,7 +3,6 @@ import downloadFileFromTab from '../tools/downloadFileFromTab';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
 import type { IBgForContextMenu, Folder } from '../types';
 
-const path = require('path');
 const promiseLimit = require('promise-limit');
 
 const logger = getLogger('ContextMenu');
@@ -213,6 +212,34 @@ class ContextMenu {
   }
 }
 
+/**
+ * Collapse '.'/'..' segments and duplicate slashes in an already-'/'-joined
+ * path, POSIX-style. Deliberately self-contained rather than delegating to
+ * the 'path' module: that module is only POSIX here because webpack aliases
+ * it to path-browserify — under plain Node (e.g. this file's own tests) it
+ * resolves to the win32 implementation, which rewrites '/' back to '\\' and
+ * silently flattens the whole folder tree.
+ */
+function posixNormalizePath(input: string): string {
+  const isAbsolute = input.startsWith('/');
+  const out: string[] = [];
+  for (const segment of input.split('/')) {
+    if (segment === '' || segment === '.') continue;
+    if (segment === '..') {
+      if (out.length && out[out.length - 1] !== '..') {
+        out.pop();
+      } else if (!isAbsolute) {
+        out.push('..');
+      }
+      continue;
+    }
+    out.push(segment);
+  }
+  const joined = out.join('/');
+  if (isAbsolute) return '/' + joined;
+  return joined || '.';
+}
+
 function transformFoldersToTree(folders: Folder[]): MenuItem[] {
   const placeFolderMap: Record<string, Folder> = {};
   const places: string[] = [];
@@ -229,7 +256,7 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
       }
     }
     let normPath = place.split(/[\\/]/).join('/');
-    normPath = path.normalize(normPath);
+    normPath = posixNormalizePath(normPath);
     if (/\/$/.test(normPath)) {
       normPath = normPath.slice(0, -1);
     }

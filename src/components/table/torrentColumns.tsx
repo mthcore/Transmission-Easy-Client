@@ -144,7 +144,7 @@ const torrentColumnRenderers: Record<string, ColumnRenderer> = {
   seeds_peers: ({ torrent }) => (
     <td key="seeds_peers" className="seeds_peers">
       <div>
-        {torrent.activePeers} / {torrent.activeSeeds}
+        {torrent.activeSeeds} / {torrent.activePeers}
       </div>
     </td>
   ),

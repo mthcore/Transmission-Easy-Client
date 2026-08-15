@@ -209,19 +209,21 @@ class Bg {
       case 'queueDown':
       case 'queueBottom': {
         const action = message.action;
-        promise = this.requireClient()[action](message.ids);
+        promise = this.whenReady().then(() => this.requireClient()[action](message.ids));
         break;
       }
       case 'setPriority': {
-        promise = this.requireClient().setPriority(message.id, message.level, message.fileIdxs);
+        promise = this.whenReady().then(() =>
+          this.requireClient().setPriority(message.id, message.level, message.fileIdxs)
+        );
         break;
       }
       case 'getFileList': {
-        promise = this.requireClient().getFileList(message.id);
+        promise = this.whenReady().then(() => this.requireClient().getFileList(message.id));
         break;
       }
       case 'getPeers': {
-        promise = this.requireClient().getPeers(message.id);
+        promise = this.whenReady().then(() => this.requireClient().getPeers(message.id));
         break;
       }
       case 'setDownloadSpeedLimitEnabled':
@@ -279,19 +281,27 @@ class Bg {
         break;
       }
       case 'rename': {
-        promise = this.requireClient().rename(message.ids, message.path, message.name);
+        promise = this.whenReady().then(() =>
+          this.requireClient().rename(message.ids, message.path, message.name)
+        );
         break;
       }
       case 'torrentSetLocation': {
-        promise = this.requireClient().torrentSetLocation(message.ids, message.location);
+        promise = this.whenReady().then(() =>
+          this.requireClient().torrentSetLocation(message.ids, message.location)
+        );
         break;
       }
       case 'setLabels': {
-        promise = this.requireClient().setLabels(message.ids, message.labels);
+        promise = this.whenReady().then(() =>
+          this.requireClient().setLabels(message.ids, message.labels)
+        );
         break;
       }
       case 'setBandwidthPriority': {
-        promise = this.requireClient().setBandwidthPriority(message.ids, message.priority);
+        promise = this.whenReady().then(() =>
+          this.requireClient().setBandwidthPriority(message.ids, message.priority)
+        );
         break;
       }
       case 'setPeerLimitGlobal':
@@ -345,20 +355,24 @@ class Bg {
         break;
       }
       case 'getTorrentDetails': {
-        promise = this.requireClient().getTorrentDetails(message.id);
+        promise = this.whenReady().then(() => this.requireClient().getTorrentDetails(message.id));
         break;
       }
       case 'setTrackerList': {
-        promise = this.requireClient().setTrackerList(message.ids, message.trackerList);
+        promise = this.whenReady().then(() =>
+          this.requireClient().setTrackerList(message.ids, message.trackerList)
+        );
         break;
       }
       case 'setSeedLimits': {
-        promise = this.requireClient().setSeedLimits(
-          message.ids,
-          message.seedRatioMode,
-          message.seedRatioLimit,
-          message.seedIdleMode,
-          message.seedIdleLimit
+        promise = this.whenReady().then(() =>
+          this.requireClient().setSeedLimits(
+            message.ids,
+            message.seedRatioMode,
+            message.seedRatioLimit,
+            message.seedIdleMode,
+            message.seedIdleLimit
+          )
         );
         break;
       }

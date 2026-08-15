@@ -64,6 +64,8 @@ const chromeMock = {
     removeAll: vi.fn(),
     onClicked: {
       addListener: vi.fn(),
+      removeListener: vi.fn(),
+      hasListener: vi.fn(() => false),
     },
   },
 };

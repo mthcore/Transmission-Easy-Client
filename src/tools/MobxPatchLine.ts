@@ -57,7 +57,7 @@ class MobxPatchLine {
   }
 
   get lastPatchId(): number | null {
-    return this.idLine[this.idLine.length - 1] || null;
+    return this.idLine[this.idLine.length - 1] ?? null;
   }
 
   getDelta(id: number, fromPatchId: number | null): DeltaResult {
@@ -166,6 +166,11 @@ class MobxPatchLine {
     this.store = null as unknown as Record<string, unknown>;
     if (this.patchDisposer) {
       this.patchDisposer();
+      this.patchDisposer = null;
+    }
+    if (this.cleanTimeoutId !== null) {
+      clearTimeout(this.cleanTimeoutId);
+      this.cleanTimeoutId = null;
     }
     this.patchLine.splice(0);
     this.idLine.splice(0);

@@ -529,19 +529,17 @@ class TorrentService {
         const torrents = (response.arguments as { torrents: TorrentPeers[] }).torrents;
         const torrent = torrents.find((t) => t.id === id);
         if (!torrent) return [];
-        return torrent.peers.map(
-          (peer): PeerData => ({
-            address: peer.address,
-            client: peer.clientName,
-            progress: peer.progress,
-            downloadSpeed: peer.rateToClient,
-            uploadSpeed: peer.rateToPeer,
-            flags: peer.flagStr,
-            isEncrypted: peer.isEncrypted ?? false,
-            isUTP: peer.isUTP ?? false,
-            isIncoming: peer.isIncoming ?? false,
-          })
-        );
+        return torrent.peers.map((peer): PeerData => ({
+          address: peer.address,
+          client: peer.clientName,
+          progress: peer.progress,
+          downloadSpeed: peer.rateToClient,
+          uploadSpeed: peer.rateToPeer,
+          flags: peer.flagStr,
+          isEncrypted: peer.isEncrypted ?? false,
+          isUTP: peer.isUTP ?? false,
+          isIncoming: peer.isIncoming ?? false,
+        }));
       });
   }
 
@@ -646,17 +644,15 @@ class TorrentService {
           secondsSeeding: torrent.secondsSeeding || 0,
           webseeds: torrent.webseeds || [],
           trackerList: torrent.trackerList || '',
-          trackerStats: (torrent.trackerStats || []).map(
-            (ts): TrackerStat => ({
-              id: ts.id,
-              announce: ts.announce,
-              tier: ts.tier,
-              seederCount: ts.seederCount,
-              leecherCount: ts.leecherCount,
-              lastAnnounceResult: ts.lastAnnounceResult || '',
-              isBackup: ts.isBackup,
-            })
-          ),
+          trackerStats: (torrent.trackerStats || []).map((ts): TrackerStat => ({
+            id: ts.id,
+            announce: ts.announce,
+            tier: ts.tier,
+            seederCount: ts.seederCount,
+            leecherCount: ts.leecherCount,
+            lastAnnounceResult: ts.lastAnnounceResult || '',
+            isBackup: ts.isBackup,
+          })),
           seedRatioLimit: torrent.seedRatioLimit ?? 0,
           seedRatioMode: torrent.seedRatioMode ?? 0,
           seedIdleLimit: torrent.seedIdleLimit ?? 0,
@@ -785,14 +781,12 @@ class TorrentService {
     const eta = (torrent.eta as number) ?? -1;
     const etaIdle = (torrent.etaIdle as number) ?? -1;
     const sequentialDownload = (torrent.sequential_download ?? torrent.sequentialDownload) as
-      | boolean
-      | undefined;
+      boolean | undefined;
 
     let _peers = 0;
     let _seeds = 0;
     const trackerStats = torrent.trackerStats as
-      | Array<{ leecherCount: number; seederCount: number }>
-      | undefined;
+      Array<{ leecherCount: number; seederCount: number }> | undefined;
     if (Array.isArray(trackerStats)) {
       trackerStats.forEach((tracker) => {
         if (tracker.leecherCount > 0) {

@@ -153,32 +153,30 @@ class SettingsService {
       .then(() => this.transport.sendAction({ method: 'group-get', arguments: args }))
       .then((response) => {
         const result = response.arguments as { group: BandwidthGroup[] };
-        return (result.group || []).map(
-          (g): NormalizedBandwidthGroup => ({
-            name: g.name,
-            honorsSessionLimits: g.honorsSessionLimits,
-            speedLimitDown: readKey<number>(
-              g as unknown as Record<string, unknown>,
-              'speed-limit-down',
-              0
-            ),
-            speedLimitDownEnabled: readKey<boolean>(
-              g as unknown as Record<string, unknown>,
-              'speed-limit-down-enabled',
-              false
-            ),
-            speedLimitUp: readKey<number>(
-              g as unknown as Record<string, unknown>,
-              'speed-limit-up',
-              0
-            ),
-            speedLimitUpEnabled: readKey<boolean>(
-              g as unknown as Record<string, unknown>,
-              'speed-limit-up-enabled',
-              false
-            ),
-          })
-        );
+        return (result.group || []).map((g): NormalizedBandwidthGroup => ({
+          name: g.name,
+          honorsSessionLimits: g.honorsSessionLimits,
+          speedLimitDown: readKey<number>(
+            g as unknown as Record<string, unknown>,
+            'speed-limit-down',
+            0
+          ),
+          speedLimitDownEnabled: readKey<boolean>(
+            g as unknown as Record<string, unknown>,
+            'speed-limit-down-enabled',
+            false
+          ),
+          speedLimitUp: readKey<number>(
+            g as unknown as Record<string, unknown>,
+            'speed-limit-up',
+            0
+          ),
+          speedLimitUpEnabled: readKey<boolean>(
+            g as unknown as Record<string, unknown>,
+            'speed-limit-up-enabled',
+            false
+          ),
+        }));
       });
   }
 

@@ -143,13 +143,7 @@ export interface SettingsSnapshot {
 
 // Dialog types
 export type DialogType =
-  | 'putFiles'
-  | 'putUrl'
-  | 'rename'
-  | 'move'
-  | 'remove'
-  | 'copyMagnetUrl'
-  | 'torrentDetails';
+  'putFiles' | 'putUrl' | 'rename' | 'move' | 'remove' | 'copyMagnetUrl' | 'torrentDetails';
 
 // Dialog store interface
 export interface DialogState<T = unknown> {

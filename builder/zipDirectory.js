@@ -1,9 +1,10 @@
 const fs = require('fs');
-const archiver = require('archiver');
+// archiver v8 replaced the archiver('zip', opts) factory with named classes
+const { ZipArchive } = require('archiver');
 
 const _zipDirectory = ({files = [], dirs = []}, zipFilePath, callback) => {
   const output = fs.createWriteStream(zipFilePath);
-  const zipArchive = archiver('zip', {
+  const zipArchive = new ZipArchive({
     zlib: { level: 9 }
   });
 
@@ -29,11 +30,7 @@ const _zipDirectory = ({files = [], dirs = []}, zipFilePath, callback) => {
     }
   });
 
-  zipArchive.finalize(function(err, bytes) {
-    if(err) {
-      callback(err);
-    }
-  });
+  Promise.resolve(zipArchive.finalize()).catch(callback);
 };
 
 const zipDirectory = ({files, dirs}, zipFilePath) => {

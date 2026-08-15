@@ -42,7 +42,7 @@ const TorrentStore = types
     bandwidthPriority: types.optional(types.number, 0),
     sequentialDownload: types.maybe(types.boolean),
   })
-  .views((self) => {
+  .actions((self) => {
     return {
       start(): Promise<void> {
         const rootStore = getRoot<{
@@ -56,6 +56,10 @@ const TorrentStore = types
         }>(self);
         return rootStore.client.torrentsStop([self.id]);
       },
+    };
+  })
+  .views((self) => {
+    return {
       get remaining(): number {
         const base = self.sizeWhenDone > 0 ? self.sizeWhenDone : self.size;
         let result = base - self.downloaded;

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react';
-import { Column } from './TableHeadColumn';
+import type { Column } from './TableHeadColumn';
 import FileListTableItem from './FileListTableItem';
 import ColumnContextMenu from './ColumnContextMenu';
 import TableHeadColumnRenderer from './TableHeadColumnRenderer';
@@ -12,38 +12,15 @@ import type { FileEntry } from '../../types/stores';
 
 const logger = getLogger('FileListTable');
 
-interface FileListStore {
-  id: number;
-  torrent: unknown;
-  isLoading: boolean;
-  joinedDirectory: string;
-  setRemoveSelectOnHide: (value: boolean) => void;
-  fetchFiles: () => Promise<void>;
-  sortedFiles: FileEntry[];
-  isSelectedAll: boolean;
-  toggleSelectAll: () => void;
-}
-
-interface RootStore {
-  torrentList: {
-    isSelectedId: (id: number) => boolean;
-    addSelectedId: (id: number, silent?: boolean) => void;
-  };
-  fileList: FileListStore;
-  destroyFileList: () => void;
-  config: {
-    uiUpdateInterval: number;
-    filesSort: { by: string; direction: number };
-    visibleFileColumns: Column[];
-    filesColumns: Column[];
-    setFilesSort: (column: string, direction: number) => void;
-    moveFilesColumn: (from: string, to: string) => void;
-    saveFilesColumns: () => void;
-  };
-}
+// Column's `display` is typed boolean here but the MST ColumnStore models it
+// as number (0/1); this cast is a pre-existing, cross-cutting mismatch
+// (also present in ColumnContextMenu/TableHeadColumnRenderer/useColumnToggle)
+// left as-is — out of scope for this pass.
+const asColumns = (cols: unknown): Column[] => cols as Column[];
 
 const FileListTable = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStore;
+  const rootStore = useRootStore();
+  const config = rootStore.config;
   const fileListStore = rootStore.fileList;
   const refFixedHead = useRef<HTMLTableElement>(null);
   const scrollSyncOptions = useMemo(() => ({ withWidthCheck: true }), []);
@@ -82,7 +59,7 @@ const FileListTable = observer(() => {
     });
   }, [fileListStore]);
 
-  if (!fileListStore) return null;
+  if (!fileListStore || !config) return null;
 
   const torrent = fileListStore.torrent;
 
@@ -100,10 +77,10 @@ const FileListTable = observer(() => {
     directory = <input type="text" value={fileListStore.joinedDirectory} readOnly />;
   }
 
-  const uiUpdateInterval = rootStore.config.uiUpdateInterval;
+  const uiUpdateInterval = config.uiUpdateInterval;
 
   const columnVars: Record<string, string> = {};
-  rootStore.config.visibleFileColumns
+  asColumns(config.visibleFileColumns)
     .filter((col) => col.display)
     .forEach((col) => {
       columnVars[`--col-${col.column}-w`] = `${col.width}px`;
@@ -117,8 +94,8 @@ const FileListTable = observer(() => {
           <div onScroll={handleScroll} className="fl-layer" style={columnVars}>
             {spinner}
             <ColumnContextMenu
-              columns={rootStore.config.filesColumns}
-              onSave={() => rootStore.config.saveFilesColumns()}
+              columns={asColumns(config.filesColumns)}
+              onSave={() => config.saveFilesColumns()}
             >
               <table
                 ref={refFixedHead}
@@ -172,35 +149,36 @@ const DoCloseFileList = React.memo<DoCloseFileListProps>(({ onClose }) => {
 const FILE_FIXED_COLUMNS = ['checkbox'];
 
 const FileListTableHead = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStore;
+  const rootStore = useRootStore();
+  const config = rootStore.config;
   const fileListStore = rootStore.fileList;
 
   const handleSort = useCallback(
     (column: string, direction: number) => {
-      rootStore.config.setFilesSort(column, direction);
+      config?.setFilesSort(column, direction);
     },
-    [rootStore]
+    [config]
   );
 
   const handleMoveColumn = useCallback(
     (from: string, to: string) => {
-      rootStore.config.moveFilesColumn(from, to);
+      config?.moveFilesColumn(from, to);
     },
-    [rootStore]
+    [config]
   );
 
   const handleSaveColumns = useCallback(() => {
-    rootStore.config.saveFilesColumns();
-  }, [rootStore]);
+    config?.saveFilesColumns();
+  }, [config]);
 
   const handleToggleSelectAll = useCallback(() => {
     fileListStore?.toggleSelectAll();
   }, [fileListStore]);
 
-  if (!fileListStore) return null;
+  if (!fileListStore || !config) return null;
 
-  const sort = rootStore.config.filesSort;
-  const fileColumns = rootStore.config.visibleFileColumns;
+  const sort = config.filesSort;
+  const fileColumns = asColumns(config.visibleFileColumns);
 
   return (
     <thead>
@@ -228,14 +206,15 @@ const FileListTableHead = observer(() => {
 });
 
 const FileListTableFiles = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStore;
+  const rootStore = useRootStore();
+  const fileListStore = rootStore.fileList;
 
-  if (!rootStore.fileList) return null;
+  if (!fileListStore) return null;
 
   return (
     <tbody>
-      {rootStore.fileList.sortedFiles.map((file) => (
-        <FileListTableItem key={file.name} file={file as FileEntry} />
+      {fileListStore.sortedFiles.map((file) => (
+        <FileListTableItem key={file.name} file={file as unknown as FileEntry} />
       ))}
     </tbody>
   );

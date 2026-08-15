@@ -161,6 +161,10 @@ const TorrentListStore = types
       get _sortedIds(): number[] {
         return this.sortedTorrentIds;
       },
+    };
+  })
+  .actions((self) => {
+    return {
       afterCreate() {
         self.startSortedIdsWatcher();
       },

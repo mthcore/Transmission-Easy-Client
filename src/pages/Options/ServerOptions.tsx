@@ -2,101 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 
-interface Settings {
-  blocklistEnabled: boolean;
-  blocklistUrl: string;
-  blocklistSize: number;
-  peerLimitGlobal: number;
-  peerLimitPerTorrent: number;
-  seedRatioLimit: number;
-  seedRatioLimited: boolean;
-  idleSeedingLimit: number;
-  idleSeedingLimitEnabled: boolean;
-  peerPort: number;
-  portForwardingEnabled: boolean;
-  encryption: string;
-  dhtEnabled: boolean;
-  pexEnabled: boolean;
-  lpdEnabled: boolean;
-  utpEnabled: boolean;
-  incompleteDirEnabled: boolean;
-  incompleteDir: string;
-  renamePartialFiles: boolean;
-  downloadQueueEnabled: boolean;
-  downloadQueueSize: number;
-  seedQueueEnabled: boolean;
-  seedQueueSize: number;
-  queueStalledEnabled: boolean;
-  queueStalledMinutes: number;
-  startAddedTorrents: boolean;
-  trashOriginalTorrentFiles: boolean;
-  altSpeedTimeEnabled: boolean;
-  altSpeedTimeBegin: number;
-  altSpeedTimeEnd: number;
-  altSpeedTimeDay: number;
-  scriptTorrentDoneEnabled: boolean;
-  scriptTorrentDoneFilename: string;
-  scriptTorrentAddedEnabled: boolean;
-  scriptTorrentAddedFilename: string;
-  scriptTorrentDoneSeedingEnabled: boolean;
-  scriptTorrentDoneSeedingFilename: string;
-  rpcVersion: number;
-  version?: string;
-  daemonVersionStr: string;
-  features: {
-    scriptTorrentAdded: boolean;
-    sequentialDownload: boolean;
-    portTestIpProtocol: boolean;
-  };
-}
-
-interface ClientStore {
-  settings: Settings | null;
-  updateSettings: () => Promise<void>;
-  setBlocklistEnabled: (enabled: boolean) => Promise<void>;
-  setBlocklistUrl: (url: string) => Promise<void>;
-  blocklistUpdate: () => Promise<{ blocklistSize: number }>;
-  setPeerLimitGlobal: (limit: number) => Promise<void>;
-  setPeerLimitPerTorrent: (limit: number) => Promise<void>;
-  setSeedRatioLimited: (enabled: boolean) => Promise<void>;
-  setSeedRatioLimit: (limit: number) => Promise<void>;
-  setIdleSeedingLimitEnabled: (enabled: boolean) => Promise<void>;
-  setIdleSeedingLimit: (limit: number) => Promise<void>;
-  setPeerPort: (port: number) => Promise<void>;
-  setPortForwardingEnabled: (enabled: boolean) => Promise<void>;
-  setEncryption: (mode: string) => Promise<void>;
-  setDhtEnabled: (enabled: boolean) => Promise<void>;
-  setPexEnabled: (enabled: boolean) => Promise<void>;
-  setLpdEnabled: (enabled: boolean) => Promise<void>;
-  setUtpEnabled: (enabled: boolean) => Promise<void>;
-  setIncompleteDirEnabled: (enabled: boolean) => Promise<void>;
-  setIncompleteDir: (dir: string) => Promise<void>;
-  setRenamePartialFiles: (enabled: boolean) => Promise<void>;
-  setDownloadQueueEnabled: (enabled: boolean) => Promise<void>;
-  setDownloadQueueSize: (size: number) => Promise<void>;
-  setSeedQueueEnabled: (enabled: boolean) => Promise<void>;
-  setSeedQueueSize: (size: number) => Promise<void>;
-  setQueueStalledEnabled: (enabled: boolean) => Promise<void>;
-  setQueueStalledMinutes: (minutes: number) => Promise<void>;
-  setStartAddedTorrents: (enabled: boolean) => Promise<void>;
-  setTrashOriginalTorrentFiles: (enabled: boolean) => Promise<void>;
-  setAltSpeedTimeEnabled: (enabled: boolean) => Promise<void>;
-  setAltSpeedTimeBegin: (minutes: number) => Promise<void>;
-  setAltSpeedTimeEnd: (minutes: number) => Promise<void>;
-  setAltSpeedTimeDay: (day: number) => Promise<void>;
-  setScriptTorrentDoneEnabled: (enabled: boolean) => Promise<void>;
-  setScriptTorrentDoneFilename: (filename: string) => Promise<void>;
-  setScriptTorrentAddedEnabled: (enabled: boolean) => Promise<void>;
-  setScriptTorrentAddedFilename: (filename: string) => Promise<void>;
-  setScriptTorrentDoneSeedingEnabled: (enabled: boolean) => Promise<void>;
-  setScriptTorrentDoneSeedingFilename: (filename: string) => Promise<void>;
-  portTest: () => Promise<boolean>;
-}
-
-interface RootStore {
-  client: ClientStore;
-}
-
 const ALT_SPEED_DAYS = [
   { bit: 1, key: 'daySunday' },
   { bit: 2, key: 'dayMonday' },
@@ -114,8 +19,9 @@ const minutesToTime = (minutes: number): string => {
 };
 
 const ServerOptions = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStore;
-  const settings = rootStore.client.settings;
+  const rootStore = useRootStore();
+  const client = rootStore.client;
+  const settings = client?.settings ?? null;
   const [url, setUrl] = useState('');
   const [urlLoaded, setUrlLoaded] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -133,16 +39,17 @@ const ServerOptions = observer(() => {
   const [portTesting, setPortTesting] = useState(false);
 
   const fetchSettings = useCallback(() => {
+    if (!client) return;
     setLoading(true);
     setError(false);
-    rootStore.client.updateSettings().then(
+    client.updateSettings().then(
       () => setLoading(false),
       () => {
         setLoading(false);
         setError(true);
       }
     );
-  }, [rootStore.client]);
+  }, [client]);
 
   useEffect(() => {
     if (!settings) {
@@ -150,7 +57,7 @@ const ServerOptions = observer(() => {
     }
   }, [fetchSettings, settings]);
 
-  if (!settings) {
+  if (!client || !settings) {
     return (
       <div className="page server">
         <h2>{chrome.i18n.getMessage('optServer')}</h2>
@@ -192,12 +99,12 @@ const ServerOptions = observer(() => {
     setScriptDoneSeedingFilenameLoaded(true);
   }
 
-  const handleToggle = (setter: (enabled: boolean) => Promise<void>, current: boolean) => () => {
+  const handleToggle = (setter: (enabled: boolean) => Promise<unknown>, current: boolean) => () => {
     setter(!current);
   };
 
   const handleNumberBlur =
-    (setter: (value: number) => Promise<void>) => (e: React.FocusEvent<HTMLInputElement>) => {
+    (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseFloat(e.target.value);
       if (Number.isFinite(val) && val > 0) {
         setter(val);
@@ -205,7 +112,7 @@ const ServerOptions = observer(() => {
     };
 
   const handleIntBlur =
-    (setter: (value: number) => Promise<void>) => (e: React.FocusEvent<HTMLInputElement>) => {
+    (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseInt(e.target.value, 10);
       if (Number.isFinite(val) && val > 0) {
         setter(val);
@@ -217,22 +124,22 @@ const ServerOptions = observer(() => {
   }, []);
 
   const handleApplyUrl = useCallback(() => {
-    rootStore.client.setBlocklistUrl(url);
-  }, [rootStore.client, url]);
+    client.setBlocklistUrl(url);
+  }, [client, url]);
 
   const handleUpdate = useCallback(() => {
     setUpdating(true);
-    rootStore.client.blocklistUpdate().then(
+    client.blocklistUpdate().then(
       () => setUpdating(false),
       () => setUpdating(false)
     );
-  }, [rootStore.client]);
+  }, [client]);
 
   const handleEncryptionChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      rootStore.client.setEncryption(e.target.value);
+      client.setEncryption(e.target.value);
     },
-    [rootStore.client]
+    [client]
   );
 
   const handleIncompleteDirChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,24 +147,24 @@ const ServerOptions = observer(() => {
   }, []);
 
   const handleApplyIncompleteDir = useCallback(() => {
-    rootStore.client.setIncompleteDir(incompleteDir);
-  }, [rootStore.client, incompleteDir]);
+    client.setIncompleteDir(incompleteDir);
+  }, [client, incompleteDir]);
 
   const handleScriptFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setScriptFilenameInput(e.target.value);
   }, []);
 
   const handleApplyScriptFilename = useCallback(() => {
-    rootStore.client.setScriptTorrentDoneFilename(scriptFilename);
-  }, [rootStore.client, scriptFilename]);
+    client.setScriptTorrentDoneFilename(scriptFilename);
+  }, [client, scriptFilename]);
 
   const handleScriptAddedFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setScriptAddedFilenameInput(e.target.value);
   }, []);
 
   const handleApplyScriptAddedFilename = useCallback(() => {
-    rootStore.client.setScriptTorrentAddedFilename(scriptAddedFilename);
-  }, [rootStore.client, scriptAddedFilename]);
+    client.setScriptTorrentAddedFilename(scriptAddedFilename);
+  }, [client, scriptAddedFilename]);
 
   const handleScriptDoneSeedingFilenameChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,13 +174,13 @@ const ServerOptions = observer(() => {
   );
 
   const handleApplyScriptDoneSeedingFilename = useCallback(() => {
-    rootStore.client.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename);
-  }, [rootStore.client, scriptDoneSeedingFilename]);
+    client.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename);
+  }, [client, scriptDoneSeedingFilename]);
 
   const handlePortTest = useCallback(() => {
     setPortTesting(true);
     setPortTestResult(null);
-    rootStore.client.portTest().then(
+    client.portTest().then(
       (isOpen) => {
         setPortTestResult(isOpen);
         setPortTesting(false);
@@ -283,17 +190,17 @@ const ServerOptions = observer(() => {
         setPortTesting(false);
       }
     );
-  }, [rootStore.client]);
+  }, [client]);
 
   const handleDayToggle = useCallback(
     (dayBit: number) => () => {
-      rootStore.client.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
+      client.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
     },
-    [rootStore.client, settings.altSpeedTimeDay]
+    [client, settings.altSpeedTimeDay]
   );
 
   const handleTimeChange =
-    (setter: (minutes: number) => Promise<void>) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (setter: (minutes: number) => Promise<unknown>) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const [h, m] = e.target.value.split(':').map(Number);
       if (Number.isFinite(h) && Number.isFinite(m)) {
         setter(h * 60 + m);
@@ -312,10 +219,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('startAddedTorrents')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setStartAddedTorrents,
-              settings.startAddedTorrents
-            )}
+            onChange={handleToggle(client.setStartAddedTorrents, settings.startAddedTorrents)}
             type="checkbox"
             checked={settings.startAddedTorrents}
           />
@@ -328,7 +232,7 @@ const ServerOptions = observer(() => {
         <span className="toggle-switch">
           <input
             onChange={handleToggle(
-              rootStore.client.setTrashOriginalTorrentFiles,
+              client.setTrashOriginalTorrentFiles,
               settings.trashOriginalTorrentFiles
             )}
             type="checkbox"
@@ -346,7 +250,7 @@ const ServerOptions = observer(() => {
           type="number"
           min="1"
           defaultValue={settings.peerLimitGlobal}
-          onBlur={handleIntBlur(rootStore.client.setPeerLimitGlobal)}
+          onBlur={handleIntBlur(client.setPeerLimitGlobal)}
         />
       </label>
 
@@ -356,7 +260,7 @@ const ServerOptions = observer(() => {
           type="number"
           min="1"
           defaultValue={settings.peerLimitPerTorrent}
-          onBlur={handleIntBlur(rootStore.client.setPeerLimitPerTorrent)}
+          onBlur={handleIntBlur(client.setPeerLimitPerTorrent)}
         />
       </label>
 
@@ -366,7 +270,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('seedRatioLimited')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setSeedRatioLimited, settings.seedRatioLimited)}
+            onChange={handleToggle(client.setSeedRatioLimited, settings.seedRatioLimited)}
             type="checkbox"
             checked={settings.seedRatioLimited}
           />
@@ -382,7 +286,7 @@ const ServerOptions = observer(() => {
             min="0"
             step="0.1"
             defaultValue={settings.seedRatioLimit}
-            onBlur={handleNumberBlur(rootStore.client.setSeedRatioLimit)}
+            onBlur={handleNumberBlur(client.setSeedRatioLimit)}
           />
         </label>
       )}
@@ -392,7 +296,7 @@ const ServerOptions = observer(() => {
         <span className="toggle-switch">
           <input
             onChange={handleToggle(
-              rootStore.client.setIdleSeedingLimitEnabled,
+              client.setIdleSeedingLimitEnabled,
               settings.idleSeedingLimitEnabled
             )}
             type="checkbox"
@@ -409,7 +313,7 @@ const ServerOptions = observer(() => {
             type="number"
             min="1"
             defaultValue={settings.idleSeedingLimit}
-            onBlur={handleIntBlur(rootStore.client.setIdleSeedingLimit)}
+            onBlur={handleIntBlur(client.setIdleSeedingLimit)}
           />{' '}
           <span>{chrome.i18n.getMessage('minutes')}</span>
         </label>
@@ -421,10 +325,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('downloadQueueEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setDownloadQueueEnabled,
-              settings.downloadQueueEnabled
-            )}
+            onChange={handleToggle(client.setDownloadQueueEnabled, settings.downloadQueueEnabled)}
             type="checkbox"
             checked={settings.downloadQueueEnabled}
           />
@@ -439,7 +340,7 @@ const ServerOptions = observer(() => {
             type="number"
             min="1"
             defaultValue={settings.downloadQueueSize}
-            onBlur={handleIntBlur(rootStore.client.setDownloadQueueSize)}
+            onBlur={handleIntBlur(client.setDownloadQueueSize)}
           />
         </label>
       )}
@@ -448,7 +349,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('seedQueueEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setSeedQueueEnabled, settings.seedQueueEnabled)}
+            onChange={handleToggle(client.setSeedQueueEnabled, settings.seedQueueEnabled)}
             type="checkbox"
             checked={settings.seedQueueEnabled}
           />
@@ -463,7 +364,7 @@ const ServerOptions = observer(() => {
             type="number"
             min="1"
             defaultValue={settings.seedQueueSize}
-            onBlur={handleIntBlur(rootStore.client.setSeedQueueSize)}
+            onBlur={handleIntBlur(client.setSeedQueueSize)}
           />
         </label>
       )}
@@ -472,10 +373,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('queueStalledEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setQueueStalledEnabled,
-              settings.queueStalledEnabled
-            )}
+            onChange={handleToggle(client.setQueueStalledEnabled, settings.queueStalledEnabled)}
             type="checkbox"
             checked={settings.queueStalledEnabled}
           />
@@ -490,7 +388,7 @@ const ServerOptions = observer(() => {
             type="number"
             min="1"
             defaultValue={settings.queueStalledMinutes}
-            onBlur={handleIntBlur(rootStore.client.setQueueStalledMinutes)}
+            onBlur={handleIntBlur(client.setQueueStalledMinutes)}
           />{' '}
           <span>{chrome.i18n.getMessage('minutes')}</span>
         </label>
@@ -502,10 +400,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('incompleteDirEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setIncompleteDirEnabled,
-              settings.incompleteDirEnabled
-            )}
+            onChange={handleToggle(client.setIncompleteDirEnabled, settings.incompleteDirEnabled)}
             type="checkbox"
             checked={settings.incompleteDirEnabled}
           />
@@ -529,10 +424,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('renamePartialFiles')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setRenamePartialFiles,
-              settings.renamePartialFiles
-            )}
+            onChange={handleToggle(client.setRenamePartialFiles, settings.renamePartialFiles)}
             type="checkbox"
             checked={settings.renamePartialFiles}
           />
@@ -549,7 +441,7 @@ const ServerOptions = observer(() => {
           min="1"
           max="65535"
           defaultValue={settings.peerPort}
-          onBlur={handleIntBlur(rootStore.client.setPeerPort)}
+          onBlur={handleIntBlur(client.setPeerPort)}
         />
       </label>
 
@@ -576,10 +468,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('portForwardingEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setPortForwardingEnabled,
-              settings.portForwardingEnabled
-            )}
+            onChange={handleToggle(client.setPortForwardingEnabled, settings.portForwardingEnabled)}
             type="checkbox"
             checked={settings.portForwardingEnabled}
           />
@@ -600,7 +489,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('dhtEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setDhtEnabled, settings.dhtEnabled)}
+            onChange={handleToggle(client.setDhtEnabled, settings.dhtEnabled)}
             type="checkbox"
             checked={settings.dhtEnabled}
           />
@@ -612,7 +501,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('pexEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setPexEnabled, settings.pexEnabled)}
+            onChange={handleToggle(client.setPexEnabled, settings.pexEnabled)}
             type="checkbox"
             checked={settings.pexEnabled}
           />
@@ -624,7 +513,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('lpdEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setLpdEnabled, settings.lpdEnabled)}
+            onChange={handleToggle(client.setLpdEnabled, settings.lpdEnabled)}
             type="checkbox"
             checked={settings.lpdEnabled}
           />
@@ -636,7 +525,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('utpEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setUtpEnabled, settings.utpEnabled)}
+            onChange={handleToggle(client.setUtpEnabled, settings.utpEnabled)}
             type="checkbox"
             checked={settings.utpEnabled}
           />
@@ -650,10 +539,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('altSpeedTimeEnabled')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(
-              rootStore.client.setAltSpeedTimeEnabled,
-              settings.altSpeedTimeEnabled
-            )}
+            onChange={handleToggle(client.setAltSpeedTimeEnabled, settings.altSpeedTimeEnabled)}
             type="checkbox"
             checked={settings.altSpeedTimeEnabled}
           />
@@ -668,7 +554,7 @@ const ServerOptions = observer(() => {
             <input
               type="time"
               value={minutesToTime(settings.altSpeedTimeBegin)}
-              onChange={handleTimeChange(rootStore.client.setAltSpeedTimeBegin)}
+              onChange={handleTimeChange(client.setAltSpeedTimeBegin)}
             />
           </label>
 
@@ -677,7 +563,7 @@ const ServerOptions = observer(() => {
             <input
               type="time"
               value={minutesToTime(settings.altSpeedTimeEnd)}
-              onChange={handleTimeChange(rootStore.client.setAltSpeedTimeEnd)}
+              onChange={handleTimeChange(client.setAltSpeedTimeEnd)}
             />
           </label>
 
@@ -706,7 +592,7 @@ const ServerOptions = observer(() => {
         <span className="toggle-switch">
           <input
             onChange={handleToggle(
-              rootStore.client.setScriptTorrentDoneEnabled,
+              client.setScriptTorrentDoneEnabled,
               settings.scriptTorrentDoneEnabled
             )}
             type="checkbox"
@@ -736,7 +622,7 @@ const ServerOptions = observer(() => {
             <span className="toggle-switch">
               <input
                 onChange={handleToggle(
-                  rootStore.client.setScriptTorrentAddedEnabled,
+                  client.setScriptTorrentAddedEnabled,
                   settings.scriptTorrentAddedEnabled
                 )}
                 type="checkbox"
@@ -767,7 +653,7 @@ const ServerOptions = observer(() => {
             <span className="toggle-switch">
               <input
                 onChange={handleToggle(
-                  rootStore.client.setScriptTorrentDoneSeedingEnabled,
+                  client.setScriptTorrentDoneSeedingEnabled,
                   settings.scriptTorrentDoneSeedingEnabled
                 )}
                 type="checkbox"
@@ -801,7 +687,7 @@ const ServerOptions = observer(() => {
         <span>{chrome.i18n.getMessage('blocklistEnable')}</span>
         <span className="toggle-switch">
           <input
-            onChange={handleToggle(rootStore.client.setBlocklistEnabled, settings.blocklistEnabled)}
+            onChange={handleToggle(client.setBlocklistEnabled, settings.blocklistEnabled)}
             type="checkbox"
             checked={settings.blocklistEnabled}
           />

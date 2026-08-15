@@ -1,22 +1,15 @@
 import { useCallback, ChangeEvent } from 'react';
 import useRootStore from './useRootStore';
+import type { IConfigStore } from '../stores/ConfigStore';
 
-interface ConfigStore {
-  setOptions(options: Record<string, unknown>): void;
-}
-
-interface RootStore {
-  config: ConfigStore;
-}
-
-export function useOptionsPage<T = ConfigStore>() {
-  const rootStore = useRootStore() as unknown as RootStore;
+export function useOptionsPage<T = IConfigStore>() {
+  const rootStore = useRootStore();
   const configStore = rootStore.config;
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const checkbox = e.currentTarget;
-      configStore.setOptions({
+      configStore?.setOptions({
         [checkbox.name]: checkbox.checked,
       });
     },
@@ -28,7 +21,7 @@ export function useOptionsPage<T = ConfigStore>() {
       const input = e.currentTarget;
       const value = parseInt(input.value, 10);
       if (Number.isFinite(value)) {
-        configStore.setOptions({
+        configStore?.setOptions({
           [input.name]: value,
         });
       }
@@ -39,7 +32,7 @@ export function useOptionsPage<T = ConfigStore>() {
   const handleRadioChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const radio = e.currentTarget;
-      configStore.setOptions({
+      configStore?.setOptions({
         [radio.name]: radio.value,
       });
     },

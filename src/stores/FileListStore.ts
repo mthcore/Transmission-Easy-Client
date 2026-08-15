@@ -127,6 +127,10 @@ const FileListStore = types
         }
         return '';
       },
+    };
+  })
+  .actions((self) => {
+    return {
       afterCreate() {
         self.startSortedIdsWatcher();
       },

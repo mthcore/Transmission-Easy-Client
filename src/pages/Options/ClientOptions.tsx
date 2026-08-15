@@ -3,25 +3,6 @@ import { observer } from 'mobx-react';
 import { useLocation } from 'react-router-dom';
 import useRootStore from '../../hooks/useRootStore';
 
-interface ConfigStore {
-  login: string;
-  password: string;
-  hostname: string;
-  port: number;
-  ssl: boolean;
-  pathname: string;
-  webPathname: string;
-  authenticationRequired: boolean;
-  setOptions: (options: Record<string, unknown>) => Promise<void>;
-}
-
-interface RootStoreType {
-  config: ConfigStore;
-  client: {
-    updateSettings: () => Promise<void>;
-  };
-}
-
 interface FormElements extends HTMLFormControlsCollection {
   login: HTMLInputElement;
   password: HTMLInputElement;
@@ -40,19 +21,20 @@ interface ClientFormElement extends HTMLFormElement {
 type ClientStatus = 'pending' | 'done' | 'error' | null;
 
 const ClientOptions = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStoreType;
+  const rootStore = useRootStore();
   const configStore = rootStore.config;
   const location = useLocation();
   const refPage = useRef<HTMLDivElement>(null);
 
   const [clientStatus, setClientStatus] = useState<ClientStatus>(null);
   const [clientStatusText, setClientStatusText] = useState('');
-  const [sslChecked, setSslChecked] = useState(configStore.ssl);
-  const [authChecked, setAuthChecked] = useState(configStore.authenticationRequired);
+  const [sslChecked, setSslChecked] = useState(configStore?.ssl ?? true);
+  const [authChecked, setAuthChecked] = useState(configStore?.authenticationRequired ?? false);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
+      if (!configStore) return;
       const form = e.currentTarget as ClientFormElement;
       const login = form.elements.login.value;
       const password = form.elements.password.value;
@@ -79,7 +61,7 @@ const ClientOptions = observer(() => {
           authenticationRequired,
         });
         if (!refPage.current) return;
-        await rootStore.client.updateSettings();
+        await rootStore.client?.updateSettings();
         if (!refPage.current) return;
         setClientStatus('done');
 
@@ -97,6 +79,14 @@ const ClientOptions = observer(() => {
     },
     [rootStore, configStore, location]
   );
+
+  if (!configStore) {
+    return (
+      <div ref={refPage} className="page client">
+        <div className="loading-inline" />
+      </div>
+    );
+  }
 
   let status: ReactNode = null;
   if (clientStatus) {

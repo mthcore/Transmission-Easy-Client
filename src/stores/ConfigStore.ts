@@ -304,21 +304,6 @@ const ConfigStore = types
     };
   })
   .views((self) => {
-    const storageChangeListener = (
-      changes: { [key: string]: chrome.storage.StorageChange },
-      namespace: string
-    ) => {
-      if (namespace === 'local') {
-        const keyValue: Record<string, unknown> = {};
-        Object.entries(changes).forEach(([key, { newValue }]) => {
-          if (configKeys.includes(key)) {
-            keyValue[key] = newValue;
-          }
-        });
-        self.setKeyValue(keyValue);
-      }
-    };
-
     return {
       get url(): string {
         return url.format({
@@ -350,6 +335,26 @@ const ConfigStore = types
       get visibleFileColumns() {
         return self.filesColumns.filter((column) => column.display);
       },
+    };
+  })
+  .actions((self) => {
+    // Keeps both extension contexts (service worker and pages) in sync
+    const storageChangeListener = (
+      changes: Record<string, chrome.storage.StorageChange>,
+      namespace: string
+    ) => {
+      if (namespace === 'local') {
+        const keyValue: Record<string, unknown> = {};
+        Object.entries(changes).forEach(([key, { newValue }]) => {
+          if (configKeys.includes(key)) {
+            keyValue[key] = newValue;
+          }
+        });
+        self.setKeyValue(keyValue);
+      }
+    };
+
+    return {
       afterCreate() {
         chrome.storage.onChanged.addListener(storageChangeListener);
       },

@@ -76,7 +76,7 @@ const ListSelectStore = types
     };
   })
   .views((self) => {
-    let _autorun: IReactionDisposer | null = null;
+    const _autorun: IReactionDisposer | null = null;
 
     return {
       get _sortedIds(): number[] {
@@ -96,9 +96,15 @@ const ListSelectStore = types
         }
         return false;
       },
+    };
+  })
+  .actions((self) => {
+    let _autorun: IReactionDisposer | null = null;
+
+    return {
       startSortedIdsWatcher() {
         _autorun = autorun(() => {
-          if (this._sortedIds) {
+          if ((self as unknown as IListSelectStore)._sortedIds) {
             self.syncSelectedIds();
           }
         });

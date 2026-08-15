@@ -156,31 +156,6 @@ const ClientStore = types
     };
   })
   .views((self) => {
-    const exceptionLog = (): [(result: unknown) => unknown, (err: Error) => never] => {
-      return [
-        (result) => {
-          self.setLastErrorMessage(undefined);
-          return result;
-        },
-        (err) => {
-          logger.error('exceptionLog', err);
-          self.setLastErrorMessage(`${err.name}: ${err.message || 'Unknown error'}`);
-          throw err;
-        },
-      ];
-    };
-
-    const thenSyncClient = (result: unknown) => {
-      return (self as IClientStoreViews).syncClient().then(() => result);
-    };
-
-    const createTorrentAction =
-      (action: string, sync = true) =>
-      (ids: number[]): Promise<unknown> => {
-        const promise = callApi({ action, ids }).then(...exceptionLog());
-        return sync ? promise.then(thenSyncClient) : promise;
-      };
-
     return {
       get torrentIds(): number[] {
         const result: number[] = [];
@@ -240,6 +215,35 @@ const ClientStore = types
         const paused = total - active;
         return chrome.i18n.getMessage('sessionStats', [String(active), String(paused)]);
       },
+    };
+  })
+  .actions((self) => {
+    const exceptionLog = (): [(result: unknown) => unknown, (err: Error) => never] => {
+      return [
+        (result) => {
+          self.setLastErrorMessage(undefined);
+          return result;
+        },
+        (err) => {
+          logger.error('exceptionLog', err);
+          self.setLastErrorMessage(`${err.name}: ${err.message || 'Unknown error'}`);
+          throw err;
+        },
+      ];
+    };
+
+    const thenSyncClient = (result: unknown) => {
+      return (self as IClientStoreViews).syncClient().then(() => result);
+    };
+
+    const createTorrentAction =
+      (action: string, sync = true) =>
+      (ids: number[]): Promise<unknown> => {
+        const promise = callApi({ action, ids }).then(...exceptionLog());
+        return sync ? promise.then(thenSyncClient) : promise;
+      };
+
+    return {
       torrentsStart: createTorrentAction('start'),
       torrentsForceStart: createTorrentAction('forcestart'),
       torrentsStop: createTorrentAction('stop'),

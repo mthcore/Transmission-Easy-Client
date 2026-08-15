@@ -14,18 +14,9 @@ import CtxOptions from './CtxOptions';
 import BackupRestoreOptions from './BackupRestoreOptions';
 import ServerOptions from './ServerOptions';
 
-interface RootStoreType {
-  state: string;
-  isPopup: boolean;
-  config: {
-    theme: 'light' | 'dark' | 'system' | string;
-  };
-  init: () => void;
-}
-
 const Options = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStoreType;
-  useTheme(rootStore.config as { theme: 'light' | 'dark' | 'system' });
+  const rootStore = useRootStore();
+  useTheme(rootStore.config);
 
   useEffect(() => {
     rootStore.init();
@@ -107,9 +98,7 @@ const rootStore = (window.rootStore = RootStore.create());
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 createRoot(rootElement).render(
-  <RootStoreCtx.Provider
-    value={rootStore as unknown as import('../../stores/RootStore').IRootStore}
-  >
+  <RootStoreCtx.Provider value={rootStore}>
     <Options />
   </RootStoreCtx.Provider>
 );

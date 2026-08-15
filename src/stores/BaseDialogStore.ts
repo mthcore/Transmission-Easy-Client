@@ -15,7 +15,7 @@ const BaseDialogStore = types
   .model('BaseDialogStore', {
     id: types.identifier,
   })
-  .views((self) => ({
+  .actions((self) => ({
     close() {
       const rootStore = getRoot<RootStoreWithDialog>(self);
       rootStore.destroyDialog(self.id);

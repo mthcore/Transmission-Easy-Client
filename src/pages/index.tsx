@@ -18,43 +18,8 @@ import DialogLoader from '../components/dialogs/DialogLoader';
 
 const logger = getLogger('Index');
 
-interface DialogStore {
-  id: string;
-  type: string;
-  isReady?: boolean;
-}
-
-interface RootStoreType {
-  state: string;
-  isPopup: boolean;
-  config: {
-    uiUpdateInterval: number;
-    hostname: string;
-    theme: 'light' | 'dark' | 'system' | string;
-    setPopupMode: (isPopup: boolean) => void;
-  };
-  client: {
-    updateSettings: () => Promise<void>;
-    updateTorrentList: (force?: boolean) => Promise<void>;
-    torrents: Map<number, { isActive: boolean; directory?: string; name: string }>;
-    torrentIds: number[];
-    torrentsStart: (ids: number[]) => void;
-    torrentsStop: (ids: number[]) => void;
-  };
-  torrentList: {
-    selectedIds: number[];
-    toggleSelectAll: () => void;
-  };
-  fileList: { id: number } | null;
-  dialogs: DialogStore[];
-  init: () => void;
-  createDialog: (options: Record<string, unknown>) => void;
-  destroyDialog: (dialog: DialogStore) => void;
-  setFileList: (fileList: null) => void;
-}
-
 const Index = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStoreType;
+  const rootStore = useRootStore();
 
   useEffect(() => {
     rootStore.init();
@@ -87,13 +52,16 @@ const Index = observer(() => {
 
       // Escape - close dialogs/filelist
       if (e.key === 'Escape') {
-        if (rootStore.dialogs.length) {
-          rootStore.destroyDialog(rootStore.dialogs[rootStore.dialogs.length - 1]);
+        if (rootStore.dialogs.size) {
+          const lastId = Array.from(rootStore.dialogs.keys()).pop();
+          if (lastId) rootStore.destroyDialog(lastId);
         } else if (rootStore.fileList) {
-          rootStore.setFileList(null);
+          rootStore.destroyFileList();
         }
         return;
       }
+
+      if (!rootStore.client) return;
 
       // R - Refresh
       if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
@@ -210,6 +178,7 @@ const Index = observer(() => {
 
   const onIntervalFire = useCallback(
     (isInit: boolean) => {
+      if (!rootStore.client) return;
       if (isInit) {
         rootStore.client.updateSettings().catch((err) => {
           logger.error('onIntervalFire updateSettings error', err);
@@ -230,7 +199,9 @@ const Index = observer(() => {
     );
   }
 
-  if (rootStore.state !== 'done') {
+  // Set together in RootStore.init(), so config is guaranteed once state is 'done'
+  const config = rootStore.config;
+  if (rootStore.state !== 'done' || !config) {
     return <>{`Loading: ${rootStore.state}`}</>;
   }
 
@@ -239,10 +210,10 @@ const Index = observer(() => {
     fileList = <FileListTable key={rootStore.fileList.id} />;
   }
 
-  const uiUpdateInterval = rootStore.config.uiUpdateInterval;
+  const uiUpdateInterval = config.uiUpdateInterval;
 
   let goInOptions: ReactNode = null;
-  if (rootStore.config.hostname === '') {
+  if (config.hostname === '') {
     goInOptions = <GoInOptions isPopup={rootStore.isPopup} />;
   }
 
@@ -260,7 +231,7 @@ const Index = observer(() => {
 });
 
 const Dialogs = observer(() => {
-  const rootStore = useRootStore() as unknown as RootStoreType;
+  const rootStore = useRootStore();
 
   return (
     <>
@@ -318,7 +289,7 @@ const rootStore = (window.rootStore = RootStore.create());
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 createRoot(rootElement).render(
-  <RootStoreCtx.Provider value={rootStore as unknown as import('../stores/RootStore').IRootStore}>
+  <RootStoreCtx.Provider value={rootStore}>
     <Index />
   </RootStoreCtx.Provider>
 );

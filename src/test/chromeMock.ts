@@ -26,6 +26,16 @@ const chromeMock = {
       set: vi.fn(),
       remove: vi.fn(),
     },
+    session: {
+      get: vi.fn().mockResolvedValue({}),
+      set: vi.fn().mockResolvedValue(undefined),
+      remove: vi.fn().mockResolvedValue(undefined),
+    },
+    sync: {
+      get: vi.fn().mockResolvedValue({}),
+      set: vi.fn().mockResolvedValue(undefined),
+      remove: vi.fn().mockResolvedValue(undefined),
+    },
     onChanged: {
       addListener: vi.fn(),
       removeListener: vi.fn(),

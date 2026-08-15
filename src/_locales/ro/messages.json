@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Extensia adaugă interfața web Transmission în browserul dvs." },
-    "lang": { "message": "ro" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"săpt\", \"z\", \"h\", \"m\", \"s\"]" },
-    "OV_COL_NAME": { "message": "Nume" },
-    "OV_COL_ORDER": { "message": "Coadă" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Dimensiune" },
-    "OV_COL_REMAINING": { "message": "Rămas" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Stare" },
-    "OV_COL_SEEDS": { "message": "Seeds" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seeds/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Descărcare" },
-    "OV_COL_UPSPD": { "message": "Încărcare" },
-    "OV_COL_ETA": { "message": "ETA" },
-    "OV_COL_UPPED": { "message": "Încărcat" },
-    "OV_COL_DOWNLOADED": { "message": "Descărcat" },
-    "OV_COL_SHARED": { "message": "Raport" },
-    "OV_COL_AVAIL": { "message": "Disponibilitate" },
-    "OV_COL_AVAIL_SHORT": { "message": "Disp." },
-    "OV_COL_LABEL": { "message": "Etichetă" },
-    "OV_COL_DATE_ADDED": { "message": "Adăugat" },
-    "OV_COL_DATE_COMPLETED": { "message": "Finalizat" },
-    "Actions": { "message": "Acțiuni" },
-    "FI_COL_NAME": { "message": "Nume" },
-    "FI_COL_SIZE": { "message": "Dimensiune" },
-    "FI_COL_PRIO": { "message": "Prioritate" },
-    "OV_FL_SEEDING": { "message": "Seeding" },
-    "OV_CAT_ACTIVE": { "message": "Active" },
-    "OV_CAT_ALL": { "message": "Toate" },
-    "OV_CAT_COMPL": { "message": "Finalizate" },
-    "OV_CAT_DL": { "message": "Descărcare" },
-    "OV_CAT_INACTIVE": { "message": "Inactive" },
-    "OV_CAT_NOLABEL": { "message": "Fără etichetă" },
-    "OV_FL_CHECKED": { "message": "Verificat" },
-    "OV_FL_DOWNLOADING": { "message": "Se descarcă" },
-    "OV_FL_ERROR": { "message": "Eroare" },
-    "OV_FL_FINISHED": { "message": "Terminat" },
-    "OV_FL_PAUSED": { "message": "Pauză" },
-    "OV_FL_QUEUED": { "message": "În coadă" },
-    "OV_FL_QUEUED_SEED": { "message": "Coadă seeding" },
-    "OV_FL_STOPPED": { "message": "Oprit" },
-    "MF_DONT": { "message": "Nu descărca" },
-    "MF_HIGH": { "message": "Înaltă" },
-    "MF_LOW": { "message": "Scăzută" },
-    "MF_NORMAL": { "message": "Normală" },
-    "ML_START": { "message": "Pornește" },
-    "ML_PAUSE": { "message": "Pauză" },
-    "ML_STOP": { "message": "Oprește" },
-    "OV_REMOVE_LABEL": { "message": "Elimină eticheta" },
-    "OV_NEW_LABEL": { "message": "Etichetă nouă..." },
-    "ML_FORCE_START": { "message": "Pornire forțată" },
-    "ML_FORCE_RECHECK": { "message": "Reverificare forțată" },
-    "ML_REMOVE": { "message": "Elimină" },
-    "ML_REMOVE_AND": { "message": "Elimină și" },
-    "ML_DELETE_TORRENT": { "message": "Șterge .torrent" },
-    "ML_DELETE_DATA": { "message": "Șterge datele" },
-    "ML_DELETE_DATATORRENT": { "message": "Șterge .torrent + date" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Descarcă" },
-    "MENU_UNLIMITED": { "message": "Nelimitat" },
-    "Open_file": { "message": "Adaugă fișier torrent..." },
-    "ST_CAPT_WEBUI": { "message": "Interfață web" },
-    "MM_FILE_ADD_URL": { "message": "Adaugă torrent din URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Reia toate torrentele" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Pauză toate torrentele" },
-    "DLG_BTN_CLOSE": { "message": "Închide" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Sigur doriți să eliminați torrentul selectat?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Sigur doriți să eliminați cele %d torrente selectate?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Sigur doriți să eliminați torrentul selectat ȘI să ștergeți toate datele descărcate?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Sigur doriți să eliminați cele %d torrente selectate ȘI să ștergeți toate datele descărcate?" },
-    "DLG_BTN_YES": { "message": "Da" },
-    "DLG_BTN_NO": { "message": "Nu" },
-    "DLG_BTN_CANCEL": { "message": "Anulează" },
-    "DLG_BTN_APPLY": { "message": "Aplică" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Directoare" },
-    "Paste_a_torrent_URL": { "message": "Lipiți un URL de torrent" },
-    "OV_NEWLABEL_CAPTION": { "message": "Introduceți eticheta" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Nume utilizator" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Parolă" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Avansat" },
-    "resume": { "message": "Reia" },
-    "enterNewLabel": { "message": "Introduceți noua etichetă pentru torrentul selectat" },
-    "defaultPath": { "message": "Director implicit" },
-    "add": { "message": "Adaugă" },
-    "available": { "message": "Disponibil" },
-    "up": { "message": "Sus" },
-    "down": { "message": "Jos" },
-    "update": { "message": "Actualizează" },
-    "deleteSelected": { "message": "Șterge selectate" },
-    "torrentAdded": { "message": "Torrent adăugat!" },
-    "unexpectedError": { "message": "Eroare neașteptată!" },
-    "fileSizeError": { "message": "Fișierul este prea mare" },
-    "addInTorrentClient": { "message": "Adaugă în Transmission" },
-    "enterNewDirPath": { "message": "Introduceți calea către noul director" },
-    "torrentFileExists": { "message": "Fișierul torrent probabil există deja!" },
-    "currentDirectory": { "message": "Director curent" },
-    "openInTab": { "message": "Deschide în filă" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Principal" },
-    "optNotify": { "message": "Notificări" },
-    "optCtx": { "message": "Meniu contextual" },
-    "backup": { "message": "Backup" },
-    "restore": { "message": "Restaurare" },
-    "backupRestore": { "message": "Backup și restaurare" },
-    "backupHint": { "message": "Exportați setările pentru a le salva sau sincroniza în cloud" },
-    "restoreHint": { "message": "Importați setările dintr-un backup anterior sau din cloud" },
-    "loadCurrentConfig": { "message": "Încarcă configurația curentă" },
-    "configData": { "message": "Date de configurare" },
-    "clickLoadConfig": { "message": "Faceți clic pe \"Încarcă configurația curentă\" pentru a vedea setările" },
-    "useSSL": { "message": "Folosește SSL" },
-    "path": { "message": "Cale" },
-    "hideSeedStatusItem": { "message": "Ascunde torrentele cu starea \"Seeding\"" },
-    "hideFinishStatusItem": { "message": "Ascunde torrentele cu starea \"Terminat\"" },
-    "showSpeedGraph": { "message": "Afișează graficul vitezei" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Interval actualizare listă torrente" },
-    "fixCyrillicIf": { "message": "Repară chirilic dacă..." },
-    "fixCyrillicTitle": { "message": "Numele torrentelor se afișează incorect" },
-    "fixCyrillicTorrentPath": { "message": "Directorul pentru torrent nou se setează incorect" },
-    "showNotificationOnDownloadComplete": { "message": "Afișează notificare la finalizarea descărcării" },
-    "displayActiveTorrentCountIcon": { "message": "Afișează numărul de torrente în descărcare pe pictograma extensiei" },
-    "backgroundUpdateInterval": { "message": "Interval actualizare în fundal" },
-    "notificationTimeout": { "message": "Ascunde notificarea după" },
-    "folderContextMenu": { "message": "Afișează lista de directoare" },
-    "labelContextMenu": { "message": "Afișează lista de etichete" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Deschide categoria \"Descărcare\" când adaugi un torrent" },
-    "treeViewContextMenu": { "message": "Grupează directoarele ca arbore" },
-    "treeViewContextMenuHint": { "message": "Organizează directoarele ierarhic în loc de listă plată" },
-    "showDefaultFolderContextMenuItem": { "message": "Afișează opțiunea \"Cale implicită\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Adaugă opțiunea de descărcare în directorul implicit Transmission" },
-    "dirList": { "message": "Directoare de descărcare" },
-    "dirListHint": { "message": "Clic dreapta pe un link torrent pentru a alege destinația" },
-    "options": { "message": "Opțiuni" },
-    "subPath": { "message": "Sub-cale" },
-    "labelList": { "message": "Lista de etichete" },
-    "optSaveInCloud": { "message": "Salvează în cloud" },
-    "toRestore": { "message": "Restaurează" },
-    "optGetFromCloud": { "message": "Obține setările din cloud" },
-    "optClearCloudStorage": { "message": "Șterge stocarea în cloud" },
-    "confirmRestore": { "message": "Sigur doriți să restaurați această configurație? Aceasta va suprascrie toate setările curente." },
-    "confirmClearCloud": { "message": "Sigur doriți să ștergeți backup-ul din cloud?" },
-    "showFileList": { "message": "Lista de fișiere" },
-    "selectAll": { "message": "Selectează tot" },
-    "refresh": { "message": "Reîmprospătează" },
-    "checkSettings": { "message": "Verifică setările" },
-    "showFreeSpace": { "message": "Afișează spațiul liber pe disc" },
-    "freeSpace": { "message": "Spațiu liber" },
-    "startNow": { "message": "Pornește acum" },
-    "rename": { "message": "Redenumește" },
-    "renameText": { "message": "Introduceți numele fișierului" },
-    "move": { "message": "Mută" },
-    "moveNewPath": { "message": "Introduceți noua cale" },
-    "fullPath": { "message": "Director (cale completă)" },
-    "guiPath": { "message": "Cale WebUI" },
-    "altSpeedEnable": { "message": "Limite temporare de viteză" },
-    "torrentFileIsExists": { "message": "Torrentul a fost adăugat anterior" },
-    "reannounce": { "message": "Cere mai mulți peers" },
-    "extra": { "message": "Extra" },
-    "queueTop": { "message": "La început" },
-    "queueBottom": { "message": "La sfârșit" },
-    "requireAuthentication": { "message": "Este necesară autentificarea" },
-    "badgeColor": { "message": "Culoarea insignei pictogramei" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Copiază" },
-    "addItem": { "message": "Adaugă element" },
-    "shortName": { "message": "Nume scurt" },
-    "portIncorrect": { "message": "Portul este incorect" },
-    "search": { "message": "Caută" },
-    "theme": { "message": "Temă" },
-    "themeSystem": { "message": "Sistem" },
-    "themeLight": { "message": "Luminoasă" },
-    "themeDark": { "message": "Întunecată" },
-    "configureClient": { "message": "Configurează Transmission" },
-    "configureClientHint": { "message": "Vă rugăm să configurați conexiunea la serverul Transmission pentru a începe." },
-    "openOptions": { "message": "Deschide setările" },
-    "properties": { "message": "Proprietăți" },
-    "copyName": { "message": "Copiază numele" },
-    "copyHash": { "message": "Copiază hash-ul" },
-    "sessionTotals": { "message": "Totaluri sesiune" },
-    "responseEmpty": { "message": "Răspunsul este gol" },
-    "clearSearch": { "message": "Șterge căutarea" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Extensia adaugă interfața web Transmission în browserul dvs."
+    },
+    "lang": {
+        "message": "ro"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"săpt\", \"z\", \"h\", \"m\", \"s\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Nume"
+    },
+    "OV_COL_ORDER": {
+        "message": "Coadă"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Dimensiune"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Rămas"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Stare"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seeds"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seeds/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Descărcare"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Încărcare"
+    },
+    "OV_COL_ETA": {
+        "message": "ETA"
+    },
+    "OV_COL_UPPED": {
+        "message": "Încărcat"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Descărcat"
+    },
+    "OV_COL_SHARED": {
+        "message": "Raport"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Disponibilitate"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Disp."
+    },
+    "OV_COL_LABEL": {
+        "message": "Etichetă"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Adăugat"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Finalizat"
+    },
+    "Actions": {
+        "message": "Acțiuni"
+    },
+    "FI_COL_NAME": {
+        "message": "Nume"
+    },
+    "FI_COL_SIZE": {
+        "message": "Dimensiune"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioritate"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Seeding"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Active"
+    },
+    "OV_CAT_ALL": {
+        "message": "Toate"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Finalizate"
+    },
+    "OV_CAT_DL": {
+        "message": "Descărcare"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Inactive"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Fără etichetă"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Verificat"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Se descarcă"
+    },
+    "OV_FL_ERROR": {
+        "message": "Eroare"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Terminat"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Pauză"
+    },
+    "OV_FL_QUEUED": {
+        "message": "În coadă"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Coadă seeding"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Oprit"
+    },
+    "OV_FL_STALLED": {
+        "message": "Stagnat"
+    },
+    "MF_DONT": {
+        "message": "Nu descărca"
+    },
+    "MF_HIGH": {
+        "message": "Înaltă"
+    },
+    "MF_LOW": {
+        "message": "Scăzută"
+    },
+    "MF_NORMAL": {
+        "message": "Normală"
+    },
+    "ML_START": {
+        "message": "Pornește"
+    },
+    "ML_STOP": {
+        "message": "Oprește"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Reverificare forțată"
+    },
+    "ML_REMOVE": {
+        "message": "Elimină"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Elimină și"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Șterge .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Șterge datele"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Șterge .torrent + date"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Nelimitat"
+    },
+    "Open_file": {
+        "message": "Adaugă fișier torrent..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Interfață web"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Adaugă torrent din URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Reia toate torrentele"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Pauză toate torrentele"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Închide"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Sigur doriți să eliminați torrentul selectat?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Sigur doriți să eliminați cele %d torrente selectate?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Sigur doriți să eliminați torrentul selectat ȘI să ștergeți toate datele descărcate?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Sigur doriți să eliminați cele %d torrente selectate ȘI să ștergeți toate datele descărcate?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Da"
+    },
+    "DLG_BTN_NO": {
+        "message": "Nu"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Anulează"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Aplică"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Lipiți un URL de torrent"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Nume utilizator"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Parolă"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Avansat"
+    },
+    "enterNewLabel": {
+        "message": "Introduceți noua etichetă pentru torrentul selectat"
+    },
+    "defaultPath": {
+        "message": "Director implicit"
+    },
+    "add": {
+        "message": "Adaugă"
+    },
+    "available": {
+        "message": "Disponibil"
+    },
+    "up": {
+        "message": "Sus"
+    },
+    "down": {
+        "message": "Jos"
+    },
+    "update": {
+        "message": "Actualizează"
+    },
+    "deleteSelected": {
+        "message": "Șterge selectate"
+    },
+    "torrentAdded": {
+        "message": "Torrent adăugat!"
+    },
+    "unexpectedError": {
+        "message": "Eroare neașteptată!"
+    },
+    "fileSizeError": {
+        "message": "Fișierul este prea mare"
+    },
+    "addInTorrentClient": {
+        "message": "Adaugă în Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Fișierul torrent probabil există deja!"
+    },
+    "currentDirectory": {
+        "message": "Director curent"
+    },
+    "openInTab": {
+        "message": "Deschide în filă"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Principal"
+    },
+    "optNotify": {
+        "message": "Notificări"
+    },
+    "optCtx": {
+        "message": "Meniu contextual"
+    },
+    "backup": {
+        "message": "Backup"
+    },
+    "restore": {
+        "message": "Restaurare"
+    },
+    "backupRestore": {
+        "message": "Backup și restaurare"
+    },
+    "backupHint": {
+        "message": "Exportați setările pentru a le salva sau sincroniza în cloud"
+    },
+    "restoreHint": {
+        "message": "Importați setările dintr-un backup anterior sau din cloud"
+    },
+    "loadCurrentConfig": {
+        "message": "Încarcă configurația curentă"
+    },
+    "configData": {
+        "message": "Date de configurare"
+    },
+    "clickLoadConfig": {
+        "message": "Faceți clic pe \"Încarcă configurația curentă\" pentru a vedea setările"
+    },
+    "useSSL": {
+        "message": "Folosește SSL"
+    },
+    "path": {
+        "message": "Cale"
+    },
+    "hideSeedStatusItem": {
+        "message": "Ascunde torrentele cu starea \"Seeding\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Ascunde torrentele cu starea \"Terminat\""
+    },
+    "showSpeedGraph": {
+        "message": "Afișează graficul vitezei"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Interval actualizare listă torrente"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Afișează notificare la finalizarea descărcării"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Afișează numărul de torrente în descărcare pe pictograma extensiei"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Interval actualizare în fundal"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Deschide categoria \"Descărcare\" când adaugi un torrent"
+    },
+    "treeViewContextMenu": {
+        "message": "Grupează directoarele ca arbore"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Afișează opțiunea \"Cale implicită\""
+    },
+    "dirList": {
+        "message": "Directoare de descărcare"
+    },
+    "dirListHint": {
+        "message": "Clic dreapta pe un link torrent pentru a alege destinația"
+    },
+    "options": {
+        "message": "Opțiuni"
+    },
+    "subPath": {
+        "message": "Sub-cale"
+    },
+    "optSaveInCloud": {
+        "message": "Salvează în cloud"
+    },
+    "toRestore": {
+        "message": "Restaurează"
+    },
+    "optGetFromCloud": {
+        "message": "Obține setările din cloud"
+    },
+    "optClearCloudStorage": {
+        "message": "Șterge stocarea în cloud"
+    },
+    "confirmRestore": {
+        "message": "Sigur doriți să restaurați această configurație? Aceasta va suprascrie toate setările curente."
+    },
+    "confirmClearCloud": {
+        "message": "Sigur doriți să ștergeți backup-ul din cloud?"
+    },
+    "showFileList": {
+        "message": "Lista de fișiere"
+    },
+    "selectAll": {
+        "message": "Selectează tot"
+    },
+    "refresh": {
+        "message": "Reîmprospătează"
+    },
+    "checkSettings": {
+        "message": "Verifică setările"
+    },
+    "showFreeSpace": {
+        "message": "Afișează spațiul liber pe disc"
+    },
+    "freeSpace": {
+        "message": "Spațiu liber"
+    },
+    "startNow": {
+        "message": "Pornește acum"
+    },
+    "rename": {
+        "message": "Redenumește"
+    },
+    "renameText": {
+        "message": "Introduceți numele fișierului"
+    },
+    "move": {
+        "message": "Mută"
+    },
+    "moveNewPath": {
+        "message": "Introduceți noua cale"
+    },
+    "guiPath": {
+        "message": "Cale WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Limite temporare de viteză"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrentul a fost adăugat anterior"
+    },
+    "reannounce": {
+        "message": "Cere mai mulți peers"
+    },
+    "extra": {
+        "message": "Extra"
+    },
+    "queueTop": {
+        "message": "La început"
+    },
+    "queueBottom": {
+        "message": "La sfârșit"
+    },
+    "requireAuthentication": {
+        "message": "Este necesară autentificarea"
+    },
+    "badgeColor": {
+        "message": "Culoarea insignei pictogramei"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Copiază"
+    },
+    "shortName": {
+        "message": "Nume scurt"
+    },
+    "portIncorrect": {
+        "message": "Portul este incorect"
+    },
+    "search": {
+        "message": "Caută"
+    },
+    "theme": {
+        "message": "Temă"
+    },
+    "themeSystem": {
+        "message": "Sistem"
+    },
+    "themeLight": {
+        "message": "Luminoasă"
+    },
+    "themeDark": {
+        "message": "Întunecată"
+    },
+    "configureClient": {
+        "message": "Configurează Transmission"
+    },
+    "configureClientHint": {
+        "message": "Vă rugăm să configurați conexiunea la serverul Transmission pentru a începe."
+    },
+    "openOptions": {
+        "message": "Deschide setările"
+    },
+    "properties": {
+        "message": "Proprietăți"
+    },
+    "copyName": {
+        "message": "Copiază numele"
+    },
+    "copyHash": {
+        "message": "Copiază hash-ul"
+    },
+    "sessionTotals": {
+        "message": "Totaluri sesiune"
+    },
+    "responseEmpty": {
+        "message": "Răspunsul este gol"
+    },
+    "clearSearch": {
+        "message": "Șterge căutarea"
+    },
+    "errorRetry": {
+        "message": "Reîncearcă"
+    },
+    "errorDetails": {
+        "message": "Detalii"
+    },
+    "speedGraph": {
+        "message": "Grafic de viteză"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Listă de blocare"
+    },
+    "blocklistEnable": {
+        "message": "Activează lista de blocare"
+    },
+    "blocklistUrl": {
+        "message": "URL-ul listei de blocare"
+    },
+    "blocklistRules": {
+        "message": "Reguli"
+    },
+    "blocklistUpdateNow": {
+        "message": "Actualizează lista de blocare acum"
+    },
+    "peerFlags": {
+        "message": "Indicatori"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Număr maxim de peers în total"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Număr maxim de peers per torrent"
+    },
+    "seedingSettings": {
+        "message": "Seeding"
+    },
+    "seedRatioLimited": {
+        "message": "Oprește seedingul la raportul"
+    },
+    "seedRatioLimit": {
+        "message": "Limită raport seeding"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Oprește seedingul dacă e inactiv timp de"
+    },
+    "idleSeedingLimit": {
+        "message": "Limită de inactivitate"
+    },
+    "networkSettings": {
+        "message": "Rețea"
+    },
+    "peerPort": {
+        "message": "Port de ascultare"
+    },
+    "portForwardingEnabled": {
+        "message": "Activează UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Criptare"
+    },
+    "encryptionRequired": {
+        "message": "Obligatorie"
+    },
+    "encryptionPreferred": {
+        "message": "Preferată"
+    },
+    "encryptionTolerated": {
+        "message": "Tolerată"
+    },
+    "dhtEnabled": {
+        "message": "Activează DHT"
+    },
+    "pexEnabled": {
+        "message": "Activează PEX"
+    },
+    "lpdEnabled": {
+        "message": "Activează LPD"
+    },
+    "utpEnabled": {
+        "message": "Activează uTP"
+    },
+    "minutes": {
+        "message": "min"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Fără etichetă"
+    },
+    "generalSettings": {
+        "message": "General"
+    },
+    "startAddedTorrents": {
+        "message": "Pornește torrentele adăugate"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Șterge fișierele .torrent originale"
+    },
+    "incompleteDirSettings": {
+        "message": "Descărcări incomplete"
+    },
+    "incompleteDirEnabled": {
+        "message": "Folosește directorul pentru descărcări incomplete"
+    },
+    "incompleteDir": {
+        "message": "Director pentru incomplete"
+    },
+    "renamePartialFiles": {
+        "message": "Redenumește fișierele parțiale cu extensia .part"
+    },
+    "queueSettings": {
+        "message": "Coadă"
+    },
+    "downloadQueueEnabled": {
+        "message": "Limitează coada de descărcare"
+    },
+    "downloadQueueSize": {
+        "message": "Număr maxim de descărcări simultane"
+    },
+    "seedQueueEnabled": {
+        "message": "Limitează coada de seeding"
+    },
+    "seedQueueSize": {
+        "message": "Număr maxim de seeduri simultane"
+    },
+    "queueStalledEnabled": {
+        "message": "Consideră inactiv după"
+    },
+    "queueStalledMinutes": {
+        "message": "Timp limită de stagnare"
+    },
+    "altSpeedSchedule": {
+        "message": "Program limită de viteză"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Activează programul limitei de viteză"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Ora de început"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Ora de sfârșit"
+    },
+    "altSpeedTimeDays": {
+        "message": "Zile active"
+    },
+    "daySunday": {
+        "message": "Dum"
+    },
+    "dayMonday": {
+        "message": "Lun"
+    },
+    "dayTuesday": {
+        "message": "Mar"
+    },
+    "dayWednesday": {
+        "message": "Mie"
+    },
+    "dayThursday": {
+        "message": "Joi"
+    },
+    "dayFriday": {
+        "message": "Vin"
+    },
+    "daySaturday": {
+        "message": "Sâm"
+    },
+    "scriptSettings": {
+        "message": "Script"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Rulează un script la finalizarea descărcării"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Calea scriptului"
+    },
+    "portTest": {
+        "message": "Testează portul"
+    },
+    "portOpen": {
+        "message": "Portul este deschis"
+    },
+    "portClosed": {
+        "message": "Portul este închis"
+    },
+    "portTesting": {
+        "message": "Se testează..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Informații"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackere"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Limite seeding"
+    },
+    "DT_COMMENT": {
+        "message": "Comentariu"
+    },
+    "DT_CREATOR": {
+        "message": "Creator"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Data creării"
+    },
+    "DT_PIECES": {
+        "message": "Piese"
+    },
+    "DT_CORRUPT": {
+        "message": "Corupt"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Timp de descărcare"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Timp de seeding"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web Seeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Nivel"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seeds"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Stare"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Listă de trackere"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Un URL pe linie, linie goală între niveluri"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Mod raport seeding"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Limită raport seeding"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Mod seeding inactiv"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Limită seeding inactiv (min)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Folosește setările globale"
+    },
+    "DT_CUSTOM": {
+        "message": "Personalizat"
+    },
+    "DT_UNLIMITED": {
+        "message": "Nelimitat"
+    },
+    "DT_APPLY": {
+        "message": "Aplică"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Ultima activitate"
+    },
+    "OV_COL_STARTED": {
+        "message": "Pornit"
+    },
+    "OV_COL_EDITED": {
+        "message": "Editat"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Dim. efectivă"
+    },
+    "DT_METADATA": {
+        "message": "Metadate"
+    },
+    "DT_PRIVATE": {
+        "message": "Privat"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Surse de peers"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Conexiuni de intrare"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Limită de descărcare"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Limită de încărcare"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Respectă limitele sesiunii"
+    },
+    "DT_ENABLED": {
+        "message": "Activat"
+    },
+    "DT_DISABLED": {
+        "message": "Dezactivat"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Timp limită de inactivitate"
+    },
+    "sessionStats": {
+        "message": "$active$ active, $paused$ în pauză",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Rulează un script la adăugarea unui torrent"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Calea scriptului (adăugat)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Rulează un script la finalizarea seedingului"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Calea scriptului (seeding finalizat)"
+    },
+    "sequentialDownload": {
+        "message": "Descărcare secvențială"
+    },
+    "fileCount": {
+        "message": "Număr de fișiere"
+    },
+    "primaryMimeType": {
+        "message": "Tip de conținut"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Avertisment: fără SSL, numele de utilizator și parola sunt trimise necriptate prin rețea."
+    },
+    "backupIncludesCredentials": {
+        "message": "Copia de rezervă include numele de utilizator și parola serverului."
+    },
+    "restoreConnectionChanged": {
+        "message": "Această copie de rezervă modifică conexiunea la server: $changes$. Continuați?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

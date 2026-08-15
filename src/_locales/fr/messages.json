@@ -75,6 +75,10 @@
     "OV_COL_AVAIL": {
         "message": "Disponibilité"
     },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Dispo.",
+        "originalKey": "OV_COL_AVAIL"
+    },
     "OV_COL_LABEL": {
         "message": "Étiquette"
     },
@@ -164,20 +168,8 @@
     "ML_START": {
         "message": "Démarrer"
     },
-    "ML_PAUSE": {
-        "message": "Suspendre"
-    },
     "ML_STOP": {
         "message": "Arrêter"
-    },
-    "OV_REMOVE_LABEL": {
-        "message": "Supprimer l'étiquette"
-    },
-    "OV_NEW_LABEL": {
-        "message": "Nouvelle étiquette..."
-    },
-    "ML_FORCE_START": {
-        "message": "Démarrage forcé"
     },
     "ML_FORCE_RECHECK": {
         "message": "Vérification forcée"
@@ -196,9 +188,6 @@
     },
     "ML_DELETE_DATATORRENT": {
         "message": "Supprimer .torrent et fichiers"
-    },
-    "DLG_RSSDOWNLOADER_24": {
-        "message": "Téléchargement"
     },
     "MENU_UNLIMITED": {
         "message": "Illimité"
@@ -249,17 +238,9 @@
     "DLG_BTN_OK": {
         "message": "OK"
     },
-    "ST_CAPT_FOLDER": {
-        "message": "Dossiers",
-        "modifed": 1
-    },
     "Paste_a_torrent_URL": {
         "message": "Collez un torrent URL",
         "originalKey": "Paste a torrent or feed URL",
-        "modifed": 1
-    },
-    "OV_NEWLABEL_CAPTION": {
-        "message": "Entrez nouveau label",
         "modifed": 1
     },
     "DLG_SETTINGS_4_CONN_16": {
@@ -276,11 +257,6 @@
     },
     "ST_CAPT_ADVANCED": {
         "message": "Avancées"
-    },
-    "resume": {
-        "message": "Reprendre",
-        "originalKey": "STM_TORRENTS_RESUMEALL",
-        "modifed": 1
     },
     "enterNewLabel": {
         "message": "Entrer le nom de l'étiquette",
@@ -319,9 +295,6 @@
         "originalKey": "DLG_RSSDOWNLOADER_35",
         "modifed": 1
     },
-
-
-
     "torrentAdded": {
         "message": "Le torrent a été ajouté !"
     },
@@ -333,9 +306,6 @@
     },
     "addInTorrentClient": {
         "message": "Ajouter à Transmission"
-    },
-    "enterNewDirPath": {
-        "message": "Entrez le chemin d'accès vers le nouveau répertoire"
     },
     "torrentFileExists": {
         "message": "Probablement le fichier torrent existe déjà !"
@@ -404,15 +374,6 @@
     "popupUpdateInterval": {
         "message": "Intervalle de mise à jour de la liste"
     },
-    "fixCyrillicIf": {
-        "message": "Corriger le cyrillique si..."
-    },
-    "fixCyrillicTitle": {
-        "message": "Les noms des torrents s'affichent incorrectement"
-    },
-    "fixCyrillicTorrentPath": {
-        "message": "Le répertoire du nouveau torrent est incorrect"
-    },
     "showNotificationOnDownloadComplete": {
         "message": "Afficher une notification lorsque un téléchargement est terminé"
     },
@@ -422,29 +383,14 @@
     "backgroundUpdateInterval": {
         "message": "Intervalle de mise à jour en arrière-plan"
     },
-    "notificationTimeout": {
-        "message": "Masquer notification après"
-    },
-    "folderContextMenu": {
-        "message": "Affiche la liste des répertoires"
-    },
-    "labelContextMenu": {
-        "message": "Afficher la liste des étiquettes"
-    },
     "selectDownloadCategoryOnAddItemFromContextMenu": {
         "message": "Ouvrir catégorie \"Téléchargement\" lors de l'ajout d'un torrent"
     },
     "treeViewContextMenu": {
         "message": "Grouper les dossiers en arborescence"
     },
-    "treeViewContextMenuHint": {
-        "message": "Organise les dossiers hiérarchiquement au lieu d'une liste plate"
-    },
     "showDefaultFolderContextMenuItem": {
         "message": "Afficher l'option \"Chemin par défaut\""
-    },
-    "showDefaultFolderContextMenuItemHint": {
-        "message": "Ajoute une option pour télécharger dans le dossier par défaut de Transmission"
     },
     "dirList": {
         "message": "Dossiers de destination"
@@ -457,9 +403,6 @@
     },
     "subPath": {
         "message": "Sub-path"
-    },
-    "labelList": {
-        "message": "Liste des étiquettes"
     },
     "optSaveInCloud": {
         "message": "Enregistrer la configuration dans le cloud"
@@ -512,9 +455,6 @@
     "moveNewPath": {
         "message": "Entrez le nouveau chemin d'accès"
     },
-    "fullPath": {
-        "message": "Répertoire (chemin complet)"
-    },
     "guiPath": {
         "message": "WebUI chemin"
     },
@@ -547,9 +487,6 @@
     },
     "copy": {
         "message": "Copier"
-    },
-    "addItem": {
-        "message": "Ajouter un item"
     },
     "shortName": {
         "message": "Nom court"
@@ -693,22 +630,22 @@
         "message": "Sans label"
     },
     "generalSettings": {
-        "message": "G\u00e9n\u00e9ral"
+        "message": "Général"
     },
     "startAddedTorrents": {
-        "message": "D\u00e9marrer automatiquement les nouveaux torrents"
+        "message": "Démarrer automatiquement les nouveaux torrents"
     },
     "trashOriginalTorrentFiles": {
         "message": "Supprimer les fichiers .torrent originaux"
     },
     "incompleteDirSettings": {
-        "message": "T\u00e9l\u00e9chargements incomplets"
+        "message": "Téléchargements incomplets"
     },
     "incompleteDirEnabled": {
-        "message": "Utiliser un dossier pour les t\u00e9l\u00e9chargements incomplets"
+        "message": "Utiliser un dossier pour les téléchargements incomplets"
     },
     "incompleteDir": {
-        "message": "Dossier des t\u00e9l\u00e9chargements incomplets"
+        "message": "Dossier des téléchargements incomplets"
     },
     "renamePartialFiles": {
         "message": "Renommer les fichiers partiels avec l'extension .part"
@@ -717,22 +654,22 @@
         "message": "File d'attente"
     },
     "downloadQueueEnabled": {
-        "message": "Limiter la file de t\u00e9l\u00e9chargement"
+        "message": "Limiter la file de téléchargement"
     },
     "downloadQueueSize": {
-        "message": "T\u00e9l\u00e9chargements simultan\u00e9s max"
+        "message": "Téléchargements simultanés max"
     },
     "seedQueueEnabled": {
         "message": "Limiter la file de partage"
     },
     "seedQueueSize": {
-        "message": "Partages simultan\u00e9s max"
+        "message": "Partages simultanés max"
     },
     "queueStalledEnabled": {
-        "message": "Consid\u00e9rer inactif apr\u00e8s"
+        "message": "Considérer inactif après"
     },
     "queueStalledMinutes": {
-        "message": "D\u00e9lai d'inactivit\u00e9"
+        "message": "Délai d'inactivité"
     },
     "altSpeedSchedule": {
         "message": "Planification de la limite de vitesse"
@@ -741,7 +678,7 @@
         "message": "Activer la planification de la limite de vitesse"
     },
     "altSpeedTimeBegin": {
-        "message": "Heure de d\u00e9but"
+        "message": "Heure de début"
     },
     "altSpeedTimeEnd": {
         "message": "Heure de fin"
@@ -774,7 +711,7 @@
         "message": "Script"
     },
     "scriptTorrentDoneEnabled": {
-        "message": "Ex\u00e9cuter un script \u00e0 la fin du t\u00e9l\u00e9chargement"
+        "message": "Exécuter un script à la fin du téléchargement"
     },
     "scriptTorrentDoneFilename": {
         "message": "Chemin du script"
@@ -786,7 +723,7 @@
         "message": "Le port est ouvert"
     },
     "portClosed": {
-        "message": "Le port est ferm\u00e9"
+        "message": "Le port est fermé"
     },
     "portTesting": {
         "message": "Test en cours..."
@@ -932,8 +869,12 @@
     "sessionStats": {
         "message": "$active$ actifs, $paused$ en pause",
         "placeholders": {
-            "active": { "content": "$1" },
-            "paused": { "content": "$2" }
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
         }
     },
     "scriptTorrentAddedEnabled": {
@@ -966,7 +907,9 @@
     "restoreConnectionChanged": {
         "message": "Cette sauvegarde modifie la connexion au serveur : $changes$. Continuer ?",
         "placeholders": {
-            "changes": { "content": "$1" }
+            "changes": {
+                "content": "$1"
+            }
         }
     }
 }

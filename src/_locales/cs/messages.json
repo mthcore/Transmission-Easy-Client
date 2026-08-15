@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Rozšíření přidává webové rozhraní Transmission do vašeho prohlížeče" },
-    "lang": { "message": "cs" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"t\", \"d\", \"h\", \"m\", \"s\"]" },
-    "OV_COL_NAME": { "message": "Název" },
-    "OV_COL_ORDER": { "message": "Fronta" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Velikost" },
-    "OV_COL_REMAINING": { "message": "Zbývá" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Stav" },
-    "OV_COL_SEEDS": { "message": "Seedy" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seedy/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Stahování" },
-    "OV_COL_UPSPD": { "message": "Odesílání" },
-    "OV_COL_ETA": { "message": "Čas" },
-    "OV_COL_UPPED": { "message": "Odesláno" },
-    "OV_COL_DOWNLOADED": { "message": "Staženo" },
-    "OV_COL_SHARED": { "message": "Poměr" },
-    "OV_COL_AVAIL": { "message": "Dostupnost" },
-    "OV_COL_AVAIL_SHORT": { "message": "Dost." },
-    "OV_COL_LABEL": { "message": "Štítek" },
-    "OV_COL_DATE_ADDED": { "message": "Přidáno" },
-    "OV_COL_DATE_COMPLETED": { "message": "Dokončeno" },
-    "Actions": { "message": "Akce" },
-    "FI_COL_NAME": { "message": "Název" },
-    "FI_COL_SIZE": { "message": "Velikost" },
-    "FI_COL_PRIO": { "message": "Priorita" },
-    "OV_FL_SEEDING": { "message": "Sdílení" },
-    "OV_CAT_ACTIVE": { "message": "Aktivní" },
-    "OV_CAT_ALL": { "message": "Vše" },
-    "OV_CAT_COMPL": { "message": "Dokončené" },
-    "OV_CAT_DL": { "message": "Stahování" },
-    "OV_CAT_INACTIVE": { "message": "Neaktivní" },
-    "OV_CAT_NOLABEL": { "message": "Bez štítku" },
-    "OV_FL_CHECKED": { "message": "Zkontrolováno" },
-    "OV_FL_DOWNLOADING": { "message": "Stahuje se" },
-    "OV_FL_ERROR": { "message": "Chyba" },
-    "OV_FL_FINISHED": { "message": "Dokončeno" },
-    "OV_FL_PAUSED": { "message": "Pozastaveno" },
-    "OV_FL_QUEUED": { "message": "Ve frontě" },
-    "OV_FL_QUEUED_SEED": { "message": "Fronta sdílení" },
-    "OV_FL_STOPPED": { "message": "Zastaveno" },
-    "MF_DONT": { "message": "Nestahovat" },
-    "MF_HIGH": { "message": "Vysoká" },
-    "MF_LOW": { "message": "Nízká" },
-    "MF_NORMAL": { "message": "Normální" },
-    "ML_START": { "message": "Spustit" },
-    "ML_PAUSE": { "message": "Pozastavit" },
-    "ML_STOP": { "message": "Zastavit" },
-    "OV_REMOVE_LABEL": { "message": "Odebrat štítek" },
-    "OV_NEW_LABEL": { "message": "Nový štítek..." },
-    "ML_FORCE_START": { "message": "Vynutit spuštění" },
-    "ML_FORCE_RECHECK": { "message": "Vynutit kontrolu" },
-    "ML_REMOVE": { "message": "Odebrat" },
-    "ML_REMOVE_AND": { "message": "Odebrat a" },
-    "ML_DELETE_TORRENT": { "message": "Smazat .torrent" },
-    "ML_DELETE_DATA": { "message": "Smazat data" },
-    "ML_DELETE_DATATORRENT": { "message": "Smazat .torrent + data" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Stáhnout" },
-    "MENU_UNLIMITED": { "message": "Neomezeno" },
-    "Open_file": { "message": "Přidat torrent soubor..." },
-    "ST_CAPT_WEBUI": { "message": "Webové rozhraní" },
-    "MM_FILE_ADD_URL": { "message": "Přidat torrent z URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Obnovit všechny torrenty" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Pozastavit všechny torrenty" },
-    "DLG_BTN_CLOSE": { "message": "Zavřít" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Opravdu chcete odebrat vybraný torrent?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Opravdu chcete odebrat %d vybraných torrentů?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Opravdu chcete odebrat vybraný torrent A smazat všechna stažená data?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Opravdu chcete odebrat %d vybraných torrentů A smazat všechna stažená data?" },
-    "DLG_BTN_YES": { "message": "Ano" },
-    "DLG_BTN_NO": { "message": "Ne" },
-    "DLG_BTN_CANCEL": { "message": "Zrušit" },
-    "DLG_BTN_APPLY": { "message": "Použít" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Složky" },
-    "Paste_a_torrent_URL": { "message": "Vložte URL torrentu" },
-    "OV_NEWLABEL_CAPTION": { "message": "Zadejte štítek" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Uživatelské jméno" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Heslo" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Pokročilé" },
-    "resume": { "message": "Obnovit" },
-    "enterNewLabel": { "message": "Zadejte nový štítek pro vybraný torrent" },
-    "defaultPath": { "message": "Výchozí složka" },
-    "add": { "message": "Přidat" },
-    "available": { "message": "Dostupný" },
-    "up": { "message": "Nahoru" },
-    "down": { "message": "Dolů" },
-    "update": { "message": "Aktualizovat" },
-    "deleteSelected": { "message": "Smazat vybrané" },
-    "torrentAdded": { "message": "Torrent byl přidán!" },
-    "unexpectedError": { "message": "Neočekávaná chyba!" },
-    "fileSizeError": { "message": "Soubor je příliš velký" },
-    "addInTorrentClient": { "message": "Přidat do Transmission" },
-    "enterNewDirPath": { "message": "Zadejte cestu k nové složce" },
-    "torrentFileExists": { "message": "Torrent soubor pravděpodobně již existuje!" },
-    "currentDirectory": { "message": "Aktuální složka" },
-    "openInTab": { "message": "Otevřít v kartě" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Hlavní" },
-    "optNotify": { "message": "Oznámení" },
-    "optCtx": { "message": "Kontextová nabídka" },
-    "backup": { "message": "Záloha" },
-    "restore": { "message": "Obnovit" },
-    "backupRestore": { "message": "Zálohování" },
-    "backupHint": { "message": "Exportujte nastavení pro uložení nebo synchronizaci do cloudu" },
-    "restoreHint": { "message": "Importujte nastavení z předchozí zálohy nebo z cloudu" },
-    "loadCurrentConfig": { "message": "Načíst aktuální konfiguraci" },
-    "configData": { "message": "Konfigurační data" },
-    "clickLoadConfig": { "message": "Klikněte na \"Načíst aktuální konfiguraci\" pro zobrazení nastavení" },
-    "useSSL": { "message": "Použít SSL" },
-    "path": { "message": "Cesta" },
-    "hideSeedStatusItem": { "message": "Skrýt torrenty se stavem \"Sdílení\"" },
-    "hideFinishStatusItem": { "message": "Skrýt torrenty se stavem \"Dokončeno\"" },
-    "showSpeedGraph": { "message": "Zobrazit graf rychlosti" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Interval aktualizace seznamu torrentů" },
-    "fixCyrillicIf": { "message": "Opravit cyrilici pokud..." },
-    "fixCyrillicTitle": { "message": "Názvy torrentů se zobrazují nesprávně" },
-    "fixCyrillicTorrentPath": { "message": "Složka pro nový torrent se nastavuje nesprávně" },
-    "showNotificationOnDownloadComplete": { "message": "Zobrazit oznámení po dokončení stahování" },
-    "displayActiveTorrentCountIcon": { "message": "Zobrazit počet stahovaných torrentů na ikoně rozšíření" },
-    "backgroundUpdateInterval": { "message": "Interval aktualizace na pozadí" },
-    "notificationTimeout": { "message": "Skrýt oznámení po" },
-    "folderContextMenu": { "message": "Zobrazit seznam složek" },
-    "labelContextMenu": { "message": "Zobrazit seznam štítků" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Otevřít kategorii \"Stahování\" při přidání torrentu" },
-    "treeViewContextMenu": { "message": "Seskupit složky jako strom" },
-    "treeViewContextMenuHint": { "message": "Uspořádat složky hierarchicky místo plochého seznamu" },
-    "showDefaultFolderContextMenuItem": { "message": "Zobrazit možnost \"Výchozí cesta\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Přidat možnost stahování do výchozí složky Transmission" },
-    "dirList": { "message": "Složky pro stahování" },
-    "dirListHint": { "message": "Klikněte pravým tlačítkem na odkaz torrentu pro výběr cíle" },
-    "options": { "message": "Možnosti" },
-    "subPath": { "message": "Podsložka" },
-    "labelList": { "message": "Seznam štítků" },
-    "optSaveInCloud": { "message": "Uložit do cloudu" },
-    "toRestore": { "message": "Obnovit" },
-    "optGetFromCloud": { "message": "Získat nastavení z cloudu" },
-    "optClearCloudStorage": { "message": "Vymazat cloudové úložiště" },
-    "confirmRestore": { "message": "Opravdu chcete obnovit tuto konfiguraci? Přepíše všechna aktuální nastavení." },
-    "confirmClearCloud": { "message": "Opravdu chcete vymazat cloudovou zálohu?" },
-    "showFileList": { "message": "Seznam souborů" },
-    "selectAll": { "message": "Vybrat vše" },
-    "refresh": { "message": "Obnovit" },
-    "checkSettings": { "message": "Zkontrolovat nastavení" },
-    "showFreeSpace": { "message": "Zobrazit volné místo na disku" },
-    "freeSpace": { "message": "Volné místo" },
-    "startNow": { "message": "Spustit nyní" },
-    "rename": { "message": "Přejmenovat" },
-    "renameText": { "message": "Zadejte název souboru" },
-    "move": { "message": "Přesunout" },
-    "moveNewPath": { "message": "Zadejte novou cestu" },
-    "fullPath": { "message": "Složka (úplná cesta)" },
-    "guiPath": { "message": "Cesta WebUI" },
-    "altSpeedEnable": { "message": "Dočasné omezení rychlosti" },
-    "torrentFileIsExists": { "message": "Torrent byl přidán dříve" },
-    "reannounce": { "message": "Požádat o více peers" },
-    "extra": { "message": "Extra" },
-    "queueTop": { "message": "Na začátek" },
-    "queueBottom": { "message": "Na konec" },
-    "requireAuthentication": { "message": "Vyžadována autentizace" },
-    "badgeColor": { "message": "Barva odznaku ikony" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Kopírovat" },
-    "addItem": { "message": "Přidat položku" },
-    "shortName": { "message": "Krátký název" },
-    "portIncorrect": { "message": "Port je nesprávný" },
-    "search": { "message": "Hledat" },
-    "theme": { "message": "Motiv" },
-    "themeSystem": { "message": "Systémový" },
-    "themeLight": { "message": "Světlý" },
-    "themeDark": { "message": "Tmavý" },
-    "configureClient": { "message": "Nastavit Transmission" },
-    "configureClientHint": { "message": "Nastavte připojení k serveru Transmission pro začátek." },
-    "openOptions": { "message": "Otevřít nastavení" },
-    "properties": { "message": "Vlastnosti" },
-    "copyName": { "message": "Kopírovat název" },
-    "copyHash": { "message": "Kopírovat hash" },
-    "sessionTotals": { "message": "Souhrn relace" },
-    "responseEmpty": { "message": "Odpověď je prázdná" },
-    "clearSearch": { "message": "Vymazat hledání" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Rozšíření přidává webové rozhraní Transmission do vašeho prohlížeče"
+    },
+    "lang": {
+        "message": "cs"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"t\", \"d\", \"h\", \"m\", \"s\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Název"
+    },
+    "OV_COL_ORDER": {
+        "message": "Fronta"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Velikost"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Zbývá"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Stav"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seedy"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seedy/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Stahování"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Odesílání"
+    },
+    "OV_COL_ETA": {
+        "message": "Čas"
+    },
+    "OV_COL_UPPED": {
+        "message": "Odesláno"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Staženo"
+    },
+    "OV_COL_SHARED": {
+        "message": "Poměr"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Dostupnost"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Dost."
+    },
+    "OV_COL_LABEL": {
+        "message": "Štítek"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Přidáno"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Dokončeno"
+    },
+    "Actions": {
+        "message": "Akce"
+    },
+    "FI_COL_NAME": {
+        "message": "Název"
+    },
+    "FI_COL_SIZE": {
+        "message": "Velikost"
+    },
+    "FI_COL_PRIO": {
+        "message": "Priorita"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Sdílení"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktivní"
+    },
+    "OV_CAT_ALL": {
+        "message": "Vše"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Dokončené"
+    },
+    "OV_CAT_DL": {
+        "message": "Stahování"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Neaktivní"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Bez štítku"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Zkontrolováno"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Stahuje se"
+    },
+    "OV_FL_ERROR": {
+        "message": "Chyba"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Dokončeno"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Pozastaveno"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Ve frontě"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Fronta sdílení"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Zastaveno"
+    },
+    "OV_FL_STALLED": {
+        "message": "Zaseknuto"
+    },
+    "MF_DONT": {
+        "message": "Nestahovat"
+    },
+    "MF_HIGH": {
+        "message": "Vysoká"
+    },
+    "MF_LOW": {
+        "message": "Nízká"
+    },
+    "MF_NORMAL": {
+        "message": "Normální"
+    },
+    "ML_START": {
+        "message": "Spustit"
+    },
+    "ML_STOP": {
+        "message": "Zastavit"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Vynutit kontrolu"
+    },
+    "ML_REMOVE": {
+        "message": "Odebrat"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Odebrat a"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Smazat .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Smazat data"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Smazat .torrent + data"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Neomezeno"
+    },
+    "Open_file": {
+        "message": "Přidat torrent soubor..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Webové rozhraní"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Přidat torrent z URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Obnovit všechny torrenty"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Pozastavit všechny torrenty"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Zavřít"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Opravdu chcete odebrat vybraný torrent?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Opravdu chcete odebrat %d vybraných torrentů?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Opravdu chcete odebrat vybraný torrent A smazat všechna stažená data?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Opravdu chcete odebrat %d vybraných torrentů A smazat všechna stažená data?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ano"
+    },
+    "DLG_BTN_NO": {
+        "message": "Ne"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Zrušit"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Použít"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Vložte URL torrentu"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Uživatelské jméno"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Heslo"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Pokročilé"
+    },
+    "enterNewLabel": {
+        "message": "Zadejte nový štítek pro vybraný torrent"
+    },
+    "defaultPath": {
+        "message": "Výchozí složka"
+    },
+    "add": {
+        "message": "Přidat"
+    },
+    "available": {
+        "message": "Dostupný"
+    },
+    "up": {
+        "message": "Nahoru"
+    },
+    "down": {
+        "message": "Dolů"
+    },
+    "update": {
+        "message": "Aktualizovat"
+    },
+    "deleteSelected": {
+        "message": "Smazat vybrané"
+    },
+    "torrentAdded": {
+        "message": "Torrent byl přidán!"
+    },
+    "unexpectedError": {
+        "message": "Neočekávaná chyba!"
+    },
+    "fileSizeError": {
+        "message": "Soubor je příliš velký"
+    },
+    "addInTorrentClient": {
+        "message": "Přidat do Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Torrent soubor pravděpodobně již existuje!"
+    },
+    "currentDirectory": {
+        "message": "Aktuální složka"
+    },
+    "openInTab": {
+        "message": "Otevřít v kartě"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Hlavní"
+    },
+    "optNotify": {
+        "message": "Oznámení"
+    },
+    "optCtx": {
+        "message": "Kontextová nabídka"
+    },
+    "backup": {
+        "message": "Záloha"
+    },
+    "restore": {
+        "message": "Obnovit"
+    },
+    "backupRestore": {
+        "message": "Zálohování"
+    },
+    "backupHint": {
+        "message": "Exportujte nastavení pro uložení nebo synchronizaci do cloudu"
+    },
+    "restoreHint": {
+        "message": "Importujte nastavení z předchozí zálohy nebo z cloudu"
+    },
+    "loadCurrentConfig": {
+        "message": "Načíst aktuální konfiguraci"
+    },
+    "configData": {
+        "message": "Konfigurační data"
+    },
+    "clickLoadConfig": {
+        "message": "Klikněte na \"Načíst aktuální konfiguraci\" pro zobrazení nastavení"
+    },
+    "useSSL": {
+        "message": "Použít SSL"
+    },
+    "path": {
+        "message": "Cesta"
+    },
+    "hideSeedStatusItem": {
+        "message": "Skrýt torrenty se stavem \"Sdílení\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Skrýt torrenty se stavem \"Dokončeno\""
+    },
+    "showSpeedGraph": {
+        "message": "Zobrazit graf rychlosti"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Interval aktualizace seznamu torrentů"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Zobrazit oznámení po dokončení stahování"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Zobrazit počet stahovaných torrentů na ikoně rozšíření"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Interval aktualizace na pozadí"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Otevřít kategorii \"Stahování\" při přidání torrentu"
+    },
+    "treeViewContextMenu": {
+        "message": "Seskupit složky jako strom"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Zobrazit možnost \"Výchozí cesta\""
+    },
+    "dirList": {
+        "message": "Složky pro stahování"
+    },
+    "dirListHint": {
+        "message": "Klikněte pravým tlačítkem na odkaz torrentu pro výběr cíle"
+    },
+    "options": {
+        "message": "Možnosti"
+    },
+    "subPath": {
+        "message": "Podsložka"
+    },
+    "optSaveInCloud": {
+        "message": "Uložit do cloudu"
+    },
+    "toRestore": {
+        "message": "Obnovit"
+    },
+    "optGetFromCloud": {
+        "message": "Získat nastavení z cloudu"
+    },
+    "optClearCloudStorage": {
+        "message": "Vymazat cloudové úložiště"
+    },
+    "confirmRestore": {
+        "message": "Opravdu chcete obnovit tuto konfiguraci? Přepíše všechna aktuální nastavení."
+    },
+    "confirmClearCloud": {
+        "message": "Opravdu chcete vymazat cloudovou zálohu?"
+    },
+    "showFileList": {
+        "message": "Seznam souborů"
+    },
+    "selectAll": {
+        "message": "Vybrat vše"
+    },
+    "refresh": {
+        "message": "Obnovit"
+    },
+    "checkSettings": {
+        "message": "Zkontrolovat nastavení"
+    },
+    "showFreeSpace": {
+        "message": "Zobrazit volné místo na disku"
+    },
+    "freeSpace": {
+        "message": "Volné místo"
+    },
+    "startNow": {
+        "message": "Spustit nyní"
+    },
+    "rename": {
+        "message": "Přejmenovat"
+    },
+    "renameText": {
+        "message": "Zadejte název souboru"
+    },
+    "move": {
+        "message": "Přesunout"
+    },
+    "moveNewPath": {
+        "message": "Zadejte novou cestu"
+    },
+    "guiPath": {
+        "message": "Cesta WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Dočasné omezení rychlosti"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrent byl přidán dříve"
+    },
+    "reannounce": {
+        "message": "Požádat o více peers"
+    },
+    "extra": {
+        "message": "Extra"
+    },
+    "queueTop": {
+        "message": "Na začátek"
+    },
+    "queueBottom": {
+        "message": "Na konec"
+    },
+    "requireAuthentication": {
+        "message": "Vyžadována autentizace"
+    },
+    "badgeColor": {
+        "message": "Barva odznaku ikony"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Kopírovat"
+    },
+    "shortName": {
+        "message": "Krátký název"
+    },
+    "portIncorrect": {
+        "message": "Port je nesprávný"
+    },
+    "search": {
+        "message": "Hledat"
+    },
+    "theme": {
+        "message": "Motiv"
+    },
+    "themeSystem": {
+        "message": "Systémový"
+    },
+    "themeLight": {
+        "message": "Světlý"
+    },
+    "themeDark": {
+        "message": "Tmavý"
+    },
+    "configureClient": {
+        "message": "Nastavit Transmission"
+    },
+    "configureClientHint": {
+        "message": "Nastavte připojení k serveru Transmission pro začátek."
+    },
+    "openOptions": {
+        "message": "Otevřít nastavení"
+    },
+    "properties": {
+        "message": "Vlastnosti"
+    },
+    "copyName": {
+        "message": "Kopírovat název"
+    },
+    "copyHash": {
+        "message": "Kopírovat hash"
+    },
+    "sessionTotals": {
+        "message": "Souhrn relace"
+    },
+    "responseEmpty": {
+        "message": "Odpověď je prázdná"
+    },
+    "clearSearch": {
+        "message": "Vymazat hledání"
+    },
+    "errorRetry": {
+        "message": "Zkusit znovu"
+    },
+    "errorDetails": {
+        "message": "Podrobnosti"
+    },
+    "speedGraph": {
+        "message": "Graf rychlosti"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Seznam blokovaných"
+    },
+    "blocklistEnable": {
+        "message": "Povolit seznam blokovaných"
+    },
+    "blocklistUrl": {
+        "message": "URL seznamu blokovaných"
+    },
+    "blocklistRules": {
+        "message": "Pravidla"
+    },
+    "blocklistUpdateNow": {
+        "message": "Aktualizovat seznam blokovaných nyní"
+    },
+    "peerFlags": {
+        "message": "Příznaky"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Max. peers celkem"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Max. peers na torrent"
+    },
+    "seedingSettings": {
+        "message": "Sdílení"
+    },
+    "seedRatioLimited": {
+        "message": "Ukončit sdílení při poměru"
+    },
+    "seedRatioLimit": {
+        "message": "Limit poměru sdílení"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Ukončit sdílení při nečinnosti po"
+    },
+    "idleSeedingLimit": {
+        "message": "Limit nečinnosti"
+    },
+    "networkSettings": {
+        "message": "Síť"
+    },
+    "peerPort": {
+        "message": "Port pro naslouchání"
+    },
+    "portForwardingEnabled": {
+        "message": "Povolit UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Šifrování"
+    },
+    "encryptionRequired": {
+        "message": "Vyžadováno"
+    },
+    "encryptionPreferred": {
+        "message": "Upřednostňováno"
+    },
+    "encryptionTolerated": {
+        "message": "Tolerováno"
+    },
+    "dhtEnabled": {
+        "message": "Povolit DHT"
+    },
+    "pexEnabled": {
+        "message": "Povolit PEX"
+    },
+    "lpdEnabled": {
+        "message": "Povolit LPD"
+    },
+    "utpEnabled": {
+        "message": "Povolit uTP"
+    },
+    "minutes": {
+        "message": "min"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Bez štítku"
+    },
+    "generalSettings": {
+        "message": "Obecné"
+    },
+    "startAddedTorrents": {
+        "message": "Spustit přidané torrenty"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Přesunout původní soubory .torrent do koše"
+    },
+    "incompleteDirSettings": {
+        "message": "Nedokončená stahování"
+    },
+    "incompleteDirEnabled": {
+        "message": "Používat složku pro nedokončená stahování"
+    },
+    "incompleteDir": {
+        "message": "Složka pro nedokončené"
+    },
+    "renamePartialFiles": {
+        "message": "Přejmenovat neúplné soubory příponou .part"
+    },
+    "queueSettings": {
+        "message": "Fronta"
+    },
+    "downloadQueueEnabled": {
+        "message": "Omezit frontu stahování"
+    },
+    "downloadQueueSize": {
+        "message": "Max. současných stahování"
+    },
+    "seedQueueEnabled": {
+        "message": "Omezit frontu sdílení"
+    },
+    "seedQueueSize": {
+        "message": "Max. současně sdílených"
+    },
+    "queueStalledEnabled": {
+        "message": "Považovat za nečinné po"
+    },
+    "queueStalledMinutes": {
+        "message": "Časový limit zaseknutí"
+    },
+    "altSpeedSchedule": {
+        "message": "Plán omezení rychlosti"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Povolit plán omezení rychlosti"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Čas zahájení"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Čas ukončení"
+    },
+    "altSpeedTimeDays": {
+        "message": "Aktivní dny"
+    },
+    "daySunday": {
+        "message": "Ne"
+    },
+    "dayMonday": {
+        "message": "Po"
+    },
+    "dayTuesday": {
+        "message": "Út"
+    },
+    "dayWednesday": {
+        "message": "St"
+    },
+    "dayThursday": {
+        "message": "Čt"
+    },
+    "dayFriday": {
+        "message": "Pá"
+    },
+    "daySaturday": {
+        "message": "So"
+    },
+    "scriptSettings": {
+        "message": "Skript"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Spustit skript po dokončení stahování"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Cesta ke skriptu"
+    },
+    "portTest": {
+        "message": "Otestovat port"
+    },
+    "portOpen": {
+        "message": "Port je otevřený"
+    },
+    "portClosed": {
+        "message": "Port je zavřený"
+    },
+    "portTesting": {
+        "message": "Testování..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Informace"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackery"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Limity sdílení"
+    },
+    "DT_COMMENT": {
+        "message": "Komentář"
+    },
+    "DT_CREATOR": {
+        "message": "Vytvořil"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Datum vytvoření"
+    },
+    "DT_PIECES": {
+        "message": "Části"
+    },
+    "DT_CORRUPT": {
+        "message": "Poškozeno"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Doba stahování"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Doba sdílení"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Webové seedy"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Úroveň"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seedy"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Stav"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Seznam trackerů"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Jedna URL na řádek, prázdný řádek mezi úrovněmi"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Režim poměru sdílení"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Limit poměru sdílení"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Režim sdílení při nečinnosti"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Limit nečinnosti sdílení (min)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Použít globální nastavení"
+    },
+    "DT_CUSTOM": {
+        "message": "Vlastní"
+    },
+    "DT_UNLIMITED": {
+        "message": "Bez omezení"
+    },
+    "DT_APPLY": {
+        "message": "Použít"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Naposledy aktivní"
+    },
+    "OV_COL_STARTED": {
+        "message": "Spuštěno"
+    },
+    "OV_COL_EDITED": {
+        "message": "Upraveno"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Efekt. velikost"
+    },
+    "DT_METADATA": {
+        "message": "Metadata"
+    },
+    "DT_PRIVATE": {
+        "message": "Soukromý"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Zdroje peers"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Příchozí"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Mezipaměť"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Limit stahování"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Limit odesílání"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Respektuje limity relace"
+    },
+    "DT_ENABLED": {
+        "message": "Povoleno"
+    },
+    "DT_DISABLED": {
+        "message": "Zakázáno"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Časový limit nečinnosti"
+    },
+    "sessionStats": {
+        "message": "$active$ aktivních, $paused$ pozastavených",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Spustit skript při přidání torrentu"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Cesta ke skriptu (přidání)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Spustit skript po dokončení sdílení"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Cesta ke skriptu (dokončení sdílení)"
+    },
+    "sequentialDownload": {
+        "message": "Sekvenční stahování"
+    },
+    "fileCount": {
+        "message": "Počet souborů"
+    },
+    "primaryMimeType": {
+        "message": "Typ obsahu"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Upozornění: bez SSL se vaše přihlašovací jméno a heslo odesílají po síti nešifrovaně."
+    },
+    "backupIncludesCredentials": {
+        "message": "Záloha obsahuje vaše přihlašovací jméno a heslo k serveru."
+    },
+    "restoreConnectionChanged": {
+        "message": "Tato záloha mění připojení k serveru: $changes$. Pokračovat?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "A bővítmény hozzáadja a Transmission webes felületét a böngészőhöz" },
-    "lang": { "message": "hu" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"hét\", \"n\", \"ó\", \"p\", \"mp\"]" },
-    "OV_COL_NAME": { "message": "Név" },
-    "OV_COL_ORDER": { "message": "Sor" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Méret" },
-    "OV_COL_REMAINING": { "message": "Hátra" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Állapot" },
-    "OV_COL_SEEDS": { "message": "Seedek" },
-    "OV_COL_PEERS": { "message": "Peerek" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seedek/Peerek" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Letöltés" },
-    "OV_COL_UPSPD": { "message": "Feltöltés" },
-    "OV_COL_ETA": { "message": "Idő" },
-    "OV_COL_UPPED": { "message": "Feltöltve" },
-    "OV_COL_DOWNLOADED": { "message": "Letöltve" },
-    "OV_COL_SHARED": { "message": "Arány" },
-    "OV_COL_AVAIL": { "message": "Elérhetőség" },
-    "OV_COL_AVAIL_SHORT": { "message": "Elérh." },
-    "OV_COL_LABEL": { "message": "Címke" },
-    "OV_COL_DATE_ADDED": { "message": "Hozzáadva" },
-    "OV_COL_DATE_COMPLETED": { "message": "Befejezve" },
-    "Actions": { "message": "Műveletek" },
-    "FI_COL_NAME": { "message": "Név" },
-    "FI_COL_SIZE": { "message": "Méret" },
-    "FI_COL_PRIO": { "message": "Prioritás" },
-    "OV_FL_SEEDING": { "message": "Seedelés" },
-    "OV_CAT_ACTIVE": { "message": "Aktív" },
-    "OV_CAT_ALL": { "message": "Mind" },
-    "OV_CAT_COMPL": { "message": "Befejezett" },
-    "OV_CAT_DL": { "message": "Letöltés" },
-    "OV_CAT_INACTIVE": { "message": "Inaktív" },
-    "OV_CAT_NOLABEL": { "message": "Nincs címke" },
-    "OV_FL_CHECKED": { "message": "Ellenőrizve" },
-    "OV_FL_DOWNLOADING": { "message": "Letöltés" },
-    "OV_FL_ERROR": { "message": "Hiba" },
-    "OV_FL_FINISHED": { "message": "Kész" },
-    "OV_FL_PAUSED": { "message": "Szüneteltetve" },
-    "OV_FL_QUEUED": { "message": "Sorban" },
-    "OV_FL_QUEUED_SEED": { "message": "Seed sor" },
-    "OV_FL_STOPPED": { "message": "Leállítva" },
-    "MF_DONT": { "message": "Ne töltsd le" },
-    "MF_HIGH": { "message": "Magas" },
-    "MF_LOW": { "message": "Alacsony" },
-    "MF_NORMAL": { "message": "Normál" },
-    "ML_START": { "message": "Indítás" },
-    "ML_PAUSE": { "message": "Szünet" },
-    "ML_STOP": { "message": "Leállítás" },
-    "OV_REMOVE_LABEL": { "message": "Címke eltávolítása" },
-    "OV_NEW_LABEL": { "message": "Új címke..." },
-    "ML_FORCE_START": { "message": "Kényszerített indítás" },
-    "ML_FORCE_RECHECK": { "message": "Kényszerített újraellenőrzés" },
-    "ML_REMOVE": { "message": "Eltávolítás" },
-    "ML_REMOVE_AND": { "message": "Eltávolítás és" },
-    "ML_DELETE_TORRENT": { "message": ".torrent törlése" },
-    "ML_DELETE_DATA": { "message": "Adatok törlése" },
-    "ML_DELETE_DATATORRENT": { "message": ".torrent + adatok törlése" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Letöltés" },
-    "MENU_UNLIMITED": { "message": "Korlátlan" },
-    "Open_file": { "message": "Torrent fájl hozzáadása..." },
-    "ST_CAPT_WEBUI": { "message": "Webes felület" },
-    "MM_FILE_ADD_URL": { "message": "Torrent hozzáadása URL-ből..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Összes torrent folytatása" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Összes torrent szüneteltetése" },
-    "DLG_BTN_CLOSE": { "message": "Bezárás" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Biztosan el szeretnéd távolítani a kiválasztott torrentet?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Biztosan el szeretnéd távolítani a kiválasztott %d torrentet?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Biztosan el szeretnéd távolítani a kiválasztott torrentet ÉS törölni az összes letöltött adatot?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Biztosan el szeretnéd távolítani a kiválasztott %d torrentet ÉS törölni az összes letöltött adatot?" },
-    "DLG_BTN_YES": { "message": "Igen" },
-    "DLG_BTN_NO": { "message": "Nem" },
-    "DLG_BTN_CANCEL": { "message": "Mégse" },
-    "DLG_BTN_APPLY": { "message": "Alkalmaz" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Mappák" },
-    "Paste_a_torrent_URL": { "message": "Illessz be egy torrent URL-t" },
-    "OV_NEWLABEL_CAPTION": { "message": "Címke megadása" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Felhasználónév" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Jelszó" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Haladó" },
-    "resume": { "message": "Folytatás" },
-    "enterNewLabel": { "message": "Add meg az új címkét a kiválasztott torrenthez" },
-    "defaultPath": { "message": "Alapértelmezett mappa" },
-    "add": { "message": "Hozzáadás" },
-    "available": { "message": "Elérhető" },
-    "up": { "message": "Fel" },
-    "down": { "message": "Le" },
-    "update": { "message": "Frissítés" },
-    "deleteSelected": { "message": "Kijelöltek törlése" },
-    "torrentAdded": { "message": "Torrent hozzáadva!" },
-    "unexpectedError": { "message": "Váratlan hiba!" },
-    "fileSizeError": { "message": "A fájl túl nagy" },
-    "addInTorrentClient": { "message": "Hozzáadás a Transmissionhöz" },
-    "enterNewDirPath": { "message": "Add meg az új mappa elérési útját" },
-    "torrentFileExists": { "message": "A torrent fájl valószínűleg már létezik!" },
-    "currentDirectory": { "message": "Jelenlegi mappa" },
-    "openInTab": { "message": "Megnyitás új fülön" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Fő" },
-    "optNotify": { "message": "Értesítések" },
-    "optCtx": { "message": "Helyi menü" },
-    "backup": { "message": "Mentés" },
-    "restore": { "message": "Visszaállítás" },
-    "backupRestore": { "message": "Mentés és visszaállítás" },
-    "backupHint": { "message": "Beállítások exportálása mentéshez vagy felhőbe szinkronizáláshoz" },
-    "restoreHint": { "message": "Beállítások importálása korábbi mentésből vagy felhőből" },
-    "loadCurrentConfig": { "message": "Jelenlegi konfiguráció betöltése" },
-    "configData": { "message": "Konfigurációs adatok" },
-    "clickLoadConfig": { "message": "Kattints a \"Jelenlegi konfiguráció betöltése\" gombra a beállítások megtekintéséhez" },
-    "useSSL": { "message": "SSL használata" },
-    "path": { "message": "Útvonal" },
-    "hideSeedStatusItem": { "message": "\"Seedelés\" állapotú torrentek elrejtése" },
-    "hideFinishStatusItem": { "message": "\"Kész\" állapotú torrentek elrejtése" },
-    "showSpeedGraph": { "message": "Sebesség grafikon megjelenítése" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Torrent lista frissítési időköz" },
-    "fixCyrillicIf": { "message": "Cirill javítása ha..." },
-    "fixCyrillicTitle": { "message": "A torrent nevek helytelenül jelennek meg" },
-    "fixCyrillicTorrentPath": { "message": "Az új torrent mappája helytelenül van beállítva" },
-    "showNotificationOnDownloadComplete": { "message": "Értesítés megjelenítése letöltés befejezésekor" },
-    "displayActiveTorrentCountIcon": { "message": "Letöltés alatt álló torrentek számának megjelenítése a bővítmény ikonján" },
-    "backgroundUpdateInterval": { "message": "Háttér frissítési időköz" },
-    "notificationTimeout": { "message": "Értesítés elrejtése ennyi idő után" },
-    "folderContextMenu": { "message": "Mappa lista megjelenítése" },
-    "labelContextMenu": { "message": "Címke lista megjelenítése" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "\"Letöltés\" kategória megnyitása torrent hozzáadásakor" },
-    "treeViewContextMenu": { "message": "Mappák csoportosítása faként" },
-    "treeViewContextMenuHint": { "message": "Mappák hierarchikus szervezése lapos lista helyett" },
-    "showDefaultFolderContextMenuItem": { "message": "\"Alapértelmezett útvonal\" opció megjelenítése" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Opció hozzáadása a Transmission alapértelmezett mappájába letöltéshez" },
-    "dirList": { "message": "Letöltési mappák" },
-    "dirListHint": { "message": "Jobb klikk a torrent linkre a célhely kiválasztásához" },
-    "options": { "message": "Beállítások" },
-    "subPath": { "message": "Almappa" },
-    "labelList": { "message": "Címke lista" },
-    "optSaveInCloud": { "message": "Mentés felhőbe" },
-    "toRestore": { "message": "Visszaállítás" },
-    "optGetFromCloud": { "message": "Beállítások lekérése felhőből" },
-    "optClearCloudStorage": { "message": "Felhő tárhely törlése" },
-    "confirmRestore": { "message": "Biztosan vissza szeretnéd állítani ezt a konfigurációt? Ez felülírja az összes jelenlegi beállítást." },
-    "confirmClearCloud": { "message": "Biztosan törölni szeretnéd a felhő mentést?" },
-    "showFileList": { "message": "Fájl lista" },
-    "selectAll": { "message": "Összes kijelölése" },
-    "refresh": { "message": "Frissítés" },
-    "checkSettings": { "message": "Beállítások ellenőrzése" },
-    "showFreeSpace": { "message": "Szabad lemezterület megjelenítése" },
-    "freeSpace": { "message": "Szabad hely" },
-    "startNow": { "message": "Indítás most" },
-    "rename": { "message": "Átnevezés" },
-    "renameText": { "message": "Add meg a fájlnevet" },
-    "move": { "message": "Áthelyezés" },
-    "moveNewPath": { "message": "Add meg az új útvonalat" },
-    "fullPath": { "message": "Mappa (teljes útvonal)" },
-    "guiPath": { "message": "WebUI útvonal" },
-    "altSpeedEnable": { "message": "Ideiglenes sebességkorlátok" },
-    "torrentFileIsExists": { "message": "A torrent korábban már hozzá lett adva" },
-    "reannounce": { "message": "További peerek kérése" },
-    "extra": { "message": "Extra" },
-    "queueTop": { "message": "Elejére" },
-    "queueBottom": { "message": "Végére" },
-    "requireAuthentication": { "message": "Hitelesítés szükséges" },
-    "badgeColor": { "message": "Ikon jelvény színe" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Másolás" },
-    "addItem": { "message": "Elem hozzáadása" },
-    "shortName": { "message": "Rövid név" },
-    "portIncorrect": { "message": "A port helytelen" },
-    "search": { "message": "Keresés" },
-    "theme": { "message": "Téma" },
-    "themeSystem": { "message": "Rendszer" },
-    "themeLight": { "message": "Világos" },
-    "themeDark": { "message": "Sötét" },
-    "configureClient": { "message": "Transmission beállítása" },
-    "configureClientHint": { "message": "Kérjük, állítsd be a Transmission szerver kapcsolatot a kezdéshez." },
-    "openOptions": { "message": "Beállítások megnyitása" },
-    "properties": { "message": "Tulajdonságok" },
-    "copyName": { "message": "Név másolása" },
-    "copyHash": { "message": "Hash másolása" },
-    "sessionTotals": { "message": "Munkamenet összesítés" },
-    "responseEmpty": { "message": "A válasz üres" },
-    "clearSearch": { "message": "Keresés törlése" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "A bővítmény hozzáadja a Transmission webes felületét a böngészőhöz"
+    },
+    "lang": {
+        "message": "hu"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"hét\", \"n\", \"ó\", \"p\", \"mp\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Név"
+    },
+    "OV_COL_ORDER": {
+        "message": "Sor"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Méret"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Hátra"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Állapot"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seedek"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peerek"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seedek/Peerek"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Letöltés"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Feltöltés"
+    },
+    "OV_COL_ETA": {
+        "message": "Idő"
+    },
+    "OV_COL_UPPED": {
+        "message": "Feltöltve"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Letöltve"
+    },
+    "OV_COL_SHARED": {
+        "message": "Arány"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Elérhetőség"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Elérh."
+    },
+    "OV_COL_LABEL": {
+        "message": "Címke"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Hozzáadva"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Befejezve"
+    },
+    "Actions": {
+        "message": "Műveletek"
+    },
+    "FI_COL_NAME": {
+        "message": "Név"
+    },
+    "FI_COL_SIZE": {
+        "message": "Méret"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioritás"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Seedelés"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktív"
+    },
+    "OV_CAT_ALL": {
+        "message": "Mind"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Befejezett"
+    },
+    "OV_CAT_DL": {
+        "message": "Letöltés"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Inaktív"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Nincs címke"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Ellenőrizve"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Letöltés"
+    },
+    "OV_FL_ERROR": {
+        "message": "Hiba"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Kész"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Szüneteltetve"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Sorban"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Seed sor"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Leállítva"
+    },
+    "OV_FL_STALLED": {
+        "message": "Elakadt"
+    },
+    "MF_DONT": {
+        "message": "Ne töltsd le"
+    },
+    "MF_HIGH": {
+        "message": "Magas"
+    },
+    "MF_LOW": {
+        "message": "Alacsony"
+    },
+    "MF_NORMAL": {
+        "message": "Normál"
+    },
+    "ML_START": {
+        "message": "Indítás"
+    },
+    "ML_STOP": {
+        "message": "Leállítás"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Kényszerített újraellenőrzés"
+    },
+    "ML_REMOVE": {
+        "message": "Eltávolítás"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Eltávolítás és"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": ".torrent törlése"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Adatok törlése"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": ".torrent + adatok törlése"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Korlátlan"
+    },
+    "Open_file": {
+        "message": "Torrent fájl hozzáadása..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Webes felület"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Torrent hozzáadása URL-ből..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Összes torrent folytatása"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Összes torrent szüneteltetése"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Bezárás"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Biztosan el szeretnéd távolítani a kiválasztott torrentet?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Biztosan el szeretnéd távolítani a kiválasztott %d torrentet?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Biztosan el szeretnéd távolítani a kiválasztott torrentet ÉS törölni az összes letöltött adatot?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Biztosan el szeretnéd távolítani a kiválasztott %d torrentet ÉS törölni az összes letöltött adatot?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Igen"
+    },
+    "DLG_BTN_NO": {
+        "message": "Nem"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Mégse"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Alkalmaz"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Illessz be egy torrent URL-t"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Felhasználónév"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Jelszó"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Haladó"
+    },
+    "enterNewLabel": {
+        "message": "Add meg az új címkét a kiválasztott torrenthez"
+    },
+    "defaultPath": {
+        "message": "Alapértelmezett mappa"
+    },
+    "add": {
+        "message": "Hozzáadás"
+    },
+    "available": {
+        "message": "Elérhető"
+    },
+    "up": {
+        "message": "Fel"
+    },
+    "down": {
+        "message": "Le"
+    },
+    "update": {
+        "message": "Frissítés"
+    },
+    "deleteSelected": {
+        "message": "Kijelöltek törlése"
+    },
+    "torrentAdded": {
+        "message": "Torrent hozzáadva!"
+    },
+    "unexpectedError": {
+        "message": "Váratlan hiba!"
+    },
+    "fileSizeError": {
+        "message": "A fájl túl nagy"
+    },
+    "addInTorrentClient": {
+        "message": "Hozzáadás a Transmissionhöz"
+    },
+    "torrentFileExists": {
+        "message": "A torrent fájl valószínűleg már létezik!"
+    },
+    "currentDirectory": {
+        "message": "Jelenlegi mappa"
+    },
+    "openInTab": {
+        "message": "Megnyitás új fülön"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Fő"
+    },
+    "optNotify": {
+        "message": "Értesítések"
+    },
+    "optCtx": {
+        "message": "Helyi menü"
+    },
+    "backup": {
+        "message": "Mentés"
+    },
+    "restore": {
+        "message": "Visszaállítás"
+    },
+    "backupRestore": {
+        "message": "Mentés és visszaállítás"
+    },
+    "backupHint": {
+        "message": "Beállítások exportálása mentéshez vagy felhőbe szinkronizáláshoz"
+    },
+    "restoreHint": {
+        "message": "Beállítások importálása korábbi mentésből vagy felhőből"
+    },
+    "loadCurrentConfig": {
+        "message": "Jelenlegi konfiguráció betöltése"
+    },
+    "configData": {
+        "message": "Konfigurációs adatok"
+    },
+    "clickLoadConfig": {
+        "message": "Kattints a \"Jelenlegi konfiguráció betöltése\" gombra a beállítások megtekintéséhez"
+    },
+    "useSSL": {
+        "message": "SSL használata"
+    },
+    "path": {
+        "message": "Útvonal"
+    },
+    "hideSeedStatusItem": {
+        "message": "\"Seedelés\" állapotú torrentek elrejtése"
+    },
+    "hideFinishStatusItem": {
+        "message": "\"Kész\" állapotú torrentek elrejtése"
+    },
+    "showSpeedGraph": {
+        "message": "Sebesség grafikon megjelenítése"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Torrent lista frissítési időköz"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Értesítés megjelenítése letöltés befejezésekor"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Letöltés alatt álló torrentek számának megjelenítése a bővítmény ikonján"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Háttér frissítési időköz"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "\"Letöltés\" kategória megnyitása torrent hozzáadásakor"
+    },
+    "treeViewContextMenu": {
+        "message": "Mappák csoportosítása faként"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "\"Alapértelmezett útvonal\" opció megjelenítése"
+    },
+    "dirList": {
+        "message": "Letöltési mappák"
+    },
+    "dirListHint": {
+        "message": "Jobb klikk a torrent linkre a célhely kiválasztásához"
+    },
+    "options": {
+        "message": "Beállítások"
+    },
+    "subPath": {
+        "message": "Almappa"
+    },
+    "optSaveInCloud": {
+        "message": "Mentés felhőbe"
+    },
+    "toRestore": {
+        "message": "Visszaállítás"
+    },
+    "optGetFromCloud": {
+        "message": "Beállítások lekérése felhőből"
+    },
+    "optClearCloudStorage": {
+        "message": "Felhő tárhely törlése"
+    },
+    "confirmRestore": {
+        "message": "Biztosan vissza szeretnéd állítani ezt a konfigurációt? Ez felülírja az összes jelenlegi beállítást."
+    },
+    "confirmClearCloud": {
+        "message": "Biztosan törölni szeretnéd a felhő mentést?"
+    },
+    "showFileList": {
+        "message": "Fájl lista"
+    },
+    "selectAll": {
+        "message": "Összes kijelölése"
+    },
+    "refresh": {
+        "message": "Frissítés"
+    },
+    "checkSettings": {
+        "message": "Beállítások ellenőrzése"
+    },
+    "showFreeSpace": {
+        "message": "Szabad lemezterület megjelenítése"
+    },
+    "freeSpace": {
+        "message": "Szabad hely"
+    },
+    "startNow": {
+        "message": "Indítás most"
+    },
+    "rename": {
+        "message": "Átnevezés"
+    },
+    "renameText": {
+        "message": "Add meg a fájlnevet"
+    },
+    "move": {
+        "message": "Áthelyezés"
+    },
+    "moveNewPath": {
+        "message": "Add meg az új útvonalat"
+    },
+    "guiPath": {
+        "message": "WebUI útvonal"
+    },
+    "altSpeedEnable": {
+        "message": "Ideiglenes sebességkorlátok"
+    },
+    "torrentFileIsExists": {
+        "message": "A torrent korábban már hozzá lett adva"
+    },
+    "reannounce": {
+        "message": "További peerek kérése"
+    },
+    "extra": {
+        "message": "Extra"
+    },
+    "queueTop": {
+        "message": "Elejére"
+    },
+    "queueBottom": {
+        "message": "Végére"
+    },
+    "requireAuthentication": {
+        "message": "Hitelesítés szükséges"
+    },
+    "badgeColor": {
+        "message": "Ikon jelvény színe"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Másolás"
+    },
+    "shortName": {
+        "message": "Rövid név"
+    },
+    "portIncorrect": {
+        "message": "A port helytelen"
+    },
+    "search": {
+        "message": "Keresés"
+    },
+    "theme": {
+        "message": "Téma"
+    },
+    "themeSystem": {
+        "message": "Rendszer"
+    },
+    "themeLight": {
+        "message": "Világos"
+    },
+    "themeDark": {
+        "message": "Sötét"
+    },
+    "configureClient": {
+        "message": "Transmission beállítása"
+    },
+    "configureClientHint": {
+        "message": "Kérjük, állítsd be a Transmission szerver kapcsolatot a kezdéshez."
+    },
+    "openOptions": {
+        "message": "Beállítások megnyitása"
+    },
+    "properties": {
+        "message": "Tulajdonságok"
+    },
+    "copyName": {
+        "message": "Név másolása"
+    },
+    "copyHash": {
+        "message": "Hash másolása"
+    },
+    "sessionTotals": {
+        "message": "Munkamenet összesítés"
+    },
+    "responseEmpty": {
+        "message": "A válasz üres"
+    },
+    "clearSearch": {
+        "message": "Keresés törlése"
+    },
+    "errorRetry": {
+        "message": "Újra"
+    },
+    "errorDetails": {
+        "message": "Részletek"
+    },
+    "speedGraph": {
+        "message": "Sebesség grafikon"
+    },
+    "optServer": {
+        "message": "Szerver"
+    },
+    "blocklist": {
+        "message": "Tiltólista"
+    },
+    "blocklistEnable": {
+        "message": "Tiltólista engedélyezése"
+    },
+    "blocklistUrl": {
+        "message": "Tiltólista URL"
+    },
+    "blocklistRules": {
+        "message": "Szabályok"
+    },
+    "blocklistUpdateNow": {
+        "message": "Tiltólista frissítése most"
+    },
+    "peerFlags": {
+        "message": "Jelzők"
+    },
+    "peerSettings": {
+        "message": "Peerek"
+    },
+    "peerLimitGlobal": {
+        "message": "Peerek maximális száma összesen"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Peerek maximális száma torrentenként"
+    },
+    "seedingSettings": {
+        "message": "Seedelés"
+    },
+    "seedRatioLimited": {
+        "message": "Seedelés leállítása ennél az aránynál"
+    },
+    "seedRatioLimit": {
+        "message": "Seed arány korlát"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Seedelés leállítása ennyi tétlenség után"
+    },
+    "idleSeedingLimit": {
+        "message": "Tétlenségi korlát"
+    },
+    "networkSettings": {
+        "message": "Hálózat"
+    },
+    "peerPort": {
+        "message": "Figyelt port"
+    },
+    "portForwardingEnabled": {
+        "message": "UPnP / NAT-PMP engedélyezése"
+    },
+    "encryption": {
+        "message": "Titkosítás"
+    },
+    "encryptionRequired": {
+        "message": "Kötelező"
+    },
+    "encryptionPreferred": {
+        "message": "Előnyben részesített"
+    },
+    "encryptionTolerated": {
+        "message": "Megengedett"
+    },
+    "dhtEnabled": {
+        "message": "DHT engedélyezése"
+    },
+    "pexEnabled": {
+        "message": "PEX engedélyezése"
+    },
+    "lpdEnabled": {
+        "message": "LPD engedélyezése"
+    },
+    "utpEnabled": {
+        "message": "uTP engedélyezése"
+    },
+    "minutes": {
+        "message": "perc"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Nincs címke"
+    },
+    "generalSettings": {
+        "message": "Általános"
+    },
+    "startAddedTorrents": {
+        "message": "Hozzáadott torrentek elindítása"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Eredeti .torrent fájlok törlése"
+    },
+    "incompleteDirSettings": {
+        "message": "Befejezetlen letöltések"
+    },
+    "incompleteDirEnabled": {
+        "message": "Befejezetlen letöltések mappájának használata"
+    },
+    "incompleteDir": {
+        "message": "Befejezetlen letöltések mappája"
+    },
+    "renamePartialFiles": {
+        "message": "Részleges fájlok átnevezése .part kiterjesztéssel"
+    },
+    "queueSettings": {
+        "message": "Sor"
+    },
+    "downloadQueueEnabled": {
+        "message": "Letöltési sor korlátozása"
+    },
+    "downloadQueueSize": {
+        "message": "Egyidejű letöltések maximális száma"
+    },
+    "seedQueueEnabled": {
+        "message": "Seed sor korlátozása"
+    },
+    "seedQueueSize": {
+        "message": "Egyidejű seedelések maximális száma"
+    },
+    "queueStalledEnabled": {
+        "message": "Tétlennek tekintés ennyi idő után"
+    },
+    "queueStalledMinutes": {
+        "message": "Elakadási időkorlát"
+    },
+    "altSpeedSchedule": {
+        "message": "Sebességkorlát ütemezése"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Sebességkorlát ütemezésének engedélyezése"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Kezdés ideje"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Befejezés ideje"
+    },
+    "altSpeedTimeDays": {
+        "message": "Aktív napok"
+    },
+    "daySunday": {
+        "message": "V"
+    },
+    "dayMonday": {
+        "message": "H"
+    },
+    "dayTuesday": {
+        "message": "K"
+    },
+    "dayWednesday": {
+        "message": "Sze"
+    },
+    "dayThursday": {
+        "message": "Cs"
+    },
+    "dayFriday": {
+        "message": "P"
+    },
+    "daySaturday": {
+        "message": "Szo"
+    },
+    "scriptSettings": {
+        "message": "Szkript"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Szkript futtatása a letöltés befejezésekor"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Szkript elérési útja"
+    },
+    "portTest": {
+        "message": "Port tesztelése"
+    },
+    "portOpen": {
+        "message": "A port nyitva van"
+    },
+    "portClosed": {
+        "message": "A port zárva van"
+    },
+    "portTesting": {
+        "message": "Tesztelés..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Információ"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackerek"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Seed korlátok"
+    },
+    "DT_COMMENT": {
+        "message": "Megjegyzés"
+    },
+    "DT_CREATOR": {
+        "message": "Készítő"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Létrehozás dátuma"
+    },
+    "DT_PIECES": {
+        "message": "Darabok"
+    },
+    "DT_CORRUPT": {
+        "message": "Sérült"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Letöltési idő"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Seedelési idő"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web seedek"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Szint"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seedek"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peerek"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Állapot"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Tracker lista"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Soronként egy URL, a szinteket üres sor választja el"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Seed arány mód"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Seed arány korlát"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Tétlen seedelés mód"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Tétlen seedelés korlátja (perc)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Globális beállítások használata"
+    },
+    "DT_CUSTOM": {
+        "message": "Egyéni"
+    },
+    "DT_UNLIMITED": {
+        "message": "Korlátlan"
+    },
+    "DT_APPLY": {
+        "message": "Alkalmaz"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Utolsó aktivitás"
+    },
+    "OV_COL_STARTED": {
+        "message": "Elindítva"
+    },
+    "OV_COL_EDITED": {
+        "message": "Módosítva"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Kész méret"
+    },
+    "DT_METADATA": {
+        "message": "Metaadatok"
+    },
+    "DT_PRIVATE": {
+        "message": "Privát"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peer források"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Bejövő"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Gyorsítótár"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Letöltési korlát"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Feltöltési korlát"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Globális korlátok betartása"
+    },
+    "DT_ENABLED": {
+        "message": "Engedélyezve"
+    },
+    "DT_DISABLED": {
+        "message": "Letiltva"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Tétlenségi időkorlát"
+    },
+    "sessionStats": {
+        "message": "$active$ aktív, $paused$ szüneteltetve",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Szkript futtatása torrent hozzáadásakor"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Szkript elérési útja (hozzáadáskor)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Szkript futtatása a seedelés befejezésekor"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Szkript elérési útja (seedelés kész)"
+    },
+    "sequentialDownload": {
+        "message": "Sorrendben történő letöltés"
+    },
+    "fileCount": {
+        "message": "Fájlok száma"
+    },
+    "primaryMimeType": {
+        "message": "Tartalom típusa"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Figyelem: SSL nélkül a felhasználóneved és a jelszavad titkosítás nélkül kerül továbbításra a hálózaton."
+    },
+    "backupIncludesCredentials": {
+        "message": "A biztonsági mentés tartalmazza a szerverhez használt felhasználónevedet és jelszavadat."
+    },
+    "restoreConnectionChanged": {
+        "message": "Ez a biztonsági mentés megváltoztatja a szerverkapcsolatot: $changes$. Folytatod?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

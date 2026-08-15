@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Tarayıcınıza Transmission web arayüzü ekler" },
-    "lang": { "message": "tr" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"h\", \"g\", \"sa\", \"dk\", \"sn\"]" },
-    "OV_COL_NAME": { "message": "Ad" },
-    "OV_COL_ORDER": { "message": "Sıra" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Boyut" },
-    "OV_COL_REMAINING": { "message": "Kalan" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Durum" },
-    "OV_COL_SEEDS": { "message": "Seed" },
-    "OV_COL_PEERS": { "message": "Peer" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seed/Peer" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "İndirme" },
-    "OV_COL_UPSPD": { "message": "Yükleme" },
-    "OV_COL_ETA": { "message": "Kalan Süre" },
-    "OV_COL_UPPED": { "message": "Yüklenen" },
-    "OV_COL_DOWNLOADED": { "message": "İndirilen" },
-    "OV_COL_SHARED": { "message": "Oran" },
-    "OV_COL_AVAIL": { "message": "Erişilebilirlik" },
-    "OV_COL_AVAIL_SHORT": { "message": "Eriş." },
-    "OV_COL_LABEL": { "message": "Etiket" },
-    "OV_COL_DATE_ADDED": { "message": "Eklendi" },
-    "OV_COL_DATE_COMPLETED": { "message": "Tamamlandı" },
-    "Actions": { "message": "İşlemler" },
-    "FI_COL_NAME": { "message": "Ad" },
-    "FI_COL_SIZE": { "message": "Boyut" },
-    "FI_COL_PRIO": { "message": "Öncelik" },
-    "OV_FL_SEEDING": { "message": "Paylaşılıyor" },
-    "OV_CAT_ACTIVE": { "message": "Aktif" },
-    "OV_CAT_ALL": { "message": "Tümü" },
-    "OV_CAT_COMPL": { "message": "Tamamlanan" },
-    "OV_CAT_DL": { "message": "İndiriliyor" },
-    "OV_CAT_INACTIVE": { "message": "Pasif" },
-    "OV_CAT_NOLABEL": { "message": "Etiketsiz" },
-    "OV_FL_CHECKED": { "message": "Kontrol edildi" },
-    "OV_FL_DOWNLOADING": { "message": "İndiriliyor" },
-    "OV_FL_ERROR": { "message": "Hata" },
-    "OV_FL_FINISHED": { "message": "Tamamlandı" },
-    "OV_FL_PAUSED": { "message": "Duraklatıldı" },
-    "OV_FL_QUEUED": { "message": "Sırada" },
-    "OV_FL_QUEUED_SEED": { "message": "Paylaşım sırasında" },
-    "OV_FL_STOPPED": { "message": "Durduruldu" },
-    "MF_DONT": { "message": "İndirme" },
-    "MF_HIGH": { "message": "Yüksek" },
-    "MF_LOW": { "message": "Düşük" },
-    "MF_NORMAL": { "message": "Normal" },
-    "ML_START": { "message": "Başlat" },
-    "ML_PAUSE": { "message": "Duraklat" },
-    "ML_STOP": { "message": "Durdur" },
-    "OV_REMOVE_LABEL": { "message": "Etiketi kaldır" },
-    "OV_NEW_LABEL": { "message": "Yeni etiket..." },
-    "ML_FORCE_START": { "message": "Zorla başlat" },
-    "ML_FORCE_RECHECK": { "message": "Yeniden kontrol et" },
-    "ML_REMOVE": { "message": "Kaldır" },
-    "ML_REMOVE_AND": { "message": "Kaldır ve" },
-    "ML_DELETE_TORRENT": { "message": ".torrent sil" },
-    "ML_DELETE_DATA": { "message": "Verileri sil" },
-    "ML_DELETE_DATATORRENT": { "message": ".torrent + verileri sil" },
-    "DLG_RSSDOWNLOADER_24": { "message": "İndir" },
-    "MENU_UNLIMITED": { "message": "Sınırsız" },
-    "Open_file": { "message": "Torrent dosyası ekle..." },
-    "ST_CAPT_WEBUI": { "message": "Web Arayüzü" },
-    "MM_FILE_ADD_URL": { "message": "URL'den torrent ekle..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Tüm torrentleri devam ettir" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Tüm torrentleri duraklat" },
-    "DLG_BTN_CLOSE": { "message": "Kapat" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Seçili torrenti kaldırmak istediğinizden emin misiniz?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Seçili %d torrenti kaldırmak istediğinizden emin misiniz?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Seçili torrenti kaldırmak VE tüm indirilen verileri silmek istediğinizden emin misiniz?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Seçili %d torrenti kaldırmak VE tüm indirilen verileri silmek istediğinizden emin misiniz?" },
-    "DLG_BTN_YES": { "message": "Evet" },
-    "DLG_BTN_NO": { "message": "Hayır" },
-    "DLG_BTN_CANCEL": { "message": "İptal" },
-    "DLG_BTN_APPLY": { "message": "Uygula" },
-    "DLG_BTN_OK": { "message": "Tamam" },
-    "ST_CAPT_FOLDER": { "message": "Klasörler" },
-    "Paste_a_torrent_URL": { "message": "Torrent URL'si yapıştır" },
-    "OV_NEWLABEL_CAPTION": { "message": "Etiket girin" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Kullanıcı adı" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Şifre" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Gelişmiş" },
-    "resume": { "message": "Devam et" },
-    "enterNewLabel": { "message": "Seçili torrent için yeni etiket girin" },
-    "defaultPath": { "message": "Varsayılan klasör" },
-    "add": { "message": "Ekle" },
-    "available": { "message": "Erişilebilir" },
-    "up": { "message": "Yukarı" },
-    "down": { "message": "Aşağı" },
-    "update": { "message": "Güncelle" },
-    "deleteSelected": { "message": "Seçilenleri sil" },
-    "torrentAdded": { "message": "Torrent eklendi!" },
-    "unexpectedError": { "message": "Beklenmeyen hata!" },
-    "fileSizeError": { "message": "Dosya çok büyük" },
-    "addInTorrentClient": { "message": "Transmission'a ekle" },
-    "enterNewDirPath": { "message": "Yeni klasör yolunu girin" },
-    "torrentFileExists": { "message": "Torrent dosyası muhtemelen zaten mevcut!" },
-    "currentDirectory": { "message": "Mevcut klasör" },
-    "openInTab": { "message": "Sekmede aç" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Genel" },
-    "optNotify": { "message": "Bildirimler" },
-    "optCtx": { "message": "Sağ tık menüsü" },
-    "backup": { "message": "Yedekle" },
-    "restore": { "message": "Geri yükle" },
-    "backupRestore": { "message": "Yedekleme ve Geri Yükleme" },
-    "backupHint": { "message": "Ayarlarınızı kaydetmek veya buluta senkronize etmek için dışa aktarın" },
-    "restoreHint": { "message": "Önceki yedekten veya buluttan ayarları içe aktarın" },
-    "loadCurrentConfig": { "message": "Mevcut yapılandırmayı yükle" },
-    "configData": { "message": "Yapılandırma verileri" },
-    "clickLoadConfig": { "message": "Ayarlarınızı görüntülemek için \"Mevcut yapılandırmayı yükle\"ye tıklayın" },
-    "useSSL": { "message": "SSL kullan" },
-    "path": { "message": "Yol" },
-    "hideSeedStatusItem": { "message": "\"Paylaşılıyor\" durumundaki torrentleri gizle" },
-    "hideFinishStatusItem": { "message": "\"Tamamlandı\" durumundaki torrentleri gizle" },
-    "showSpeedGraph": { "message": "Hız grafiğini göster" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Torrent listesi güncelleme aralığı" },
-    "fixCyrillicIf": { "message": "Kiril düzelt eğer..." },
-    "fixCyrillicTitle": { "message": "Torrent adları yanlış görüntüleniyor" },
-    "fixCyrillicTorrentPath": { "message": "Yeni torrent için klasör yanlış ayarlanıyor" },
-    "showNotificationOnDownloadComplete": { "message": "İndirme tamamlandığında bildirim göster" },
-    "displayActiveTorrentCountIcon": { "message": "Eklenti simgesinde indirme sayısını göster" },
-    "backgroundUpdateInterval": { "message": "Arka plan güncelleme aralığı" },
-    "notificationTimeout": { "message": "Bildirimi gizle" },
-    "folderContextMenu": { "message": "Klasör listesini göster" },
-    "labelContextMenu": { "message": "Etiket listesini göster" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Torrent eklerken \"İndiriliyor\" kategorisini aç" },
-    "treeViewContextMenu": { "message": "Klasörleri ağaç olarak grupla" },
-    "treeViewContextMenuHint": { "message": "Klasörleri düz liste yerine hiyerarşik olarak düzenle" },
-    "showDefaultFolderContextMenuItem": { "message": "\"Varsayılan yol\" seçeneğini göster" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Transmission'ın varsayılan klasörüne indirme seçeneği ekle" },
-    "dirList": { "message": "İndirme klasörleri" },
-    "dirListHint": { "message": "Hedef seçmek için torrent bağlantısına sağ tıklayın" },
-    "options": { "message": "Seçenekler" },
-    "subPath": { "message": "Alt klasör" },
-    "labelList": { "message": "Etiket listesi" },
-    "optSaveInCloud": { "message": "Buluta kaydet" },
-    "toRestore": { "message": "Geri yükle" },
-    "optGetFromCloud": { "message": "Buluttan al" },
-    "optClearCloudStorage": { "message": "Bulut depolamayı temizle" },
-    "confirmRestore": { "message": "Bu yapılandırmayı geri yüklemek istediğinizden emin misiniz? Tüm mevcut ayarlar üzerine yazılacak." },
-    "confirmClearCloud": { "message": "Bulut yedeğini temizlemek istediğinizden emin misiniz?" },
-    "showFileList": { "message": "Dosya listesi" },
-    "selectAll": { "message": "Tümünü seç" },
-    "refresh": { "message": "Yenile" },
-    "checkSettings": { "message": "Ayarları kontrol et" },
-    "showFreeSpace": { "message": "Kullanılabilir disk alanını göster" },
-    "freeSpace": { "message": "Boş alan" },
-    "startNow": { "message": "Şimdi başlat" },
-    "rename": { "message": "Yeniden adlandır" },
-    "renameText": { "message": "Dosya adını girin" },
-    "move": { "message": "Taşı" },
-    "moveNewPath": { "message": "Yeni yolu girin" },
-    "fullPath": { "message": "Klasör (tam yol)" },
-    "guiPath": { "message": "WebUI yolu" },
-    "altSpeedEnable": { "message": "Geçici hız limitleri" },
-    "torrentFileIsExists": { "message": "Torrent daha önce eklendi" },
-    "reannounce": { "message": "Daha fazla peer iste" },
-    "extra": { "message": "Ekstra" },
-    "queueTop": { "message": "Başa" },
-    "queueBottom": { "message": "Sona" },
-    "requireAuthentication": { "message": "Kimlik doğrulama gerekli" },
-    "badgeColor": { "message": "Simge rozet rengi" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Kopyala" },
-    "addItem": { "message": "Öğe ekle" },
-    "shortName": { "message": "Kısa ad" },
-    "portIncorrect": { "message": "Port geçersiz" },
-    "search": { "message": "Ara" },
-    "theme": { "message": "Tema" },
-    "themeSystem": { "message": "Sistem" },
-    "themeLight": { "message": "Açık" },
-    "themeDark": { "message": "Koyu" },
-    "configureClient": { "message": "Transmission'ı yapılandır" },
-    "configureClientHint": { "message": "Başlamak için Transmission sunucu bağlantınızı yapılandırın." },
-    "openOptions": { "message": "Ayarları aç" },
-    "properties": { "message": "Özellikler" },
-    "copyName": { "message": "Adı kopyala" },
-    "copyHash": { "message": "Hash'i kopyala" },
-    "sessionTotals": { "message": "Oturum toplamları" },
-    "responseEmpty": { "message": "Yanıt boş" },
-    "clearSearch": { "message": "Aramayı temizle" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Tarayıcınıza Transmission web arayüzü ekler"
+    },
+    "lang": {
+        "message": "tr"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"h\", \"g\", \"sa\", \"dk\", \"sn\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Ad"
+    },
+    "OV_COL_ORDER": {
+        "message": "Sıra"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Boyut"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Kalan"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Durum"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seed"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peer"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seed/Peer"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "İndirme"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Yükleme"
+    },
+    "OV_COL_ETA": {
+        "message": "Kalan Süre"
+    },
+    "OV_COL_UPPED": {
+        "message": "Yüklenen"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "İndirilen"
+    },
+    "OV_COL_SHARED": {
+        "message": "Oran"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Erişilebilirlik"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Eriş."
+    },
+    "OV_COL_LABEL": {
+        "message": "Etiket"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Eklendi"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Tamamlandı"
+    },
+    "Actions": {
+        "message": "İşlemler"
+    },
+    "FI_COL_NAME": {
+        "message": "Ad"
+    },
+    "FI_COL_SIZE": {
+        "message": "Boyut"
+    },
+    "FI_COL_PRIO": {
+        "message": "Öncelik"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Paylaşılıyor"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktif"
+    },
+    "OV_CAT_ALL": {
+        "message": "Tümü"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Tamamlanan"
+    },
+    "OV_CAT_DL": {
+        "message": "İndiriliyor"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Pasif"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Etiketsiz"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Kontrol edildi"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "İndiriliyor"
+    },
+    "OV_FL_ERROR": {
+        "message": "Hata"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Tamamlandı"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Duraklatıldı"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Sırada"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Paylaşım sırasında"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Durduruldu"
+    },
+    "OV_FL_STALLED": {
+        "message": "Askıda"
+    },
+    "MF_DONT": {
+        "message": "İndirme"
+    },
+    "MF_HIGH": {
+        "message": "Yüksek"
+    },
+    "MF_LOW": {
+        "message": "Düşük"
+    },
+    "MF_NORMAL": {
+        "message": "Normal"
+    },
+    "ML_START": {
+        "message": "Başlat"
+    },
+    "ML_STOP": {
+        "message": "Durdur"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Yeniden kontrol et"
+    },
+    "ML_REMOVE": {
+        "message": "Kaldır"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Kaldır ve"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": ".torrent sil"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Verileri sil"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": ".torrent + verileri sil"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Sınırsız"
+    },
+    "Open_file": {
+        "message": "Torrent dosyası ekle..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Web Arayüzü"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "URL'den torrent ekle..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Tüm torrentleri devam ettir"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Tüm torrentleri duraklat"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Kapat"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Seçili torrenti kaldırmak istediğinizden emin misiniz?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Seçili %d torrenti kaldırmak istediğinizden emin misiniz?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Seçili torrenti kaldırmak VE tüm indirilen verileri silmek istediğinizden emin misiniz?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Seçili %d torrenti kaldırmak VE tüm indirilen verileri silmek istediğinizden emin misiniz?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Evet"
+    },
+    "DLG_BTN_NO": {
+        "message": "Hayır"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "İptal"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Uygula"
+    },
+    "DLG_BTN_OK": {
+        "message": "Tamam"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Torrent URL'si yapıştır"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Kullanıcı adı"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Şifre"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Gelişmiş"
+    },
+    "enterNewLabel": {
+        "message": "Seçili torrent için yeni etiket girin"
+    },
+    "defaultPath": {
+        "message": "Varsayılan klasör"
+    },
+    "add": {
+        "message": "Ekle"
+    },
+    "available": {
+        "message": "Erişilebilir"
+    },
+    "up": {
+        "message": "Yukarı"
+    },
+    "down": {
+        "message": "Aşağı"
+    },
+    "update": {
+        "message": "Güncelle"
+    },
+    "deleteSelected": {
+        "message": "Seçilenleri sil"
+    },
+    "torrentAdded": {
+        "message": "Torrent eklendi!"
+    },
+    "unexpectedError": {
+        "message": "Beklenmeyen hata!"
+    },
+    "fileSizeError": {
+        "message": "Dosya çok büyük"
+    },
+    "addInTorrentClient": {
+        "message": "Transmission'a ekle"
+    },
+    "torrentFileExists": {
+        "message": "Torrent dosyası muhtemelen zaten mevcut!"
+    },
+    "currentDirectory": {
+        "message": "Mevcut klasör"
+    },
+    "openInTab": {
+        "message": "Sekmede aç"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Genel"
+    },
+    "optNotify": {
+        "message": "Bildirimler"
+    },
+    "optCtx": {
+        "message": "Sağ tık menüsü"
+    },
+    "backup": {
+        "message": "Yedekle"
+    },
+    "restore": {
+        "message": "Geri yükle"
+    },
+    "backupRestore": {
+        "message": "Yedekleme ve Geri Yükleme"
+    },
+    "backupHint": {
+        "message": "Ayarlarınızı kaydetmek veya buluta senkronize etmek için dışa aktarın"
+    },
+    "restoreHint": {
+        "message": "Önceki yedekten veya buluttan ayarları içe aktarın"
+    },
+    "loadCurrentConfig": {
+        "message": "Mevcut yapılandırmayı yükle"
+    },
+    "configData": {
+        "message": "Yapılandırma verileri"
+    },
+    "clickLoadConfig": {
+        "message": "Ayarlarınızı görüntülemek için \"Mevcut yapılandırmayı yükle\"ye tıklayın"
+    },
+    "useSSL": {
+        "message": "SSL kullan"
+    },
+    "path": {
+        "message": "Yol"
+    },
+    "hideSeedStatusItem": {
+        "message": "\"Paylaşılıyor\" durumundaki torrentleri gizle"
+    },
+    "hideFinishStatusItem": {
+        "message": "\"Tamamlandı\" durumundaki torrentleri gizle"
+    },
+    "showSpeedGraph": {
+        "message": "Hız grafiğini göster"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Torrent listesi güncelleme aralığı"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "İndirme tamamlandığında bildirim göster"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Eklenti simgesinde indirme sayısını göster"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Arka plan güncelleme aralığı"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Torrent eklerken \"İndiriliyor\" kategorisini aç"
+    },
+    "treeViewContextMenu": {
+        "message": "Klasörleri ağaç olarak grupla"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "\"Varsayılan yol\" seçeneğini göster"
+    },
+    "dirList": {
+        "message": "İndirme klasörleri"
+    },
+    "dirListHint": {
+        "message": "Hedef seçmek için torrent bağlantısına sağ tıklayın"
+    },
+    "options": {
+        "message": "Seçenekler"
+    },
+    "subPath": {
+        "message": "Alt klasör"
+    },
+    "optSaveInCloud": {
+        "message": "Buluta kaydet"
+    },
+    "toRestore": {
+        "message": "Geri yükle"
+    },
+    "optGetFromCloud": {
+        "message": "Buluttan al"
+    },
+    "optClearCloudStorage": {
+        "message": "Bulut depolamayı temizle"
+    },
+    "confirmRestore": {
+        "message": "Bu yapılandırmayı geri yüklemek istediğinizden emin misiniz? Tüm mevcut ayarlar üzerine yazılacak."
+    },
+    "confirmClearCloud": {
+        "message": "Bulut yedeğini temizlemek istediğinizden emin misiniz?"
+    },
+    "showFileList": {
+        "message": "Dosya listesi"
+    },
+    "selectAll": {
+        "message": "Tümünü seç"
+    },
+    "refresh": {
+        "message": "Yenile"
+    },
+    "checkSettings": {
+        "message": "Ayarları kontrol et"
+    },
+    "showFreeSpace": {
+        "message": "Kullanılabilir disk alanını göster"
+    },
+    "freeSpace": {
+        "message": "Boş alan"
+    },
+    "startNow": {
+        "message": "Şimdi başlat"
+    },
+    "rename": {
+        "message": "Yeniden adlandır"
+    },
+    "renameText": {
+        "message": "Dosya adını girin"
+    },
+    "move": {
+        "message": "Taşı"
+    },
+    "moveNewPath": {
+        "message": "Yeni yolu girin"
+    },
+    "guiPath": {
+        "message": "WebUI yolu"
+    },
+    "altSpeedEnable": {
+        "message": "Geçici hız limitleri"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrent daha önce eklendi"
+    },
+    "reannounce": {
+        "message": "Daha fazla peer iste"
+    },
+    "extra": {
+        "message": "Ekstra"
+    },
+    "queueTop": {
+        "message": "Başa"
+    },
+    "queueBottom": {
+        "message": "Sona"
+    },
+    "requireAuthentication": {
+        "message": "Kimlik doğrulama gerekli"
+    },
+    "badgeColor": {
+        "message": "Simge rozet rengi"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Kopyala"
+    },
+    "shortName": {
+        "message": "Kısa ad"
+    },
+    "portIncorrect": {
+        "message": "Port geçersiz"
+    },
+    "search": {
+        "message": "Ara"
+    },
+    "theme": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "Sistem"
+    },
+    "themeLight": {
+        "message": "Açık"
+    },
+    "themeDark": {
+        "message": "Koyu"
+    },
+    "configureClient": {
+        "message": "Transmission'ı yapılandır"
+    },
+    "configureClientHint": {
+        "message": "Başlamak için Transmission sunucu bağlantınızı yapılandırın."
+    },
+    "openOptions": {
+        "message": "Ayarları aç"
+    },
+    "properties": {
+        "message": "Özellikler"
+    },
+    "copyName": {
+        "message": "Adı kopyala"
+    },
+    "copyHash": {
+        "message": "Hash'i kopyala"
+    },
+    "sessionTotals": {
+        "message": "Oturum toplamları"
+    },
+    "responseEmpty": {
+        "message": "Yanıt boş"
+    },
+    "clearSearch": {
+        "message": "Aramayı temizle"
+    },
+    "errorRetry": {
+        "message": "Yeniden dene"
+    },
+    "errorDetails": {
+        "message": "Ayrıntılar"
+    },
+    "speedGraph": {
+        "message": "Hız grafiği"
+    },
+    "optServer": {
+        "message": "Sunucu"
+    },
+    "blocklist": {
+        "message": "Engel listesi"
+    },
+    "blocklistEnable": {
+        "message": "Engel listesini etkinleştir"
+    },
+    "blocklistUrl": {
+        "message": "Engel listesi URL'si"
+    },
+    "blocklistRules": {
+        "message": "Kurallar"
+    },
+    "blocklistUpdateNow": {
+        "message": "Engel listesini şimdi güncelle"
+    },
+    "peerFlags": {
+        "message": "Bayraklar"
+    },
+    "peerSettings": {
+        "message": "Peerler"
+    },
+    "peerLimitGlobal": {
+        "message": "Toplam en fazla peer"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Torrent başına en fazla peer"
+    },
+    "seedingSettings": {
+        "message": "Paylaşım"
+    },
+    "seedRatioLimited": {
+        "message": "Şu oranda paylaşımı durdur"
+    },
+    "seedRatioLimit": {
+        "message": "Paylaşım oranı sınırı"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Şu süre boşta kalınca paylaşımı durdur"
+    },
+    "idleSeedingLimit": {
+        "message": "Boşta kalma sınırı"
+    },
+    "networkSettings": {
+        "message": "Ağ"
+    },
+    "peerPort": {
+        "message": "Dinleme portu"
+    },
+    "portForwardingEnabled": {
+        "message": "UPnP / NAT-PMP'yi etkinleştir"
+    },
+    "encryption": {
+        "message": "Şifreleme"
+    },
+    "encryptionRequired": {
+        "message": "Zorunlu"
+    },
+    "encryptionPreferred": {
+        "message": "Tercih edilen"
+    },
+    "encryptionTolerated": {
+        "message": "İzin verilen"
+    },
+    "dhtEnabled": {
+        "message": "DHT'yi etkinleştir"
+    },
+    "pexEnabled": {
+        "message": "PEX'i etkinleştir"
+    },
+    "lpdEnabled": {
+        "message": "LPD'yi etkinleştir"
+    },
+    "utpEnabled": {
+        "message": "uTP'yi etkinleştir"
+    },
+    "minutes": {
+        "message": "dk"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Etiketsiz"
+    },
+    "generalSettings": {
+        "message": "Genel"
+    },
+    "startAddedTorrents": {
+        "message": "Eklenen torrentleri başlat"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Özgün .torrent dosyalarını çöpe at"
+    },
+    "incompleteDirSettings": {
+        "message": "Tamamlanmamış İndirmeler"
+    },
+    "incompleteDirEnabled": {
+        "message": "Tamamlanmamış indirmeler dizinini kullan"
+    },
+    "incompleteDir": {
+        "message": "Tamamlanmamışlar dizini"
+    },
+    "renamePartialFiles": {
+        "message": "Eksik dosyalara .part uzantısı ekle"
+    },
+    "queueSettings": {
+        "message": "Kuyruk"
+    },
+    "downloadQueueEnabled": {
+        "message": "İndirme kuyruğunu sınırla"
+    },
+    "downloadQueueSize": {
+        "message": "En fazla eşzamanlı indirme"
+    },
+    "seedQueueEnabled": {
+        "message": "Paylaşım kuyruğunu sınırla"
+    },
+    "seedQueueSize": {
+        "message": "En fazla eşzamanlı paylaşım"
+    },
+    "queueStalledEnabled": {
+        "message": "Şu süreden sonra boşta say"
+    },
+    "queueStalledMinutes": {
+        "message": "Askıda kalma süresi"
+    },
+    "altSpeedSchedule": {
+        "message": "Hız Sınırı Zamanlaması"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Hız sınırı zamanlamasını etkinleştir"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Başlangıç saati"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Bitiş saati"
+    },
+    "altSpeedTimeDays": {
+        "message": "Etkin günler"
+    },
+    "daySunday": {
+        "message": "Paz"
+    },
+    "dayMonday": {
+        "message": "Pzt"
+    },
+    "dayTuesday": {
+        "message": "Sal"
+    },
+    "dayWednesday": {
+        "message": "Çar"
+    },
+    "dayThursday": {
+        "message": "Per"
+    },
+    "dayFriday": {
+        "message": "Cum"
+    },
+    "daySaturday": {
+        "message": "Cmt"
+    },
+    "scriptSettings": {
+        "message": "Betik"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "İndirme tamamlanınca betik çalıştır"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Betik yolu"
+    },
+    "portTest": {
+        "message": "Portu test et"
+    },
+    "portOpen": {
+        "message": "Port açık"
+    },
+    "portClosed": {
+        "message": "Port kapalı"
+    },
+    "portTesting": {
+        "message": "Test ediliyor..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Bilgi"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Tracker'lar"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Paylaşım Sınırları"
+    },
+    "DT_COMMENT": {
+        "message": "Yorum"
+    },
+    "DT_CREATOR": {
+        "message": "Oluşturan"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Oluşturulma Tarihi"
+    },
+    "DT_PIECES": {
+        "message": "Parçalar"
+    },
+    "DT_CORRUPT": {
+        "message": "Bozuk"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "İndirme Süresi"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Paylaşım Süresi"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web Seed'ler"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Katman"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seed"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peer"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Durum"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Tracker Listesi"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Her satıra bir URL, katmanlar arasına boş satır"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Paylaşım Oranı Modu"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Paylaşım Oranı Sınırı"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Boşta Paylaşım Modu"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Boşta Paylaşım Sınırı (dk)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Genel Ayarları Kullan"
+    },
+    "DT_CUSTOM": {
+        "message": "Özel"
+    },
+    "DT_UNLIMITED": {
+        "message": "Sınırsız"
+    },
+    "DT_APPLY": {
+        "message": "Uygula"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Son Etkinlik"
+    },
+    "OV_COL_STARTED": {
+        "message": "Başlatıldı"
+    },
+    "OV_COL_EDITED": {
+        "message": "Düzenlendi"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Etkin Boyut"
+    },
+    "DT_METADATA": {
+        "message": "Meta Veri"
+    },
+    "DT_PRIVATE": {
+        "message": "Özel torrent"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peer Kaynakları"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Gelen"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Önbellek"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "İndirme Sınırı"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Yükleme Sınırı"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Oturum Sınırlarına Uyar"
+    },
+    "DT_ENABLED": {
+        "message": "Etkin"
+    },
+    "DT_DISABLED": {
+        "message": "Devre dışı"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Boşta Kalma Süresi"
+    },
+    "sessionStats": {
+        "message": "$active$ etkin, $paused$ duraklatıldı",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Torrent eklenince betik çalıştır"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Betik yolu (eklenince)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Paylaşım tamamlanınca betik çalıştır"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Betik yolu (paylaşım bitince)"
+    },
+    "sequentialDownload": {
+        "message": "Sıralı indirme"
+    },
+    "fileCount": {
+        "message": "Dosya sayısı"
+    },
+    "primaryMimeType": {
+        "message": "İçerik türü"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Uyarı: SSL olmadan kullanıcı adınız ve parolanız ağ üzerinden şifrelenmeden gönderilir."
+    },
+    "backupIncludesCredentials": {
+        "message": "Yedek, sunucu kullanıcı adınızı ve parolanızı içerir."
+    },
+    "restoreConnectionChanged": {
+        "message": "Bu yedek sunucu bağlantısını değiştirecek: $changes$. Devam edilsin mi?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

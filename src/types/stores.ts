@@ -112,78 +112,6 @@ export interface FileViews {
 // Combined File type (named FileEntry to avoid collision with DOM File)
 export type FileEntry = FileSnapshot & FileViews;
 
-// Settings store snapshot (normalized from Transmission)
-export interface SettingsSnapshot {
-  downloadDir: string;
-  downloadDirFreeSpace: number;
-  downloadSpeedLimit: number;
-  downloadSpeedLimitEnabled: boolean;
-  uploadSpeedLimit: number;
-  uploadSpeedLimitEnabled: boolean;
-  altSpeedEnabled: boolean;
-  altSpeedDown: number;
-  altSpeedUp: number;
-  blocklistEnabled?: boolean;
-  blocklistUrl?: string;
-  blocklistSize?: number;
-  peerLimitGlobal?: number;
-  peerLimitPerTorrent?: number;
-  seedRatioLimit?: number;
-  seedRatioLimited?: boolean;
-  idleSeedingLimit?: number;
-  idleSeedingLimitEnabled?: boolean;
-  peerPort?: number;
-  portForwardingEnabled?: boolean;
-  encryption?: string;
-  dhtEnabled?: boolean;
-  pexEnabled?: boolean;
-  lpdEnabled?: boolean;
-  utpEnabled?: boolean;
-}
-
-// Dialog types
-export type DialogType =
-  'putFiles' | 'putUrl' | 'rename' | 'move' | 'remove' | 'copyMagnetUrl' | 'torrentDetails';
-
-// Dialog store interface
-export interface DialogState<T = unknown> {
-  type: DialogType | null;
-  props: T;
-  open(type: DialogType, props?: T): void;
-  close(): void;
-}
-
-// Speed data point for graph
-export interface SpeedPoint {
-  download: number;
-  upload: number;
-}
-
-// Config store types
-export interface ExtensionConfig {
-  url: string;
-  login: string;
-  password: string;
-  showSpeedGraph: boolean;
-  showFreeSpace: boolean;
-  popupHeight: number;
-  showNotificationOnDownloadComplete: boolean;
-  showDownloadCompleteNotifications: boolean;
-  folders: string[];
-  labels: string[];
-  badgeColor: string;
-  hideSeedingTorrents: boolean;
-  showContextMenu: boolean;
-  ctxMenuType: 'folder' | 'label';
-  selectDownloadCategoryAfterPutTorrentFromContextMenu: boolean;
-  treeViewRecvFiles: boolean;
-  uiUpdateInterval: number;
-  bgUpdateInterval: number;
-  checkFreeSpace: boolean;
-  fixedWidthPopup: boolean;
-  theme: 'light' | 'dark' | 'system';
-}
-
 // Column configuration
 export interface ColumnConfig {
   column: string;
@@ -191,12 +119,3 @@ export interface ColumnConfig {
   order: number;
   width: number;
 }
-
-// Sort configuration
-export interface SortConfig {
-  by: string;
-  direction: 1 | -1;
-}
-
-// Category filter types
-export type CategoryFilter = 'ALL' | 'DL' | 'SEEDING' | 'COMPL' | 'ACTIVE' | 'INACTIVE';

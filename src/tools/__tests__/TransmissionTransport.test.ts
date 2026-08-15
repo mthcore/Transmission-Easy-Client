@@ -30,6 +30,57 @@ describe('TransmissionTransport', () => {
     expect(transport.token).toBeNull();
   });
 
+  it('caches a refreshed session token in session storage', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 409,
+        statusText: 'Conflict',
+        headers: { get: () => 'fresh-token' },
+      })
+      .mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ result: 'success', arguments: {} }),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await transport.sendAction({ method: 'session-get' });
+
+    expect(transport.token).toBe('fresh-token');
+    expect(chrome.storage.session.set).toHaveBeenCalledWith({
+      _sessionToken: { url: transport.url, token: 'fresh-token' },
+    });
+  });
+
+  it('restores a cached session token for the same url', async () => {
+    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      _sessionToken: { url: 'http://localhost:9091/transmission/rpc', token: 'cached-token' },
+    });
+    const restored = new TransmissionTransport({
+      url: 'http://localhost:9091/transmission/rpc',
+      getConfig,
+      onConnected,
+      onTokenRefresh,
+    });
+    await vi.waitFor(() => expect(restored.token).toBe('cached-token'));
+  });
+
+  it('ignores a cached session token belonging to another url', async () => {
+    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      _sessionToken: { url: 'http://other-host:9091/transmission/rpc', token: 'stale-token' },
+    });
+    const restored = new TransmissionTransport({
+      url: 'http://localhost:9091/transmission/rpc',
+      getConfig,
+      onConnected,
+      onTokenRefresh,
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(restored.token).toBeNull();
+  });
+
   it('sends a successful request', async () => {
     const responseData = { result: 'success', arguments: { torrents: [] } };
     vi.stubGlobal(

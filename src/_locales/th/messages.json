@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "ส่วนขยายเพิ่มเว็บอินเทอร์เฟซ Transmission ในเบราว์เซอร์ของคุณ" },
-    "lang": { "message": "th" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"สัปดาห์\", \"วัน\", \"ชม.\", \"นาที\", \"วินาที\"]" },
-    "OV_COL_NAME": { "message": "ชื่อ" },
-    "OV_COL_ORDER": { "message": "คิว" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "ขนาด" },
-    "OV_COL_REMAINING": { "message": "เหลือ" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "สถานะ" },
-    "OV_COL_SEEDS": { "message": "ซีด" },
-    "OV_COL_PEERS": { "message": "เพียร์" },
-    "OV_COL_SEEDS_PEERS": { "message": "ซีด/เพียร์" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "ซ/พ" },
-    "OV_COL_DOWNSPD": { "message": "ดาวน์โหลด" },
-    "OV_COL_UPSPD": { "message": "อัปโหลด" },
-    "OV_COL_ETA": { "message": "เวลาที่เหลือ" },
-    "OV_COL_UPPED": { "message": "อัปโหลดแล้ว" },
-    "OV_COL_DOWNLOADED": { "message": "ดาวน์โหลดแล้ว" },
-    "OV_COL_SHARED": { "message": "อัตราส่วน" },
-    "OV_COL_AVAIL": { "message": "ความพร้อมใช้งาน" },
-    "OV_COL_AVAIL_SHORT": { "message": "พร้อม" },
-    "OV_COL_LABEL": { "message": "ป้ายกำกับ" },
-    "OV_COL_DATE_ADDED": { "message": "เพิ่มเมื่อ" },
-    "OV_COL_DATE_COMPLETED": { "message": "เสร็จสิ้นเมื่อ" },
-    "Actions": { "message": "การดำเนินการ" },
-    "FI_COL_NAME": { "message": "ชื่อ" },
-    "FI_COL_SIZE": { "message": "ขนาด" },
-    "FI_COL_PRIO": { "message": "ลำดับความสำคัญ" },
-    "OV_FL_SEEDING": { "message": "กำลังซีด" },
-    "OV_CAT_ACTIVE": { "message": "ใช้งานอยู่" },
-    "OV_CAT_ALL": { "message": "ทั้งหมด" },
-    "OV_CAT_COMPL": { "message": "เสร็จสิ้น" },
-    "OV_CAT_DL": { "message": "กำลังดาวน์โหลด" },
-    "OV_CAT_INACTIVE": { "message": "ไม่ได้ใช้งาน" },
-    "OV_CAT_NOLABEL": { "message": "ไม่มีป้ายกำกับ" },
-    "OV_FL_CHECKED": { "message": "ตรวจสอบแล้ว" },
-    "OV_FL_DOWNLOADING": { "message": "กำลังดาวน์โหลด" },
-    "OV_FL_ERROR": { "message": "ข้อผิดพลาด" },
-    "OV_FL_FINISHED": { "message": "เสร็จสิ้น" },
-    "OV_FL_PAUSED": { "message": "หยุดชั่วคราว" },
-    "OV_FL_QUEUED": { "message": "อยู่ในคิว" },
-    "OV_FL_QUEUED_SEED": { "message": "คิวซีด" },
-    "OV_FL_STOPPED": { "message": "หยุดแล้ว" },
-    "MF_DONT": { "message": "ไม่ดาวน์โหลด" },
-    "MF_HIGH": { "message": "สูง" },
-    "MF_LOW": { "message": "ต่ำ" },
-    "MF_NORMAL": { "message": "ปกติ" },
-    "ML_START": { "message": "เริ่ม" },
-    "ML_PAUSE": { "message": "หยุดชั่วคราว" },
-    "ML_STOP": { "message": "หยุด" },
-    "OV_REMOVE_LABEL": { "message": "ลบป้ายกำกับ" },
-    "OV_NEW_LABEL": { "message": "ป้ายกำกับใหม่..." },
-    "ML_FORCE_START": { "message": "บังคับเริ่ม" },
-    "ML_FORCE_RECHECK": { "message": "บังคับตรวจสอบใหม่" },
-    "ML_REMOVE": { "message": "ลบ" },
-    "ML_REMOVE_AND": { "message": "ลบและ" },
-    "ML_DELETE_TORRENT": { "message": "ลบ .torrent" },
-    "ML_DELETE_DATA": { "message": "ลบข้อมูล" },
-    "ML_DELETE_DATATORRENT": { "message": "ลบ .torrent + ข้อมูล" },
-    "DLG_RSSDOWNLOADER_24": { "message": "ดาวน์โหลด" },
-    "MENU_UNLIMITED": { "message": "ไม่จำกัด" },
-    "Open_file": { "message": "เพิ่มไฟล์ทอร์เรนต์..." },
-    "ST_CAPT_WEBUI": { "message": "เว็บอินเทอร์เฟซ" },
-    "MM_FILE_ADD_URL": { "message": "เพิ่มทอร์เรนต์จาก URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "ดำเนินการต่อทั้งหมด" },
-    "STM_TORRENTS_PAUSEALL": { "message": "หยุดชั่วคราวทั้งหมด" },
-    "DLG_BTN_CLOSE": { "message": "ปิด" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก %d รายการ?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือกและลบข้อมูลที่ดาวน์โหลดทั้งหมด?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก %d รายการและลบข้อมูลที่ดาวน์โหลดทั้งหมด?" },
-    "DLG_BTN_YES": { "message": "ใช่" },
-    "DLG_BTN_NO": { "message": "ไม่" },
-    "DLG_BTN_CANCEL": { "message": "ยกเลิก" },
-    "DLG_BTN_APPLY": { "message": "ใช้งาน" },
-    "DLG_BTN_OK": { "message": "ตกลง" },
-    "ST_CAPT_FOLDER": { "message": "ไดเรกทอรี" },
-    "Paste_a_torrent_URL": { "message": "วาง URL ทอร์เรนต์" },
-    "OV_NEWLABEL_CAPTION": { "message": "ป้อนป้ายกำกับ" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "ชื่อผู้ใช้" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "รหัสผ่าน" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "พอร์ต" },
-    "ST_CAPT_ADVANCED": { "message": "ขั้นสูง" },
-    "resume": { "message": "ดำเนินการต่อ" },
-    "enterNewLabel": { "message": "ป้อนป้ายกำกับใหม่สำหรับทอร์เรนต์ที่เลือก" },
-    "defaultPath": { "message": "ไดเรกทอรีเริ่มต้น" },
-    "add": { "message": "เพิ่ม" },
-    "available": { "message": "พร้อมใช้งาน" },
-    "up": { "message": "ขึ้น" },
-    "down": { "message": "ลง" },
-    "update": { "message": "อัปเดต" },
-    "deleteSelected": { "message": "ลบที่เลือก" },
-    "torrentAdded": { "message": "เพิ่มทอร์เรนต์แล้ว!" },
-    "unexpectedError": { "message": "ข้อผิดพลาดที่ไม่คาดคิด!" },
-    "fileSizeError": { "message": "ไฟล์ใหญ่เกินไป" },
-    "addInTorrentClient": { "message": "เพิ่มใน Transmission" },
-    "enterNewDirPath": { "message": "ป้อนเส้นทางไปยังไดเรกทอรีใหม่" },
-    "torrentFileExists": { "message": "ไฟล์ทอร์เรนต์อาจมีอยู่แล้ว!" },
-    "currentDirectory": { "message": "ไดเรกทอรีปัจจุบัน" },
-    "openInTab": { "message": "เปิดในแท็บ" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "หลัก" },
-    "optNotify": { "message": "การแจ้งเตือน" },
-    "optCtx": { "message": "เมนูบริบท" },
-    "backup": { "message": "สำรองข้อมูล" },
-    "restore": { "message": "กู้คืน" },
-    "backupRestore": { "message": "สำรองและกู้คืน" },
-    "backupHint": { "message": "ส่งออกการตั้งค่าของคุณเพื่อบันทึกหรือซิงค์กับคลาวด์" },
-    "restoreHint": { "message": "นำเข้าการตั้งค่าจากการสำรองข้อมูลก่อนหน้าหรือจากคลาวด์" },
-    "loadCurrentConfig": { "message": "โหลดการกำหนดค่าปัจจุบัน" },
-    "configData": { "message": "ข้อมูลการกำหนดค่า" },
-    "clickLoadConfig": { "message": "คลิก \"โหลดการกำหนดค่าปัจจุบัน\" เพื่อดูการตั้งค่าของคุณ" },
-    "useSSL": { "message": "ใช้ SSL" },
-    "path": { "message": "เส้นทาง" },
-    "hideSeedStatusItem": { "message": "ซ่อนทอร์เรนต์ที่มีสถานะ \"กำลังซีด\"" },
-    "hideFinishStatusItem": { "message": "ซ่อนทอร์เรนต์ที่มีสถานะ \"เสร็จสิ้น\"" },
-    "showSpeedGraph": { "message": "แสดงกราฟความเร็ว" },
-    "ms": { "message": "มิลลิวินาที" },
-    "popupUpdateInterval": { "message": "ช่วงเวลาอัปเดตรายการทอร์เรนต์" },
-    "fixCyrillicIf": { "message": "แก้ไขซิริลลิกถ้า..." },
-    "fixCyrillicTitle": { "message": "ชื่อทอร์เรนต์แสดงไม่ถูกต้อง" },
-    "fixCyrillicTorrentPath": { "message": "ไดเรกทอรีสำหรับทอร์เรนต์ใหม่ตั้งค่าไม่ถูกต้อง" },
-    "showNotificationOnDownloadComplete": { "message": "แสดงการแจ้งเตือนเมื่อดาวน์โหลดเสร็จ" },
-    "displayActiveTorrentCountIcon": { "message": "แสดงจำนวนทอร์เรนต์ที่กำลังดาวน์โหลดบนไอคอนส่วนขยาย" },
-    "backgroundUpdateInterval": { "message": "ช่วงเวลาอัปเดตพื้นหลัง" },
-    "notificationTimeout": { "message": "ซ่อนการแจ้งเตือนหลังจาก" },
-    "folderContextMenu": { "message": "แสดงรายการไดเรกทอรี" },
-    "labelContextMenu": { "message": "แสดงรายการป้ายกำกับ" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "เปิดหมวดหมู่ \"กำลังดาวน์โหลด\" เมื่อเพิ่มทอร์เรนต์" },
-    "treeViewContextMenu": { "message": "จัดกลุ่มโฟลเดอร์เป็นต้นไม้" },
-    "treeViewContextMenuHint": { "message": "จัดระเบียบโฟลเดอร์ตามลำดับชั้นแทนรายการแบน" },
-    "showDefaultFolderContextMenuItem": { "message": "แสดงตัวเลือก \"เส้นทางเริ่มต้น\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "เพิ่มตัวเลือกดาวน์โหลดไปยังไดเรกทอรีเริ่มต้นของ Transmission" },
-    "dirList": { "message": "ไดเรกทอรีดาวน์โหลด" },
-    "dirListHint": { "message": "คลิกขวาที่ลิงก์ทอร์เรนต์เพื่อเลือกปลายทาง" },
-    "options": { "message": "ตัวเลือก" },
-    "subPath": { "message": "เส้นทางย่อย" },
-    "labelList": { "message": "รายการป้ายกำกับ" },
-    "optSaveInCloud": { "message": "บันทึกในคลาวด์" },
-    "toRestore": { "message": "กู้คืน" },
-    "optGetFromCloud": { "message": "รับการตั้งค่าจากคลาวด์" },
-    "optClearCloudStorage": { "message": "ล้างที่เก็บข้อมูลคลาวด์" },
-    "confirmRestore": { "message": "คุณแน่ใจหรือไม่ว่าต้องการกู้คืนการกำหนดค่านี้? การดำเนินการนี้จะเขียนทับการตั้งค่าปัจจุบันทั้งหมด" },
-    "confirmClearCloud": { "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างการสำรองข้อมูลคลาวด์?" },
-    "showFileList": { "message": "รายการไฟล์" },
-    "selectAll": { "message": "เลือกทั้งหมด" },
-    "refresh": { "message": "รีเฟรช" },
-    "checkSettings": { "message": "ตรวจสอบการตั้งค่า" },
-    "showFreeSpace": { "message": "แสดงพื้นที่ว่างบนดิสก์" },
-    "freeSpace": { "message": "พื้นที่ว่าง" },
-    "startNow": { "message": "เริ่มเดี๋ยวนี้" },
-    "rename": { "message": "เปลี่ยนชื่อ" },
-    "renameText": { "message": "ป้อนชื่อไฟล์" },
-    "move": { "message": "ย้าย" },
-    "moveNewPath": { "message": "ป้อนเส้นทางใหม่" },
-    "fullPath": { "message": "ไดเรกทอรี (เส้นทางเต็ม)" },
-    "guiPath": { "message": "เส้นทาง WebUI" },
-    "altSpeedEnable": { "message": "จำกัดความเร็วชั่วคราว" },
-    "torrentFileIsExists": { "message": "เพิ่มทอร์เรนต์ไปแล้วก่อนหน้านี้" },
-    "reannounce": { "message": "ขอเพียร์เพิ่มเติม" },
-    "extra": { "message": "เพิ่มเติม" },
-    "queueTop": { "message": "ไปด้านบน" },
-    "queueBottom": { "message": "ไปด้านล่าง" },
-    "requireAuthentication": { "message": "ต้องการการยืนยันตัวตน" },
-    "badgeColor": { "message": "สีป้ายไอคอน" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "คัดลอก" },
-    "addItem": { "message": "เพิ่มรายการ" },
-    "shortName": { "message": "ชื่อย่อ" },
-    "portIncorrect": { "message": "พอร์ตไม่ถูกต้อง" },
-    "search": { "message": "ค้นหา" },
-    "theme": { "message": "ธีม" },
-    "themeSystem": { "message": "ระบบ" },
-    "themeLight": { "message": "สว่าง" },
-    "themeDark": { "message": "มืด" },
-    "configureClient": { "message": "กำหนดค่า Transmission" },
-    "configureClientHint": { "message": "กรุณากำหนดค่าการเชื่อมต่อเซิร์ฟเวอร์ Transmission เพื่อเริ่มต้นใช้งาน" },
-    "openOptions": { "message": "เปิดการตั้งค่า" },
-    "properties": { "message": "คุณสมบัติ" },
-    "copyName": { "message": "คัดลอกชื่อ" },
-    "copyHash": { "message": "คัดลอกแฮช" },
-    "sessionTotals": { "message": "รวมเซสชัน" },
-    "responseEmpty": { "message": "การตอบกลับว่างเปล่า" },
-    "clearSearch": { "message": "ล้างการค้นหา" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "ส่วนขยายเพิ่มเว็บอินเทอร์เฟซ Transmission ในเบราว์เซอร์ของคุณ"
+    },
+    "lang": {
+        "message": "th"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"สัปดาห์\", \"วัน\", \"ชม.\", \"นาที\", \"วินาที\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "ชื่อ"
+    },
+    "OV_COL_ORDER": {
+        "message": "คิว"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "ขนาด"
+    },
+    "OV_COL_REMAINING": {
+        "message": "เหลือ"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "สถานะ"
+    },
+    "OV_COL_SEEDS": {
+        "message": "ซีด"
+    },
+    "OV_COL_PEERS": {
+        "message": "เพียร์"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "ซีด/เพียร์"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "ซ/พ"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "ดาวน์โหลด"
+    },
+    "OV_COL_UPSPD": {
+        "message": "อัปโหลด"
+    },
+    "OV_COL_ETA": {
+        "message": "เวลาที่เหลือ"
+    },
+    "OV_COL_UPPED": {
+        "message": "อัปโหลดแล้ว"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "ดาวน์โหลดแล้ว"
+    },
+    "OV_COL_SHARED": {
+        "message": "อัตราส่วน"
+    },
+    "OV_COL_AVAIL": {
+        "message": "ความพร้อมใช้งาน"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "พร้อม"
+    },
+    "OV_COL_LABEL": {
+        "message": "ป้ายกำกับ"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "เพิ่มเมื่อ"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "เสร็จสิ้นเมื่อ"
+    },
+    "Actions": {
+        "message": "การดำเนินการ"
+    },
+    "FI_COL_NAME": {
+        "message": "ชื่อ"
+    },
+    "FI_COL_SIZE": {
+        "message": "ขนาด"
+    },
+    "FI_COL_PRIO": {
+        "message": "ลำดับความสำคัญ"
+    },
+    "OV_FL_SEEDING": {
+        "message": "กำลังซีด"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "ใช้งานอยู่"
+    },
+    "OV_CAT_ALL": {
+        "message": "ทั้งหมด"
+    },
+    "OV_CAT_COMPL": {
+        "message": "เสร็จสิ้น"
+    },
+    "OV_CAT_DL": {
+        "message": "กำลังดาวน์โหลด"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "ไม่ได้ใช้งาน"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "ไม่มีป้ายกำกับ"
+    },
+    "OV_FL_CHECKED": {
+        "message": "ตรวจสอบแล้ว"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "กำลังดาวน์โหลด"
+    },
+    "OV_FL_ERROR": {
+        "message": "ข้อผิดพลาด"
+    },
+    "OV_FL_FINISHED": {
+        "message": "เสร็จสิ้น"
+    },
+    "OV_FL_PAUSED": {
+        "message": "หยุดชั่วคราว"
+    },
+    "OV_FL_QUEUED": {
+        "message": "อยู่ในคิว"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "คิวซีด"
+    },
+    "OV_FL_STOPPED": {
+        "message": "หยุดแล้ว"
+    },
+    "OV_FL_STALLED": {
+        "message": "หยุดนิ่ง"
+    },
+    "MF_DONT": {
+        "message": "ไม่ดาวน์โหลด"
+    },
+    "MF_HIGH": {
+        "message": "สูง"
+    },
+    "MF_LOW": {
+        "message": "ต่ำ"
+    },
+    "MF_NORMAL": {
+        "message": "ปกติ"
+    },
+    "ML_START": {
+        "message": "เริ่ม"
+    },
+    "ML_STOP": {
+        "message": "หยุด"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "บังคับตรวจสอบใหม่"
+    },
+    "ML_REMOVE": {
+        "message": "ลบ"
+    },
+    "ML_REMOVE_AND": {
+        "message": "ลบและ"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "ลบ .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "ลบข้อมูล"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "ลบ .torrent + ข้อมูล"
+    },
+    "MENU_UNLIMITED": {
+        "message": "ไม่จำกัด"
+    },
+    "Open_file": {
+        "message": "เพิ่มไฟล์ทอร์เรนต์..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "เว็บอินเทอร์เฟซ"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "เพิ่มทอร์เรนต์จาก URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "ดำเนินการต่อทั้งหมด"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "หยุดชั่วคราวทั้งหมด"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "ปิด"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก %d รายการ?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือกและลบข้อมูลที่ดาวน์โหลดทั้งหมด?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการลบทอร์เรนต์ที่เลือก %d รายการและลบข้อมูลที่ดาวน์โหลดทั้งหมด?"
+    },
+    "DLG_BTN_YES": {
+        "message": "ใช่"
+    },
+    "DLG_BTN_NO": {
+        "message": "ไม่"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "ยกเลิก"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "ใช้งาน"
+    },
+    "DLG_BTN_OK": {
+        "message": "ตกลง"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "วาง URL ทอร์เรนต์"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "ชื่อผู้ใช้"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "รหัสผ่าน"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "พอร์ต"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "ขั้นสูง"
+    },
+    "enterNewLabel": {
+        "message": "ป้อนป้ายกำกับใหม่สำหรับทอร์เรนต์ที่เลือก"
+    },
+    "defaultPath": {
+        "message": "ไดเรกทอรีเริ่มต้น"
+    },
+    "add": {
+        "message": "เพิ่ม"
+    },
+    "available": {
+        "message": "พร้อมใช้งาน"
+    },
+    "up": {
+        "message": "ขึ้น"
+    },
+    "down": {
+        "message": "ลง"
+    },
+    "update": {
+        "message": "อัปเดต"
+    },
+    "deleteSelected": {
+        "message": "ลบที่เลือก"
+    },
+    "torrentAdded": {
+        "message": "เพิ่มทอร์เรนต์แล้ว!"
+    },
+    "unexpectedError": {
+        "message": "ข้อผิดพลาดที่ไม่คาดคิด!"
+    },
+    "fileSizeError": {
+        "message": "ไฟล์ใหญ่เกินไป"
+    },
+    "addInTorrentClient": {
+        "message": "เพิ่มใน Transmission"
+    },
+    "torrentFileExists": {
+        "message": "ไฟล์ทอร์เรนต์อาจมีอยู่แล้ว!"
+    },
+    "currentDirectory": {
+        "message": "ไดเรกทอรีปัจจุบัน"
+    },
+    "openInTab": {
+        "message": "เปิดในแท็บ"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "หลัก"
+    },
+    "optNotify": {
+        "message": "การแจ้งเตือน"
+    },
+    "optCtx": {
+        "message": "เมนูบริบท"
+    },
+    "backup": {
+        "message": "สำรองข้อมูล"
+    },
+    "restore": {
+        "message": "กู้คืน"
+    },
+    "backupRestore": {
+        "message": "สำรองและกู้คืน"
+    },
+    "backupHint": {
+        "message": "ส่งออกการตั้งค่าของคุณเพื่อบันทึกหรือซิงค์กับคลาวด์"
+    },
+    "restoreHint": {
+        "message": "นำเข้าการตั้งค่าจากการสำรองข้อมูลก่อนหน้าหรือจากคลาวด์"
+    },
+    "loadCurrentConfig": {
+        "message": "โหลดการกำหนดค่าปัจจุบัน"
+    },
+    "configData": {
+        "message": "ข้อมูลการกำหนดค่า"
+    },
+    "clickLoadConfig": {
+        "message": "คลิก \"โหลดการกำหนดค่าปัจจุบัน\" เพื่อดูการตั้งค่าของคุณ"
+    },
+    "useSSL": {
+        "message": "ใช้ SSL"
+    },
+    "path": {
+        "message": "เส้นทาง"
+    },
+    "hideSeedStatusItem": {
+        "message": "ซ่อนทอร์เรนต์ที่มีสถานะ \"กำลังซีด\""
+    },
+    "hideFinishStatusItem": {
+        "message": "ซ่อนทอร์เรนต์ที่มีสถานะ \"เสร็จสิ้น\""
+    },
+    "showSpeedGraph": {
+        "message": "แสดงกราฟความเร็ว"
+    },
+    "ms": {
+        "message": "มิลลิวินาที"
+    },
+    "popupUpdateInterval": {
+        "message": "ช่วงเวลาอัปเดตรายการทอร์เรนต์"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "แสดงการแจ้งเตือนเมื่อดาวน์โหลดเสร็จ"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "แสดงจำนวนทอร์เรนต์ที่กำลังดาวน์โหลดบนไอคอนส่วนขยาย"
+    },
+    "backgroundUpdateInterval": {
+        "message": "ช่วงเวลาอัปเดตพื้นหลัง"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "เปิดหมวดหมู่ \"กำลังดาวน์โหลด\" เมื่อเพิ่มทอร์เรนต์"
+    },
+    "treeViewContextMenu": {
+        "message": "จัดกลุ่มโฟลเดอร์เป็นต้นไม้"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "แสดงตัวเลือก \"เส้นทางเริ่มต้น\""
+    },
+    "dirList": {
+        "message": "ไดเรกทอรีดาวน์โหลด"
+    },
+    "dirListHint": {
+        "message": "คลิกขวาที่ลิงก์ทอร์เรนต์เพื่อเลือกปลายทาง"
+    },
+    "options": {
+        "message": "ตัวเลือก"
+    },
+    "subPath": {
+        "message": "เส้นทางย่อย"
+    },
+    "optSaveInCloud": {
+        "message": "บันทึกในคลาวด์"
+    },
+    "toRestore": {
+        "message": "กู้คืน"
+    },
+    "optGetFromCloud": {
+        "message": "รับการตั้งค่าจากคลาวด์"
+    },
+    "optClearCloudStorage": {
+        "message": "ล้างที่เก็บข้อมูลคลาวด์"
+    },
+    "confirmRestore": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการกู้คืนการกำหนดค่านี้? การดำเนินการนี้จะเขียนทับการตั้งค่าปัจจุบันทั้งหมด"
+    },
+    "confirmClearCloud": {
+        "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างการสำรองข้อมูลคลาวด์?"
+    },
+    "showFileList": {
+        "message": "รายการไฟล์"
+    },
+    "selectAll": {
+        "message": "เลือกทั้งหมด"
+    },
+    "refresh": {
+        "message": "รีเฟรช"
+    },
+    "checkSettings": {
+        "message": "ตรวจสอบการตั้งค่า"
+    },
+    "showFreeSpace": {
+        "message": "แสดงพื้นที่ว่างบนดิสก์"
+    },
+    "freeSpace": {
+        "message": "พื้นที่ว่าง"
+    },
+    "startNow": {
+        "message": "เริ่มเดี๋ยวนี้"
+    },
+    "rename": {
+        "message": "เปลี่ยนชื่อ"
+    },
+    "renameText": {
+        "message": "ป้อนชื่อไฟล์"
+    },
+    "move": {
+        "message": "ย้าย"
+    },
+    "moveNewPath": {
+        "message": "ป้อนเส้นทางใหม่"
+    },
+    "guiPath": {
+        "message": "เส้นทาง WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "จำกัดความเร็วชั่วคราว"
+    },
+    "torrentFileIsExists": {
+        "message": "เพิ่มทอร์เรนต์ไปแล้วก่อนหน้านี้"
+    },
+    "reannounce": {
+        "message": "ขอเพียร์เพิ่มเติม"
+    },
+    "extra": {
+        "message": "เพิ่มเติม"
+    },
+    "queueTop": {
+        "message": "ไปด้านบน"
+    },
+    "queueBottom": {
+        "message": "ไปด้านล่าง"
+    },
+    "requireAuthentication": {
+        "message": "ต้องการการยืนยันตัวตน"
+    },
+    "badgeColor": {
+        "message": "สีป้ายไอคอน"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "คัดลอก"
+    },
+    "shortName": {
+        "message": "ชื่อย่อ"
+    },
+    "portIncorrect": {
+        "message": "พอร์ตไม่ถูกต้อง"
+    },
+    "search": {
+        "message": "ค้นหา"
+    },
+    "theme": {
+        "message": "ธีม"
+    },
+    "themeSystem": {
+        "message": "ระบบ"
+    },
+    "themeLight": {
+        "message": "สว่าง"
+    },
+    "themeDark": {
+        "message": "มืด"
+    },
+    "configureClient": {
+        "message": "กำหนดค่า Transmission"
+    },
+    "configureClientHint": {
+        "message": "กรุณากำหนดค่าการเชื่อมต่อเซิร์ฟเวอร์ Transmission เพื่อเริ่มต้นใช้งาน"
+    },
+    "openOptions": {
+        "message": "เปิดการตั้งค่า"
+    },
+    "properties": {
+        "message": "คุณสมบัติ"
+    },
+    "copyName": {
+        "message": "คัดลอกชื่อ"
+    },
+    "copyHash": {
+        "message": "คัดลอกแฮช"
+    },
+    "sessionTotals": {
+        "message": "รวมเซสชัน"
+    },
+    "responseEmpty": {
+        "message": "การตอบกลับว่างเปล่า"
+    },
+    "clearSearch": {
+        "message": "ล้างการค้นหา"
+    },
+    "errorRetry": {
+        "message": "ลองใหม่"
+    },
+    "errorDetails": {
+        "message": "รายละเอียด"
+    },
+    "speedGraph": {
+        "message": "กราฟความเร็ว"
+    },
+    "optServer": {
+        "message": "เซิร์ฟเวอร์"
+    },
+    "blocklist": {
+        "message": "รายการบล็อก"
+    },
+    "blocklistEnable": {
+        "message": "เปิดใช้รายการบล็อก"
+    },
+    "blocklistUrl": {
+        "message": "URL รายการบล็อก"
+    },
+    "blocklistRules": {
+        "message": "กฎ"
+    },
+    "blocklistUpdateNow": {
+        "message": "อัปเดตรายการบล็อกตอนนี้"
+    },
+    "peerFlags": {
+        "message": "แฟล็ก"
+    },
+    "peerSettings": {
+        "message": "เพียร์"
+    },
+    "peerLimitGlobal": {
+        "message": "จำนวนเพียร์สูงสุดทั้งหมด"
+    },
+    "peerLimitPerTorrent": {
+        "message": "จำนวนเพียร์สูงสุดต่อทอร์เรนต์"
+    },
+    "seedingSettings": {
+        "message": "การซีด"
+    },
+    "seedRatioLimited": {
+        "message": "หยุดซีดเมื่อถึงอัตราส่วน"
+    },
+    "seedRatioLimit": {
+        "message": "ขีดจำกัดอัตราส่วนซีด"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "หยุดซีดเมื่อไม่มีการใช้งานนาน"
+    },
+    "idleSeedingLimit": {
+        "message": "ขีดจำกัดเวลาว่าง"
+    },
+    "networkSettings": {
+        "message": "เครือข่าย"
+    },
+    "peerPort": {
+        "message": "พอร์ตรับฟัง"
+    },
+    "portForwardingEnabled": {
+        "message": "เปิดใช้ UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "การเข้ารหัส"
+    },
+    "encryptionRequired": {
+        "message": "จำเป็น"
+    },
+    "encryptionPreferred": {
+        "message": "แนะนำ"
+    },
+    "encryptionTolerated": {
+        "message": "ยอมรับได้"
+    },
+    "dhtEnabled": {
+        "message": "เปิดใช้ DHT"
+    },
+    "pexEnabled": {
+        "message": "เปิดใช้ PEX"
+    },
+    "lpdEnabled": {
+        "message": "เปิดใช้ LPD"
+    },
+    "utpEnabled": {
+        "message": "เปิดใช้ uTP"
+    },
+    "minutes": {
+        "message": "นาที"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "ไม่มีป้ายกำกับ"
+    },
+    "generalSettings": {
+        "message": "ทั่วไป"
+    },
+    "startAddedTorrents": {
+        "message": "เริ่มทอร์เรนต์ที่เพิ่มทันที"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "ทิ้งไฟล์ .torrent ต้นฉบับ"
+    },
+    "incompleteDirSettings": {
+        "message": "ดาวน์โหลดที่ไม่สมบูรณ์"
+    },
+    "incompleteDirEnabled": {
+        "message": "ใช้โฟลเดอร์สำหรับดาวน์โหลดที่ไม่สมบูรณ์"
+    },
+    "incompleteDir": {
+        "message": "โฟลเดอร์ไฟล์ไม่สมบูรณ์"
+    },
+    "renamePartialFiles": {
+        "message": "เติมนามสกุล .part ให้ไฟล์ที่ยังไม่สมบูรณ์"
+    },
+    "queueSettings": {
+        "message": "คิว"
+    },
+    "downloadQueueEnabled": {
+        "message": "จำกัดคิวดาวน์โหลด"
+    },
+    "downloadQueueSize": {
+        "message": "ดาวน์โหลดพร้อมกันสูงสุด"
+    },
+    "seedQueueEnabled": {
+        "message": "จำกัดคิวซีด"
+    },
+    "seedQueueSize": {
+        "message": "ซีดพร้อมกันสูงสุด"
+    },
+    "queueStalledEnabled": {
+        "message": "ถือว่าไม่มีการใช้งานหลังจาก"
+    },
+    "queueStalledMinutes": {
+        "message": "ระยะเวลาหยุดนิ่ง"
+    },
+    "altSpeedSchedule": {
+        "message": "ตารางเวลาจำกัดความเร็ว"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "เปิดใช้ตารางเวลาจำกัดความเร็ว"
+    },
+    "altSpeedTimeBegin": {
+        "message": "เวลาเริ่ม"
+    },
+    "altSpeedTimeEnd": {
+        "message": "เวลาสิ้นสุด"
+    },
+    "altSpeedTimeDays": {
+        "message": "วันที่ใช้งาน"
+    },
+    "daySunday": {
+        "message": "อา."
+    },
+    "dayMonday": {
+        "message": "จ."
+    },
+    "dayTuesday": {
+        "message": "อ."
+    },
+    "dayWednesday": {
+        "message": "พ."
+    },
+    "dayThursday": {
+        "message": "พฤ."
+    },
+    "dayFriday": {
+        "message": "ศ."
+    },
+    "daySaturday": {
+        "message": "ส."
+    },
+    "scriptSettings": {
+        "message": "สคริปต์"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "รันสคริปต์เมื่อดาวน์โหลดเสร็จ"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "พาธสคริปต์"
+    },
+    "portTest": {
+        "message": "ทดสอบพอร์ต"
+    },
+    "portOpen": {
+        "message": "พอร์ตเปิดอยู่"
+    },
+    "portClosed": {
+        "message": "พอร์ตปิดอยู่"
+    },
+    "portTesting": {
+        "message": "กำลังทดสอบ..."
+    },
+    "DT_TAB_INFO": {
+        "message": "ข้อมูล"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "แทรกเกอร์"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "ขีดจำกัดการซีด"
+    },
+    "DT_COMMENT": {
+        "message": "ความคิดเห็น"
+    },
+    "DT_CREATOR": {
+        "message": "ผู้สร้าง"
+    },
+    "DT_DATE_CREATED": {
+        "message": "วันที่สร้าง"
+    },
+    "DT_PIECES": {
+        "message": "ชิ้นส่วน"
+    },
+    "DT_CORRUPT": {
+        "message": "เสียหาย"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "เวลาที่ดาวน์โหลด"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "เวลาที่ซีด"
+    },
+    "DT_WEBSEEDS": {
+        "message": "เว็บซีด"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "ระดับ"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "ซีด"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "เพียร์"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "สถานะ"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "รายการแทรกเกอร์"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "หนึ่ง URL ต่อบรรทัด เว้นบรรทัดว่างระหว่างระดับ"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "โหมดอัตราส่วนซีด"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "ขีดจำกัดอัตราส่วนซีด"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "โหมดซีดเมื่อว่าง"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "ขีดจำกัดซีดเมื่อว่าง (นาที)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "ใช้การตั้งค่าส่วนกลาง"
+    },
+    "DT_CUSTOM": {
+        "message": "กำหนดเอง"
+    },
+    "DT_UNLIMITED": {
+        "message": "ไม่จำกัด"
+    },
+    "DT_APPLY": {
+        "message": "ใช้งาน"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "ใช้งานล่าสุด"
+    },
+    "OV_COL_STARTED": {
+        "message": "เริ่มเมื่อ"
+    },
+    "OV_COL_EDITED": {
+        "message": "แก้ไขเมื่อ"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "ขนาดจริง"
+    },
+    "DT_METADATA": {
+        "message": "เมตาดาต้า"
+    },
+    "DT_PRIVATE": {
+        "message": "ส่วนตัว"
+    },
+    "DT_PEERS_FROM": {
+        "message": "แหล่งที่มาของเพียร์"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "แทรกเกอร์"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "ขาเข้า"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "แคช"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "ขีดจำกัดดาวน์โหลด"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "ขีดจำกัดอัปโหลด"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "ใช้ขีดจำกัดของเซสชัน"
+    },
+    "DT_ENABLED": {
+        "message": "เปิดใช้งาน"
+    },
+    "DT_DISABLED": {
+        "message": "ปิดใช้งาน"
+    },
+    "DT_ETA_IDLE": {
+        "message": "หมดเวลาเมื่อว่าง"
+    },
+    "sessionStats": {
+        "message": "$active$ ใช้งานอยู่, $paused$ หยุดชั่วคราว",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "รันสคริปต์เมื่อเพิ่มทอร์เรนต์"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "พาธสคริปต์ (เมื่อเพิ่ม)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "รันสคริปต์เมื่อซีดเสร็จ"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "พาธสคริปต์ (ซีดเสร็จ)"
+    },
+    "sequentialDownload": {
+        "message": "ดาวน์โหลดตามลำดับ"
+    },
+    "fileCount": {
+        "message": "จำนวนไฟล์"
+    },
+    "primaryMimeType": {
+        "message": "ประเภทเนื้อหา"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "คำเตือน: หากไม่มี SSL ชื่อผู้ใช้และรหัสผ่านของคุณจะถูกส่งผ่านเครือข่ายโดยไม่เข้ารหัส"
+    },
+    "backupIncludesCredentials": {
+        "message": "ข้อมูลสำรองมีชื่อผู้ใช้และรหัสผ่านเซิร์ฟเวอร์ของคุณ"
+    },
+    "restoreConnectionChanged": {
+        "message": "ข้อมูลสำรองนี้จะเปลี่ยนการเชื่อมต่อเซิร์ฟเวอร์: $changes$ ต้องการดำเนินการต่อหรือไม่?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

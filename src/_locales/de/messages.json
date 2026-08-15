@@ -140,6 +140,9 @@
     "OV_FL_STOPPED": {
         "message": "Gestoppt"
     },
+    "OV_FL_STALLED": {
+        "message": "Stillstand"
+    },
     "MF_DONT": {
         "message": "Nicht herunterladen"
     },
@@ -155,20 +158,8 @@
     "ML_START": {
         "message": "Starten"
     },
-    "ML_PAUSE": {
-        "message": "Pausieren"
-    },
     "ML_STOP": {
         "message": "Stoppen"
-    },
-    "OV_REMOVE_LABEL": {
-        "message": "Label entfernen"
-    },
-    "OV_NEW_LABEL": {
-        "message": "Neues Label..."
-    },
-    "ML_FORCE_START": {
-        "message": "Sofort starten"
     },
     "ML_FORCE_RECHECK": {
         "message": "Erneut prüfen"
@@ -187,9 +178,6 @@
     },
     "ML_DELETE_DATATORRENT": {
         "message": ".torrent + Daten löschen"
-    },
-    "DLG_RSSDOWNLOADER_24": {
-        "message": "Herunterladen"
     },
     "MENU_UNLIMITED": {
         "message": "Unbegrenzt"
@@ -239,14 +227,8 @@
     "DLG_BTN_OK": {
         "message": "OK"
     },
-    "ST_CAPT_FOLDER": {
-        "message": "Verzeichnisse"
-    },
     "Paste_a_torrent_URL": {
         "message": "Torrent-URL einfügen"
-    },
-    "OV_NEWLABEL_CAPTION": {
-        "message": "Label eingeben"
     },
     "DLG_SETTINGS_4_CONN_16": {
         "message": "Benutzername"
@@ -262,9 +244,6 @@
     },
     "ST_CAPT_ADVANCED": {
         "message": "Erweitert"
-    },
-    "resume": {
-        "message": "Fortsetzen"
     },
     "enterNewLabel": {
         "message": "Neues Label für den ausgewählten Torrent eingeben"
@@ -301,9 +280,6 @@
     },
     "addInTorrentClient": {
         "message": "In Transmission hinzufügen"
-    },
-    "enterNewDirPath": {
-        "message": "Pfad zum neuen Verzeichnis eingeben"
     },
     "torrentFileExists": {
         "message": "Torrent-Datei existiert wahrscheinlich bereits!"
@@ -371,15 +347,6 @@
     "popupUpdateInterval": {
         "message": "Aktualisierungsintervall der Torrent-Liste"
     },
-    "fixCyrillicIf": {
-        "message": "Kyrillisch korrigieren wenn..."
-    },
-    "fixCyrillicTitle": {
-        "message": "Torrent-Namen werden falsch angezeigt"
-    },
-    "fixCyrillicTorrentPath": {
-        "message": "Verzeichnis für neuen Torrent wird falsch gesetzt"
-    },
     "showNotificationOnDownloadComplete": {
         "message": "Benachrichtigung bei abgeschlossenem Download anzeigen"
     },
@@ -389,29 +356,14 @@
     "backgroundUpdateInterval": {
         "message": "Hintergrund-Aktualisierungsintervall"
     },
-    "notificationTimeout": {
-        "message": "Benachrichtigung ausblenden nach"
-    },
-    "folderContextMenu": {
-        "message": "Verzeichnisliste anzeigen"
-    },
-    "labelContextMenu": {
-        "message": "Labels anzeigen"
-    },
     "selectDownloadCategoryOnAddItemFromContextMenu": {
         "message": "\"Downloads\" Kategorie öffnen beim Hinzufügen eines Torrents"
     },
     "treeViewContextMenu": {
         "message": "Ordner als Baum gruppieren"
     },
-    "treeViewContextMenuHint": {
-        "message": "Ordner hierarchisch statt als flache Liste anzeigen"
-    },
     "showDefaultFolderContextMenuItem": {
         "message": "\"Standardpfad\" Option anzeigen"
-    },
-    "showDefaultFolderContextMenuItemHint": {
-        "message": "Option zum Download ins Transmission-Standardverzeichnis hinzufügen"
     },
     "dirList": {
         "message": "Download-Verzeichnisse"
@@ -424,9 +376,6 @@
     },
     "subPath": {
         "message": "Unterverzeichnis"
-    },
-    "labelList": {
-        "message": "Labels"
     },
     "optSaveInCloud": {
         "message": "In Cloud speichern"
@@ -479,9 +428,6 @@
     "moveNewPath": {
         "message": "Neuen Pfad eingeben"
     },
-    "fullPath": {
-        "message": "Verzeichnis (vollständiger Pfad)"
-    },
     "guiPath": {
         "message": "WebUI-Pfad"
     },
@@ -514,9 +460,6 @@
     },
     "copy": {
         "message": "Kopieren"
-    },
-    "addItem": {
-        "message": "Eintrag hinzufügen"
     },
     "shortName": {
         "message": "Kurzname"
@@ -565,5 +508,381 @@
     },
     "clearSearch": {
         "message": "Suche löschen"
+    },
+    "errorRetry": {
+        "message": "Erneut versuchen"
+    },
+    "errorDetails": {
+        "message": "Details"
+    },
+    "speedGraph": {
+        "message": "Geschwindigkeitsdiagramm"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Blockliste"
+    },
+    "blocklistEnable": {
+        "message": "Blockliste aktivieren"
+    },
+    "blocklistUrl": {
+        "message": "Blocklisten-URL"
+    },
+    "blocklistRules": {
+        "message": "Regeln"
+    },
+    "blocklistUpdateNow": {
+        "message": "Blockliste jetzt aktualisieren"
+    },
+    "peerFlags": {
+        "message": "Flags"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Max. Peers insgesamt"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Max. Peers pro Torrent"
+    },
+    "seedingSettings": {
+        "message": "Seeding"
+    },
+    "seedRatioLimited": {
+        "message": "Seeding beenden bei Verhältnis"
+    },
+    "seedRatioLimit": {
+        "message": "Seed-Verhältnis-Limit"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Seeding beenden bei Inaktivität von"
+    },
+    "idleSeedingLimit": {
+        "message": "Inaktivitätslimit"
+    },
+    "networkSettings": {
+        "message": "Netzwerk"
+    },
+    "peerPort": {
+        "message": "Eingehender Port"
+    },
+    "portForwardingEnabled": {
+        "message": "UPnP / NAT-PMP aktivieren"
+    },
+    "encryption": {
+        "message": "Verschlüsselung"
+    },
+    "encryptionRequired": {
+        "message": "Erforderlich"
+    },
+    "encryptionPreferred": {
+        "message": "Bevorzugt"
+    },
+    "encryptionTolerated": {
+        "message": "Toleriert"
+    },
+    "dhtEnabled": {
+        "message": "DHT aktivieren"
+    },
+    "pexEnabled": {
+        "message": "PEX aktivieren"
+    },
+    "lpdEnabled": {
+        "message": "LPD aktivieren"
+    },
+    "utpEnabled": {
+        "message": "uTP aktivieren"
+    },
+    "minutes": {
+        "message": "Min"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Ohne Label"
+    },
+    "generalSettings": {
+        "message": "Allgemein"
+    },
+    "startAddedTorrents": {
+        "message": "Hinzugefügte Torrents starten"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Original-.torrent-Dateien löschen"
+    },
+    "incompleteDirSettings": {
+        "message": "Unvollständige Downloads"
+    },
+    "incompleteDirEnabled": {
+        "message": "Verzeichnis für unvollständige Downloads verwenden"
+    },
+    "incompleteDir": {
+        "message": "Verzeichnis für unvollständige Downloads"
+    },
+    "renamePartialFiles": {
+        "message": "Unvollständige Dateien mit der Endung .part versehen"
+    },
+    "queueSettings": {
+        "message": "Warteschlange"
+    },
+    "downloadQueueEnabled": {
+        "message": "Download-Warteschlange begrenzen"
+    },
+    "downloadQueueSize": {
+        "message": "Max. gleichzeitige Downloads"
+    },
+    "seedQueueEnabled": {
+        "message": "Seed-Warteschlange begrenzen"
+    },
+    "seedQueueSize": {
+        "message": "Max. gleichzeitige Seeds"
+    },
+    "queueStalledEnabled": {
+        "message": "Als inaktiv betrachten nach"
+    },
+    "queueStalledMinutes": {
+        "message": "Stillstand-Timeout"
+    },
+    "altSpeedSchedule": {
+        "message": "Zeitplan für Geschwindigkeitsbegrenzung"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Zeitplan für Geschwindigkeitsbegrenzung aktivieren"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Startzeit"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Endzeit"
+    },
+    "altSpeedTimeDays": {
+        "message": "Aktive Tage"
+    },
+    "daySunday": {
+        "message": "So"
+    },
+    "dayMonday": {
+        "message": "Mo"
+    },
+    "dayTuesday": {
+        "message": "Di"
+    },
+    "dayWednesday": {
+        "message": "Mi"
+    },
+    "dayThursday": {
+        "message": "Do"
+    },
+    "dayFriday": {
+        "message": "Fr"
+    },
+    "daySaturday": {
+        "message": "Sa"
+    },
+    "scriptSettings": {
+        "message": "Skript"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Skript ausführen, wenn der Download abgeschlossen ist"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Skriptpfad"
+    },
+    "portTest": {
+        "message": "Port testen"
+    },
+    "portOpen": {
+        "message": "Port ist offen"
+    },
+    "portClosed": {
+        "message": "Port ist geschlossen"
+    },
+    "portTesting": {
+        "message": "Wird getestet..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Info"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Tracker"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Seed-Limits"
+    },
+    "DT_COMMENT": {
+        "message": "Kommentar"
+    },
+    "DT_CREATOR": {
+        "message": "Ersteller"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Erstellt am"
+    },
+    "DT_PIECES": {
+        "message": "Teile"
+    },
+    "DT_CORRUPT": {
+        "message": "Beschädigt"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Downloadzeit"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Seedzeit"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Webseeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Ebene"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seeds"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Status"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Tracker-Liste"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Eine URL pro Zeile, Leerzeile zwischen Ebenen"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Seed-Verhältnis-Modus"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Seed-Verhältnis-Limit"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Inaktivitäts-Seeding-Modus"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Inaktivitätslimit (Min)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Globale Einstellungen verwenden"
+    },
+    "DT_CUSTOM": {
+        "message": "Benutzerdefiniert"
+    },
+    "DT_UNLIMITED": {
+        "message": "Unbegrenzt"
+    },
+    "DT_APPLY": {
+        "message": "Übernehmen"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Zuletzt aktiv"
+    },
+    "OV_COL_STARTED": {
+        "message": "Gestartet"
+    },
+    "OV_COL_EDITED": {
+        "message": "Bearbeitet"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Eff. Größe"
+    },
+    "DT_METADATA": {
+        "message": "Metadaten"
+    },
+    "DT_PRIVATE": {
+        "message": "Privat"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peer-Quellen"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Eingehend"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Download-Limit"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Upload-Limit"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Beachtet Sitzungslimits"
+    },
+    "DT_ENABLED": {
+        "message": "Aktiviert"
+    },
+    "DT_DISABLED": {
+        "message": "Deaktiviert"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Inaktivitäts-Timeout"
+    },
+    "sessionStats": {
+        "message": "$active$ aktiv, $paused$ pausiert",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Skript ausführen, wenn ein Torrent hinzugefügt wird"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Skriptpfad (hinzugefügt)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Skript ausführen, wenn das Seeding abgeschlossen ist"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Skriptpfad (Seeding beendet)"
+    },
+    "sequentialDownload": {
+        "message": "Sequenzieller Download"
+    },
+    "fileCount": {
+        "message": "Anzahl der Dateien"
+    },
+    "primaryMimeType": {
+        "message": "Inhaltstyp"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Warnung: Ohne SSL werden Ihr Benutzername und Passwort unverschlüsselt über das Netzwerk übertragen."
+    },
+    "backupIncludesCredentials": {
+        "message": "Das Backup enthält den Benutzernamen und das Passwort Ihres Servers."
+    },
+    "restoreConnectionChanged": {
+        "message": "Dieses Backup ändert die Serververbindung: $changes$. Fortfahren?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
     }
 }

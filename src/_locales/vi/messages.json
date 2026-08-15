@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Tiện ích mở rộng thêm giao diện web Transmission vào trình duyệt của bạn" },
-    "lang": { "message": "vi" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"tuần\", \"ngày\", \"giờ\", \"phút\", \"giây\"]" },
-    "OV_COL_NAME": { "message": "Tên" },
-    "OV_COL_ORDER": { "message": "Hàng đợi" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Kích thước" },
-    "OV_COL_REMAINING": { "message": "Còn lại" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Trạng thái" },
-    "OV_COL_SEEDS": { "message": "Seed" },
-    "OV_COL_PEERS": { "message": "Peer" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seed/Peer" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Tốc độ tải" },
-    "OV_COL_UPSPD": { "message": "Tốc độ gửi" },
-    "OV_COL_ETA": { "message": "Thời gian còn" },
-    "OV_COL_UPPED": { "message": "Đã gửi" },
-    "OV_COL_DOWNLOADED": { "message": "Đã tải" },
-    "OV_COL_SHARED": { "message": "Tỷ lệ" },
-    "OV_COL_AVAIL": { "message": "Khả dụng" },
-    "OV_COL_AVAIL_SHORT": { "message": "KD" },
-    "OV_COL_LABEL": { "message": "Nhãn" },
-    "OV_COL_DATE_ADDED": { "message": "Ngày thêm" },
-    "OV_COL_DATE_COMPLETED": { "message": "Hoàn thành" },
-    "Actions": { "message": "Hành động" },
-    "FI_COL_NAME": { "message": "Tên" },
-    "FI_COL_SIZE": { "message": "Kích thước" },
-    "FI_COL_PRIO": { "message": "Ưu tiên" },
-    "OV_FL_SEEDING": { "message": "Đang chia sẻ" },
-    "OV_CAT_ACTIVE": { "message": "Đang hoạt động" },
-    "OV_CAT_ALL": { "message": "Tất cả" },
-    "OV_CAT_COMPL": { "message": "Hoàn thành" },
-    "OV_CAT_DL": { "message": "Đang tải" },
-    "OV_CAT_INACTIVE": { "message": "Không hoạt động" },
-    "OV_CAT_NOLABEL": { "message": "Không có nhãn" },
-    "OV_FL_CHECKED": { "message": "Đã kiểm tra" },
-    "OV_FL_DOWNLOADING": { "message": "Đang tải" },
-    "OV_FL_ERROR": { "message": "Lỗi" },
-    "OV_FL_FINISHED": { "message": "Hoàn tất" },
-    "OV_FL_PAUSED": { "message": "Tạm dừng" },
-    "OV_FL_QUEUED": { "message": "Trong hàng đợi" },
-    "OV_FL_QUEUED_SEED": { "message": "Hàng đợi chia sẻ" },
-    "OV_FL_STOPPED": { "message": "Đã dừng" },
-    "MF_DONT": { "message": "Không tải" },
-    "MF_HIGH": { "message": "Cao" },
-    "MF_LOW": { "message": "Thấp" },
-    "MF_NORMAL": { "message": "Bình thường" },
-    "ML_START": { "message": "Bắt đầu" },
-    "ML_PAUSE": { "message": "Tạm dừng" },
-    "ML_STOP": { "message": "Dừng" },
-    "OV_REMOVE_LABEL": { "message": "Xóa nhãn" },
-    "OV_NEW_LABEL": { "message": "Nhãn mới..." },
-    "ML_FORCE_START": { "message": "Bắt buộc bắt đầu" },
-    "ML_FORCE_RECHECK": { "message": "Bắt buộc kiểm tra lại" },
-    "ML_REMOVE": { "message": "Xóa" },
-    "ML_REMOVE_AND": { "message": "Xóa và" },
-    "ML_DELETE_TORRENT": { "message": "Xóa .torrent" },
-    "ML_DELETE_DATA": { "message": "Xóa dữ liệu" },
-    "ML_DELETE_DATATORRENT": { "message": "Xóa .torrent + dữ liệu" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Tải xuống" },
-    "MENU_UNLIMITED": { "message": "Không giới hạn" },
-    "Open_file": { "message": "Thêm tệp torrent..." },
-    "ST_CAPT_WEBUI": { "message": "Giao diện Web" },
-    "MM_FILE_ADD_URL": { "message": "Thêm Torrent từ URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Tiếp tục tất cả torrent" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Tạm dừng tất cả torrent" },
-    "DLG_BTN_CLOSE": { "message": "Đóng" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Bạn có chắc chắn muốn xóa torrent đã chọn?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Bạn có chắc chắn muốn xóa %d torrent đã chọn?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Bạn có chắc chắn muốn xóa torrent đã chọn VÀ xóa tất cả dữ liệu đã tải?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Bạn có chắc chắn muốn xóa %d torrent đã chọn VÀ xóa tất cả dữ liệu đã tải?" },
-    "DLG_BTN_YES": { "message": "Có" },
-    "DLG_BTN_NO": { "message": "Không" },
-    "DLG_BTN_CANCEL": { "message": "Hủy" },
-    "DLG_BTN_APPLY": { "message": "Áp dụng" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Thư mục" },
-    "Paste_a_torrent_URL": { "message": "Dán URL torrent" },
-    "OV_NEWLABEL_CAPTION": { "message": "Nhập nhãn" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Tên đăng nhập" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Mật khẩu" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Cổng" },
-    "ST_CAPT_ADVANCED": { "message": "Nâng cao" },
-    "resume": { "message": "Tiếp tục" },
-    "enterNewLabel": { "message": "Nhập nhãn mới cho torrent đã chọn" },
-    "defaultPath": { "message": "Thư mục mặc định" },
-    "add": { "message": "Thêm" },
-    "available": { "message": "Có sẵn" },
-    "up": { "message": "Lên" },
-    "down": { "message": "Xuống" },
-    "update": { "message": "Cập nhật" },
-    "deleteSelected": { "message": "Xóa đã chọn" },
-    "torrentAdded": { "message": "Đã thêm torrent!" },
-    "unexpectedError": { "message": "Lỗi không mong muốn!" },
-    "fileSizeError": { "message": "Tệp quá lớn" },
-    "addInTorrentClient": { "message": "Thêm vào Transmission" },
-    "enterNewDirPath": { "message": "Nhập đường dẫn đến thư mục mới" },
-    "torrentFileExists": { "message": "Tệp torrent có thể đã tồn tại!" },
-    "currentDirectory": { "message": "Thư mục hiện tại" },
-    "openInTab": { "message": "Mở trong tab" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Chính" },
-    "optNotify": { "message": "Thông báo" },
-    "optCtx": { "message": "Menu ngữ cảnh" },
-    "backup": { "message": "Sao lưu" },
-    "restore": { "message": "Khôi phục" },
-    "backupRestore": { "message": "Sao lưu & Khôi phục" },
-    "backupHint": { "message": "Xuất cài đặt để lưu hoặc đồng bộ lên đám mây" },
-    "restoreHint": { "message": "Nhập cài đặt từ bản sao lưu trước hoặc từ đám mây" },
-    "loadCurrentConfig": { "message": "Tải cấu hình hiện tại" },
-    "configData": { "message": "Dữ liệu cấu hình" },
-    "clickLoadConfig": { "message": "Nhấp \"Tải cấu hình hiện tại\" để xem cài đặt của bạn" },
-    "useSSL": { "message": "Sử dụng SSL" },
-    "path": { "message": "Đường dẫn" },
-    "hideSeedStatusItem": { "message": "Ẩn torrent có trạng thái \"Đang chia sẻ\"" },
-    "hideFinishStatusItem": { "message": "Ẩn torrent có trạng thái \"Hoàn tất\"" },
-    "showSpeedGraph": { "message": "Hiển thị biểu đồ tốc độ" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Khoảng thời gian cập nhật danh sách torrent" },
-    "fixCyrillicIf": { "message": "Sửa chữ Cyrillic nếu..." },
-    "fixCyrillicTitle": { "message": "Tên torrent hiển thị không đúng" },
-    "fixCyrillicTorrentPath": { "message": "Thư mục cho torrent mới được đặt không đúng" },
-    "showNotificationOnDownloadComplete": { "message": "Hiển thị thông báo khi tải xong" },
-    "displayActiveTorrentCountIcon": { "message": "Hiển thị số torrent đang tải trên biểu tượng tiện ích" },
-    "backgroundUpdateInterval": { "message": "Khoảng thời gian cập nhật nền" },
-    "notificationTimeout": { "message": "Ẩn thông báo sau" },
-    "folderContextMenu": { "message": "Hiển thị danh sách thư mục" },
-    "labelContextMenu": { "message": "Hiển thị danh sách nhãn" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Mở danh mục \"Đang tải\" khi thêm torrent" },
-    "treeViewContextMenu": { "message": "Nhóm thư mục dạng cây" },
-    "treeViewContextMenuHint": { "message": "Sắp xếp thư mục theo cấp bậc thay vì danh sách phẳng" },
-    "showDefaultFolderContextMenuItem": { "message": "Hiển thị tùy chọn \"Đường dẫn mặc định\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Thêm tùy chọn tải về thư mục mặc định của Transmission" },
-    "dirList": { "message": "Thư mục tải xuống" },
-    "dirListHint": { "message": "Nhấp chuột phải vào liên kết torrent để chọn đích" },
-    "options": { "message": "Tùy chọn" },
-    "subPath": { "message": "Đường dẫn con" },
-    "labelList": { "message": "Danh sách nhãn" },
-    "optSaveInCloud": { "message": "Lưu trên đám mây" },
-    "toRestore": { "message": "Khôi phục" },
-    "optGetFromCloud": { "message": "Lấy cài đặt từ đám mây" },
-    "optClearCloudStorage": { "message": "Xóa bộ nhớ đám mây" },
-    "confirmRestore": { "message": "Bạn có chắc chắn muốn khôi phục cấu hình này? Điều này sẽ ghi đè tất cả cài đặt hiện tại." },
-    "confirmClearCloud": { "message": "Bạn có chắc chắn muốn xóa bản sao lưu đám mây?" },
-    "showFileList": { "message": "Danh sách tệp" },
-    "selectAll": { "message": "Chọn tất cả" },
-    "refresh": { "message": "Làm mới" },
-    "checkSettings": { "message": "Kiểm tra cài đặt" },
-    "showFreeSpace": { "message": "Hiển thị dung lượng đĩa trống" },
-    "freeSpace": { "message": "Dung lượng trống" },
-    "startNow": { "message": "Bắt đầu ngay" },
-    "rename": { "message": "Đổi tên" },
-    "renameText": { "message": "Nhập tên tệp" },
-    "move": { "message": "Di chuyển" },
-    "moveNewPath": { "message": "Nhập đường dẫn mới" },
-    "fullPath": { "message": "Thư mục (đường dẫn đầy đủ)" },
-    "guiPath": { "message": "Đường dẫn WebUI" },
-    "altSpeedEnable": { "message": "Giới hạn tốc độ tạm thời" },
-    "torrentFileIsExists": { "message": "Torrent đã được thêm trước đó" },
-    "reannounce": { "message": "Yêu cầu thêm peer" },
-    "extra": { "message": "Thêm" },
-    "queueTop": { "message": "Lên đầu" },
-    "queueBottom": { "message": "Xuống cuối" },
-    "requireAuthentication": { "message": "Yêu cầu xác thực" },
-    "badgeColor": { "message": "Màu huy hiệu biểu tượng" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Sao chép" },
-    "addItem": { "message": "Thêm mục" },
-    "shortName": { "message": "Tên ngắn" },
-    "portIncorrect": { "message": "Cổng không hợp lệ" },
-    "search": { "message": "Tìm kiếm" },
-    "theme": { "message": "Giao diện" },
-    "themeSystem": { "message": "Hệ thống" },
-    "themeLight": { "message": "Sáng" },
-    "themeDark": { "message": "Tối" },
-    "configureClient": { "message": "Cấu hình Transmission" },
-    "configureClientHint": { "message": "Vui lòng cấu hình kết nối máy chủ Transmission để bắt đầu." },
-    "openOptions": { "message": "Mở Cài đặt" },
-    "properties": { "message": "Thuộc tính" },
-    "copyName": { "message": "Sao chép tên" },
-    "copyHash": { "message": "Sao chép hash" },
-    "sessionTotals": { "message": "Tổng phiên" },
-    "responseEmpty": { "message": "Phản hồi trống" },
-    "clearSearch": { "message": "Xóa tìm kiếm" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Tiện ích mở rộng thêm giao diện web Transmission vào trình duyệt của bạn"
+    },
+    "lang": {
+        "message": "vi"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"tuần\", \"ngày\", \"giờ\", \"phút\", \"giây\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Tên"
+    },
+    "OV_COL_ORDER": {
+        "message": "Hàng đợi"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Kích thước"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Còn lại"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Trạng thái"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seed"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peer"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seed/Peer"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Tốc độ tải"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Tốc độ gửi"
+    },
+    "OV_COL_ETA": {
+        "message": "Thời gian còn"
+    },
+    "OV_COL_UPPED": {
+        "message": "Đã gửi"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Đã tải"
+    },
+    "OV_COL_SHARED": {
+        "message": "Tỷ lệ"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Khả dụng"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "KD"
+    },
+    "OV_COL_LABEL": {
+        "message": "Nhãn"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Ngày thêm"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Hoàn thành"
+    },
+    "Actions": {
+        "message": "Hành động"
+    },
+    "FI_COL_NAME": {
+        "message": "Tên"
+    },
+    "FI_COL_SIZE": {
+        "message": "Kích thước"
+    },
+    "FI_COL_PRIO": {
+        "message": "Ưu tiên"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Đang chia sẻ"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Đang hoạt động"
+    },
+    "OV_CAT_ALL": {
+        "message": "Tất cả"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Hoàn thành"
+    },
+    "OV_CAT_DL": {
+        "message": "Đang tải"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Không hoạt động"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Không có nhãn"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Đã kiểm tra"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Đang tải"
+    },
+    "OV_FL_ERROR": {
+        "message": "Lỗi"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Hoàn tất"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Tạm dừng"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Trong hàng đợi"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Hàng đợi chia sẻ"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Đã dừng"
+    },
+    "OV_FL_STALLED": {
+        "message": "Bị đình trệ"
+    },
+    "MF_DONT": {
+        "message": "Không tải"
+    },
+    "MF_HIGH": {
+        "message": "Cao"
+    },
+    "MF_LOW": {
+        "message": "Thấp"
+    },
+    "MF_NORMAL": {
+        "message": "Bình thường"
+    },
+    "ML_START": {
+        "message": "Bắt đầu"
+    },
+    "ML_STOP": {
+        "message": "Dừng"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Bắt buộc kiểm tra lại"
+    },
+    "ML_REMOVE": {
+        "message": "Xóa"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Xóa và"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Xóa .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Xóa dữ liệu"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Xóa .torrent + dữ liệu"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Không giới hạn"
+    },
+    "Open_file": {
+        "message": "Thêm tệp torrent..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Giao diện Web"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Thêm Torrent từ URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Tiếp tục tất cả torrent"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Tạm dừng tất cả torrent"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Đóng"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Bạn có chắc chắn muốn xóa torrent đã chọn?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Bạn có chắc chắn muốn xóa %d torrent đã chọn?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Bạn có chắc chắn muốn xóa torrent đã chọn VÀ xóa tất cả dữ liệu đã tải?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Bạn có chắc chắn muốn xóa %d torrent đã chọn VÀ xóa tất cả dữ liệu đã tải?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Có"
+    },
+    "DLG_BTN_NO": {
+        "message": "Không"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Hủy"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Áp dụng"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Dán URL torrent"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Tên đăng nhập"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Mật khẩu"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Cổng"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Nâng cao"
+    },
+    "enterNewLabel": {
+        "message": "Nhập nhãn mới cho torrent đã chọn"
+    },
+    "defaultPath": {
+        "message": "Thư mục mặc định"
+    },
+    "add": {
+        "message": "Thêm"
+    },
+    "available": {
+        "message": "Có sẵn"
+    },
+    "up": {
+        "message": "Lên"
+    },
+    "down": {
+        "message": "Xuống"
+    },
+    "update": {
+        "message": "Cập nhật"
+    },
+    "deleteSelected": {
+        "message": "Xóa đã chọn"
+    },
+    "torrentAdded": {
+        "message": "Đã thêm torrent!"
+    },
+    "unexpectedError": {
+        "message": "Lỗi không mong muốn!"
+    },
+    "fileSizeError": {
+        "message": "Tệp quá lớn"
+    },
+    "addInTorrentClient": {
+        "message": "Thêm vào Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Tệp torrent có thể đã tồn tại!"
+    },
+    "currentDirectory": {
+        "message": "Thư mục hiện tại"
+    },
+    "openInTab": {
+        "message": "Mở trong tab"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Chính"
+    },
+    "optNotify": {
+        "message": "Thông báo"
+    },
+    "optCtx": {
+        "message": "Menu ngữ cảnh"
+    },
+    "backup": {
+        "message": "Sao lưu"
+    },
+    "restore": {
+        "message": "Khôi phục"
+    },
+    "backupRestore": {
+        "message": "Sao lưu & Khôi phục"
+    },
+    "backupHint": {
+        "message": "Xuất cài đặt để lưu hoặc đồng bộ lên đám mây"
+    },
+    "restoreHint": {
+        "message": "Nhập cài đặt từ bản sao lưu trước hoặc từ đám mây"
+    },
+    "loadCurrentConfig": {
+        "message": "Tải cấu hình hiện tại"
+    },
+    "configData": {
+        "message": "Dữ liệu cấu hình"
+    },
+    "clickLoadConfig": {
+        "message": "Nhấp \"Tải cấu hình hiện tại\" để xem cài đặt của bạn"
+    },
+    "useSSL": {
+        "message": "Sử dụng SSL"
+    },
+    "path": {
+        "message": "Đường dẫn"
+    },
+    "hideSeedStatusItem": {
+        "message": "Ẩn torrent có trạng thái \"Đang chia sẻ\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Ẩn torrent có trạng thái \"Hoàn tất\""
+    },
+    "showSpeedGraph": {
+        "message": "Hiển thị biểu đồ tốc độ"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Khoảng thời gian cập nhật danh sách torrent"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Hiển thị thông báo khi tải xong"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Hiển thị số torrent đang tải trên biểu tượng tiện ích"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Khoảng thời gian cập nhật nền"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Mở danh mục \"Đang tải\" khi thêm torrent"
+    },
+    "treeViewContextMenu": {
+        "message": "Nhóm thư mục dạng cây"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Hiển thị tùy chọn \"Đường dẫn mặc định\""
+    },
+    "dirList": {
+        "message": "Thư mục tải xuống"
+    },
+    "dirListHint": {
+        "message": "Nhấp chuột phải vào liên kết torrent để chọn đích"
+    },
+    "options": {
+        "message": "Tùy chọn"
+    },
+    "subPath": {
+        "message": "Đường dẫn con"
+    },
+    "optSaveInCloud": {
+        "message": "Lưu trên đám mây"
+    },
+    "toRestore": {
+        "message": "Khôi phục"
+    },
+    "optGetFromCloud": {
+        "message": "Lấy cài đặt từ đám mây"
+    },
+    "optClearCloudStorage": {
+        "message": "Xóa bộ nhớ đám mây"
+    },
+    "confirmRestore": {
+        "message": "Bạn có chắc chắn muốn khôi phục cấu hình này? Điều này sẽ ghi đè tất cả cài đặt hiện tại."
+    },
+    "confirmClearCloud": {
+        "message": "Bạn có chắc chắn muốn xóa bản sao lưu đám mây?"
+    },
+    "showFileList": {
+        "message": "Danh sách tệp"
+    },
+    "selectAll": {
+        "message": "Chọn tất cả"
+    },
+    "refresh": {
+        "message": "Làm mới"
+    },
+    "checkSettings": {
+        "message": "Kiểm tra cài đặt"
+    },
+    "showFreeSpace": {
+        "message": "Hiển thị dung lượng đĩa trống"
+    },
+    "freeSpace": {
+        "message": "Dung lượng trống"
+    },
+    "startNow": {
+        "message": "Bắt đầu ngay"
+    },
+    "rename": {
+        "message": "Đổi tên"
+    },
+    "renameText": {
+        "message": "Nhập tên tệp"
+    },
+    "move": {
+        "message": "Di chuyển"
+    },
+    "moveNewPath": {
+        "message": "Nhập đường dẫn mới"
+    },
+    "guiPath": {
+        "message": "Đường dẫn WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Giới hạn tốc độ tạm thời"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrent đã được thêm trước đó"
+    },
+    "reannounce": {
+        "message": "Yêu cầu thêm peer"
+    },
+    "extra": {
+        "message": "Thêm"
+    },
+    "queueTop": {
+        "message": "Lên đầu"
+    },
+    "queueBottom": {
+        "message": "Xuống cuối"
+    },
+    "requireAuthentication": {
+        "message": "Yêu cầu xác thực"
+    },
+    "badgeColor": {
+        "message": "Màu huy hiệu biểu tượng"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Sao chép"
+    },
+    "shortName": {
+        "message": "Tên ngắn"
+    },
+    "portIncorrect": {
+        "message": "Cổng không hợp lệ"
+    },
+    "search": {
+        "message": "Tìm kiếm"
+    },
+    "theme": {
+        "message": "Giao diện"
+    },
+    "themeSystem": {
+        "message": "Hệ thống"
+    },
+    "themeLight": {
+        "message": "Sáng"
+    },
+    "themeDark": {
+        "message": "Tối"
+    },
+    "configureClient": {
+        "message": "Cấu hình Transmission"
+    },
+    "configureClientHint": {
+        "message": "Vui lòng cấu hình kết nối máy chủ Transmission để bắt đầu."
+    },
+    "openOptions": {
+        "message": "Mở Cài đặt"
+    },
+    "properties": {
+        "message": "Thuộc tính"
+    },
+    "copyName": {
+        "message": "Sao chép tên"
+    },
+    "copyHash": {
+        "message": "Sao chép hash"
+    },
+    "sessionTotals": {
+        "message": "Tổng phiên"
+    },
+    "responseEmpty": {
+        "message": "Phản hồi trống"
+    },
+    "clearSearch": {
+        "message": "Xóa tìm kiếm"
+    },
+    "errorRetry": {
+        "message": "Thử lại"
+    },
+    "errorDetails": {
+        "message": "Chi tiết"
+    },
+    "speedGraph": {
+        "message": "Biểu đồ tốc độ"
+    },
+    "optServer": {
+        "message": "Máy chủ"
+    },
+    "blocklist": {
+        "message": "Danh sách chặn"
+    },
+    "blocklistEnable": {
+        "message": "Bật danh sách chặn"
+    },
+    "blocklistUrl": {
+        "message": "URL danh sách chặn"
+    },
+    "blocklistRules": {
+        "message": "Quy tắc"
+    },
+    "blocklistUpdateNow": {
+        "message": "Cập nhật danh sách chặn ngay"
+    },
+    "peerFlags": {
+        "message": "Cờ"
+    },
+    "peerSettings": {
+        "message": "Peer"
+    },
+    "peerLimitGlobal": {
+        "message": "Số peer tối đa toàn cục"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Số peer tối đa mỗi torrent"
+    },
+    "seedingSettings": {
+        "message": "Chia sẻ"
+    },
+    "seedRatioLimited": {
+        "message": "Dừng chia sẻ khi đạt tỷ lệ"
+    },
+    "seedRatioLimit": {
+        "message": "Giới hạn tỷ lệ chia sẻ"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Dừng chia sẻ nếu không hoạt động trong"
+    },
+    "idleSeedingLimit": {
+        "message": "Giới hạn không hoạt động"
+    },
+    "networkSettings": {
+        "message": "Mạng"
+    },
+    "peerPort": {
+        "message": "Cổng lắng nghe"
+    },
+    "portForwardingEnabled": {
+        "message": "Bật UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Mã hóa"
+    },
+    "encryptionRequired": {
+        "message": "Bắt buộc"
+    },
+    "encryptionPreferred": {
+        "message": "Ưu tiên"
+    },
+    "encryptionTolerated": {
+        "message": "Chấp nhận"
+    },
+    "dhtEnabled": {
+        "message": "Bật DHT"
+    },
+    "pexEnabled": {
+        "message": "Bật PEX"
+    },
+    "lpdEnabled": {
+        "message": "Bật LPD"
+    },
+    "utpEnabled": {
+        "message": "Bật uTP"
+    },
+    "minutes": {
+        "message": "phút"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Không nhãn"
+    },
+    "generalSettings": {
+        "message": "Chung"
+    },
+    "startAddedTorrents": {
+        "message": "Bắt đầu torrent vừa thêm"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Xóa tập tin .torrent gốc"
+    },
+    "incompleteDirSettings": {
+        "message": "Tải xuống chưa hoàn tất"
+    },
+    "incompleteDirEnabled": {
+        "message": "Dùng thư mục cho tải xuống chưa hoàn tất"
+    },
+    "incompleteDir": {
+        "message": "Thư mục chưa hoàn tất"
+    },
+    "renamePartialFiles": {
+        "message": "Thêm phần mở rộng .part vào tập tin chưa hoàn tất"
+    },
+    "queueSettings": {
+        "message": "Hàng đợi"
+    },
+    "downloadQueueEnabled": {
+        "message": "Giới hạn hàng đợi tải xuống"
+    },
+    "downloadQueueSize": {
+        "message": "Số lượt tải xuống đồng thời tối đa"
+    },
+    "seedQueueEnabled": {
+        "message": "Giới hạn hàng đợi chia sẻ"
+    },
+    "seedQueueSize": {
+        "message": "Số lượt chia sẻ đồng thời tối đa"
+    },
+    "queueStalledEnabled": {
+        "message": "Coi là không hoạt động sau"
+    },
+    "queueStalledMinutes": {
+        "message": "Thời gian chờ đình trệ"
+    },
+    "altSpeedSchedule": {
+        "message": "Lịch giới hạn tốc độ"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Bật lịch giới hạn tốc độ"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Giờ bắt đầu"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Giờ kết thúc"
+    },
+    "altSpeedTimeDays": {
+        "message": "Ngày áp dụng"
+    },
+    "daySunday": {
+        "message": "CN"
+    },
+    "dayMonday": {
+        "message": "T2"
+    },
+    "dayTuesday": {
+        "message": "T3"
+    },
+    "dayWednesday": {
+        "message": "T4"
+    },
+    "dayThursday": {
+        "message": "T5"
+    },
+    "dayFriday": {
+        "message": "T6"
+    },
+    "daySaturday": {
+        "message": "T7"
+    },
+    "scriptSettings": {
+        "message": "Script"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Chạy script khi tải xuống hoàn tất"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Đường dẫn script"
+    },
+    "portTest": {
+        "message": "Kiểm tra cổng"
+    },
+    "portOpen": {
+        "message": "Cổng đang mở"
+    },
+    "portClosed": {
+        "message": "Cổng bị đóng"
+    },
+    "portTesting": {
+        "message": "Đang kiểm tra..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Thông tin"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Tracker"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Giới hạn chia sẻ"
+    },
+    "DT_COMMENT": {
+        "message": "Bình luận"
+    },
+    "DT_CREATOR": {
+        "message": "Trình tạo"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Ngày tạo"
+    },
+    "DT_PIECES": {
+        "message": "Số mảnh"
+    },
+    "DT_CORRUPT": {
+        "message": "Bị hỏng"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Thời gian tải xuống"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Thời gian chia sẻ"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web seed"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Bậc"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seed"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peer"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Trạng thái"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Danh sách tracker"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Mỗi dòng một URL, dòng trống ngăn cách các bậc"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Chế độ tỷ lệ chia sẻ"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Giới hạn tỷ lệ chia sẻ"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Chế độ chia sẻ khi không hoạt động"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Giới hạn không hoạt động (phút)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Dùng cài đặt chung"
+    },
+    "DT_CUSTOM": {
+        "message": "Tùy chỉnh"
+    },
+    "DT_UNLIMITED": {
+        "message": "Không giới hạn"
+    },
+    "DT_APPLY": {
+        "message": "Áp dụng"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Hoạt động gần nhất"
+    },
+    "OV_COL_STARTED": {
+        "message": "Đã bắt đầu"
+    },
+    "OV_COL_EDITED": {
+        "message": "Đã sửa"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "K.thước khi xong"
+    },
+    "DT_METADATA": {
+        "message": "Siêu dữ liệu"
+    },
+    "DT_PRIVATE": {
+        "message": "Riêng tư"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Nguồn peer"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Kết nối đến"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Bộ nhớ đệm"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Giới hạn tải xuống"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Giới hạn tải lên"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Tuân theo giới hạn phiên"
+    },
+    "DT_ENABLED": {
+        "message": "Đã bật"
+    },
+    "DT_DISABLED": {
+        "message": "Đã tắt"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Thời gian chờ không hoạt động"
+    },
+    "sessionStats": {
+        "message": "$active$ đang hoạt động, $paused$ tạm dừng",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Chạy script khi thêm torrent"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Đường dẫn script (khi thêm)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Chạy script khi chia sẻ hoàn tất"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Đường dẫn script (khi chia sẻ xong)"
+    },
+    "sequentialDownload": {
+        "message": "Tải tuần tự"
+    },
+    "fileCount": {
+        "message": "Số tập tin"
+    },
+    "primaryMimeType": {
+        "message": "Loại nội dung"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Cảnh báo: nếu không có SSL, tên đăng nhập và mật khẩu của bạn sẽ được gửi qua mạng mà không được mã hóa."
+    },
+    "backupIncludesCredentials": {
+        "message": "Bản sao lưu bao gồm tên đăng nhập và mật khẩu máy chủ của bạn."
+    },
+    "restoreConnectionChanged": {
+        "message": "Bản sao lưu này thay đổi kết nối máy chủ: $changes$. Tiếp tục?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

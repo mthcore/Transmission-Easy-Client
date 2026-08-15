@@ -18,5 +18,5 @@ global.BUILD_ENV = {
   version,
   browser,
   babelEnvOptions,
-  FLAG_ENABLE_LOGGER: true,
+  FLAG_ENABLE_LOGGER: mode !== 'production',
 };

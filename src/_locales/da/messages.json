@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Udvidelsen tilføjer Transmissions webgrænseflade til din browser" },
-    "lang": { "message": "da" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"u\", \"d\", \"t\", \"m\", \"s\"]" },
-    "OV_COL_NAME": { "message": "Navn" },
-    "OV_COL_ORDER": { "message": "Kø" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Størrelse" },
-    "OV_COL_REMAINING": { "message": "Tilbage" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Status" },
-    "OV_COL_SEEDS": { "message": "Seedere" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seedere/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Download" },
-    "OV_COL_UPSPD": { "message": "Upload" },
-    "OV_COL_ETA": { "message": "Tid" },
-    "OV_COL_UPPED": { "message": "Uploadet" },
-    "OV_COL_DOWNLOADED": { "message": "Downloadet" },
-    "OV_COL_SHARED": { "message": "Forhold" },
-    "OV_COL_AVAIL": { "message": "Tilgængelighed" },
-    "OV_COL_AVAIL_SHORT": { "message": "Tilg." },
-    "OV_COL_LABEL": { "message": "Mærkat" },
-    "OV_COL_DATE_ADDED": { "message": "Tilføjet" },
-    "OV_COL_DATE_COMPLETED": { "message": "Fuldført" },
-    "Actions": { "message": "Handlinger" },
-    "FI_COL_NAME": { "message": "Navn" },
-    "FI_COL_SIZE": { "message": "Størrelse" },
-    "FI_COL_PRIO": { "message": "Prioritet" },
-    "OV_FL_SEEDING": { "message": "Seeder" },
-    "OV_CAT_ACTIVE": { "message": "Aktive" },
-    "OV_CAT_ALL": { "message": "Alle" },
-    "OV_CAT_COMPL": { "message": "Fuldførte" },
-    "OV_CAT_DL": { "message": "Downloader" },
-    "OV_CAT_INACTIVE": { "message": "Inaktive" },
-    "OV_CAT_NOLABEL": { "message": "Ingen mærkat" },
-    "OV_FL_CHECKED": { "message": "Kontrolleret" },
-    "OV_FL_DOWNLOADING": { "message": "Downloader" },
-    "OV_FL_ERROR": { "message": "Fejl" },
-    "OV_FL_FINISHED": { "message": "Færdig" },
-    "OV_FL_PAUSED": { "message": "Pauset" },
-    "OV_FL_QUEUED": { "message": "I kø" },
-    "OV_FL_QUEUED_SEED": { "message": "Seed-kø" },
-    "OV_FL_STOPPED": { "message": "Stoppet" },
-    "MF_DONT": { "message": "Download ikke" },
-    "MF_HIGH": { "message": "Høj" },
-    "MF_LOW": { "message": "Lav" },
-    "MF_NORMAL": { "message": "Normal" },
-    "ML_START": { "message": "Start" },
-    "ML_PAUSE": { "message": "Pause" },
-    "ML_STOP": { "message": "Stop" },
-    "OV_REMOVE_LABEL": { "message": "Fjern mærkat" },
-    "OV_NEW_LABEL": { "message": "Nyt mærkat..." },
-    "ML_FORCE_START": { "message": "Tving start" },
-    "ML_FORCE_RECHECK": { "message": "Tving genkontrol" },
-    "ML_REMOVE": { "message": "Fjern" },
-    "ML_REMOVE_AND": { "message": "Fjern og" },
-    "ML_DELETE_TORRENT": { "message": "Slet .torrent" },
-    "ML_DELETE_DATA": { "message": "Slet data" },
-    "ML_DELETE_DATATORRENT": { "message": "Slet .torrent + data" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Download" },
-    "MENU_UNLIMITED": { "message": "Ubegrænset" },
-    "Open_file": { "message": "Tilføj torrentfil..." },
-    "ST_CAPT_WEBUI": { "message": "Webgrænseflade" },
-    "MM_FILE_ADD_URL": { "message": "Tilføj torrent fra URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Genoptag alle torrents" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Pause alle torrents" },
-    "DLG_BTN_CLOSE": { "message": "Luk" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Er du sikker på, at du vil fjerne den valgte torrent?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Er du sikker på, at du vil fjerne de %d valgte torrents?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Er du sikker på, at du vil fjerne den valgte torrent OG slette alle downloadede data?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Er du sikker på, at du vil fjerne de %d valgte torrents OG slette alle downloadede data?" },
-    "DLG_BTN_YES": { "message": "Ja" },
-    "DLG_BTN_NO": { "message": "Nej" },
-    "DLG_BTN_CANCEL": { "message": "Annuller" },
-    "DLG_BTN_APPLY": { "message": "Anvend" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Mapper" },
-    "Paste_a_torrent_URL": { "message": "Indsæt en torrent-URL" },
-    "OV_NEWLABEL_CAPTION": { "message": "Indtast mærkat" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Brugernavn" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Adgangskode" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Avanceret" },
-    "resume": { "message": "Genoptag" },
-    "enterNewLabel": { "message": "Indtast det nye mærkat for den valgte torrent" },
-    "defaultPath": { "message": "Standardmappe" },
-    "add": { "message": "Tilføj" },
-    "available": { "message": "Tilgængelig" },
-    "up": { "message": "Op" },
-    "down": { "message": "Ned" },
-    "update": { "message": "Opdater" },
-    "deleteSelected": { "message": "Slet valgte" },
-    "torrentAdded": { "message": "Torrent tilføjet!" },
-    "unexpectedError": { "message": "Uventet fejl!" },
-    "fileSizeError": { "message": "Filen er for stor" },
-    "addInTorrentClient": { "message": "Tilføj til Transmission" },
-    "enterNewDirPath": { "message": "Indtast stien til den nye mappe" },
-    "torrentFileExists": { "message": "Torrentfilen findes sandsynligvis allerede!" },
-    "currentDirectory": { "message": "Nuværende mappe" },
-    "openInTab": { "message": "Åbn i fane" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Hoved" },
-    "optNotify": { "message": "Notifikationer" },
-    "optCtx": { "message": "Kontekstmenu" },
-    "backup": { "message": "Sikkerhedskopi" },
-    "restore": { "message": "Gendan" },
-    "backupRestore": { "message": "Sikkerhedskopiering" },
-    "backupHint": { "message": "Eksporter dine indstillinger for at gemme eller synkronisere til skyen" },
-    "restoreHint": { "message": "Importer indstillinger fra en tidligere sikkerhedskopi eller fra skyen" },
-    "loadCurrentConfig": { "message": "Indlæs nuværende konfiguration" },
-    "configData": { "message": "Konfigurationsdata" },
-    "clickLoadConfig": { "message": "Klik på \"Indlæs nuværende konfiguration\" for at se dine indstillinger" },
-    "useSSL": { "message": "Brug SSL" },
-    "path": { "message": "Sti" },
-    "hideSeedStatusItem": { "message": "Skjul torrents med status \"Seeder\"" },
-    "hideFinishStatusItem": { "message": "Skjul torrents med status \"Færdig\"" },
-    "showSpeedGraph": { "message": "Vis hastighedsgraf" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Opdateringsinterval for torrentliste" },
-    "fixCyrillicIf": { "message": "Ret kyrillisk hvis..." },
-    "fixCyrillicTitle": { "message": "Torrentnavne vises forkert" },
-    "fixCyrillicTorrentPath": { "message": "Mappe til ny torrent sættes forkert" },
-    "showNotificationOnDownloadComplete": { "message": "Vis notifikation når download er færdig" },
-    "displayActiveTorrentCountIcon": { "message": "Vis antal downloadende torrents på udvidelsesikonet" },
-    "backgroundUpdateInterval": { "message": "Baggrundsopdateringsinterval" },
-    "notificationTimeout": { "message": "Skjul notifikation efter" },
-    "folderContextMenu": { "message": "Vis mappeliste" },
-    "labelContextMenu": { "message": "Vis mærkatliste" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Åbn kategorien \"Downloader\" når en torrent tilføjes" },
-    "treeViewContextMenu": { "message": "Grupper mapper som træ" },
-    "treeViewContextMenuHint": { "message": "Organiser mapper hierarkisk i stedet for flad liste" },
-    "showDefaultFolderContextMenuItem": { "message": "Vis indstillingen \"Standardsti\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Tilføj mulighed for at downloade til Transmissions standardmappe" },
-    "dirList": { "message": "Downloadmapper" },
-    "dirListHint": { "message": "Højreklik på et torrentlink for at vælge destination" },
-    "options": { "message": "Indstillinger" },
-    "subPath": { "message": "Undermappe" },
-    "labelList": { "message": "Mærkatliste" },
-    "optSaveInCloud": { "message": "Gem i skyen" },
-    "toRestore": { "message": "Gendan" },
-    "optGetFromCloud": { "message": "Hent indstillinger fra skyen" },
-    "optClearCloudStorage": { "message": "Ryd skylager" },
-    "confirmRestore": { "message": "Er du sikker på, at du vil gendanne denne konfiguration? Dette vil overskrive alle nuværende indstillinger." },
-    "confirmClearCloud": { "message": "Er du sikker på, at du vil rydde skysikkerhedskopien?" },
-    "showFileList": { "message": "Filliste" },
-    "selectAll": { "message": "Vælg alle" },
-    "refresh": { "message": "Opdater" },
-    "checkSettings": { "message": "Tjek indstillinger" },
-    "showFreeSpace": { "message": "Vis tilgængelig diskplads" },
-    "freeSpace": { "message": "Ledig plads" },
-    "startNow": { "message": "Start nu" },
-    "rename": { "message": "Omdøb" },
-    "renameText": { "message": "Indtast filnavn" },
-    "move": { "message": "Flyt" },
-    "moveNewPath": { "message": "Indtast ny sti" },
-    "fullPath": { "message": "Mappe (fuld sti)" },
-    "guiPath": { "message": "WebUI-sti" },
-    "altSpeedEnable": { "message": "Midlertidige hastighedsgrænser" },
-    "torrentFileIsExists": { "message": "Torrenten blev tilføjet tidligere" },
-    "reannounce": { "message": "Anmod om flere peers" },
-    "extra": { "message": "Ekstra" },
-    "queueTop": { "message": "Øverst" },
-    "queueBottom": { "message": "Nederst" },
-    "requireAuthentication": { "message": "Godkendelse påkrævet" },
-    "badgeColor": { "message": "Ikonmærke-farve" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Kopier" },
-    "addItem": { "message": "Tilføj element" },
-    "shortName": { "message": "Kort navn" },
-    "portIncorrect": { "message": "Porten er forkert" },
-    "search": { "message": "Søg" },
-    "theme": { "message": "Tema" },
-    "themeSystem": { "message": "System" },
-    "themeLight": { "message": "Lyst" },
-    "themeDark": { "message": "Mørkt" },
-    "configureClient": { "message": "Konfigurer Transmission" },
-    "configureClientHint": { "message": "Konfigurer din Transmission-serverforbindelse for at komme i gang." },
-    "openOptions": { "message": "Åbn indstillinger" },
-    "properties": { "message": "Egenskaber" },
-    "copyName": { "message": "Kopier navn" },
-    "copyHash": { "message": "Kopier hash" },
-    "sessionTotals": { "message": "Sessionstotaler" },
-    "responseEmpty": { "message": "Svaret er tomt" },
-    "clearSearch": { "message": "Ryd søgning" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Udvidelsen tilføjer Transmissions webgrænseflade til din browser"
+    },
+    "lang": {
+        "message": "da"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"u\", \"d\", \"t\", \"m\", \"s\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Navn"
+    },
+    "OV_COL_ORDER": {
+        "message": "Kø"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Størrelse"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Tilbage"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Status"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seedere"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seedere/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Download"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Upload"
+    },
+    "OV_COL_ETA": {
+        "message": "Tid"
+    },
+    "OV_COL_UPPED": {
+        "message": "Uploadet"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Downloadet"
+    },
+    "OV_COL_SHARED": {
+        "message": "Forhold"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Tilgængelighed"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Tilg."
+    },
+    "OV_COL_LABEL": {
+        "message": "Mærkat"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Tilføjet"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Fuldført"
+    },
+    "Actions": {
+        "message": "Handlinger"
+    },
+    "FI_COL_NAME": {
+        "message": "Navn"
+    },
+    "FI_COL_SIZE": {
+        "message": "Størrelse"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioritet"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Seeder"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktive"
+    },
+    "OV_CAT_ALL": {
+        "message": "Alle"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Fuldførte"
+    },
+    "OV_CAT_DL": {
+        "message": "Downloader"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Inaktive"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Ingen mærkat"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Kontrolleret"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Downloader"
+    },
+    "OV_FL_ERROR": {
+        "message": "Fejl"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Færdig"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Pauset"
+    },
+    "OV_FL_QUEUED": {
+        "message": "I kø"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Seed-kø"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Stoppet"
+    },
+    "OV_FL_STALLED": {
+        "message": "Gået i stå"
+    },
+    "MF_DONT": {
+        "message": "Download ikke"
+    },
+    "MF_HIGH": {
+        "message": "Høj"
+    },
+    "MF_LOW": {
+        "message": "Lav"
+    },
+    "MF_NORMAL": {
+        "message": "Normal"
+    },
+    "ML_START": {
+        "message": "Start"
+    },
+    "ML_STOP": {
+        "message": "Stop"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Tving genkontrol"
+    },
+    "ML_REMOVE": {
+        "message": "Fjern"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Fjern og"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Slet .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Slet data"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Slet .torrent + data"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Ubegrænset"
+    },
+    "Open_file": {
+        "message": "Tilføj torrentfil..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Webgrænseflade"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Tilføj torrent fra URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Genoptag alle torrents"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Pause alle torrents"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Luk"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Er du sikker på, at du vil fjerne den valgte torrent?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Er du sikker på, at du vil fjerne de %d valgte torrents?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Er du sikker på, at du vil fjerne den valgte torrent OG slette alle downloadede data?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Er du sikker på, at du vil fjerne de %d valgte torrents OG slette alle downloadede data?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ja"
+    },
+    "DLG_BTN_NO": {
+        "message": "Nej"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Annuller"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Anvend"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Indsæt en torrent-URL"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Brugernavn"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Adgangskode"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Avanceret"
+    },
+    "enterNewLabel": {
+        "message": "Indtast det nye mærkat for den valgte torrent"
+    },
+    "defaultPath": {
+        "message": "Standardmappe"
+    },
+    "add": {
+        "message": "Tilføj"
+    },
+    "available": {
+        "message": "Tilgængelig"
+    },
+    "up": {
+        "message": "Op"
+    },
+    "down": {
+        "message": "Ned"
+    },
+    "update": {
+        "message": "Opdater"
+    },
+    "deleteSelected": {
+        "message": "Slet valgte"
+    },
+    "torrentAdded": {
+        "message": "Torrent tilføjet!"
+    },
+    "unexpectedError": {
+        "message": "Uventet fejl!"
+    },
+    "fileSizeError": {
+        "message": "Filen er for stor"
+    },
+    "addInTorrentClient": {
+        "message": "Tilføj til Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Torrentfilen findes sandsynligvis allerede!"
+    },
+    "currentDirectory": {
+        "message": "Nuværende mappe"
+    },
+    "openInTab": {
+        "message": "Åbn i fane"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Hoved"
+    },
+    "optNotify": {
+        "message": "Notifikationer"
+    },
+    "optCtx": {
+        "message": "Kontekstmenu"
+    },
+    "backup": {
+        "message": "Sikkerhedskopi"
+    },
+    "restore": {
+        "message": "Gendan"
+    },
+    "backupRestore": {
+        "message": "Sikkerhedskopiering"
+    },
+    "backupHint": {
+        "message": "Eksporter dine indstillinger for at gemme eller synkronisere til skyen"
+    },
+    "restoreHint": {
+        "message": "Importer indstillinger fra en tidligere sikkerhedskopi eller fra skyen"
+    },
+    "loadCurrentConfig": {
+        "message": "Indlæs nuværende konfiguration"
+    },
+    "configData": {
+        "message": "Konfigurationsdata"
+    },
+    "clickLoadConfig": {
+        "message": "Klik på \"Indlæs nuværende konfiguration\" for at se dine indstillinger"
+    },
+    "useSSL": {
+        "message": "Brug SSL"
+    },
+    "path": {
+        "message": "Sti"
+    },
+    "hideSeedStatusItem": {
+        "message": "Skjul torrents med status \"Seeder\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Skjul torrents med status \"Færdig\""
+    },
+    "showSpeedGraph": {
+        "message": "Vis hastighedsgraf"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Opdateringsinterval for torrentliste"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Vis notifikation når download er færdig"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Vis antal downloadende torrents på udvidelsesikonet"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Baggrundsopdateringsinterval"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Åbn kategorien \"Downloader\" når en torrent tilføjes"
+    },
+    "treeViewContextMenu": {
+        "message": "Grupper mapper som træ"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Vis indstillingen \"Standardsti\""
+    },
+    "dirList": {
+        "message": "Downloadmapper"
+    },
+    "dirListHint": {
+        "message": "Højreklik på et torrentlink for at vælge destination"
+    },
+    "options": {
+        "message": "Indstillinger"
+    },
+    "subPath": {
+        "message": "Undermappe"
+    },
+    "optSaveInCloud": {
+        "message": "Gem i skyen"
+    },
+    "toRestore": {
+        "message": "Gendan"
+    },
+    "optGetFromCloud": {
+        "message": "Hent indstillinger fra skyen"
+    },
+    "optClearCloudStorage": {
+        "message": "Ryd skylager"
+    },
+    "confirmRestore": {
+        "message": "Er du sikker på, at du vil gendanne denne konfiguration? Dette vil overskrive alle nuværende indstillinger."
+    },
+    "confirmClearCloud": {
+        "message": "Er du sikker på, at du vil rydde skysikkerhedskopien?"
+    },
+    "showFileList": {
+        "message": "Filliste"
+    },
+    "selectAll": {
+        "message": "Vælg alle"
+    },
+    "refresh": {
+        "message": "Opdater"
+    },
+    "checkSettings": {
+        "message": "Tjek indstillinger"
+    },
+    "showFreeSpace": {
+        "message": "Vis tilgængelig diskplads"
+    },
+    "freeSpace": {
+        "message": "Ledig plads"
+    },
+    "startNow": {
+        "message": "Start nu"
+    },
+    "rename": {
+        "message": "Omdøb"
+    },
+    "renameText": {
+        "message": "Indtast filnavn"
+    },
+    "move": {
+        "message": "Flyt"
+    },
+    "moveNewPath": {
+        "message": "Indtast ny sti"
+    },
+    "guiPath": {
+        "message": "WebUI-sti"
+    },
+    "altSpeedEnable": {
+        "message": "Midlertidige hastighedsgrænser"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrenten blev tilføjet tidligere"
+    },
+    "reannounce": {
+        "message": "Anmod om flere peers"
+    },
+    "extra": {
+        "message": "Ekstra"
+    },
+    "queueTop": {
+        "message": "Øverst"
+    },
+    "queueBottom": {
+        "message": "Nederst"
+    },
+    "requireAuthentication": {
+        "message": "Godkendelse påkrævet"
+    },
+    "badgeColor": {
+        "message": "Ikonmærke-farve"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Kopier"
+    },
+    "shortName": {
+        "message": "Kort navn"
+    },
+    "portIncorrect": {
+        "message": "Porten er forkert"
+    },
+    "search": {
+        "message": "Søg"
+    },
+    "theme": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "System"
+    },
+    "themeLight": {
+        "message": "Lyst"
+    },
+    "themeDark": {
+        "message": "Mørkt"
+    },
+    "configureClient": {
+        "message": "Konfigurer Transmission"
+    },
+    "configureClientHint": {
+        "message": "Konfigurer din Transmission-serverforbindelse for at komme i gang."
+    },
+    "openOptions": {
+        "message": "Åbn indstillinger"
+    },
+    "properties": {
+        "message": "Egenskaber"
+    },
+    "copyName": {
+        "message": "Kopier navn"
+    },
+    "copyHash": {
+        "message": "Kopier hash"
+    },
+    "sessionTotals": {
+        "message": "Sessionstotaler"
+    },
+    "responseEmpty": {
+        "message": "Svaret er tomt"
+    },
+    "clearSearch": {
+        "message": "Ryd søgning"
+    },
+    "errorRetry": {
+        "message": "Prøv igen"
+    },
+    "errorDetails": {
+        "message": "Detaljer"
+    },
+    "speedGraph": {
+        "message": "Hastighedsgraf"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Blokeringsliste"
+    },
+    "blocklistEnable": {
+        "message": "Aktivér blokeringsliste"
+    },
+    "blocklistUrl": {
+        "message": "URL til blokeringsliste"
+    },
+    "blocklistRules": {
+        "message": "Regler"
+    },
+    "blocklistUpdateNow": {
+        "message": "Opdater blokeringsliste nu"
+    },
+    "peerFlags": {
+        "message": "Flag"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Maks. peers i alt"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Maks. peers pr. torrent"
+    },
+    "seedingSettings": {
+        "message": "Seedning"
+    },
+    "seedRatioLimited": {
+        "message": "Stop seedning ved forhold"
+    },
+    "seedRatioLimit": {
+        "message": "Grænse for seedforhold"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Stop seedning ved inaktivitet i"
+    },
+    "idleSeedingLimit": {
+        "message": "Inaktivitetsgrænse"
+    },
+    "networkSettings": {
+        "message": "Netværk"
+    },
+    "peerPort": {
+        "message": "Lytteport"
+    },
+    "portForwardingEnabled": {
+        "message": "Aktivér UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Kryptering"
+    },
+    "encryptionRequired": {
+        "message": "Påkrævet"
+    },
+    "encryptionPreferred": {
+        "message": "Foretrukket"
+    },
+    "encryptionTolerated": {
+        "message": "Tolereret"
+    },
+    "dhtEnabled": {
+        "message": "Aktivér DHT"
+    },
+    "pexEnabled": {
+        "message": "Aktivér PEX"
+    },
+    "lpdEnabled": {
+        "message": "Aktivér LPD"
+    },
+    "utpEnabled": {
+        "message": "Aktivér uTP"
+    },
+    "minutes": {
+        "message": "min."
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Ingen mærkat"
+    },
+    "generalSettings": {
+        "message": "Generelt"
+    },
+    "startAddedTorrents": {
+        "message": "Start tilføjede torrents"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Flyt oprindelige .torrent-filer til papirkurven"
+    },
+    "incompleteDirSettings": {
+        "message": "Ufuldstændige downloads"
+    },
+    "incompleteDirEnabled": {
+        "message": "Brug mappe til ufuldstændige downloads"
+    },
+    "incompleteDir": {
+        "message": "Mappe til ufuldstændige"
+    },
+    "renamePartialFiles": {
+        "message": "Omdøb delvise filer med .part-endelse"
+    },
+    "queueSettings": {
+        "message": "Kø"
+    },
+    "downloadQueueEnabled": {
+        "message": "Begræns downloadkø"
+    },
+    "downloadQueueSize": {
+        "message": "Maks. samtidige downloads"
+    },
+    "seedQueueEnabled": {
+        "message": "Begræns seedkø"
+    },
+    "seedQueueSize": {
+        "message": "Maks. samtidige seeds"
+    },
+    "queueStalledEnabled": {
+        "message": "Betragt som inaktiv efter"
+    },
+    "queueStalledMinutes": {
+        "message": "Tidsgrænse for stilstand"
+    },
+    "altSpeedSchedule": {
+        "message": "Tidsplan for hastighedsgrænse"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Aktivér tidsplan for hastighedsgrænse"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Starttidspunkt"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Sluttidspunkt"
+    },
+    "altSpeedTimeDays": {
+        "message": "Aktive dage"
+    },
+    "daySunday": {
+        "message": "Søn"
+    },
+    "dayMonday": {
+        "message": "Man"
+    },
+    "dayTuesday": {
+        "message": "Tir"
+    },
+    "dayWednesday": {
+        "message": "Ons"
+    },
+    "dayThursday": {
+        "message": "Tor"
+    },
+    "dayFriday": {
+        "message": "Fre"
+    },
+    "daySaturday": {
+        "message": "Lør"
+    },
+    "scriptSettings": {
+        "message": "Script"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Kør script, når download er fuldført"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Sti til script"
+    },
+    "portTest": {
+        "message": "Test port"
+    },
+    "portOpen": {
+        "message": "Porten er åben"
+    },
+    "portClosed": {
+        "message": "Porten er lukket"
+    },
+    "portTesting": {
+        "message": "Tester..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Info"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackere"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Seedgrænser"
+    },
+    "DT_COMMENT": {
+        "message": "Kommentar"
+    },
+    "DT_CREATOR": {
+        "message": "Oprettet af"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Oprettelsesdato"
+    },
+    "DT_PIECES": {
+        "message": "Stykker"
+    },
+    "DT_CORRUPT": {
+        "message": "Beskadiget"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Tid brugt på download"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Tid brugt på seedning"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Webseeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Niveau"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seedere"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Status"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Trackerliste"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Én URL pr. linje, tom linje mellem niveauer"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Tilstand for seedforhold"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Grænse for seedforhold"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Tilstand for inaktiv seedning"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Grænse for inaktiv seedning (min.)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Brug globale indstillinger"
+    },
+    "DT_CUSTOM": {
+        "message": "Tilpasset"
+    },
+    "DT_UNLIMITED": {
+        "message": "Ubegrænset"
+    },
+    "DT_APPLY": {
+        "message": "Anvend"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Senest aktiv"
+    },
+    "OV_COL_STARTED": {
+        "message": "Startet"
+    },
+    "OV_COL_EDITED": {
+        "message": "Redigeret"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Eff. størrelse"
+    },
+    "DT_METADATA": {
+        "message": "Metadata"
+    },
+    "DT_PRIVATE": {
+        "message": "Privat"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peerkilder"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Indgående"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Downloadgrænse"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Uploadgrænse"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Respekterer sessionsgrænser"
+    },
+    "DT_ENABLED": {
+        "message": "Aktiveret"
+    },
+    "DT_DISABLED": {
+        "message": "Deaktiveret"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Tidsgrænse for inaktivitet"
+    },
+    "sessionStats": {
+        "message": "$active$ aktive, $paused$ på pause",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Kør script, når en torrent tilføjes"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Sti til script (tilføjet)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Kør script, når seedning er fuldført"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Sti til script (seedning fuldført)"
+    },
+    "sequentialDownload": {
+        "message": "Sekventiel download"
+    },
+    "fileCount": {
+        "message": "Antal filer"
+    },
+    "primaryMimeType": {
+        "message": "Indholdstype"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Advarsel: uden SSL sendes dit brugernavn og din adgangskode ukrypteret over netværket."
+    },
+    "backupIncludesCredentials": {
+        "message": "Sikkerhedskopien indeholder dit brugernavn og din adgangskode til serveren."
+    },
+    "restoreConnectionChanged": {
+        "message": "Denne sikkerhedskopi ændrer serverforbindelsen: $changes$. Fortsæt?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

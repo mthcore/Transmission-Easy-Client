@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "התוסף מוסיף את ממשק האינטרנט של Transmission לדפדפן שלך" },
-    "lang": { "message": "he" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"שב׳\", \"י׳\", \"ש׳\", \"ד׳\", \"שנ׳\"]" },
-    "OV_COL_NAME": { "message": "שם" },
-    "OV_COL_ORDER": { "message": "תור" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "גודל" },
-    "OV_COL_REMAINING": { "message": "נותר" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "מצב" },
-    "OV_COL_SEEDS": { "message": "זורעים" },
-    "OV_COL_PEERS": { "message": "עמיתים" },
-    "OV_COL_SEEDS_PEERS": { "message": "זורעים/עמיתים" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "ז/ע" },
-    "OV_COL_DOWNSPD": { "message": "הורדה" },
-    "OV_COL_UPSPD": { "message": "העלאה" },
-    "OV_COL_ETA": { "message": "זמן משוער" },
-    "OV_COL_UPPED": { "message": "הועלה" },
-    "OV_COL_DOWNLOADED": { "message": "הורד" },
-    "OV_COL_SHARED": { "message": "יחס" },
-    "OV_COL_AVAIL": { "message": "זמינות" },
-    "OV_COL_AVAIL_SHORT": { "message": "זמין" },
-    "OV_COL_LABEL": { "message": "תווית" },
-    "OV_COL_DATE_ADDED": { "message": "נוסף" },
-    "OV_COL_DATE_COMPLETED": { "message": "הושלם" },
-    "Actions": { "message": "פעולות" },
-    "FI_COL_NAME": { "message": "שם" },
-    "FI_COL_SIZE": { "message": "גודל" },
-    "FI_COL_PRIO": { "message": "עדיפות" },
-    "OV_FL_SEEDING": { "message": "זורע" },
-    "OV_CAT_ACTIVE": { "message": "פעיל" },
-    "OV_CAT_ALL": { "message": "הכל" },
-    "OV_CAT_COMPL": { "message": "הושלם" },
-    "OV_CAT_DL": { "message": "מוריד" },
-    "OV_CAT_INACTIVE": { "message": "לא פעיל" },
-    "OV_CAT_NOLABEL": { "message": "ללא תווית" },
-    "OV_FL_CHECKED": { "message": "נבדק" },
-    "OV_FL_DOWNLOADING": { "message": "מוריד" },
-    "OV_FL_ERROR": { "message": "שגיאה" },
-    "OV_FL_FINISHED": { "message": "הסתיים" },
-    "OV_FL_PAUSED": { "message": "מושהה" },
-    "OV_FL_QUEUED": { "message": "בתור" },
-    "OV_FL_QUEUED_SEED": { "message": "תור זריעה" },
-    "OV_FL_STOPPED": { "message": "נעצר" },
-    "MF_DONT": { "message": "אל תוריד" },
-    "MF_HIGH": { "message": "גבוה" },
-    "MF_LOW": { "message": "נמוך" },
-    "MF_NORMAL": { "message": "רגיל" },
-    "ML_START": { "message": "התחל" },
-    "ML_PAUSE": { "message": "השהה" },
-    "ML_STOP": { "message": "עצור" },
-    "OV_REMOVE_LABEL": { "message": "הסר תווית" },
-    "OV_NEW_LABEL": { "message": "תווית חדשה..." },
-    "ML_FORCE_START": { "message": "התחלה מאולצת" },
-    "ML_FORCE_RECHECK": { "message": "בדיקה מחדש מאולצת" },
-    "ML_REMOVE": { "message": "הסר" },
-    "ML_REMOVE_AND": { "message": "הסר וגם" },
-    "ML_DELETE_TORRENT": { "message": "מחק .torrent" },
-    "ML_DELETE_DATA": { "message": "מחק נתונים" },
-    "ML_DELETE_DATATORRENT": { "message": "מחק .torrent + נתונים" },
-    "DLG_RSSDOWNLOADER_24": { "message": "הורד" },
-    "MENU_UNLIMITED": { "message": "ללא הגבלה" },
-    "Open_file": { "message": "הוסף קובץ טורנט..." },
-    "ST_CAPT_WEBUI": { "message": "ממשק אינטרנט" },
-    "MM_FILE_ADD_URL": { "message": "הוסף טורנט מכתובת URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "המשך את כל הטורנטים" },
-    "STM_TORRENTS_PAUSEALL": { "message": "השהה את כל הטורנטים" },
-    "DLG_BTN_CLOSE": { "message": "סגור" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "האם אתה בטוח שברצונך להסיר את הטורנט הנבחר?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "האם אתה בטוח שברצונך להסיר את %d הטורנטים הנבחרים?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "האם אתה בטוח שברצונך להסיר את הטורנט הנבחר ולמחוק את כל הנתונים שהורדו?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "האם אתה בטוח שברצונך להסיר את %d הטורנטים הנבחרים ולמחוק את כל הנתונים שהורדו?" },
-    "DLG_BTN_YES": { "message": "כן" },
-    "DLG_BTN_NO": { "message": "לא" },
-    "DLG_BTN_CANCEL": { "message": "ביטול" },
-    "DLG_BTN_APPLY": { "message": "החל" },
-    "DLG_BTN_OK": { "message": "אישור" },
-    "ST_CAPT_FOLDER": { "message": "תיקיות" },
-    "Paste_a_torrent_URL": { "message": "הדבק כתובת URL של טורנט" },
-    "OV_NEWLABEL_CAPTION": { "message": "הזן תווית" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "שם משתמש" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "סיסמה" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "פורט" },
-    "ST_CAPT_ADVANCED": { "message": "מתקדם" },
-    "resume": { "message": "המשך" },
-    "enterNewLabel": { "message": "הזן את התווית החדשה לטורנט הנבחר" },
-    "defaultPath": { "message": "תיקייה ברירת מחדל" },
-    "add": { "message": "הוסף" },
-    "available": { "message": "זמין" },
-    "up": { "message": "למעלה" },
-    "down": { "message": "למטה" },
-    "update": { "message": "עדכן" },
-    "deleteSelected": { "message": "מחק נבחרים" },
-    "torrentAdded": { "message": "הטורנט נוסף!" },
-    "unexpectedError": { "message": "שגיאה בלתי צפויה!" },
-    "fileSizeError": { "message": "הקובץ גדול מדי" },
-    "addInTorrentClient": { "message": "הוסף ל-Transmission" },
-    "enterNewDirPath": { "message": "הזן את הנתיב לתיקייה החדשה" },
-    "torrentFileExists": { "message": "קובץ הטורנט כנראה כבר קיים!" },
-    "currentDirectory": { "message": "תיקייה נוכחית" },
-    "openInTab": { "message": "פתח בלשונית" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "ראשי" },
-    "optNotify": { "message": "התראות" },
-    "optCtx": { "message": "תפריט הקשר" },
-    "backup": { "message": "גיבוי" },
-    "restore": { "message": "שחזור" },
-    "backupRestore": { "message": "גיבוי ושחזור" },
-    "backupHint": { "message": "ייצא את ההגדרות שלך לשמירה או סנכרון לענן" },
-    "restoreHint": { "message": "ייבא הגדרות מגיבוי קודם או מהענן" },
-    "loadCurrentConfig": { "message": "טען תצורה נוכחית" },
-    "configData": { "message": "נתוני תצורה" },
-    "clickLoadConfig": { "message": "לחץ על \"טען תצורה נוכחית\" כדי לצפות בהגדרות שלך" },
-    "useSSL": { "message": "השתמש ב-SSL" },
-    "path": { "message": "נתיב" },
-    "hideSeedStatusItem": { "message": "הסתר טורנטים עם מצב \"זורע\"" },
-    "hideFinishStatusItem": { "message": "הסתר טורנטים עם מצב \"הסתיים\"" },
-    "showSpeedGraph": { "message": "הצג גרף מהירות" },
-    "ms": { "message": "מ\"ש" },
-    "popupUpdateInterval": { "message": "מרווח עדכון רשימת טורנטים" },
-    "fixCyrillicIf": { "message": "תקן קירילית אם..." },
-    "fixCyrillicTitle": { "message": "שמות טורנטים מוצגים בצורה שגויה" },
-    "fixCyrillicTorrentPath": { "message": "התיקייה לטורנט חדש מוגדרת בצורה שגויה" },
-    "showNotificationOnDownloadComplete": { "message": "הצג התראה כשההורדה מסתיימת" },
-    "displayActiveTorrentCountIcon": { "message": "הצג את מספר הטורנטים המורידים על סמל התוסף" },
-    "backgroundUpdateInterval": { "message": "מרווח עדכון ברקע" },
-    "notificationTimeout": { "message": "הסתר התראה לאחר" },
-    "folderContextMenu": { "message": "הצג רשימת תיקיות" },
-    "labelContextMenu": { "message": "הצג רשימת תוויות" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "פתח קטגוריית \"מוריד\" בעת הוספת טורנט" },
-    "treeViewContextMenu": { "message": "קבץ תיקיות כעץ" },
-    "treeViewContextMenuHint": { "message": "ארגן תיקיות בצורה היררכית במקום רשימה שטוחה" },
-    "showDefaultFolderContextMenuItem": { "message": "הצג אפשרות \"נתיב ברירת מחדל\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "הוסף אפשרות להורדה לתיקיית ברירת המחדל של Transmission" },
-    "dirList": { "message": "תיקיות הורדה" },
-    "dirListHint": { "message": "לחץ לחיצה ימנית על קישור טורנט כדי לבחור יעד" },
-    "options": { "message": "אפשרויות" },
-    "subPath": { "message": "תת-נתיב" },
-    "labelList": { "message": "רשימת תוויות" },
-    "optSaveInCloud": { "message": "שמור בענן" },
-    "toRestore": { "message": "שחזר" },
-    "optGetFromCloud": { "message": "קבל הגדרות מהענן" },
-    "optClearCloudStorage": { "message": "נקה אחסון ענן" },
-    "confirmRestore": { "message": "האם אתה בטוח שברצונך לשחזר תצורה זו? פעולה זו תדרוס את כל ההגדרות הנוכחיות." },
-    "confirmClearCloud": { "message": "האם אתה בטוח שברצונך לנקות את הגיבוי בענן?" },
-    "showFileList": { "message": "רשימת קבצים" },
-    "selectAll": { "message": "בחר הכל" },
-    "refresh": { "message": "רענן" },
-    "checkSettings": { "message": "בדוק הגדרות" },
-    "showFreeSpace": { "message": "הצג מקום פנוי בדיסק" },
-    "freeSpace": { "message": "מקום פנוי" },
-    "startNow": { "message": "התחל עכשיו" },
-    "rename": { "message": "שנה שם" },
-    "renameText": { "message": "הזן שם קובץ" },
-    "move": { "message": "העבר" },
-    "moveNewPath": { "message": "הזן נתיב חדש" },
-    "fullPath": { "message": "תיקייה (נתיב מלא)" },
-    "guiPath": { "message": "נתיב WebUI" },
-    "altSpeedEnable": { "message": "הגבלות מהירות זמניות" },
-    "torrentFileIsExists": { "message": "הטורנט נוסף בעבר" },
-    "reannounce": { "message": "בקש עוד עמיתים" },
-    "extra": { "message": "נוסף" },
-    "queueTop": { "message": "לראש" },
-    "queueBottom": { "message": "לסוף" },
-    "requireAuthentication": { "message": "נדרש אימות" },
-    "badgeColor": { "message": "צבע תג הסמל" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "העתק" },
-    "addItem": { "message": "הוסף פריט" },
-    "shortName": { "message": "שם קצר" },
-    "portIncorrect": { "message": "הפורט שגוי" },
-    "search": { "message": "חיפוש" },
-    "theme": { "message": "ערכת נושא" },
-    "themeSystem": { "message": "מערכת" },
-    "themeLight": { "message": "בהיר" },
-    "themeDark": { "message": "כהה" },
-    "configureClient": { "message": "הגדר Transmission" },
-    "configureClientHint": { "message": "אנא הגדר את חיבור שרת ה-Transmission כדי להתחיל." },
-    "openOptions": { "message": "פתח הגדרות" },
-    "properties": { "message": "מאפיינים" },
-    "copyName": { "message": "העתק שם" },
-    "copyHash": { "message": "העתק Hash" },
-    "sessionTotals": { "message": "סיכומי הפעלה" },
-    "responseEmpty": { "message": "התגובה ריקה" },
-    "clearSearch": { "message": "נקה חיפוש" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "התוסף מוסיף את ממשק האינטרנט של Transmission לדפדפן שלך"
+    },
+    "lang": {
+        "message": "he"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"שב׳\", \"י׳\", \"ש׳\", \"ד׳\", \"שנ׳\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "שם"
+    },
+    "OV_COL_ORDER": {
+        "message": "תור"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "גודל"
+    },
+    "OV_COL_REMAINING": {
+        "message": "נותר"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "מצב"
+    },
+    "OV_COL_SEEDS": {
+        "message": "זורעים"
+    },
+    "OV_COL_PEERS": {
+        "message": "עמיתים"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "זורעים/עמיתים"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "ז/ע"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "הורדה"
+    },
+    "OV_COL_UPSPD": {
+        "message": "העלאה"
+    },
+    "OV_COL_ETA": {
+        "message": "זמן משוער"
+    },
+    "OV_COL_UPPED": {
+        "message": "הועלה"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "הורד"
+    },
+    "OV_COL_SHARED": {
+        "message": "יחס"
+    },
+    "OV_COL_AVAIL": {
+        "message": "זמינות"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "זמין"
+    },
+    "OV_COL_LABEL": {
+        "message": "תווית"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "נוסף"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "הושלם"
+    },
+    "Actions": {
+        "message": "פעולות"
+    },
+    "FI_COL_NAME": {
+        "message": "שם"
+    },
+    "FI_COL_SIZE": {
+        "message": "גודל"
+    },
+    "FI_COL_PRIO": {
+        "message": "עדיפות"
+    },
+    "OV_FL_SEEDING": {
+        "message": "זורע"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "פעיל"
+    },
+    "OV_CAT_ALL": {
+        "message": "הכל"
+    },
+    "OV_CAT_COMPL": {
+        "message": "הושלם"
+    },
+    "OV_CAT_DL": {
+        "message": "מוריד"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "לא פעיל"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "ללא תווית"
+    },
+    "OV_FL_CHECKED": {
+        "message": "נבדק"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "מוריד"
+    },
+    "OV_FL_ERROR": {
+        "message": "שגיאה"
+    },
+    "OV_FL_FINISHED": {
+        "message": "הסתיים"
+    },
+    "OV_FL_PAUSED": {
+        "message": "מושהה"
+    },
+    "OV_FL_QUEUED": {
+        "message": "בתור"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "תור זריעה"
+    },
+    "OV_FL_STOPPED": {
+        "message": "נעצר"
+    },
+    "OV_FL_STALLED": {
+        "message": "תקוע"
+    },
+    "MF_DONT": {
+        "message": "אל תוריד"
+    },
+    "MF_HIGH": {
+        "message": "גבוה"
+    },
+    "MF_LOW": {
+        "message": "נמוך"
+    },
+    "MF_NORMAL": {
+        "message": "רגיל"
+    },
+    "ML_START": {
+        "message": "התחל"
+    },
+    "ML_STOP": {
+        "message": "עצור"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "בדיקה מחדש מאולצת"
+    },
+    "ML_REMOVE": {
+        "message": "הסר"
+    },
+    "ML_REMOVE_AND": {
+        "message": "הסר וגם"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "מחק .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "מחק נתונים"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "מחק .torrent + נתונים"
+    },
+    "MENU_UNLIMITED": {
+        "message": "ללא הגבלה"
+    },
+    "Open_file": {
+        "message": "הוסף קובץ טורנט..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "ממשק אינטרנט"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "הוסף טורנט מכתובת URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "המשך את כל הטורנטים"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "השהה את כל הטורנטים"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "סגור"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "האם אתה בטוח שברצונך להסיר את הטורנט הנבחר?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "האם אתה בטוח שברצונך להסיר את %d הטורנטים הנבחרים?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "האם אתה בטוח שברצונך להסיר את הטורנט הנבחר ולמחוק את כל הנתונים שהורדו?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "האם אתה בטוח שברצונך להסיר את %d הטורנטים הנבחרים ולמחוק את כל הנתונים שהורדו?"
+    },
+    "DLG_BTN_YES": {
+        "message": "כן"
+    },
+    "DLG_BTN_NO": {
+        "message": "לא"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "ביטול"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "החל"
+    },
+    "DLG_BTN_OK": {
+        "message": "אישור"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "הדבק כתובת URL של טורנט"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "שם משתמש"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "סיסמה"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "פורט"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "מתקדם"
+    },
+    "enterNewLabel": {
+        "message": "הזן את התווית החדשה לטורנט הנבחר"
+    },
+    "defaultPath": {
+        "message": "תיקייה ברירת מחדל"
+    },
+    "add": {
+        "message": "הוסף"
+    },
+    "available": {
+        "message": "זמין"
+    },
+    "up": {
+        "message": "למעלה"
+    },
+    "down": {
+        "message": "למטה"
+    },
+    "update": {
+        "message": "עדכן"
+    },
+    "deleteSelected": {
+        "message": "מחק נבחרים"
+    },
+    "torrentAdded": {
+        "message": "הטורנט נוסף!"
+    },
+    "unexpectedError": {
+        "message": "שגיאה בלתי צפויה!"
+    },
+    "fileSizeError": {
+        "message": "הקובץ גדול מדי"
+    },
+    "addInTorrentClient": {
+        "message": "הוסף ל-Transmission"
+    },
+    "torrentFileExists": {
+        "message": "קובץ הטורנט כנראה כבר קיים!"
+    },
+    "currentDirectory": {
+        "message": "תיקייה נוכחית"
+    },
+    "openInTab": {
+        "message": "פתח בלשונית"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "ראשי"
+    },
+    "optNotify": {
+        "message": "התראות"
+    },
+    "optCtx": {
+        "message": "תפריט הקשר"
+    },
+    "backup": {
+        "message": "גיבוי"
+    },
+    "restore": {
+        "message": "שחזור"
+    },
+    "backupRestore": {
+        "message": "גיבוי ושחזור"
+    },
+    "backupHint": {
+        "message": "ייצא את ההגדרות שלך לשמירה או סנכרון לענן"
+    },
+    "restoreHint": {
+        "message": "ייבא הגדרות מגיבוי קודם או מהענן"
+    },
+    "loadCurrentConfig": {
+        "message": "טען תצורה נוכחית"
+    },
+    "configData": {
+        "message": "נתוני תצורה"
+    },
+    "clickLoadConfig": {
+        "message": "לחץ על \"טען תצורה נוכחית\" כדי לצפות בהגדרות שלך"
+    },
+    "useSSL": {
+        "message": "השתמש ב-SSL"
+    },
+    "path": {
+        "message": "נתיב"
+    },
+    "hideSeedStatusItem": {
+        "message": "הסתר טורנטים עם מצב \"זורע\""
+    },
+    "hideFinishStatusItem": {
+        "message": "הסתר טורנטים עם מצב \"הסתיים\""
+    },
+    "showSpeedGraph": {
+        "message": "הצג גרף מהירות"
+    },
+    "ms": {
+        "message": "מ\"ש"
+    },
+    "popupUpdateInterval": {
+        "message": "מרווח עדכון רשימת טורנטים"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "הצג התראה כשההורדה מסתיימת"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "הצג את מספר הטורנטים המורידים על סמל התוסף"
+    },
+    "backgroundUpdateInterval": {
+        "message": "מרווח עדכון ברקע"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "פתח קטגוריית \"מוריד\" בעת הוספת טורנט"
+    },
+    "treeViewContextMenu": {
+        "message": "קבץ תיקיות כעץ"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "הצג אפשרות \"נתיב ברירת מחדל\""
+    },
+    "dirList": {
+        "message": "תיקיות הורדה"
+    },
+    "dirListHint": {
+        "message": "לחץ לחיצה ימנית על קישור טורנט כדי לבחור יעד"
+    },
+    "options": {
+        "message": "אפשרויות"
+    },
+    "subPath": {
+        "message": "תת-נתיב"
+    },
+    "optSaveInCloud": {
+        "message": "שמור בענן"
+    },
+    "toRestore": {
+        "message": "שחזר"
+    },
+    "optGetFromCloud": {
+        "message": "קבל הגדרות מהענן"
+    },
+    "optClearCloudStorage": {
+        "message": "נקה אחסון ענן"
+    },
+    "confirmRestore": {
+        "message": "האם אתה בטוח שברצונך לשחזר תצורה זו? פעולה זו תדרוס את כל ההגדרות הנוכחיות."
+    },
+    "confirmClearCloud": {
+        "message": "האם אתה בטוח שברצונך לנקות את הגיבוי בענן?"
+    },
+    "showFileList": {
+        "message": "רשימת קבצים"
+    },
+    "selectAll": {
+        "message": "בחר הכל"
+    },
+    "refresh": {
+        "message": "רענן"
+    },
+    "checkSettings": {
+        "message": "בדוק הגדרות"
+    },
+    "showFreeSpace": {
+        "message": "הצג מקום פנוי בדיסק"
+    },
+    "freeSpace": {
+        "message": "מקום פנוי"
+    },
+    "startNow": {
+        "message": "התחל עכשיו"
+    },
+    "rename": {
+        "message": "שנה שם"
+    },
+    "renameText": {
+        "message": "הזן שם קובץ"
+    },
+    "move": {
+        "message": "העבר"
+    },
+    "moveNewPath": {
+        "message": "הזן נתיב חדש"
+    },
+    "guiPath": {
+        "message": "נתיב WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "הגבלות מהירות זמניות"
+    },
+    "torrentFileIsExists": {
+        "message": "הטורנט נוסף בעבר"
+    },
+    "reannounce": {
+        "message": "בקש עוד עמיתים"
+    },
+    "extra": {
+        "message": "נוסף"
+    },
+    "queueTop": {
+        "message": "לראש"
+    },
+    "queueBottom": {
+        "message": "לסוף"
+    },
+    "requireAuthentication": {
+        "message": "נדרש אימות"
+    },
+    "badgeColor": {
+        "message": "צבע תג הסמל"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "העתק"
+    },
+    "shortName": {
+        "message": "שם קצר"
+    },
+    "portIncorrect": {
+        "message": "הפורט שגוי"
+    },
+    "search": {
+        "message": "חיפוש"
+    },
+    "theme": {
+        "message": "ערכת נושא"
+    },
+    "themeSystem": {
+        "message": "מערכת"
+    },
+    "themeLight": {
+        "message": "בהיר"
+    },
+    "themeDark": {
+        "message": "כהה"
+    },
+    "configureClient": {
+        "message": "הגדר Transmission"
+    },
+    "configureClientHint": {
+        "message": "אנא הגדר את חיבור שרת ה-Transmission כדי להתחיל."
+    },
+    "openOptions": {
+        "message": "פתח הגדרות"
+    },
+    "properties": {
+        "message": "מאפיינים"
+    },
+    "copyName": {
+        "message": "העתק שם"
+    },
+    "copyHash": {
+        "message": "העתק Hash"
+    },
+    "sessionTotals": {
+        "message": "סיכומי הפעלה"
+    },
+    "responseEmpty": {
+        "message": "התגובה ריקה"
+    },
+    "clearSearch": {
+        "message": "נקה חיפוש"
+    },
+    "errorRetry": {
+        "message": "נסה שוב"
+    },
+    "errorDetails": {
+        "message": "פרטים"
+    },
+    "speedGraph": {
+        "message": "גרף מהירות"
+    },
+    "optServer": {
+        "message": "שרת"
+    },
+    "blocklist": {
+        "message": "רשימת חסימה"
+    },
+    "blocklistEnable": {
+        "message": "הפעל רשימת חסימה"
+    },
+    "blocklistUrl": {
+        "message": "כתובת רשימת החסימה"
+    },
+    "blocklistRules": {
+        "message": "כללים"
+    },
+    "blocklistUpdateNow": {
+        "message": "עדכן את רשימת החסימה עכשיו"
+    },
+    "peerFlags": {
+        "message": "דגלים"
+    },
+    "peerSettings": {
+        "message": "עמיתים"
+    },
+    "peerLimitGlobal": {
+        "message": "מספר עמיתים מרבי בסך הכול"
+    },
+    "peerLimitPerTorrent": {
+        "message": "מספר עמיתים מרבי לטורנט"
+    },
+    "seedingSettings": {
+        "message": "זריעה"
+    },
+    "seedRatioLimited": {
+        "message": "הפסק זריעה ביחס שיתוף"
+    },
+    "seedRatioLimit": {
+        "message": "מגבלת יחס שיתוף"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "הפסק זריעה לאחר חוסר פעילות של"
+    },
+    "idleSeedingLimit": {
+        "message": "מגבלת חוסר פעילות"
+    },
+    "networkSettings": {
+        "message": "רשת"
+    },
+    "peerPort": {
+        "message": "פורט האזנה"
+    },
+    "portForwardingEnabled": {
+        "message": "הפעל UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "הצפנה"
+    },
+    "encryptionRequired": {
+        "message": "נדרשת"
+    },
+    "encryptionPreferred": {
+        "message": "מועדפת"
+    },
+    "encryptionTolerated": {
+        "message": "מותרת"
+    },
+    "dhtEnabled": {
+        "message": "הפעל DHT"
+    },
+    "pexEnabled": {
+        "message": "הפעל PEX"
+    },
+    "lpdEnabled": {
+        "message": "הפעל LPD"
+    },
+    "utpEnabled": {
+        "message": "הפעל uTP"
+    },
+    "minutes": {
+        "message": "דק׳"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "ללא תווית"
+    },
+    "generalSettings": {
+        "message": "כללי"
+    },
+    "startAddedTorrents": {
+        "message": "התחל טורנטים שנוספו"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "העבר לאשפה את קובצי ה-.torrent המקוריים"
+    },
+    "incompleteDirSettings": {
+        "message": "הורדות לא גמורות"
+    },
+    "incompleteDirEnabled": {
+        "message": "השתמש בתיקייה להורדות לא גמורות"
+    },
+    "incompleteDir": {
+        "message": "תיקיית הורדות לא גמורות"
+    },
+    "renamePartialFiles": {
+        "message": "שנה שם לקבצים חלקיים עם סיומת .part"
+    },
+    "queueSettings": {
+        "message": "תור"
+    },
+    "downloadQueueEnabled": {
+        "message": "הגבל את תור ההורדות"
+    },
+    "downloadQueueSize": {
+        "message": "מספר הורדות מרבי במקביל"
+    },
+    "seedQueueEnabled": {
+        "message": "הגבל את תור הזריעה"
+    },
+    "seedQueueSize": {
+        "message": "מספר זריעות מרבי במקביל"
+    },
+    "queueStalledEnabled": {
+        "message": "החשב כלא פעיל לאחר"
+    },
+    "queueStalledMinutes": {
+        "message": "זמן עד תקיעה"
+    },
+    "altSpeedSchedule": {
+        "message": "תזמון הגבלת מהירות"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "הפעל תזמון הגבלת מהירות"
+    },
+    "altSpeedTimeBegin": {
+        "message": "שעת התחלה"
+    },
+    "altSpeedTimeEnd": {
+        "message": "שעת סיום"
+    },
+    "altSpeedTimeDays": {
+        "message": "ימים פעילים"
+    },
+    "daySunday": {
+        "message": "א׳"
+    },
+    "dayMonday": {
+        "message": "ב׳"
+    },
+    "dayTuesday": {
+        "message": "ג׳"
+    },
+    "dayWednesday": {
+        "message": "ד׳"
+    },
+    "dayThursday": {
+        "message": "ה׳"
+    },
+    "dayFriday": {
+        "message": "ו׳"
+    },
+    "daySaturday": {
+        "message": "ש׳"
+    },
+    "scriptSettings": {
+        "message": "סקריפט"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "הרץ סקריפט כשההורדה מסתיימת"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "נתיב הסקריפט"
+    },
+    "portTest": {
+        "message": "בדוק פורט"
+    },
+    "portOpen": {
+        "message": "הפורט פתוח"
+    },
+    "portClosed": {
+        "message": "הפורט סגור"
+    },
+    "portTesting": {
+        "message": "בודק..."
+    },
+    "DT_TAB_INFO": {
+        "message": "מידע"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "טראקרים"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "מגבלות זריעה"
+    },
+    "DT_COMMENT": {
+        "message": "הערה"
+    },
+    "DT_CREATOR": {
+        "message": "יוצר"
+    },
+    "DT_DATE_CREATED": {
+        "message": "תאריך יצירה"
+    },
+    "DT_PIECES": {
+        "message": "חלקים"
+    },
+    "DT_CORRUPT": {
+        "message": "פגום"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "זמן הורדה"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "זמן זריעה"
+    },
+    "DT_WEBSEEDS": {
+        "message": "זורעי אינטרנט"
+    },
+    "DT_TRACKER_URL": {
+        "message": "כתובת"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "דרג"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "זורעים"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "עמיתים"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "מצב"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "רשימת טראקרים"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "כתובת אחת בכל שורה, שורה ריקה בין דרגים"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "מצב יחס שיתוף"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "מגבלת יחס שיתוף"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "מצב זריעה בחוסר פעילות"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "מגבלת חוסר פעילות (דק׳)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "השתמש בהגדרות הגלובליות"
+    },
+    "DT_CUSTOM": {
+        "message": "מותאם אישית"
+    },
+    "DT_UNLIMITED": {
+        "message": "ללא הגבלה"
+    },
+    "DT_APPLY": {
+        "message": "החל"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "פעילות אחרונה"
+    },
+    "OV_COL_STARTED": {
+        "message": "הופעל"
+    },
+    "OV_COL_EDITED": {
+        "message": "נערך"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "גודל אפקטיבי"
+    },
+    "DT_METADATA": {
+        "message": "מטא-נתונים"
+    },
+    "DT_PRIVATE": {
+        "message": "פרטי"
+    },
+    "DT_PEERS_FROM": {
+        "message": "מקורות עמיתים"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "טראקר"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "נכנסים"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "מטמון"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "מגבלת הורדה"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "מגבלת העלאה"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "מציית למגבלות הסשן"
+    },
+    "DT_ENABLED": {
+        "message": "מופעל"
+    },
+    "DT_DISABLED": {
+        "message": "מושבת"
+    },
+    "DT_ETA_IDLE": {
+        "message": "פסק זמן בחוסר פעילות"
+    },
+    "sessionStats": {
+        "message": "$active$ פעילים, $paused$ מושהים",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "הרץ סקריפט כשטורנט נוסף"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "נתיב הסקריפט (הוספה)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "הרץ סקריפט כשהזריעה מסתיימת"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "נתיב הסקריפט (סיום זריעה)"
+    },
+    "sequentialDownload": {
+        "message": "הורדה רציפה"
+    },
+    "fileCount": {
+        "message": "מספר קבצים"
+    },
+    "primaryMimeType": {
+        "message": "סוג תוכן"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "אזהרה: ללא SSL, שם המשתמש והסיסמה שלך נשלחים ברשת ללא הצפנה."
+    },
+    "backupIncludesCredentials": {
+        "message": "הגיבוי כולל את שם המשתמש והסיסמה של השרת."
+    },
+    "restoreConnectionChanged": {
+        "message": "גיבוי זה משנה את החיבור לשרת: $changes$. להמשיך?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

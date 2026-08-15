@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Tillägget lägger till Transmissions webbgränssnitt i din webbläsare" },
-    "lang": { "message": "sv" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"v\", \"d\", \"t\", \"m\", \"s\"]" },
-    "OV_COL_NAME": { "message": "Namn" },
-    "OV_COL_ORDER": { "message": "Kö" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Storlek" },
-    "OV_COL_REMAINING": { "message": "Återstående" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Status" },
-    "OV_COL_SEEDS": { "message": "Seedare" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seedare/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Nedladdning" },
-    "OV_COL_UPSPD": { "message": "Uppladdning" },
-    "OV_COL_ETA": { "message": "ETA" },
-    "OV_COL_UPPED": { "message": "Uppladdat" },
-    "OV_COL_DOWNLOADED": { "message": "Nedladdat" },
-    "OV_COL_SHARED": { "message": "Ratio" },
-    "OV_COL_AVAIL": { "message": "Tillgänglighet" },
-    "OV_COL_AVAIL_SHORT": { "message": "Tillg." },
-    "OV_COL_LABEL": { "message": "Etikett" },
-    "OV_COL_DATE_ADDED": { "message": "Tillagd" },
-    "OV_COL_DATE_COMPLETED": { "message": "Slutförd" },
-    "Actions": { "message": "Åtgärder" },
-    "FI_COL_NAME": { "message": "Namn" },
-    "FI_COL_SIZE": { "message": "Storlek" },
-    "FI_COL_PRIO": { "message": "Prioritet" },
-    "OV_FL_SEEDING": { "message": "Seedar" },
-    "OV_CAT_ACTIVE": { "message": "Aktiva" },
-    "OV_CAT_ALL": { "message": "Alla" },
-    "OV_CAT_COMPL": { "message": "Slutförda" },
-    "OV_CAT_DL": { "message": "Laddar ner" },
-    "OV_CAT_INACTIVE": { "message": "Inaktiva" },
-    "OV_CAT_NOLABEL": { "message": "Ingen etikett" },
-    "OV_FL_CHECKED": { "message": "Kontrollerad" },
-    "OV_FL_DOWNLOADING": { "message": "Laddar ner" },
-    "OV_FL_ERROR": { "message": "Fel" },
-    "OV_FL_FINISHED": { "message": "Klar" },
-    "OV_FL_PAUSED": { "message": "Pausad" },
-    "OV_FL_QUEUED": { "message": "I kö" },
-    "OV_FL_QUEUED_SEED": { "message": "Seed-kö" },
-    "OV_FL_STOPPED": { "message": "Stoppad" },
-    "MF_DONT": { "message": "Ladda inte ner" },
-    "MF_HIGH": { "message": "Hög" },
-    "MF_LOW": { "message": "Låg" },
-    "MF_NORMAL": { "message": "Normal" },
-    "ML_START": { "message": "Starta" },
-    "ML_PAUSE": { "message": "Pausa" },
-    "ML_STOP": { "message": "Stoppa" },
-    "OV_REMOVE_LABEL": { "message": "Ta bort etikett" },
-    "OV_NEW_LABEL": { "message": "Ny etikett..." },
-    "ML_FORCE_START": { "message": "Tvinga start" },
-    "ML_FORCE_RECHECK": { "message": "Tvinga omkontroll" },
-    "ML_REMOVE": { "message": "Ta bort" },
-    "ML_REMOVE_AND": { "message": "Ta bort och" },
-    "ML_DELETE_TORRENT": { "message": "Ta bort .torrent" },
-    "ML_DELETE_DATA": { "message": "Ta bort data" },
-    "ML_DELETE_DATATORRENT": { "message": "Ta bort .torrent + data" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Ladda ner" },
-    "MENU_UNLIMITED": { "message": "Obegränsad" },
-    "Open_file": { "message": "Lägg till torrentfil..." },
-    "ST_CAPT_WEBUI": { "message": "Webbgränssnitt" },
-    "MM_FILE_ADD_URL": { "message": "Lägg till torrent från URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Återuppta alla torrents" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Pausa alla torrents" },
-    "DLG_BTN_CLOSE": { "message": "Stäng" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Är du säker på att du vill ta bort den valda torrenten?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Är du säker på att du vill ta bort de %d valda torrenterna?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Är du säker på att du vill ta bort den valda torrenten OCH radera all nedladdad data?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Är du säker på att du vill ta bort de %d valda torrenterna OCH radera all nedladdad data?" },
-    "DLG_BTN_YES": { "message": "Ja" },
-    "DLG_BTN_NO": { "message": "Nej" },
-    "DLG_BTN_CANCEL": { "message": "Avbryt" },
-    "DLG_BTN_APPLY": { "message": "Verkställ" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Mappar" },
-    "Paste_a_torrent_URL": { "message": "Klistra in en torrent-URL" },
-    "OV_NEWLABEL_CAPTION": { "message": "Ange etikett" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Användarnamn" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Lösenord" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Avancerat" },
-    "resume": { "message": "Återuppta" },
-    "enterNewLabel": { "message": "Ange den nya etiketten för den valda torrenten" },
-    "defaultPath": { "message": "Standardmapp" },
-    "add": { "message": "Lägg till" },
-    "available": { "message": "Tillgänglig" },
-    "up": { "message": "Upp" },
-    "down": { "message": "Ner" },
-    "update": { "message": "Uppdatera" },
-    "deleteSelected": { "message": "Ta bort valda" },
-    "torrentAdded": { "message": "Torrent tillagd!" },
-    "unexpectedError": { "message": "Oväntat fel!" },
-    "fileSizeError": { "message": "Filen är för stor" },
-    "addInTorrentClient": { "message": "Lägg till i Transmission" },
-    "enterNewDirPath": { "message": "Ange sökvägen till den nya mappen" },
-    "torrentFileExists": { "message": "Torrentfilen finns förmodligen redan!" },
-    "currentDirectory": { "message": "Aktuell mapp" },
-    "openInTab": { "message": "Öppna i flik" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Huvud" },
-    "optNotify": { "message": "Aviseringar" },
-    "optCtx": { "message": "Snabbmeny" },
-    "backup": { "message": "Säkerhetskopia" },
-    "restore": { "message": "Återställ" },
-    "backupRestore": { "message": "Säkerhetskopiering" },
-    "backupHint": { "message": "Exportera dina inställningar för att spara eller synkronisera till molnet" },
-    "restoreHint": { "message": "Importera inställningar från en tidigare säkerhetskopia eller från molnet" },
-    "loadCurrentConfig": { "message": "Ladda aktuell konfiguration" },
-    "configData": { "message": "Konfigurationsdata" },
-    "clickLoadConfig": { "message": "Klicka på \"Ladda aktuell konfiguration\" för att visa dina inställningar" },
-    "useSSL": { "message": "Använd SSL" },
-    "path": { "message": "Sökväg" },
-    "hideSeedStatusItem": { "message": "Dölj torrents med status \"Seedar\"" },
-    "hideFinishStatusItem": { "message": "Dölj torrents med status \"Klar\"" },
-    "showSpeedGraph": { "message": "Visa hastighetsdiagram" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Uppdateringsintervall för torrentlistan" },
-    "fixCyrillicIf": { "message": "Fixa kyrilliska om..." },
-    "fixCyrillicTitle": { "message": "Torrentnamn visas felaktigt" },
-    "fixCyrillicTorrentPath": { "message": "Mappen för nya torrents sätts felaktigt" },
-    "showNotificationOnDownloadComplete": { "message": "Visa avisering när nedladdning är klar" },
-    "displayActiveTorrentCountIcon": { "message": "Visa antal nedladdande torrents på tilläggsikonen" },
-    "backgroundUpdateInterval": { "message": "Bakgrundsuppdateringsintervall" },
-    "notificationTimeout": { "message": "Dölj avisering efter" },
-    "folderContextMenu": { "message": "Visa mapplista" },
-    "labelContextMenu": { "message": "Visa etikettlista" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Öppna kategorin \"Laddar ner\" när en torrent läggs till" },
-    "treeViewContextMenu": { "message": "Gruppera mappar som träd" },
-    "treeViewContextMenuHint": { "message": "Organisera mappar hierarkiskt istället för platt lista" },
-    "showDefaultFolderContextMenuItem": { "message": "Visa alternativet \"Standardsökväg\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Lägg till alternativ för att ladda ner till Transmissions standardmapp" },
-    "dirList": { "message": "Nedladdningsmappar" },
-    "dirListHint": { "message": "Högerklicka på en torrentlänk för att välja destination" },
-    "options": { "message": "Alternativ" },
-    "subPath": { "message": "Undermapp" },
-    "labelList": { "message": "Etikettlista" },
-    "optSaveInCloud": { "message": "Spara i molnet" },
-    "toRestore": { "message": "Återställ" },
-    "optGetFromCloud": { "message": "Hämta inställningar från molnet" },
-    "optClearCloudStorage": { "message": "Rensa molnlagringen" },
-    "confirmRestore": { "message": "Är du säker på att du vill återställa denna konfiguration? Detta kommer att skriva över alla nuvarande inställningar." },
-    "confirmClearCloud": { "message": "Är du säker på att du vill rensa molnsäkerhetskopian?" },
-    "showFileList": { "message": "Fillista" },
-    "selectAll": { "message": "Markera alla" },
-    "refresh": { "message": "Uppdatera" },
-    "checkSettings": { "message": "Kontrollera inställningar" },
-    "showFreeSpace": { "message": "Visa tillgängligt diskutrymme" },
-    "freeSpace": { "message": "Ledigt utrymme" },
-    "startNow": { "message": "Starta nu" },
-    "rename": { "message": "Byt namn" },
-    "renameText": { "message": "Ange filnamn" },
-    "move": { "message": "Flytta" },
-    "moveNewPath": { "message": "Ange ny sökväg" },
-    "fullPath": { "message": "Mapp (fullständig sökväg)" },
-    "guiPath": { "message": "WebUI-sökväg" },
-    "altSpeedEnable": { "message": "Tillfälliga hastighetsbegränsningar" },
-    "torrentFileIsExists": { "message": "Torrenten lades till tidigare" },
-    "reannounce": { "message": "Begär fler peers" },
-    "extra": { "message": "Extra" },
-    "queueTop": { "message": "Överst" },
-    "queueBottom": { "message": "Underst" },
-    "requireAuthentication": { "message": "Autentisering krävs" },
-    "badgeColor": { "message": "Ikonetikett-färg" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Kopiera" },
-    "addItem": { "message": "Lägg till objekt" },
-    "shortName": { "message": "Kortnamn" },
-    "portIncorrect": { "message": "Porten är felaktig" },
-    "search": { "message": "Sök" },
-    "theme": { "message": "Tema" },
-    "themeSystem": { "message": "System" },
-    "themeLight": { "message": "Ljust" },
-    "themeDark": { "message": "Mörkt" },
-    "configureClient": { "message": "Konfigurera Transmission" },
-    "configureClientHint": { "message": "Konfigurera din Transmission-serveranslutning för att komma igång." },
-    "openOptions": { "message": "Öppna inställningar" },
-    "properties": { "message": "Egenskaper" },
-    "copyName": { "message": "Kopiera namn" },
-    "copyHash": { "message": "Kopiera hash" },
-    "sessionTotals": { "message": "Sessionstotaler" },
-    "responseEmpty": { "message": "Svaret är tomt" },
-    "clearSearch": { "message": "Rensa sökning" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Tillägget lägger till Transmissions webbgränssnitt i din webbläsare"
+    },
+    "lang": {
+        "message": "sv"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"v\", \"d\", \"t\", \"m\", \"s\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Namn"
+    },
+    "OV_COL_ORDER": {
+        "message": "Kö"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Storlek"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Återstående"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Status"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seedare"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seedare/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Nedladdning"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Uppladdning"
+    },
+    "OV_COL_ETA": {
+        "message": "ETA"
+    },
+    "OV_COL_UPPED": {
+        "message": "Uppladdat"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Nedladdat"
+    },
+    "OV_COL_SHARED": {
+        "message": "Ratio"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Tillgänglighet"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Tillg."
+    },
+    "OV_COL_LABEL": {
+        "message": "Etikett"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Tillagd"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Slutförd"
+    },
+    "Actions": {
+        "message": "Åtgärder"
+    },
+    "FI_COL_NAME": {
+        "message": "Namn"
+    },
+    "FI_COL_SIZE": {
+        "message": "Storlek"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioritet"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Seedar"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktiva"
+    },
+    "OV_CAT_ALL": {
+        "message": "Alla"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Slutförda"
+    },
+    "OV_CAT_DL": {
+        "message": "Laddar ner"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Inaktiva"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Ingen etikett"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Kontrollerad"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Laddar ner"
+    },
+    "OV_FL_ERROR": {
+        "message": "Fel"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Klar"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Pausad"
+    },
+    "OV_FL_QUEUED": {
+        "message": "I kö"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Seed-kö"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Stoppad"
+    },
+    "OV_FL_STALLED": {
+        "message": "Avstannad"
+    },
+    "MF_DONT": {
+        "message": "Ladda inte ner"
+    },
+    "MF_HIGH": {
+        "message": "Hög"
+    },
+    "MF_LOW": {
+        "message": "Låg"
+    },
+    "MF_NORMAL": {
+        "message": "Normal"
+    },
+    "ML_START": {
+        "message": "Starta"
+    },
+    "ML_STOP": {
+        "message": "Stoppa"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Tvinga omkontroll"
+    },
+    "ML_REMOVE": {
+        "message": "Ta bort"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Ta bort och"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Ta bort .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Ta bort data"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Ta bort .torrent + data"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Obegränsad"
+    },
+    "Open_file": {
+        "message": "Lägg till torrentfil..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Webbgränssnitt"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Lägg till torrent från URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Återuppta alla torrents"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Pausa alla torrents"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Stäng"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Är du säker på att du vill ta bort den valda torrenten?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Är du säker på att du vill ta bort de %d valda torrenterna?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Är du säker på att du vill ta bort den valda torrenten OCH radera all nedladdad data?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Är du säker på att du vill ta bort de %d valda torrenterna OCH radera all nedladdad data?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ja"
+    },
+    "DLG_BTN_NO": {
+        "message": "Nej"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Avbryt"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Verkställ"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Klistra in en torrent-URL"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Användarnamn"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Lösenord"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Avancerat"
+    },
+    "enterNewLabel": {
+        "message": "Ange den nya etiketten för den valda torrenten"
+    },
+    "defaultPath": {
+        "message": "Standardmapp"
+    },
+    "add": {
+        "message": "Lägg till"
+    },
+    "available": {
+        "message": "Tillgänglig"
+    },
+    "up": {
+        "message": "Upp"
+    },
+    "down": {
+        "message": "Ner"
+    },
+    "update": {
+        "message": "Uppdatera"
+    },
+    "deleteSelected": {
+        "message": "Ta bort valda"
+    },
+    "torrentAdded": {
+        "message": "Torrent tillagd!"
+    },
+    "unexpectedError": {
+        "message": "Oväntat fel!"
+    },
+    "fileSizeError": {
+        "message": "Filen är för stor"
+    },
+    "addInTorrentClient": {
+        "message": "Lägg till i Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Torrentfilen finns förmodligen redan!"
+    },
+    "currentDirectory": {
+        "message": "Aktuell mapp"
+    },
+    "openInTab": {
+        "message": "Öppna i flik"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Huvud"
+    },
+    "optNotify": {
+        "message": "Aviseringar"
+    },
+    "optCtx": {
+        "message": "Snabbmeny"
+    },
+    "backup": {
+        "message": "Säkerhetskopia"
+    },
+    "restore": {
+        "message": "Återställ"
+    },
+    "backupRestore": {
+        "message": "Säkerhetskopiering"
+    },
+    "backupHint": {
+        "message": "Exportera dina inställningar för att spara eller synkronisera till molnet"
+    },
+    "restoreHint": {
+        "message": "Importera inställningar från en tidigare säkerhetskopia eller från molnet"
+    },
+    "loadCurrentConfig": {
+        "message": "Ladda aktuell konfiguration"
+    },
+    "configData": {
+        "message": "Konfigurationsdata"
+    },
+    "clickLoadConfig": {
+        "message": "Klicka på \"Ladda aktuell konfiguration\" för att visa dina inställningar"
+    },
+    "useSSL": {
+        "message": "Använd SSL"
+    },
+    "path": {
+        "message": "Sökväg"
+    },
+    "hideSeedStatusItem": {
+        "message": "Dölj torrents med status \"Seedar\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Dölj torrents med status \"Klar\""
+    },
+    "showSpeedGraph": {
+        "message": "Visa hastighetsdiagram"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Uppdateringsintervall för torrentlistan"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Visa avisering när nedladdning är klar"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Visa antal nedladdande torrents på tilläggsikonen"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Bakgrundsuppdateringsintervall"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Öppna kategorin \"Laddar ner\" när en torrent läggs till"
+    },
+    "treeViewContextMenu": {
+        "message": "Gruppera mappar som träd"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Visa alternativet \"Standardsökväg\""
+    },
+    "dirList": {
+        "message": "Nedladdningsmappar"
+    },
+    "dirListHint": {
+        "message": "Högerklicka på en torrentlänk för att välja destination"
+    },
+    "options": {
+        "message": "Alternativ"
+    },
+    "subPath": {
+        "message": "Undermapp"
+    },
+    "optSaveInCloud": {
+        "message": "Spara i molnet"
+    },
+    "toRestore": {
+        "message": "Återställ"
+    },
+    "optGetFromCloud": {
+        "message": "Hämta inställningar från molnet"
+    },
+    "optClearCloudStorage": {
+        "message": "Rensa molnlagringen"
+    },
+    "confirmRestore": {
+        "message": "Är du säker på att du vill återställa denna konfiguration? Detta kommer att skriva över alla nuvarande inställningar."
+    },
+    "confirmClearCloud": {
+        "message": "Är du säker på att du vill rensa molnsäkerhetskopian?"
+    },
+    "showFileList": {
+        "message": "Fillista"
+    },
+    "selectAll": {
+        "message": "Markera alla"
+    },
+    "refresh": {
+        "message": "Uppdatera"
+    },
+    "checkSettings": {
+        "message": "Kontrollera inställningar"
+    },
+    "showFreeSpace": {
+        "message": "Visa tillgängligt diskutrymme"
+    },
+    "freeSpace": {
+        "message": "Ledigt utrymme"
+    },
+    "startNow": {
+        "message": "Starta nu"
+    },
+    "rename": {
+        "message": "Byt namn"
+    },
+    "renameText": {
+        "message": "Ange filnamn"
+    },
+    "move": {
+        "message": "Flytta"
+    },
+    "moveNewPath": {
+        "message": "Ange ny sökväg"
+    },
+    "guiPath": {
+        "message": "WebUI-sökväg"
+    },
+    "altSpeedEnable": {
+        "message": "Tillfälliga hastighetsbegränsningar"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrenten lades till tidigare"
+    },
+    "reannounce": {
+        "message": "Begär fler peers"
+    },
+    "extra": {
+        "message": "Extra"
+    },
+    "queueTop": {
+        "message": "Överst"
+    },
+    "queueBottom": {
+        "message": "Underst"
+    },
+    "requireAuthentication": {
+        "message": "Autentisering krävs"
+    },
+    "badgeColor": {
+        "message": "Ikonetikett-färg"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Kopiera"
+    },
+    "shortName": {
+        "message": "Kortnamn"
+    },
+    "portIncorrect": {
+        "message": "Porten är felaktig"
+    },
+    "search": {
+        "message": "Sök"
+    },
+    "theme": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "System"
+    },
+    "themeLight": {
+        "message": "Ljust"
+    },
+    "themeDark": {
+        "message": "Mörkt"
+    },
+    "configureClient": {
+        "message": "Konfigurera Transmission"
+    },
+    "configureClientHint": {
+        "message": "Konfigurera din Transmission-serveranslutning för att komma igång."
+    },
+    "openOptions": {
+        "message": "Öppna inställningar"
+    },
+    "properties": {
+        "message": "Egenskaper"
+    },
+    "copyName": {
+        "message": "Kopiera namn"
+    },
+    "copyHash": {
+        "message": "Kopiera hash"
+    },
+    "sessionTotals": {
+        "message": "Sessionstotaler"
+    },
+    "responseEmpty": {
+        "message": "Svaret är tomt"
+    },
+    "clearSearch": {
+        "message": "Rensa sökning"
+    },
+    "errorRetry": {
+        "message": "Försök igen"
+    },
+    "errorDetails": {
+        "message": "Detaljer"
+    },
+    "speedGraph": {
+        "message": "Hastighetsdiagram"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Blockeringslista"
+    },
+    "blocklistEnable": {
+        "message": "Aktivera blockeringslista"
+    },
+    "blocklistUrl": {
+        "message": "URL för blockeringslista"
+    },
+    "blocklistRules": {
+        "message": "Regler"
+    },
+    "blocklistUpdateNow": {
+        "message": "Uppdatera blockeringslistan nu"
+    },
+    "peerFlags": {
+        "message": "Flaggor"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Max antal peers totalt"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Max antal peers per torrent"
+    },
+    "seedingSettings": {
+        "message": "Seedning"
+    },
+    "seedRatioLimited": {
+        "message": "Sluta seeda vid ratio"
+    },
+    "seedRatioLimit": {
+        "message": "Ratiogräns"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Sluta seeda vid inaktivitet i"
+    },
+    "idleSeedingLimit": {
+        "message": "Inaktivitetsgräns"
+    },
+    "networkSettings": {
+        "message": "Nätverk"
+    },
+    "peerPort": {
+        "message": "Lyssningsport"
+    },
+    "portForwardingEnabled": {
+        "message": "Aktivera UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Kryptering"
+    },
+    "encryptionRequired": {
+        "message": "Krävs"
+    },
+    "encryptionPreferred": {
+        "message": "Föredras"
+    },
+    "encryptionTolerated": {
+        "message": "Tolereras"
+    },
+    "dhtEnabled": {
+        "message": "Aktivera DHT"
+    },
+    "pexEnabled": {
+        "message": "Aktivera PEX"
+    },
+    "lpdEnabled": {
+        "message": "Aktivera LPD"
+    },
+    "utpEnabled": {
+        "message": "Aktivera uTP"
+    },
+    "minutes": {
+        "message": "min"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Ingen etikett"
+    },
+    "generalSettings": {
+        "message": "Allmänt"
+    },
+    "startAddedTorrents": {
+        "message": "Starta tillagda torrents"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Släng ursprungliga .torrent-filer"
+    },
+    "incompleteDirSettings": {
+        "message": "Ofullständiga nedladdningar"
+    },
+    "incompleteDirEnabled": {
+        "message": "Använd mapp för ofullständiga nedladdningar"
+    },
+    "incompleteDir": {
+        "message": "Mapp för ofullständiga"
+    },
+    "renamePartialFiles": {
+        "message": "Ge ofullständiga filer filändelsen .part"
+    },
+    "queueSettings": {
+        "message": "Kö"
+    },
+    "downloadQueueEnabled": {
+        "message": "Begränsa nedladdningskön"
+    },
+    "downloadQueueSize": {
+        "message": "Max samtidiga nedladdningar"
+    },
+    "seedQueueEnabled": {
+        "message": "Begränsa seedkön"
+    },
+    "seedQueueSize": {
+        "message": "Max samtidiga seedningar"
+    },
+    "queueStalledEnabled": {
+        "message": "Betrakta som inaktiv efter"
+    },
+    "queueStalledMinutes": {
+        "message": "Tidsgräns för avstannad"
+    },
+    "altSpeedSchedule": {
+        "message": "Schema för hastighetsbegränsning"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Aktivera schema för hastighetsbegränsning"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Starttid"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Sluttid"
+    },
+    "altSpeedTimeDays": {
+        "message": "Aktiva dagar"
+    },
+    "daySunday": {
+        "message": "Sön"
+    },
+    "dayMonday": {
+        "message": "Mån"
+    },
+    "dayTuesday": {
+        "message": "Tis"
+    },
+    "dayWednesday": {
+        "message": "Ons"
+    },
+    "dayThursday": {
+        "message": "Tors"
+    },
+    "dayFriday": {
+        "message": "Fre"
+    },
+    "daySaturday": {
+        "message": "Lör"
+    },
+    "scriptSettings": {
+        "message": "Skript"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Kör skript när nedladdningen är klar"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Sökväg till skript"
+    },
+    "portTest": {
+        "message": "Testa port"
+    },
+    "portOpen": {
+        "message": "Porten är öppen"
+    },
+    "portClosed": {
+        "message": "Porten är stängd"
+    },
+    "portTesting": {
+        "message": "Testar..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Info"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackers"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Seedgränser"
+    },
+    "DT_COMMENT": {
+        "message": "Kommentar"
+    },
+    "DT_CREATOR": {
+        "message": "Skapad med"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Skapad den"
+    },
+    "DT_PIECES": {
+        "message": "Delar"
+    },
+    "DT_CORRUPT": {
+        "message": "Skadad"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Tid nedladdat"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Tid seedat"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Webbseeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Nivå"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seeds"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Status"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Trackerlista"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "En URL per rad, tom rad mellan nivåer"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Ratioläge"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Ratiogräns"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Inaktivitetsläge för seedning"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Inaktivitetsgräns för seedning (min)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Använd globala inställningar"
+    },
+    "DT_CUSTOM": {
+        "message": "Anpassad"
+    },
+    "DT_UNLIMITED": {
+        "message": "Obegränsad"
+    },
+    "DT_APPLY": {
+        "message": "Verkställ"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Senast aktiv"
+    },
+    "OV_COL_STARTED": {
+        "message": "Startad"
+    },
+    "OV_COL_EDITED": {
+        "message": "Ändrad"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Eff. storlek"
+    },
+    "DT_METADATA": {
+        "message": "Metadata"
+    },
+    "DT_PRIVATE": {
+        "message": "Privat"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peer-källor"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Inkommande"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Nedladdningsgräns"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Uppladdningsgräns"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Följer sessionsgränser"
+    },
+    "DT_ENABLED": {
+        "message": "Aktiverad"
+    },
+    "DT_DISABLED": {
+        "message": "Inaktiverad"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Tidsgräns för inaktivitet"
+    },
+    "sessionStats": {
+        "message": "$active$ aktiva, $paused$ pausade",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Kör skript när en torrent läggs till"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Sökväg till skript (tillagd)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Kör skript när seedningen är klar"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Sökväg till skript (klar seedning)"
+    },
+    "sequentialDownload": {
+        "message": "Sekventiell nedladdning"
+    },
+    "fileCount": {
+        "message": "Antal filer"
+    },
+    "primaryMimeType": {
+        "message": "Innehållstyp"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Varning: utan SSL skickas ditt användarnamn och lösenord okrypterat över nätverket."
+    },
+    "backupIncludesCredentials": {
+        "message": "Säkerhetskopian innehåller ditt användarnamn och lösenord till servern."
+    },
+    "restoreConnectionChanged": {
+        "message": "Denna säkerhetskopia ändrar serveranslutningen: $changes$. Fortsätta?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

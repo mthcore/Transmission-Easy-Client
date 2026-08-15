@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Η επέκταση προσθέτει τη διεπαφή ιστού του Transmission στον περιηγητή σας" },
-    "lang": { "message": "el" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"εβδ\", \"η\", \"ω\", \"λ\", \"δ\"]" },
-    "OV_COL_NAME": { "message": "Όνομα" },
-    "OV_COL_ORDER": { "message": "Ουρά" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Μέγεθος" },
-    "OV_COL_REMAINING": { "message": "Υπόλοιπο" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Κατάσταση" },
-    "OV_COL_SEEDS": { "message": "Seeds" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seeds/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Λήψη" },
-    "OV_COL_UPSPD": { "message": "Αποστολή" },
-    "OV_COL_ETA": { "message": "Χρόνος" },
-    "OV_COL_UPPED": { "message": "Απεστάλη" },
-    "OV_COL_DOWNLOADED": { "message": "Ελήφθη" },
-    "OV_COL_SHARED": { "message": "Αναλογία" },
-    "OV_COL_AVAIL": { "message": "Διαθεσιμότητα" },
-    "OV_COL_AVAIL_SHORT": { "message": "Διαθ." },
-    "OV_COL_LABEL": { "message": "Ετικέτα" },
-    "OV_COL_DATE_ADDED": { "message": "Προστέθηκε" },
-    "OV_COL_DATE_COMPLETED": { "message": "Ολοκληρώθηκε" },
-    "Actions": { "message": "Ενέργειες" },
-    "FI_COL_NAME": { "message": "Όνομα" },
-    "FI_COL_SIZE": { "message": "Μέγεθος" },
-    "FI_COL_PRIO": { "message": "Προτεραιότητα" },
-    "OV_FL_SEEDING": { "message": "Διαμοιρασμός" },
-    "OV_CAT_ACTIVE": { "message": "Ενεργά" },
-    "OV_CAT_ALL": { "message": "Όλα" },
-    "OV_CAT_COMPL": { "message": "Ολοκληρωμένα" },
-    "OV_CAT_DL": { "message": "Λήψη" },
-    "OV_CAT_INACTIVE": { "message": "Ανενεργά" },
-    "OV_CAT_NOLABEL": { "message": "Χωρίς ετικέτα" },
-    "OV_FL_CHECKED": { "message": "Ελεγμένο" },
-    "OV_FL_DOWNLOADING": { "message": "Λήψη" },
-    "OV_FL_ERROR": { "message": "Σφάλμα" },
-    "OV_FL_FINISHED": { "message": "Ολοκληρώθηκε" },
-    "OV_FL_PAUSED": { "message": "Σε παύση" },
-    "OV_FL_QUEUED": { "message": "Σε ουρά" },
-    "OV_FL_QUEUED_SEED": { "message": "Ουρά διαμοιρασμού" },
-    "OV_FL_STOPPED": { "message": "Σταματημένο" },
-    "MF_DONT": { "message": "Χωρίς λήψη" },
-    "MF_HIGH": { "message": "Υψηλή" },
-    "MF_LOW": { "message": "Χαμηλή" },
-    "MF_NORMAL": { "message": "Κανονική" },
-    "ML_START": { "message": "Έναρξη" },
-    "ML_PAUSE": { "message": "Παύση" },
-    "ML_STOP": { "message": "Διακοπή" },
-    "OV_REMOVE_LABEL": { "message": "Αφαίρεση ετικέτας" },
-    "OV_NEW_LABEL": { "message": "Νέα ετικέτα..." },
-    "ML_FORCE_START": { "message": "Αναγκαστική έναρξη" },
-    "ML_FORCE_RECHECK": { "message": "Αναγκαστικός επανέλεγχος" },
-    "ML_REMOVE": { "message": "Αφαίρεση" },
-    "ML_REMOVE_AND": { "message": "Αφαίρεση και" },
-    "ML_DELETE_TORRENT": { "message": "Διαγραφή .torrent" },
-    "ML_DELETE_DATA": { "message": "Διαγραφή δεδομένων" },
-    "ML_DELETE_DATATORRENT": { "message": "Διαγραφή .torrent + δεδομένων" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Λήψη" },
-    "MENU_UNLIMITED": { "message": "Απεριόριστο" },
-    "Open_file": { "message": "Προσθήκη αρχείου torrent..." },
-    "ST_CAPT_WEBUI": { "message": "Διεπαφή ιστού" },
-    "MM_FILE_ADD_URL": { "message": "Προσθήκη Torrent από URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Συνέχιση όλων των torrents" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Παύση όλων των torrents" },
-    "DLG_BTN_CLOSE": { "message": "Κλείσιμο" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε το επιλεγμένο torrent;" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε τα %d επιλεγμένα torrents;" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε το επιλεγμένο torrent ΚΑΙ να διαγράψετε όλα τα ληφθέντα δεδομένα;" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε τα %d επιλεγμένα torrents ΚΑΙ να διαγράψετε όλα τα ληφθέντα δεδομένα;" },
-    "DLG_BTN_YES": { "message": "Ναι" },
-    "DLG_BTN_NO": { "message": "Όχι" },
-    "DLG_BTN_CANCEL": { "message": "Ακύρωση" },
-    "DLG_BTN_APPLY": { "message": "Εφαρμογή" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Φάκελοι" },
-    "Paste_a_torrent_URL": { "message": "Επικολλήστε URL torrent" },
-    "OV_NEWLABEL_CAPTION": { "message": "Εισάγετε ετικέτα" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Όνομα χρήστη" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Κωδικός" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Θύρα" },
-    "ST_CAPT_ADVANCED": { "message": "Προηγμένα" },
-    "resume": { "message": "Συνέχιση" },
-    "enterNewLabel": { "message": "Εισάγετε τη νέα ετικέτα για το επιλεγμένο torrent" },
-    "defaultPath": { "message": "Προεπιλεγμένος φάκελος" },
-    "add": { "message": "Προσθήκη" },
-    "available": { "message": "Διαθέσιμο" },
-    "up": { "message": "Πάνω" },
-    "down": { "message": "Κάτω" },
-    "update": { "message": "Ενημέρωση" },
-    "deleteSelected": { "message": "Διαγραφή επιλεγμένων" },
-    "torrentAdded": { "message": "Το torrent προστέθηκε!" },
-    "unexpectedError": { "message": "Απρόσμενο σφάλμα!" },
-    "fileSizeError": { "message": "Το αρχείο είναι πολύ μεγάλο" },
-    "addInTorrentClient": { "message": "Προσθήκη στο Transmission" },
-    "enterNewDirPath": { "message": "Εισάγετε τη διαδρομή προς το νέο φάκελο" },
-    "torrentFileExists": { "message": "Το αρχείο torrent πιθανόν υπάρχει ήδη!" },
-    "currentDirectory": { "message": "Τρέχων φάκελος" },
-    "openInTab": { "message": "Άνοιγμα σε καρτέλα" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Κύριο" },
-    "optNotify": { "message": "Ειδοποιήσεις" },
-    "optCtx": { "message": "Μενού περιβάλλοντος" },
-    "backup": { "message": "Αντίγραφο ασφαλείας" },
-    "restore": { "message": "Επαναφορά" },
-    "backupRestore": { "message": "Αντίγραφο & Επαναφορά" },
-    "backupHint": { "message": "Εξαγωγή ρυθμίσεων για αποθήκευση ή συγχρονισμό στο cloud" },
-    "restoreHint": { "message": "Εισαγωγή ρυθμίσεων από προηγούμενο αντίγραφο ή από το cloud" },
-    "loadCurrentConfig": { "message": "Φόρτωση τρέχουσας διαμόρφωσης" },
-    "configData": { "message": "Δεδομένα διαμόρφωσης" },
-    "clickLoadConfig": { "message": "Κάντε κλικ στο \"Φόρτωση τρέχουσας διαμόρφωσης\" για να δείτε τις ρυθμίσεις σας" },
-    "useSSL": { "message": "Χρήση SSL" },
-    "path": { "message": "Διαδρομή" },
-    "hideSeedStatusItem": { "message": "Απόκρυψη torrents με κατάσταση \"Διαμοιρασμός\"" },
-    "hideFinishStatusItem": { "message": "Απόκρυψη torrents με κατάσταση \"Ολοκληρωμένο\"" },
-    "showSpeedGraph": { "message": "Εμφάνιση γραφήματος ταχύτητας" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Διάστημα ενημέρωσης λίστας torrents" },
-    "fixCyrillicIf": { "message": "Διόρθωση κυριλλικών αν..." },
-    "fixCyrillicTitle": { "message": "Τα ονόματα torrents εμφανίζονται λανθασμένα" },
-    "fixCyrillicTorrentPath": { "message": "Ο φάκελος για νέο torrent ορίζεται λανθασμένα" },
-    "showNotificationOnDownloadComplete": { "message": "Εμφάνιση ειδοποίησης όταν ολοκληρωθεί η λήψη" },
-    "displayActiveTorrentCountIcon": { "message": "Εμφάνιση αριθμού torrents σε λήψη στο εικονίδιο επέκτασης" },
-    "backgroundUpdateInterval": { "message": "Διάστημα ενημέρωσης παρασκηνίου" },
-    "notificationTimeout": { "message": "Απόκρυψη ειδοποίησης μετά από" },
-    "folderContextMenu": { "message": "Εμφάνιση λίστας φακέλων" },
-    "labelContextMenu": { "message": "Εμφάνιση λίστας ετικετών" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Άνοιγμα κατηγορίας \"Λήψη\" κατά την προσθήκη torrent" },
-    "treeViewContextMenu": { "message": "Ομαδοποίηση φακέλων ως δέντρο" },
-    "treeViewContextMenuHint": { "message": "Οργάνωση φακέλων ιεραρχικά αντί για επίπεδη λίστα" },
-    "showDefaultFolderContextMenuItem": { "message": "Εμφάνιση επιλογής \"Προεπιλεγμένη διαδρομή\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Προσθήκη επιλογής λήψης στον προεπιλεγμένο φάκελο του Transmission" },
-    "dirList": { "message": "Φάκελοι λήψης" },
-    "dirListHint": { "message": "Δεξί κλικ σε σύνδεσμο torrent για επιλογή προορισμού" },
-    "options": { "message": "Επιλογές" },
-    "subPath": { "message": "Υποφάκελος" },
-    "labelList": { "message": "Λίστα ετικετών" },
-    "optSaveInCloud": { "message": "Αποθήκευση στο cloud" },
-    "toRestore": { "message": "Επαναφορά" },
-    "optGetFromCloud": { "message": "Λήψη ρυθμίσεων από το cloud" },
-    "optClearCloudStorage": { "message": "Εκκαθάριση αποθήκευσης cloud" },
-    "confirmRestore": { "message": "Είστε σίγουροι ότι θέλετε να επαναφέρετε αυτή τη διαμόρφωση; Θα αντικαταστήσει όλες τις τρέχουσες ρυθμίσεις." },
-    "confirmClearCloud": { "message": "Είστε σίγουροι ότι θέλετε να εκκαθαρίσετε το αντίγραφο ασφαλείας cloud;" },
-    "showFileList": { "message": "Λίστα αρχείων" },
-    "selectAll": { "message": "Επιλογή όλων" },
-    "refresh": { "message": "Ανανέωση" },
-    "checkSettings": { "message": "Έλεγχος ρυθμίσεων" },
-    "showFreeSpace": { "message": "Εμφάνιση διαθέσιμου χώρου δίσκου" },
-    "freeSpace": { "message": "Ελεύθερος χώρος" },
-    "startNow": { "message": "Έναρξη τώρα" },
-    "rename": { "message": "Μετονομασία" },
-    "renameText": { "message": "Εισάγετε όνομα αρχείου" },
-    "move": { "message": "Μετακίνηση" },
-    "moveNewPath": { "message": "Εισάγετε νέα διαδρομή" },
-    "fullPath": { "message": "Φάκελος (πλήρης διαδρομή)" },
-    "guiPath": { "message": "Διαδρομή WebUI" },
-    "altSpeedEnable": { "message": "Προσωρινά όρια ταχύτητας" },
-    "torrentFileIsExists": { "message": "Το torrent είχε προστεθεί προηγουμένως" },
-    "reannounce": { "message": "Αίτηση περισσότερων peers" },
-    "extra": { "message": "Επιπλέον" },
-    "queueTop": { "message": "Στην κορυφή" },
-    "queueBottom": { "message": "Στο τέλος" },
-    "requireAuthentication": { "message": "Απαιτείται πιστοποίηση" },
-    "badgeColor": { "message": "Χρώμα σήματος εικονιδίου" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Αντιγραφή" },
-    "addItem": { "message": "Προσθήκη στοιχείου" },
-    "shortName": { "message": "Σύντομο όνομα" },
-    "portIncorrect": { "message": "Η θύρα είναι λανθασμένη" },
-    "search": { "message": "Αναζήτηση" },
-    "theme": { "message": "Θέμα" },
-    "themeSystem": { "message": "Σύστημα" },
-    "themeLight": { "message": "Φωτεινό" },
-    "themeDark": { "message": "Σκοτεινό" },
-    "configureClient": { "message": "Διαμόρφωση Transmission" },
-    "configureClientHint": { "message": "Παρακαλώ διαμορφώστε τη σύνδεση διακομιστή Transmission για να ξεκινήσετε." },
-    "openOptions": { "message": "Άνοιγμα Ρυθμίσεων" },
-    "properties": { "message": "Ιδιότητες" },
-    "copyName": { "message": "Αντιγραφή ονόματος" },
-    "copyHash": { "message": "Αντιγραφή hash" },
-    "sessionTotals": { "message": "Σύνολα συνεδρίας" },
-    "responseEmpty": { "message": "Η απάντηση είναι κενή" },
-    "clearSearch": { "message": "Εκκαθάριση αναζήτησης" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Η επέκταση προσθέτει τη διεπαφή ιστού του Transmission στον περιηγητή σας"
+    },
+    "lang": {
+        "message": "el"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"εβδ\", \"η\", \"ω\", \"λ\", \"δ\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Όνομα"
+    },
+    "OV_COL_ORDER": {
+        "message": "Ουρά"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Μέγεθος"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Υπόλοιπο"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Κατάσταση"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seeds"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seeds/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Λήψη"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Αποστολή"
+    },
+    "OV_COL_ETA": {
+        "message": "Χρόνος"
+    },
+    "OV_COL_UPPED": {
+        "message": "Απεστάλη"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Ελήφθη"
+    },
+    "OV_COL_SHARED": {
+        "message": "Αναλογία"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Διαθεσιμότητα"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Διαθ."
+    },
+    "OV_COL_LABEL": {
+        "message": "Ετικέτα"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Προστέθηκε"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Ολοκληρώθηκε"
+    },
+    "Actions": {
+        "message": "Ενέργειες"
+    },
+    "FI_COL_NAME": {
+        "message": "Όνομα"
+    },
+    "FI_COL_SIZE": {
+        "message": "Μέγεθος"
+    },
+    "FI_COL_PRIO": {
+        "message": "Προτεραιότητα"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Διαμοιρασμός"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Ενεργά"
+    },
+    "OV_CAT_ALL": {
+        "message": "Όλα"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Ολοκληρωμένα"
+    },
+    "OV_CAT_DL": {
+        "message": "Λήψη"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Ανενεργά"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Χωρίς ετικέτα"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Ελεγμένο"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Λήψη"
+    },
+    "OV_FL_ERROR": {
+        "message": "Σφάλμα"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Ολοκληρώθηκε"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Σε παύση"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Σε ουρά"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Ουρά διαμοιρασμού"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Σταματημένο"
+    },
+    "OV_FL_STALLED": {
+        "message": "Στάσιμο"
+    },
+    "MF_DONT": {
+        "message": "Χωρίς λήψη"
+    },
+    "MF_HIGH": {
+        "message": "Υψηλή"
+    },
+    "MF_LOW": {
+        "message": "Χαμηλή"
+    },
+    "MF_NORMAL": {
+        "message": "Κανονική"
+    },
+    "ML_START": {
+        "message": "Έναρξη"
+    },
+    "ML_STOP": {
+        "message": "Διακοπή"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Αναγκαστικός επανέλεγχος"
+    },
+    "ML_REMOVE": {
+        "message": "Αφαίρεση"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Αφαίρεση και"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Διαγραφή .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Διαγραφή δεδομένων"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Διαγραφή .torrent + δεδομένων"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Απεριόριστο"
+    },
+    "Open_file": {
+        "message": "Προσθήκη αρχείου torrent..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Διεπαφή ιστού"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Προσθήκη Torrent από URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Συνέχιση όλων των torrents"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Παύση όλων των torrents"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Κλείσιμο"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε το επιλεγμένο torrent;"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε τα %d επιλεγμένα torrents;"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε το επιλεγμένο torrent ΚΑΙ να διαγράψετε όλα τα ληφθέντα δεδομένα;"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε τα %d επιλεγμένα torrents ΚΑΙ να διαγράψετε όλα τα ληφθέντα δεδομένα;"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ναι"
+    },
+    "DLG_BTN_NO": {
+        "message": "Όχι"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Ακύρωση"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Εφαρμογή"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Επικολλήστε URL torrent"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Όνομα χρήστη"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Κωδικός"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Θύρα"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Προηγμένα"
+    },
+    "enterNewLabel": {
+        "message": "Εισάγετε τη νέα ετικέτα για το επιλεγμένο torrent"
+    },
+    "defaultPath": {
+        "message": "Προεπιλεγμένος φάκελος"
+    },
+    "add": {
+        "message": "Προσθήκη"
+    },
+    "available": {
+        "message": "Διαθέσιμο"
+    },
+    "up": {
+        "message": "Πάνω"
+    },
+    "down": {
+        "message": "Κάτω"
+    },
+    "update": {
+        "message": "Ενημέρωση"
+    },
+    "deleteSelected": {
+        "message": "Διαγραφή επιλεγμένων"
+    },
+    "torrentAdded": {
+        "message": "Το torrent προστέθηκε!"
+    },
+    "unexpectedError": {
+        "message": "Απρόσμενο σφάλμα!"
+    },
+    "fileSizeError": {
+        "message": "Το αρχείο είναι πολύ μεγάλο"
+    },
+    "addInTorrentClient": {
+        "message": "Προσθήκη στο Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Το αρχείο torrent πιθανόν υπάρχει ήδη!"
+    },
+    "currentDirectory": {
+        "message": "Τρέχων φάκελος"
+    },
+    "openInTab": {
+        "message": "Άνοιγμα σε καρτέλα"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Κύριο"
+    },
+    "optNotify": {
+        "message": "Ειδοποιήσεις"
+    },
+    "optCtx": {
+        "message": "Μενού περιβάλλοντος"
+    },
+    "backup": {
+        "message": "Αντίγραφο ασφαλείας"
+    },
+    "restore": {
+        "message": "Επαναφορά"
+    },
+    "backupRestore": {
+        "message": "Αντίγραφο & Επαναφορά"
+    },
+    "backupHint": {
+        "message": "Εξαγωγή ρυθμίσεων για αποθήκευση ή συγχρονισμό στο cloud"
+    },
+    "restoreHint": {
+        "message": "Εισαγωγή ρυθμίσεων από προηγούμενο αντίγραφο ή από το cloud"
+    },
+    "loadCurrentConfig": {
+        "message": "Φόρτωση τρέχουσας διαμόρφωσης"
+    },
+    "configData": {
+        "message": "Δεδομένα διαμόρφωσης"
+    },
+    "clickLoadConfig": {
+        "message": "Κάντε κλικ στο \"Φόρτωση τρέχουσας διαμόρφωσης\" για να δείτε τις ρυθμίσεις σας"
+    },
+    "useSSL": {
+        "message": "Χρήση SSL"
+    },
+    "path": {
+        "message": "Διαδρομή"
+    },
+    "hideSeedStatusItem": {
+        "message": "Απόκρυψη torrents με κατάσταση \"Διαμοιρασμός\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Απόκρυψη torrents με κατάσταση \"Ολοκληρωμένο\""
+    },
+    "showSpeedGraph": {
+        "message": "Εμφάνιση γραφήματος ταχύτητας"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Διάστημα ενημέρωσης λίστας torrents"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Εμφάνιση ειδοποίησης όταν ολοκληρωθεί η λήψη"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Εμφάνιση αριθμού torrents σε λήψη στο εικονίδιο επέκτασης"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Διάστημα ενημέρωσης παρασκηνίου"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Άνοιγμα κατηγορίας \"Λήψη\" κατά την προσθήκη torrent"
+    },
+    "treeViewContextMenu": {
+        "message": "Ομαδοποίηση φακέλων ως δέντρο"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Εμφάνιση επιλογής \"Προεπιλεγμένη διαδρομή\""
+    },
+    "dirList": {
+        "message": "Φάκελοι λήψης"
+    },
+    "dirListHint": {
+        "message": "Δεξί κλικ σε σύνδεσμο torrent για επιλογή προορισμού"
+    },
+    "options": {
+        "message": "Επιλογές"
+    },
+    "subPath": {
+        "message": "Υποφάκελος"
+    },
+    "optSaveInCloud": {
+        "message": "Αποθήκευση στο cloud"
+    },
+    "toRestore": {
+        "message": "Επαναφορά"
+    },
+    "optGetFromCloud": {
+        "message": "Λήψη ρυθμίσεων από το cloud"
+    },
+    "optClearCloudStorage": {
+        "message": "Εκκαθάριση αποθήκευσης cloud"
+    },
+    "confirmRestore": {
+        "message": "Είστε σίγουροι ότι θέλετε να επαναφέρετε αυτή τη διαμόρφωση; Θα αντικαταστήσει όλες τις τρέχουσες ρυθμίσεις."
+    },
+    "confirmClearCloud": {
+        "message": "Είστε σίγουροι ότι θέλετε να εκκαθαρίσετε το αντίγραφο ασφαλείας cloud;"
+    },
+    "showFileList": {
+        "message": "Λίστα αρχείων"
+    },
+    "selectAll": {
+        "message": "Επιλογή όλων"
+    },
+    "refresh": {
+        "message": "Ανανέωση"
+    },
+    "checkSettings": {
+        "message": "Έλεγχος ρυθμίσεων"
+    },
+    "showFreeSpace": {
+        "message": "Εμφάνιση διαθέσιμου χώρου δίσκου"
+    },
+    "freeSpace": {
+        "message": "Ελεύθερος χώρος"
+    },
+    "startNow": {
+        "message": "Έναρξη τώρα"
+    },
+    "rename": {
+        "message": "Μετονομασία"
+    },
+    "renameText": {
+        "message": "Εισάγετε όνομα αρχείου"
+    },
+    "move": {
+        "message": "Μετακίνηση"
+    },
+    "moveNewPath": {
+        "message": "Εισάγετε νέα διαδρομή"
+    },
+    "guiPath": {
+        "message": "Διαδρομή WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Προσωρινά όρια ταχύτητας"
+    },
+    "torrentFileIsExists": {
+        "message": "Το torrent είχε προστεθεί προηγουμένως"
+    },
+    "reannounce": {
+        "message": "Αίτηση περισσότερων peers"
+    },
+    "extra": {
+        "message": "Επιπλέον"
+    },
+    "queueTop": {
+        "message": "Στην κορυφή"
+    },
+    "queueBottom": {
+        "message": "Στο τέλος"
+    },
+    "requireAuthentication": {
+        "message": "Απαιτείται πιστοποίηση"
+    },
+    "badgeColor": {
+        "message": "Χρώμα σήματος εικονιδίου"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Αντιγραφή"
+    },
+    "shortName": {
+        "message": "Σύντομο όνομα"
+    },
+    "portIncorrect": {
+        "message": "Η θύρα είναι λανθασμένη"
+    },
+    "search": {
+        "message": "Αναζήτηση"
+    },
+    "theme": {
+        "message": "Θέμα"
+    },
+    "themeSystem": {
+        "message": "Σύστημα"
+    },
+    "themeLight": {
+        "message": "Φωτεινό"
+    },
+    "themeDark": {
+        "message": "Σκοτεινό"
+    },
+    "configureClient": {
+        "message": "Διαμόρφωση Transmission"
+    },
+    "configureClientHint": {
+        "message": "Παρακαλώ διαμορφώστε τη σύνδεση διακομιστή Transmission για να ξεκινήσετε."
+    },
+    "openOptions": {
+        "message": "Άνοιγμα Ρυθμίσεων"
+    },
+    "properties": {
+        "message": "Ιδιότητες"
+    },
+    "copyName": {
+        "message": "Αντιγραφή ονόματος"
+    },
+    "copyHash": {
+        "message": "Αντιγραφή hash"
+    },
+    "sessionTotals": {
+        "message": "Σύνολα συνεδρίας"
+    },
+    "responseEmpty": {
+        "message": "Η απάντηση είναι κενή"
+    },
+    "clearSearch": {
+        "message": "Εκκαθάριση αναζήτησης"
+    },
+    "errorRetry": {
+        "message": "Επανάληψη"
+    },
+    "errorDetails": {
+        "message": "Λεπτομέρειες"
+    },
+    "speedGraph": {
+        "message": "Γράφημα ταχύτητας"
+    },
+    "optServer": {
+        "message": "Διακομιστής"
+    },
+    "blocklist": {
+        "message": "Λίστα αποκλεισμού"
+    },
+    "blocklistEnable": {
+        "message": "Ενεργοποίηση λίστας αποκλεισμού"
+    },
+    "blocklistUrl": {
+        "message": "URL λίστας αποκλεισμού"
+    },
+    "blocklistRules": {
+        "message": "Κανόνες"
+    },
+    "blocklistUpdateNow": {
+        "message": "Ενημέρωση λίστας αποκλεισμού τώρα"
+    },
+    "peerFlags": {
+        "message": "Σημαίες"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Μέγιστοι peers συνολικά"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Μέγιστοι peers ανά torrent"
+    },
+    "seedingSettings": {
+        "message": "Διαμοιρασμός"
+    },
+    "seedRatioLimited": {
+        "message": "Διακοπή διαμοιρασμού σε αναλογία"
+    },
+    "seedRatioLimit": {
+        "message": "Όριο αναλογίας διαμοιρασμού"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Διακοπή διαμοιρασμού μετά από αδράνεια"
+    },
+    "idleSeedingLimit": {
+        "message": "Όριο αδράνειας"
+    },
+    "networkSettings": {
+        "message": "Δίκτυο"
+    },
+    "peerPort": {
+        "message": "Θύρα ακρόασης"
+    },
+    "portForwardingEnabled": {
+        "message": "Ενεργοποίηση UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Κρυπτογράφηση"
+    },
+    "encryptionRequired": {
+        "message": "Απαιτείται"
+    },
+    "encryptionPreferred": {
+        "message": "Προτιμάται"
+    },
+    "encryptionTolerated": {
+        "message": "Ανεκτή"
+    },
+    "dhtEnabled": {
+        "message": "Ενεργοποίηση DHT"
+    },
+    "pexEnabled": {
+        "message": "Ενεργοποίηση PEX"
+    },
+    "lpdEnabled": {
+        "message": "Ενεργοποίηση LPD"
+    },
+    "utpEnabled": {
+        "message": "Ενεργοποίηση uTP"
+    },
+    "minutes": {
+        "message": "λεπ"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Χωρίς ετικέτα"
+    },
+    "generalSettings": {
+        "message": "Γενικά"
+    },
+    "startAddedTorrents": {
+        "message": "Έναρξη των torrent κατά την προσθήκη"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Διαγραφή των αρχικών αρχείων .torrent"
+    },
+    "incompleteDirSettings": {
+        "message": "Ημιτελείς λήψεις"
+    },
+    "incompleteDirEnabled": {
+        "message": "Χρήση φακέλου ημιτελών λήψεων"
+    },
+    "incompleteDir": {
+        "message": "Φάκελος ημιτελών λήψεων"
+    },
+    "renamePartialFiles": {
+        "message": "Μετονομασία ημιτελών αρχείων με επέκταση .part"
+    },
+    "queueSettings": {
+        "message": "Ουρά"
+    },
+    "downloadQueueEnabled": {
+        "message": "Περιορισμός ουράς λήψεων"
+    },
+    "downloadQueueSize": {
+        "message": "Μέγιστες ταυτόχρονες λήψεις"
+    },
+    "seedQueueEnabled": {
+        "message": "Περιορισμός ουράς διαμοιρασμού"
+    },
+    "seedQueueSize": {
+        "message": "Μέγιστοι ταυτόχρονοι διαμοιρασμοί"
+    },
+    "queueStalledEnabled": {
+        "message": "Θεώρηση ως ανενεργού μετά από"
+    },
+    "queueStalledMinutes": {
+        "message": "Όριο στασιμότητας"
+    },
+    "altSpeedSchedule": {
+        "message": "Πρόγραμμα ορίου ταχύτητας"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Ενεργοποίηση προγράμματος ορίου ταχύτητας"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Ώρα έναρξης"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Ώρα λήξης"
+    },
+    "altSpeedTimeDays": {
+        "message": "Ενεργές ημέρες"
+    },
+    "daySunday": {
+        "message": "Κυρ"
+    },
+    "dayMonday": {
+        "message": "Δευ"
+    },
+    "dayTuesday": {
+        "message": "Τρί"
+    },
+    "dayWednesday": {
+        "message": "Τετ"
+    },
+    "dayThursday": {
+        "message": "Πέμ"
+    },
+    "dayFriday": {
+        "message": "Παρ"
+    },
+    "daySaturday": {
+        "message": "Σάβ"
+    },
+    "scriptSettings": {
+        "message": "Σενάριο εντολών"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Εκτέλεση σεναρίου όταν ολοκληρωθεί η λήψη"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Διαδρομή σεναρίου"
+    },
+    "portTest": {
+        "message": "Έλεγχος θύρας"
+    },
+    "portOpen": {
+        "message": "Η θύρα είναι ανοικτή"
+    },
+    "portClosed": {
+        "message": "Η θύρα είναι κλειστή"
+    },
+    "portTesting": {
+        "message": "Έλεγχος..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Πληροφορίες"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackers"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Όρια διαμοιρασμού"
+    },
+    "DT_COMMENT": {
+        "message": "Σχόλιο"
+    },
+    "DT_CREATOR": {
+        "message": "Δημιουργός"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Ημερομηνία δημιουργίας"
+    },
+    "DT_PIECES": {
+        "message": "Κομμάτια"
+    },
+    "DT_CORRUPT": {
+        "message": "Κατεστραμμένα"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Χρόνος λήψης"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Χρόνος διαμοιρασμού"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web seeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Επίπεδο"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seeds"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Κατάσταση"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Λίστα trackers"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Ένα URL ανά γραμμή, κενή γραμμή μεταξύ επιπέδων"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Λειτουργία αναλογίας διαμοιρασμού"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Όριο αναλογίας διαμοιρασμού"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Λειτουργία αδράνειας διαμοιρασμού"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Όριο αδράνειας διαμοιρασμού (λεπ)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Χρήση καθολικών ρυθμίσεων"
+    },
+    "DT_CUSTOM": {
+        "message": "Προσαρμοσμένο"
+    },
+    "DT_UNLIMITED": {
+        "message": "Απεριόριστο"
+    },
+    "DT_APPLY": {
+        "message": "Εφαρμογή"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Τελευταία δραστηριότητα"
+    },
+    "OV_COL_STARTED": {
+        "message": "Έναρξη"
+    },
+    "OV_COL_EDITED": {
+        "message": "Τροποποιήθηκε"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Πραγμ. μέγεθος"
+    },
+    "DT_METADATA": {
+        "message": "Μεταδεδομένα"
+    },
+    "DT_PRIVATE": {
+        "message": "Ιδιωτικό"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Πηγές peers"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Εισερχόμενες"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Όριο λήψης"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Όριο αποστολής"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Τήρηση ορίων συνεδρίας"
+    },
+    "DT_ENABLED": {
+        "message": "Ενεργοποιημένο"
+    },
+    "DT_DISABLED": {
+        "message": "Απενεργοποιημένο"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Όριο αδράνειας"
+    },
+    "sessionStats": {
+        "message": "$active$ ενεργά, $paused$ σε παύση",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Εκτέλεση σεναρίου κατά την προσθήκη torrent"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Διαδρομή σεναρίου (προσθήκη)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Εκτέλεση σεναρίου όταν ολοκληρωθεί ο διαμοιρασμός"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Διαδρομή σεναρίου (τέλος διαμοιρασμού)"
+    },
+    "sequentialDownload": {
+        "message": "Σειριακή λήψη"
+    },
+    "fileCount": {
+        "message": "Αριθμός αρχείων"
+    },
+    "primaryMimeType": {
+        "message": "Τύπος περιεχομένου"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Προειδοποίηση: χωρίς SSL, το όνομα χρήστη και ο κωδικός πρόσβασής σας αποστέλλονται μη κρυπτογραφημένα μέσω του δικτύου."
+    },
+    "backupIncludesCredentials": {
+        "message": "Το αντίγραφο ασφαλείας περιλαμβάνει το όνομα χρήστη και τον κωδικό πρόσβασης του διακομιστή σας."
+    },
+    "restoreConnectionChanged": {
+        "message": "Αυτό το αντίγραφο ασφαλείας αλλάζει τη σύνδεση με τον διακομιστή: $changes$. Συνέχεια;",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

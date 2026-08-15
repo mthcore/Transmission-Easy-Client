@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Розширення додає веб-інтерфейс Transmission до вашого браузера" },
-    "lang": { "message": "uk" },
-    "sizeList": { "message": "[\"Б\", \"кБ\", \"МБ\", \"ГБ\", \"ТБ\", \"ПБ\", \"ЕБ\"]" },
-    "sizePsList": { "message": "[\"Б/с\", \"кБ/с\", \"МБ/с\", \"ГБ/с\", \"ТБ/с\", \"ПБ/с\", \"ЕБ/с\"]" },
-    "timeOutList": { "message": "[\"тиж\", \"д\", \"год\", \"хв\", \"с\"]" },
-    "OV_COL_NAME": { "message": "Назва" },
-    "OV_COL_ORDER": { "message": "Черга" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Розмір" },
-    "OV_COL_REMAINING": { "message": "Залишилось" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Статус" },
-    "OV_COL_SEEDS": { "message": "Сіди" },
-    "OV_COL_PEERS": { "message": "Піри" },
-    "OV_COL_SEEDS_PEERS": { "message": "Сіди/Піри" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "С/П" },
-    "OV_COL_DOWNSPD": { "message": "Завантаження" },
-    "OV_COL_UPSPD": { "message": "Вивантаження" },
-    "OV_COL_ETA": { "message": "Час" },
-    "OV_COL_UPPED": { "message": "Вивантажено" },
-    "OV_COL_DOWNLOADED": { "message": "Завантажено" },
-    "OV_COL_SHARED": { "message": "Рейтинг" },
-    "OV_COL_AVAIL": { "message": "Доступність" },
-    "OV_COL_AVAIL_SHORT": { "message": "Дост." },
-    "OV_COL_LABEL": { "message": "Мітка" },
-    "OV_COL_DATE_ADDED": { "message": "Додано" },
-    "OV_COL_DATE_COMPLETED": { "message": "Завершено" },
-    "Actions": { "message": "Дії" },
-    "FI_COL_NAME": { "message": "Назва" },
-    "FI_COL_SIZE": { "message": "Розмір" },
-    "FI_COL_PRIO": { "message": "Пріоритет" },
-    "OV_FL_SEEDING": { "message": "Роздача" },
-    "OV_CAT_ACTIVE": { "message": "Активні" },
-    "OV_CAT_ALL": { "message": "Всі" },
-    "OV_CAT_COMPL": { "message": "Завершені" },
-    "OV_CAT_DL": { "message": "Завантажуються" },
-    "OV_CAT_INACTIVE": { "message": "Неактивні" },
-    "OV_CAT_NOLABEL": { "message": "Без мітки" },
-    "OV_FL_CHECKED": { "message": "Перевірено" },
-    "OV_FL_DOWNLOADING": { "message": "Завантажується" },
-    "OV_FL_ERROR": { "message": "Помилка" },
-    "OV_FL_FINISHED": { "message": "Завершено" },
-    "OV_FL_PAUSED": { "message": "Призупинено" },
-    "OV_FL_QUEUED": { "message": "В черзі" },
-    "OV_FL_QUEUED_SEED": { "message": "Черга роздачі" },
-    "OV_FL_STOPPED": { "message": "Зупинено" },
-    "MF_DONT": { "message": "Не завантажувати" },
-    "MF_HIGH": { "message": "Високий" },
-    "MF_LOW": { "message": "Низький" },
-    "MF_NORMAL": { "message": "Звичайний" },
-    "ML_START": { "message": "Запустити" },
-    "ML_PAUSE": { "message": "Призупинити" },
-    "ML_STOP": { "message": "Зупинити" },
-    "OV_REMOVE_LABEL": { "message": "Видалити мітку" },
-    "OV_NEW_LABEL": { "message": "Нова мітка..." },
-    "ML_FORCE_START": { "message": "Примусовий запуск" },
-    "ML_FORCE_RECHECK": { "message": "Перевірити знову" },
-    "ML_REMOVE": { "message": "Видалити" },
-    "ML_REMOVE_AND": { "message": "Видалити та" },
-    "ML_DELETE_TORRENT": { "message": "Видалити .torrent" },
-    "ML_DELETE_DATA": { "message": "Видалити дані" },
-    "ML_DELETE_DATATORRENT": { "message": "Видалити .torrent + дані" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Завантажити" },
-    "MENU_UNLIMITED": { "message": "Без обмежень" },
-    "Open_file": { "message": "Додати торент-файл..." },
-    "ST_CAPT_WEBUI": { "message": "Веб-інтерфейс" },
-    "MM_FILE_ADD_URL": { "message": "Додати торент з URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Відновити всі торенти" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Призупинити всі торенти" },
-    "DLG_BTN_CLOSE": { "message": "Закрити" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Ви впевнені, що хочете видалити вибраний торент?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Ви впевнені, що хочете видалити %d вибраних торентів?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Ви впевнені, що хочете видалити вибраний торент І всі завантажені дані?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Ви впевнені, що хочете видалити %d вибраних торентів І всі завантажені дані?" },
-    "DLG_BTN_YES": { "message": "Так" },
-    "DLG_BTN_NO": { "message": "Ні" },
-    "DLG_BTN_CANCEL": { "message": "Скасувати" },
-    "DLG_BTN_APPLY": { "message": "Застосувати" },
-    "DLG_BTN_OK": { "message": "ОК" },
-    "ST_CAPT_FOLDER": { "message": "Теки" },
-    "Paste_a_torrent_URL": { "message": "Вставте URL торента" },
-    "OV_NEWLABEL_CAPTION": { "message": "Введіть мітку" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Ім'я користувача" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Пароль" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Порт" },
-    "ST_CAPT_ADVANCED": { "message": "Додатково" },
-    "resume": { "message": "Відновити" },
-    "enterNewLabel": { "message": "Введіть нову мітку для вибраного торента" },
-    "defaultPath": { "message": "Типова тека" },
-    "add": { "message": "Додати" },
-    "available": { "message": "Доступний" },
-    "up": { "message": "Вгору" },
-    "down": { "message": "Вниз" },
-    "update": { "message": "Оновити" },
-    "deleteSelected": { "message": "Видалити вибрані" },
-    "torrentAdded": { "message": "Торент додано!" },
-    "unexpectedError": { "message": "Несподівана помилка!" },
-    "fileSizeError": { "message": "Файл занадто великий" },
-    "addInTorrentClient": { "message": "Додати в Transmission" },
-    "enterNewDirPath": { "message": "Введіть шлях до нової теки" },
-    "torrentFileExists": { "message": "Торент-файл ймовірно вже існує!" },
-    "currentDirectory": { "message": "Поточна тека" },
-    "openInTab": { "message": "Відкрити у вкладці" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Основні" },
-    "optNotify": { "message": "Сповіщення" },
-    "optCtx": { "message": "Контекстне меню" },
-    "backup": { "message": "Резервна копія" },
-    "restore": { "message": "Відновити" },
-    "backupRestore": { "message": "Резервне копіювання" },
-    "backupHint": { "message": "Експортуйте налаштування для збереження або синхронізації з хмарою" },
-    "restoreHint": { "message": "Імпортуйте налаштування з попередньої копії або з хмари" },
-    "loadCurrentConfig": { "message": "Завантажити поточну конфігурацію" },
-    "configData": { "message": "Дані конфігурації" },
-    "clickLoadConfig": { "message": "Натисніть \"Завантажити поточну конфігурацію\" для перегляду налаштувань" },
-    "useSSL": { "message": "Використовувати SSL" },
-    "path": { "message": "Шлях" },
-    "hideSeedStatusItem": { "message": "Приховати торенти зі статусом \"Роздача\"" },
-    "hideFinishStatusItem": { "message": "Приховати торенти зі статусом \"Завершено\"" },
-    "showSpeedGraph": { "message": "Показувати графік швидкості" },
-    "ms": { "message": "мс" },
-    "popupUpdateInterval": { "message": "Інтервал оновлення списку торентів" },
-    "fixCyrillicIf": { "message": "Виправити кирилицю якщо..." },
-    "fixCyrillicTitle": { "message": "Назви торентів відображаються неправильно" },
-    "fixCyrillicTorrentPath": { "message": "Тека для нового торента встановлюється неправильно" },
-    "showNotificationOnDownloadComplete": { "message": "Показувати сповіщення після завершення завантаження" },
-    "displayActiveTorrentCountIcon": { "message": "Показувати кількість завантажень на іконці розширення" },
-    "backgroundUpdateInterval": { "message": "Інтервал фонового оновлення" },
-    "notificationTimeout": { "message": "Приховати сповіщення після" },
-    "folderContextMenu": { "message": "Показувати список тек" },
-    "labelContextMenu": { "message": "Показувати список міток" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Відкривати категорію \"Завантаження\" при додаванні торента" },
-    "treeViewContextMenu": { "message": "Групувати теки як дерево" },
-    "treeViewContextMenuHint": { "message": "Організувати теки ієрархічно замість плоского списку" },
-    "showDefaultFolderContextMenuItem": { "message": "Показувати опцію \"Типовий шлях\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Додати опцію завантаження в типову теку Transmission" },
-    "dirList": { "message": "Теки завантаження" },
-    "dirListHint": { "message": "Клацніть правою кнопкою на посиланні торента для вибору місця призначення" },
-    "options": { "message": "Налаштування" },
-    "subPath": { "message": "Підтека" },
-    "labelList": { "message": "Список міток" },
-    "optSaveInCloud": { "message": "Зберегти в хмарі" },
-    "toRestore": { "message": "Відновити" },
-    "optGetFromCloud": { "message": "Отримати з хмари" },
-    "optClearCloudStorage": { "message": "Очистити хмарне сховище" },
-    "confirmRestore": { "message": "Ви впевнені, що хочете відновити цю конфігурацію? Всі поточні налаштування будуть перезаписані." },
-    "confirmClearCloud": { "message": "Ви впевнені, що хочете очистити резервну копію в хмарі?" },
-    "showFileList": { "message": "Список файлів" },
-    "selectAll": { "message": "Вибрати все" },
-    "refresh": { "message": "Оновити" },
-    "checkSettings": { "message": "Перевірити налаштування" },
-    "showFreeSpace": { "message": "Показувати вільне місце на диску" },
-    "freeSpace": { "message": "Вільне місце" },
-    "startNow": { "message": "Запустити зараз" },
-    "rename": { "message": "Перейменувати" },
-    "renameText": { "message": "Введіть назву файлу" },
-    "move": { "message": "Перемістити" },
-    "moveNewPath": { "message": "Введіть новий шлях" },
-    "fullPath": { "message": "Тека (повний шлях)" },
-    "guiPath": { "message": "Шлях WebUI" },
-    "altSpeedEnable": { "message": "Тимчасові обмеження швидкості" },
-    "torrentFileIsExists": { "message": "Торент було додано раніше" },
-    "reannounce": { "message": "Запитати більше пірів" },
-    "extra": { "message": "Додатково" },
-    "queueTop": { "message": "На початок" },
-    "queueBottom": { "message": "В кінець" },
-    "requireAuthentication": { "message": "Потрібна автентифікація" },
-    "badgeColor": { "message": "Колір значка іконки" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Копіювати" },
-    "addItem": { "message": "Додати елемент" },
-    "shortName": { "message": "Коротка назва" },
-    "portIncorrect": { "message": "Порт некоректний" },
-    "search": { "message": "Пошук" },
-    "theme": { "message": "Тема" },
-    "themeSystem": { "message": "Системна" },
-    "themeLight": { "message": "Світла" },
-    "themeDark": { "message": "Темна" },
-    "configureClient": { "message": "Налаштувати Transmission" },
-    "configureClientHint": { "message": "Налаштуйте підключення до сервера Transmission для початку роботи." },
-    "openOptions": { "message": "Відкрити налаштування" },
-    "properties": { "message": "Властивості" },
-    "copyName": { "message": "Копіювати назву" },
-    "copyHash": { "message": "Копіювати хеш" },
-    "sessionTotals": { "message": "Підсумки сесії" },
-    "responseEmpty": { "message": "Відповідь порожня" },
-    "clearSearch": { "message": "Очистити пошук" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Розширення додає веб-інтерфейс Transmission до вашого браузера"
+    },
+    "lang": {
+        "message": "uk"
+    },
+    "sizeList": {
+        "message": "[\"Б\", \"кБ\", \"МБ\", \"ГБ\", \"ТБ\", \"ПБ\", \"ЕБ\"]"
+    },
+    "sizePsList": {
+        "message": "[\"Б/с\", \"кБ/с\", \"МБ/с\", \"ГБ/с\", \"ТБ/с\", \"ПБ/с\", \"ЕБ/с\"]"
+    },
+    "timeOutList": {
+        "message": "[\"тиж\", \"д\", \"год\", \"хв\", \"с\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Назва"
+    },
+    "OV_COL_ORDER": {
+        "message": "Черга"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Розмір"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Залишилось"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Статус"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Сіди"
+    },
+    "OV_COL_PEERS": {
+        "message": "Піри"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Сіди/Піри"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "С/П"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Завантаження"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Вивантаження"
+    },
+    "OV_COL_ETA": {
+        "message": "Час"
+    },
+    "OV_COL_UPPED": {
+        "message": "Вивантажено"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Завантажено"
+    },
+    "OV_COL_SHARED": {
+        "message": "Рейтинг"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Доступність"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Дост."
+    },
+    "OV_COL_LABEL": {
+        "message": "Мітка"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Додано"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Завершено"
+    },
+    "Actions": {
+        "message": "Дії"
+    },
+    "FI_COL_NAME": {
+        "message": "Назва"
+    },
+    "FI_COL_SIZE": {
+        "message": "Розмір"
+    },
+    "FI_COL_PRIO": {
+        "message": "Пріоритет"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Роздача"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Активні"
+    },
+    "OV_CAT_ALL": {
+        "message": "Всі"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Завершені"
+    },
+    "OV_CAT_DL": {
+        "message": "Завантажуються"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Неактивні"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Без мітки"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Перевірено"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Завантажується"
+    },
+    "OV_FL_ERROR": {
+        "message": "Помилка"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Завершено"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Призупинено"
+    },
+    "OV_FL_QUEUED": {
+        "message": "В черзі"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Черга роздачі"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Зупинено"
+    },
+    "OV_FL_STALLED": {
+        "message": "Простоює"
+    },
+    "MF_DONT": {
+        "message": "Не завантажувати"
+    },
+    "MF_HIGH": {
+        "message": "Високий"
+    },
+    "MF_LOW": {
+        "message": "Низький"
+    },
+    "MF_NORMAL": {
+        "message": "Звичайний"
+    },
+    "ML_START": {
+        "message": "Запустити"
+    },
+    "ML_STOP": {
+        "message": "Зупинити"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Перевірити знову"
+    },
+    "ML_REMOVE": {
+        "message": "Видалити"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Видалити та"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Видалити .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Видалити дані"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Видалити .torrent + дані"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Без обмежень"
+    },
+    "Open_file": {
+        "message": "Додати торент-файл..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Веб-інтерфейс"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Додати торент з URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Відновити всі торенти"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Призупинити всі торенти"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Закрити"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Ви впевнені, що хочете видалити вибраний торент?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Ви впевнені, що хочете видалити %d вибраних торентів?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Ви впевнені, що хочете видалити вибраний торент І всі завантажені дані?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Ви впевнені, що хочете видалити %d вибраних торентів І всі завантажені дані?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Так"
+    },
+    "DLG_BTN_NO": {
+        "message": "Ні"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Скасувати"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Застосувати"
+    },
+    "DLG_BTN_OK": {
+        "message": "ОК"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Вставте URL торента"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Ім'я користувача"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Пароль"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Порт"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Додатково"
+    },
+    "enterNewLabel": {
+        "message": "Введіть нову мітку для вибраного торента"
+    },
+    "defaultPath": {
+        "message": "Типова тека"
+    },
+    "add": {
+        "message": "Додати"
+    },
+    "available": {
+        "message": "Доступний"
+    },
+    "up": {
+        "message": "Вгору"
+    },
+    "down": {
+        "message": "Вниз"
+    },
+    "update": {
+        "message": "Оновити"
+    },
+    "deleteSelected": {
+        "message": "Видалити вибрані"
+    },
+    "torrentAdded": {
+        "message": "Торент додано!"
+    },
+    "unexpectedError": {
+        "message": "Несподівана помилка!"
+    },
+    "fileSizeError": {
+        "message": "Файл занадто великий"
+    },
+    "addInTorrentClient": {
+        "message": "Додати в Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Торент-файл ймовірно вже існує!"
+    },
+    "currentDirectory": {
+        "message": "Поточна тека"
+    },
+    "openInTab": {
+        "message": "Відкрити у вкладці"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Основні"
+    },
+    "optNotify": {
+        "message": "Сповіщення"
+    },
+    "optCtx": {
+        "message": "Контекстне меню"
+    },
+    "backup": {
+        "message": "Резервна копія"
+    },
+    "restore": {
+        "message": "Відновити"
+    },
+    "backupRestore": {
+        "message": "Резервне копіювання"
+    },
+    "backupHint": {
+        "message": "Експортуйте налаштування для збереження або синхронізації з хмарою"
+    },
+    "restoreHint": {
+        "message": "Імпортуйте налаштування з попередньої копії або з хмари"
+    },
+    "loadCurrentConfig": {
+        "message": "Завантажити поточну конфігурацію"
+    },
+    "configData": {
+        "message": "Дані конфігурації"
+    },
+    "clickLoadConfig": {
+        "message": "Натисніть \"Завантажити поточну конфігурацію\" для перегляду налаштувань"
+    },
+    "useSSL": {
+        "message": "Використовувати SSL"
+    },
+    "path": {
+        "message": "Шлях"
+    },
+    "hideSeedStatusItem": {
+        "message": "Приховати торенти зі статусом \"Роздача\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Приховати торенти зі статусом \"Завершено\""
+    },
+    "showSpeedGraph": {
+        "message": "Показувати графік швидкості"
+    },
+    "ms": {
+        "message": "мс"
+    },
+    "popupUpdateInterval": {
+        "message": "Інтервал оновлення списку торентів"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Показувати сповіщення після завершення завантаження"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Показувати кількість завантажень на іконці розширення"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Інтервал фонового оновлення"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Відкривати категорію \"Завантаження\" при додаванні торента"
+    },
+    "treeViewContextMenu": {
+        "message": "Групувати теки як дерево"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Показувати опцію \"Типовий шлях\""
+    },
+    "dirList": {
+        "message": "Теки завантаження"
+    },
+    "dirListHint": {
+        "message": "Клацніть правою кнопкою на посиланні торента для вибору місця призначення"
+    },
+    "options": {
+        "message": "Налаштування"
+    },
+    "subPath": {
+        "message": "Підтека"
+    },
+    "optSaveInCloud": {
+        "message": "Зберегти в хмарі"
+    },
+    "toRestore": {
+        "message": "Відновити"
+    },
+    "optGetFromCloud": {
+        "message": "Отримати з хмари"
+    },
+    "optClearCloudStorage": {
+        "message": "Очистити хмарне сховище"
+    },
+    "confirmRestore": {
+        "message": "Ви впевнені, що хочете відновити цю конфігурацію? Всі поточні налаштування будуть перезаписані."
+    },
+    "confirmClearCloud": {
+        "message": "Ви впевнені, що хочете очистити резервну копію в хмарі?"
+    },
+    "showFileList": {
+        "message": "Список файлів"
+    },
+    "selectAll": {
+        "message": "Вибрати все"
+    },
+    "refresh": {
+        "message": "Оновити"
+    },
+    "checkSettings": {
+        "message": "Перевірити налаштування"
+    },
+    "showFreeSpace": {
+        "message": "Показувати вільне місце на диску"
+    },
+    "freeSpace": {
+        "message": "Вільне місце"
+    },
+    "startNow": {
+        "message": "Запустити зараз"
+    },
+    "rename": {
+        "message": "Перейменувати"
+    },
+    "renameText": {
+        "message": "Введіть назву файлу"
+    },
+    "move": {
+        "message": "Перемістити"
+    },
+    "moveNewPath": {
+        "message": "Введіть новий шлях"
+    },
+    "guiPath": {
+        "message": "Шлях WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Тимчасові обмеження швидкості"
+    },
+    "torrentFileIsExists": {
+        "message": "Торент було додано раніше"
+    },
+    "reannounce": {
+        "message": "Запитати більше пірів"
+    },
+    "extra": {
+        "message": "Додатково"
+    },
+    "queueTop": {
+        "message": "На початок"
+    },
+    "queueBottom": {
+        "message": "В кінець"
+    },
+    "requireAuthentication": {
+        "message": "Потрібна автентифікація"
+    },
+    "badgeColor": {
+        "message": "Колір значка іконки"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Копіювати"
+    },
+    "shortName": {
+        "message": "Коротка назва"
+    },
+    "portIncorrect": {
+        "message": "Порт некоректний"
+    },
+    "search": {
+        "message": "Пошук"
+    },
+    "theme": {
+        "message": "Тема"
+    },
+    "themeSystem": {
+        "message": "Системна"
+    },
+    "themeLight": {
+        "message": "Світла"
+    },
+    "themeDark": {
+        "message": "Темна"
+    },
+    "configureClient": {
+        "message": "Налаштувати Transmission"
+    },
+    "configureClientHint": {
+        "message": "Налаштуйте підключення до сервера Transmission для початку роботи."
+    },
+    "openOptions": {
+        "message": "Відкрити налаштування"
+    },
+    "properties": {
+        "message": "Властивості"
+    },
+    "copyName": {
+        "message": "Копіювати назву"
+    },
+    "copyHash": {
+        "message": "Копіювати хеш"
+    },
+    "sessionTotals": {
+        "message": "Підсумки сесії"
+    },
+    "responseEmpty": {
+        "message": "Відповідь порожня"
+    },
+    "clearSearch": {
+        "message": "Очистити пошук"
+    },
+    "errorRetry": {
+        "message": "Повторити"
+    },
+    "errorDetails": {
+        "message": "Деталі"
+    },
+    "speedGraph": {
+        "message": "Графік швидкості"
+    },
+    "optServer": {
+        "message": "Сервер"
+    },
+    "blocklist": {
+        "message": "Список блокування"
+    },
+    "blocklistEnable": {
+        "message": "Увімкнути список блокування"
+    },
+    "blocklistUrl": {
+        "message": "URL списку блокування"
+    },
+    "blocklistRules": {
+        "message": "Правила"
+    },
+    "blocklistUpdateNow": {
+        "message": "Оновити список блокування зараз"
+    },
+    "peerFlags": {
+        "message": "Прапорці"
+    },
+    "peerSettings": {
+        "message": "Піри"
+    },
+    "peerLimitGlobal": {
+        "message": "Макс. пірів загалом"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Макс. пірів на торент"
+    },
+    "seedingSettings": {
+        "message": "Роздача"
+    },
+    "seedRatioLimited": {
+        "message": "Припиняти роздачу при рейтингу"
+    },
+    "seedRatioLimit": {
+        "message": "Ліміт рейтингу роздачі"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Припиняти роздачу при бездіяльності протягом"
+    },
+    "idleSeedingLimit": {
+        "message": "Ліміт бездіяльності"
+    },
+    "networkSettings": {
+        "message": "Мережа"
+    },
+    "peerPort": {
+        "message": "Порт прослуховування"
+    },
+    "portForwardingEnabled": {
+        "message": "Увімкнути UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Шифрування"
+    },
+    "encryptionRequired": {
+        "message": "Обов'язково"
+    },
+    "encryptionPreferred": {
+        "message": "Бажано"
+    },
+    "encryptionTolerated": {
+        "message": "Допустимо"
+    },
+    "dhtEnabled": {
+        "message": "Увімкнути DHT"
+    },
+    "pexEnabled": {
+        "message": "Увімкнути PEX"
+    },
+    "lpdEnabled": {
+        "message": "Увімкнути LPD"
+    },
+    "utpEnabled": {
+        "message": "Увімкнути uTP"
+    },
+    "minutes": {
+        "message": "хв"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Без мітки"
+    },
+    "generalSettings": {
+        "message": "Загальні"
+    },
+    "startAddedTorrents": {
+        "message": "Запускати додані торенти"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Видаляти оригінальні файли .torrent"
+    },
+    "incompleteDirSettings": {
+        "message": "Незавершені завантаження"
+    },
+    "incompleteDirEnabled": {
+        "message": "Використовувати теку для незавершених завантажень"
+    },
+    "incompleteDir": {
+        "message": "Тека незавершених"
+    },
+    "renamePartialFiles": {
+        "message": "Додавати розширення .part до незавершених файлів"
+    },
+    "queueSettings": {
+        "message": "Черга"
+    },
+    "downloadQueueEnabled": {
+        "message": "Обмежити чергу завантаження"
+    },
+    "downloadQueueSize": {
+        "message": "Макс. одночасних завантажень"
+    },
+    "seedQueueEnabled": {
+        "message": "Обмежити чергу роздачі"
+    },
+    "seedQueueSize": {
+        "message": "Макс. одночасних роздач"
+    },
+    "queueStalledEnabled": {
+        "message": "Вважати бездіяльним через"
+    },
+    "queueStalledMinutes": {
+        "message": "Тайм-аут простою"
+    },
+    "altSpeedSchedule": {
+        "message": "Розклад обмеження швидкості"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Увімкнути розклад обмеження швидкості"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Час початку"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Час завершення"
+    },
+    "altSpeedTimeDays": {
+        "message": "Активні дні"
+    },
+    "daySunday": {
+        "message": "Нд"
+    },
+    "dayMonday": {
+        "message": "Пн"
+    },
+    "dayTuesday": {
+        "message": "Вт"
+    },
+    "dayWednesday": {
+        "message": "Ср"
+    },
+    "dayThursday": {
+        "message": "Чт"
+    },
+    "dayFriday": {
+        "message": "Пт"
+    },
+    "daySaturday": {
+        "message": "Сб"
+    },
+    "scriptSettings": {
+        "message": "Скрипт"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Запускати скрипт після завершення завантаження"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Шлях до скрипту"
+    },
+    "portTest": {
+        "message": "Перевірити порт"
+    },
+    "portOpen": {
+        "message": "Порт відкритий"
+    },
+    "portClosed": {
+        "message": "Порт закритий"
+    },
+    "portTesting": {
+        "message": "Перевірка..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Інформація"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Трекери"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Ліміти роздачі"
+    },
+    "DT_COMMENT": {
+        "message": "Коментар"
+    },
+    "DT_CREATOR": {
+        "message": "Створено програмою"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Дата створення"
+    },
+    "DT_PIECES": {
+        "message": "Частини"
+    },
+    "DT_CORRUPT": {
+        "message": "Пошкоджено"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Час завантаження"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Час роздачі"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Вебсіди"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Рівень"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Сіди"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Піри"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Статус"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Список трекерів"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Один URL на рядок, порожній рядок між рівнями"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Режим рейтингу роздачі"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Ліміт рейтингу роздачі"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Режим роздачі при бездіяльності"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Ліміт бездіяльності (хв)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Використовувати глобальні налаштування"
+    },
+    "DT_CUSTOM": {
+        "message": "Власні"
+    },
+    "DT_UNLIMITED": {
+        "message": "Без обмежень"
+    },
+    "DT_APPLY": {
+        "message": "Застосувати"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Остання активність"
+    },
+    "OV_COL_STARTED": {
+        "message": "Запущено"
+    },
+    "OV_COL_EDITED": {
+        "message": "Змінено"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Кінц. розмір"
+    },
+    "DT_METADATA": {
+        "message": "Метадані"
+    },
+    "DT_PRIVATE": {
+        "message": "Приватний"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Джерела пірів"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Трекер"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Вхідні"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Кеш"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Ліміт завантаження"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Ліміт віддачі"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Дотримуватися лімітів сесії"
+    },
+    "DT_ENABLED": {
+        "message": "Увімкнено"
+    },
+    "DT_DISABLED": {
+        "message": "Вимкнено"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Тайм-аут бездіяльності"
+    },
+    "sessionStats": {
+        "message": "$active$ активних, $paused$ призупинених",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Запускати скрипт при додаванні торента"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Шлях до скрипту (додано)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Запускати скрипт після завершення роздачі"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Шлях до скрипту (роздачу завершено)"
+    },
+    "sequentialDownload": {
+        "message": "Послідовне завантаження"
+    },
+    "fileCount": {
+        "message": "Кількість файлів"
+    },
+    "primaryMimeType": {
+        "message": "Тип вмісту"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Увага: без SSL ваші логін і пароль передаються мережею в незашифрованому вигляді."
+    },
+    "backupIncludesCredentials": {
+        "message": "Резервна копія містить логін і пароль вашого сервера."
+    },
+    "restoreConnectionChanged": {
+        "message": "Ця резервна копія змінює підключення до сервера: $changes$. Продовжити?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "擴充功能將 Transmission 網頁介面加入您的瀏覽器" },
-    "lang": { "message": "zh_TW" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"週\", \"天\", \"時\", \"分\", \"秒\"]" },
-    "OV_COL_NAME": { "message": "名稱" },
-    "OV_COL_ORDER": { "message": "佇列" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "大小" },
-    "OV_COL_REMAINING": { "message": "剩餘" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "狀態" },
-    "OV_COL_SEEDS": { "message": "種子" },
-    "OV_COL_PEERS": { "message": "節點" },
-    "OV_COL_SEEDS_PEERS": { "message": "種子/節點" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "種/節" },
-    "OV_COL_DOWNSPD": { "message": "下載速度" },
-    "OV_COL_UPSPD": { "message": "上傳速度" },
-    "OV_COL_ETA": { "message": "預估時間" },
-    "OV_COL_UPPED": { "message": "已上傳" },
-    "OV_COL_DOWNLOADED": { "message": "已下載" },
-    "OV_COL_SHARED": { "message": "分享率" },
-    "OV_COL_AVAIL": { "message": "可用性" },
-    "OV_COL_AVAIL_SHORT": { "message": "可用" },
-    "OV_COL_LABEL": { "message": "標籤" },
-    "OV_COL_DATE_ADDED": { "message": "新增日期" },
-    "OV_COL_DATE_COMPLETED": { "message": "完成日期" },
-    "Actions": { "message": "操作" },
-    "FI_COL_NAME": { "message": "名稱" },
-    "FI_COL_SIZE": { "message": "大小" },
-    "FI_COL_PRIO": { "message": "優先權" },
-    "OV_FL_SEEDING": { "message": "做種中" },
-    "OV_CAT_ACTIVE": { "message": "活動中" },
-    "OV_CAT_ALL": { "message": "全部" },
-    "OV_CAT_COMPL": { "message": "已完成" },
-    "OV_CAT_DL": { "message": "下載中" },
-    "OV_CAT_INACTIVE": { "message": "非活動" },
-    "OV_CAT_NOLABEL": { "message": "無標籤" },
-    "OV_FL_CHECKED": { "message": "已檢查" },
-    "OV_FL_DOWNLOADING": { "message": "下載中" },
-    "OV_FL_ERROR": { "message": "錯誤" },
-    "OV_FL_FINISHED": { "message": "已完成" },
-    "OV_FL_PAUSED": { "message": "已暫停" },
-    "OV_FL_QUEUED": { "message": "佇列中" },
-    "OV_FL_QUEUED_SEED": { "message": "做種佇列" },
-    "OV_FL_STOPPED": { "message": "已停止" },
-    "MF_DONT": { "message": "不下載" },
-    "MF_HIGH": { "message": "高" },
-    "MF_LOW": { "message": "低" },
-    "MF_NORMAL": { "message": "正常" },
-    "ML_START": { "message": "開始" },
-    "ML_PAUSE": { "message": "暫停" },
-    "ML_STOP": { "message": "停止" },
-    "OV_REMOVE_LABEL": { "message": "移除標籤" },
-    "OV_NEW_LABEL": { "message": "新標籤..." },
-    "ML_FORCE_START": { "message": "強制開始" },
-    "ML_FORCE_RECHECK": { "message": "強制重新檢查" },
-    "ML_REMOVE": { "message": "移除" },
-    "ML_REMOVE_AND": { "message": "移除並" },
-    "ML_DELETE_TORRENT": { "message": "刪除 .torrent" },
-    "ML_DELETE_DATA": { "message": "刪除資料" },
-    "ML_DELETE_DATATORRENT": { "message": "刪除 .torrent + 資料" },
-    "DLG_RSSDOWNLOADER_24": { "message": "下載" },
-    "MENU_UNLIMITED": { "message": "無限制" },
-    "Open_file": { "message": "新增種子檔案..." },
-    "ST_CAPT_WEBUI": { "message": "網頁介面" },
-    "MM_FILE_ADD_URL": { "message": "從網址新增種子..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "繼續所有種子" },
-    "STM_TORRENTS_PAUSEALL": { "message": "暫停所有種子" },
-    "DLG_BTN_CLOSE": { "message": "關閉" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "確定要移除所選的種子嗎？" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "確定要移除 %d 個所選的種子嗎？" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "確定要移除所選的種子並刪除所有已下載的資料嗎？" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "確定要移除 %d 個所選的種子並刪除所有已下載的資料嗎？" },
-    "DLG_BTN_YES": { "message": "是" },
-    "DLG_BTN_NO": { "message": "否" },
-    "DLG_BTN_CANCEL": { "message": "取消" },
-    "DLG_BTN_APPLY": { "message": "套用" },
-    "DLG_BTN_OK": { "message": "確定" },
-    "ST_CAPT_FOLDER": { "message": "目錄" },
-    "Paste_a_torrent_URL": { "message": "貼上種子網址" },
-    "OV_NEWLABEL_CAPTION": { "message": "輸入標籤" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "使用者名稱" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "密碼" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "連接埠" },
-    "ST_CAPT_ADVANCED": { "message": "進階" },
-    "resume": { "message": "繼續" },
-    "enterNewLabel": { "message": "輸入所選種子的新標籤" },
-    "defaultPath": { "message": "預設目錄" },
-    "add": { "message": "新增" },
-    "available": { "message": "可連線" },
-    "up": { "message": "上移" },
-    "down": { "message": "下移" },
-    "update": { "message": "更新" },
-    "deleteSelected": { "message": "刪除所選" },
-    "torrentAdded": { "message": "種子已新增！" },
-    "unexpectedError": { "message": "發生意外錯誤！" },
-    "fileSizeError": { "message": "檔案太大" },
-    "addInTorrentClient": { "message": "新增至 Transmission" },
-    "enterNewDirPath": { "message": "輸入新目錄的路徑" },
-    "torrentFileExists": { "message": "種子檔案可能已存在！" },
-    "currentDirectory": { "message": "目前目錄" },
-    "openInTab": { "message": "在分頁中開啟" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "主要" },
-    "optNotify": { "message": "通知" },
-    "optCtx": { "message": "右鍵選單" },
-    "backup": { "message": "備份" },
-    "restore": { "message": "還原" },
-    "backupRestore": { "message": "備份與還原" },
-    "backupHint": { "message": "匯出您的設定以儲存或同步至雲端" },
-    "restoreHint": { "message": "從先前的備份或雲端匯入設定" },
-    "loadCurrentConfig": { "message": "載入目前設定" },
-    "configData": { "message": "設定資料" },
-    "clickLoadConfig": { "message": "點擊「載入目前設定」以檢視您的設定" },
-    "useSSL": { "message": "使用 SSL" },
-    "path": { "message": "路徑" },
-    "hideSeedStatusItem": { "message": "隱藏「做種中」狀態的種子" },
-    "hideFinishStatusItem": { "message": "隱藏「已完成」狀態的種子" },
-    "showSpeedGraph": { "message": "顯示速度圖表" },
-    "ms": { "message": "毫秒" },
-    "popupUpdateInterval": { "message": "種子列表更新間隔" },
-    "fixCyrillicIf": { "message": "修正西里爾文字若..." },
-    "fixCyrillicTitle": { "message": "種子名稱顯示不正確" },
-    "fixCyrillicTorrentPath": { "message": "新增種子的目錄設定不正確" },
-    "showNotificationOnDownloadComplete": { "message": "下載完成時顯示通知" },
-    "displayActiveTorrentCountIcon": { "message": "在擴充功能圖示上顯示下載中的種子數量" },
-    "backgroundUpdateInterval": { "message": "背景更新間隔" },
-    "notificationTimeout": { "message": "隱藏通知於" },
-    "folderContextMenu": { "message": "顯示目錄列表" },
-    "labelContextMenu": { "message": "顯示標籤列表" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "新增種子時開啟「下載中」分類" },
-    "treeViewContextMenu": { "message": "將資料夾顯示為樹狀結構" },
-    "treeViewContextMenuHint": { "message": "以階層方式組織資料夾，而非平面列表" },
-    "showDefaultFolderContextMenuItem": { "message": "顯示「預設路徑」選項" },
-    "showDefaultFolderContextMenuItemHint": { "message": "新增下載至 Transmission 預設目錄的選項" },
-    "dirList": { "message": "下載目錄" },
-    "dirListHint": { "message": "在種子連結上按右鍵以選擇目的地" },
-    "options": { "message": "選項" },
-    "subPath": { "message": "子路徑" },
-    "labelList": { "message": "標籤列表" },
-    "optSaveInCloud": { "message": "儲存至雲端" },
-    "toRestore": { "message": "還原" },
-    "optGetFromCloud": { "message": "從雲端取得設定" },
-    "optClearCloudStorage": { "message": "清除雲端中的所有設定" },
-    "confirmRestore": { "message": "確定要還原此設定嗎？這將覆蓋所有目前的設定。" },
-    "confirmClearCloud": { "message": "確定要清除雲端備份嗎？" },
-    "showFileList": { "message": "檔案列表" },
-    "selectAll": { "message": "全選" },
-    "refresh": { "message": "重新整理" },
-    "checkSettings": { "message": "檢查設定" },
-    "showFreeSpace": { "message": "顯示可用磁碟空間" },
-    "freeSpace": { "message": "可用空間" },
-    "startNow": { "message": "立即開始" },
-    "rename": { "message": "重新命名" },
-    "renameText": { "message": "輸入檔案名稱" },
-    "move": { "message": "移動" },
-    "moveNewPath": { "message": "輸入新路徑" },
-    "fullPath": { "message": "目錄（完整路徑）" },
-    "guiPath": { "message": "WebUI 路徑" },
-    "altSpeedEnable": { "message": "暫時速度限制" },
-    "torrentFileIsExists": { "message": "種子已於先前新增" },
-    "reannounce": { "message": "請求更多節點" },
-    "extra": { "message": "額外" },
-    "queueTop": { "message": "移至頂端" },
-    "queueBottom": { "message": "移至底部" },
-    "requireAuthentication": { "message": "需要驗證" },
-    "badgeColor": { "message": "圖示徽章顏色" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "複製" },
-    "addItem": { "message": "新增項目" },
-    "shortName": { "message": "簡短名稱" },
-    "portIncorrect": { "message": "連接埠不正確" },
-    "search": { "message": "搜尋" },
-    "theme": { "message": "主題" },
-    "themeSystem": { "message": "系統" },
-    "themeLight": { "message": "淺色" },
-    "themeDark": { "message": "深色" },
-    "configureClient": { "message": "設定 Transmission" },
-    "configureClientHint": { "message": "請設定您的 Transmission 伺服器連線以開始使用。" },
-    "openOptions": { "message": "開啟設定" },
-    "properties": { "message": "內容" },
-    "copyName": { "message": "複製名稱" },
-    "copyHash": { "message": "複製雜湊值" },
-    "sessionTotals": { "message": "工作階段統計" },
-    "responseEmpty": { "message": "回應為空" },
-    "clearSearch": { "message": "清除搜尋" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "擴充功能將 Transmission 網頁介面加入您的瀏覽器"
+    },
+    "lang": {
+        "message": "zh_TW"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"週\", \"天\", \"時\", \"分\", \"秒\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "名稱"
+    },
+    "OV_COL_ORDER": {
+        "message": "佇列"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "大小"
+    },
+    "OV_COL_REMAINING": {
+        "message": "剩餘"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "狀態"
+    },
+    "OV_COL_SEEDS": {
+        "message": "種子"
+    },
+    "OV_COL_PEERS": {
+        "message": "節點"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "種子/節點"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "種/節"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "下載速度"
+    },
+    "OV_COL_UPSPD": {
+        "message": "上傳速度"
+    },
+    "OV_COL_ETA": {
+        "message": "預估時間"
+    },
+    "OV_COL_UPPED": {
+        "message": "已上傳"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "已下載"
+    },
+    "OV_COL_SHARED": {
+        "message": "分享率"
+    },
+    "OV_COL_AVAIL": {
+        "message": "可用性"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "可用"
+    },
+    "OV_COL_LABEL": {
+        "message": "標籤"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "新增日期"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "完成日期"
+    },
+    "Actions": {
+        "message": "操作"
+    },
+    "FI_COL_NAME": {
+        "message": "名稱"
+    },
+    "FI_COL_SIZE": {
+        "message": "大小"
+    },
+    "FI_COL_PRIO": {
+        "message": "優先權"
+    },
+    "OV_FL_SEEDING": {
+        "message": "做種中"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "活動中"
+    },
+    "OV_CAT_ALL": {
+        "message": "全部"
+    },
+    "OV_CAT_COMPL": {
+        "message": "已完成"
+    },
+    "OV_CAT_DL": {
+        "message": "下載中"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "非活動"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "無標籤"
+    },
+    "OV_FL_CHECKED": {
+        "message": "已檢查"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "下載中"
+    },
+    "OV_FL_ERROR": {
+        "message": "錯誤"
+    },
+    "OV_FL_FINISHED": {
+        "message": "已完成"
+    },
+    "OV_FL_PAUSED": {
+        "message": "已暫停"
+    },
+    "OV_FL_QUEUED": {
+        "message": "佇列中"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "做種佇列"
+    },
+    "OV_FL_STOPPED": {
+        "message": "已停止"
+    },
+    "OV_FL_STALLED": {
+        "message": "已停滯"
+    },
+    "MF_DONT": {
+        "message": "不下載"
+    },
+    "MF_HIGH": {
+        "message": "高"
+    },
+    "MF_LOW": {
+        "message": "低"
+    },
+    "MF_NORMAL": {
+        "message": "正常"
+    },
+    "ML_START": {
+        "message": "開始"
+    },
+    "ML_STOP": {
+        "message": "停止"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "強制重新檢查"
+    },
+    "ML_REMOVE": {
+        "message": "移除"
+    },
+    "ML_REMOVE_AND": {
+        "message": "移除並"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "刪除 .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "刪除資料"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "刪除 .torrent + 資料"
+    },
+    "MENU_UNLIMITED": {
+        "message": "無限制"
+    },
+    "Open_file": {
+        "message": "新增種子檔案..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "網頁介面"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "從網址新增種子..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "繼續所有種子"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "暫停所有種子"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "關閉"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "確定要移除所選的種子嗎？"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "確定要移除 %d 個所選的種子嗎？"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "確定要移除所選的種子並刪除所有已下載的資料嗎？"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "確定要移除 %d 個所選的種子並刪除所有已下載的資料嗎？"
+    },
+    "DLG_BTN_YES": {
+        "message": "是"
+    },
+    "DLG_BTN_NO": {
+        "message": "否"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "取消"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "套用"
+    },
+    "DLG_BTN_OK": {
+        "message": "確定"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "貼上種子網址"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "使用者名稱"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "密碼"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "連接埠"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "進階"
+    },
+    "enterNewLabel": {
+        "message": "輸入所選種子的新標籤"
+    },
+    "defaultPath": {
+        "message": "預設目錄"
+    },
+    "add": {
+        "message": "新增"
+    },
+    "available": {
+        "message": "可連線"
+    },
+    "up": {
+        "message": "上移"
+    },
+    "down": {
+        "message": "下移"
+    },
+    "update": {
+        "message": "更新"
+    },
+    "deleteSelected": {
+        "message": "刪除所選"
+    },
+    "torrentAdded": {
+        "message": "種子已新增！"
+    },
+    "unexpectedError": {
+        "message": "發生意外錯誤！"
+    },
+    "fileSizeError": {
+        "message": "檔案太大"
+    },
+    "addInTorrentClient": {
+        "message": "新增至 Transmission"
+    },
+    "torrentFileExists": {
+        "message": "種子檔案可能已存在！"
+    },
+    "currentDirectory": {
+        "message": "目前目錄"
+    },
+    "openInTab": {
+        "message": "在分頁中開啟"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "主要"
+    },
+    "optNotify": {
+        "message": "通知"
+    },
+    "optCtx": {
+        "message": "右鍵選單"
+    },
+    "backup": {
+        "message": "備份"
+    },
+    "restore": {
+        "message": "還原"
+    },
+    "backupRestore": {
+        "message": "備份與還原"
+    },
+    "backupHint": {
+        "message": "匯出您的設定以儲存或同步至雲端"
+    },
+    "restoreHint": {
+        "message": "從先前的備份或雲端匯入設定"
+    },
+    "loadCurrentConfig": {
+        "message": "載入目前設定"
+    },
+    "configData": {
+        "message": "設定資料"
+    },
+    "clickLoadConfig": {
+        "message": "點擊「載入目前設定」以檢視您的設定"
+    },
+    "useSSL": {
+        "message": "使用 SSL"
+    },
+    "path": {
+        "message": "路徑"
+    },
+    "hideSeedStatusItem": {
+        "message": "隱藏「做種中」狀態的種子"
+    },
+    "hideFinishStatusItem": {
+        "message": "隱藏「已完成」狀態的種子"
+    },
+    "showSpeedGraph": {
+        "message": "顯示速度圖表"
+    },
+    "ms": {
+        "message": "毫秒"
+    },
+    "popupUpdateInterval": {
+        "message": "種子列表更新間隔"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "下載完成時顯示通知"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "在擴充功能圖示上顯示下載中的種子數量"
+    },
+    "backgroundUpdateInterval": {
+        "message": "背景更新間隔"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "新增種子時開啟「下載中」分類"
+    },
+    "treeViewContextMenu": {
+        "message": "將資料夾顯示為樹狀結構"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "顯示「預設路徑」選項"
+    },
+    "dirList": {
+        "message": "下載目錄"
+    },
+    "dirListHint": {
+        "message": "在種子連結上按右鍵以選擇目的地"
+    },
+    "options": {
+        "message": "選項"
+    },
+    "subPath": {
+        "message": "子路徑"
+    },
+    "optSaveInCloud": {
+        "message": "儲存至雲端"
+    },
+    "toRestore": {
+        "message": "還原"
+    },
+    "optGetFromCloud": {
+        "message": "從雲端取得設定"
+    },
+    "optClearCloudStorage": {
+        "message": "清除雲端中的所有設定"
+    },
+    "confirmRestore": {
+        "message": "確定要還原此設定嗎？這將覆蓋所有目前的設定。"
+    },
+    "confirmClearCloud": {
+        "message": "確定要清除雲端備份嗎？"
+    },
+    "showFileList": {
+        "message": "檔案列表"
+    },
+    "selectAll": {
+        "message": "全選"
+    },
+    "refresh": {
+        "message": "重新整理"
+    },
+    "checkSettings": {
+        "message": "檢查設定"
+    },
+    "showFreeSpace": {
+        "message": "顯示可用磁碟空間"
+    },
+    "freeSpace": {
+        "message": "可用空間"
+    },
+    "startNow": {
+        "message": "立即開始"
+    },
+    "rename": {
+        "message": "重新命名"
+    },
+    "renameText": {
+        "message": "輸入檔案名稱"
+    },
+    "move": {
+        "message": "移動"
+    },
+    "moveNewPath": {
+        "message": "輸入新路徑"
+    },
+    "guiPath": {
+        "message": "WebUI 路徑"
+    },
+    "altSpeedEnable": {
+        "message": "暫時速度限制"
+    },
+    "torrentFileIsExists": {
+        "message": "種子已於先前新增"
+    },
+    "reannounce": {
+        "message": "請求更多節點"
+    },
+    "extra": {
+        "message": "額外"
+    },
+    "queueTop": {
+        "message": "移至頂端"
+    },
+    "queueBottom": {
+        "message": "移至底部"
+    },
+    "requireAuthentication": {
+        "message": "需要驗證"
+    },
+    "badgeColor": {
+        "message": "圖示徽章顏色"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "複製"
+    },
+    "shortName": {
+        "message": "簡短名稱"
+    },
+    "portIncorrect": {
+        "message": "連接埠不正確"
+    },
+    "search": {
+        "message": "搜尋"
+    },
+    "theme": {
+        "message": "主題"
+    },
+    "themeSystem": {
+        "message": "系統"
+    },
+    "themeLight": {
+        "message": "淺色"
+    },
+    "themeDark": {
+        "message": "深色"
+    },
+    "configureClient": {
+        "message": "設定 Transmission"
+    },
+    "configureClientHint": {
+        "message": "請設定您的 Transmission 伺服器連線以開始使用。"
+    },
+    "openOptions": {
+        "message": "開啟設定"
+    },
+    "properties": {
+        "message": "內容"
+    },
+    "copyName": {
+        "message": "複製名稱"
+    },
+    "copyHash": {
+        "message": "複製雜湊值"
+    },
+    "sessionTotals": {
+        "message": "工作階段統計"
+    },
+    "responseEmpty": {
+        "message": "回應為空"
+    },
+    "clearSearch": {
+        "message": "清除搜尋"
+    },
+    "errorRetry": {
+        "message": "重試"
+    },
+    "errorDetails": {
+        "message": "詳細資訊"
+    },
+    "speedGraph": {
+        "message": "速度圖表"
+    },
+    "optServer": {
+        "message": "伺服器"
+    },
+    "blocklist": {
+        "message": "封鎖清單"
+    },
+    "blocklistEnable": {
+        "message": "啟用封鎖清單"
+    },
+    "blocklistUrl": {
+        "message": "封鎖清單 URL"
+    },
+    "blocklistRules": {
+        "message": "規則數"
+    },
+    "blocklistUpdateNow": {
+        "message": "立即更新封鎖清單"
+    },
+    "peerFlags": {
+        "message": "旗標"
+    },
+    "peerSettings": {
+        "message": "節點"
+    },
+    "peerLimitGlobal": {
+        "message": "整體最大節點數"
+    },
+    "peerLimitPerTorrent": {
+        "message": "單一種子最大節點數"
+    },
+    "seedingSettings": {
+        "message": "做種"
+    },
+    "seedRatioLimited": {
+        "message": "達到分享率後停止做種"
+    },
+    "seedRatioLimit": {
+        "message": "分享率限制"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "閒置超過以下時間後停止做種"
+    },
+    "idleSeedingLimit": {
+        "message": "閒置限制"
+    },
+    "networkSettings": {
+        "message": "網路"
+    },
+    "peerPort": {
+        "message": "監聽連接埠"
+    },
+    "portForwardingEnabled": {
+        "message": "啟用 UPnP / NAT-PMP 連接埠對應"
+    },
+    "encryption": {
+        "message": "加密"
+    },
+    "encryptionRequired": {
+        "message": "必須加密"
+    },
+    "encryptionPreferred": {
+        "message": "偏好加密"
+    },
+    "encryptionTolerated": {
+        "message": "允許加密"
+    },
+    "dhtEnabled": {
+        "message": "啟用 DHT"
+    },
+    "pexEnabled": {
+        "message": "啟用 PEX"
+    },
+    "lpdEnabled": {
+        "message": "啟用 LPD"
+    },
+    "utpEnabled": {
+        "message": "啟用 uTP"
+    },
+    "minutes": {
+        "message": "分鐘"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "無標籤"
+    },
+    "generalSettings": {
+        "message": "一般"
+    },
+    "startAddedTorrents": {
+        "message": "加入種子後自動開始"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "刪除原始 .torrent 檔案"
+    },
+    "incompleteDirSettings": {
+        "message": "未完成的下載"
+    },
+    "incompleteDirEnabled": {
+        "message": "使用未完成下載目錄"
+    },
+    "incompleteDir": {
+        "message": "未完成目錄"
+    },
+    "renamePartialFiles": {
+        "message": "為未完成的檔案加上 .part 副檔名"
+    },
+    "queueSettings": {
+        "message": "佇列"
+    },
+    "downloadQueueEnabled": {
+        "message": "限制下載佇列"
+    },
+    "downloadQueueSize": {
+        "message": "最大同時下載數"
+    },
+    "seedQueueEnabled": {
+        "message": "限制做種佇列"
+    },
+    "seedQueueSize": {
+        "message": "最大同時做種數"
+    },
+    "queueStalledEnabled": {
+        "message": "視為閒置的等待時間"
+    },
+    "queueStalledMinutes": {
+        "message": "停滯逾時"
+    },
+    "altSpeedSchedule": {
+        "message": "速度限制排程"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "啟用速度限制排程"
+    },
+    "altSpeedTimeBegin": {
+        "message": "開始時間"
+    },
+    "altSpeedTimeEnd": {
+        "message": "結束時間"
+    },
+    "altSpeedTimeDays": {
+        "message": "生效日"
+    },
+    "daySunday": {
+        "message": "週日"
+    },
+    "dayMonday": {
+        "message": "週一"
+    },
+    "dayTuesday": {
+        "message": "週二"
+    },
+    "dayWednesday": {
+        "message": "週三"
+    },
+    "dayThursday": {
+        "message": "週四"
+    },
+    "dayFriday": {
+        "message": "週五"
+    },
+    "daySaturday": {
+        "message": "週六"
+    },
+    "scriptSettings": {
+        "message": "指令碼"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "下載完成時執行指令碼"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "指令碼路徑"
+    },
+    "portTest": {
+        "message": "測試連接埠"
+    },
+    "portOpen": {
+        "message": "連接埠已開啟"
+    },
+    "portClosed": {
+        "message": "連接埠已關閉"
+    },
+    "portTesting": {
+        "message": "測試中..."
+    },
+    "DT_TAB_INFO": {
+        "message": "資訊"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Tracker"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "做種限制"
+    },
+    "DT_COMMENT": {
+        "message": "備註"
+    },
+    "DT_CREATOR": {
+        "message": "建立者"
+    },
+    "DT_DATE_CREATED": {
+        "message": "建立日期"
+    },
+    "DT_PIECES": {
+        "message": "區塊"
+    },
+    "DT_CORRUPT": {
+        "message": "損壞資料"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "下載時間"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "做種時間"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Web 種子"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "層級"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "種子"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "節點"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "狀態"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Tracker 清單"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "每行一個 URL，層級之間以空行分隔"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "分享率模式"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "分享率限制"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "閒置做種模式"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "閒置做種限制（分鐘）"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "使用全域設定"
+    },
+    "DT_CUSTOM": {
+        "message": "自訂"
+    },
+    "DT_UNLIMITED": {
+        "message": "無限制"
+    },
+    "DT_APPLY": {
+        "message": "套用"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "最後活動"
+    },
+    "OV_COL_STARTED": {
+        "message": "開始時間"
+    },
+    "OV_COL_EDITED": {
+        "message": "修改時間"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "有效大小"
+    },
+    "DT_METADATA": {
+        "message": "中繼資料"
+    },
+    "DT_PRIVATE": {
+        "message": "私有"
+    },
+    "DT_PEERS_FROM": {
+        "message": "節點來源"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "傳入連線"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "快取"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "下載限制"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "上傳限制"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "遵循全域限制"
+    },
+    "DT_ENABLED": {
+        "message": "已啟用"
+    },
+    "DT_DISABLED": {
+        "message": "已停用"
+    },
+    "DT_ETA_IDLE": {
+        "message": "閒置逾時"
+    },
+    "sessionStats": {
+        "message": "$active$ 個活動中，$paused$ 個已暫停",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "加入種子時執行指令碼"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "指令碼路徑（加入時）"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "做種完成時執行指令碼"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "指令碼路徑（做種完成時）"
+    },
+    "sequentialDownload": {
+        "message": "循序下載"
+    },
+    "fileCount": {
+        "message": "檔案數"
+    },
+    "primaryMimeType": {
+        "message": "內容類型"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "警告：未使用 SSL 時，您的帳號與密碼將以未加密的形式在網路上傳送。"
+    },
+    "backupIncludesCredentials": {
+        "message": "備份包含您的伺服器帳號與密碼。"
+    },
+    "restoreConnectionChanged": {
+        "message": "此備份將變更伺服器連線：$changes$。要繼續嗎？",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

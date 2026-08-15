@@ -56,16 +56,8 @@
     "OV_COL_DOWNSPD": {
         "message": "Скорость загрузки"
     },
-    "OV_COL_DOWNSPD_SHORT": {
-        "message": "Загр. скор.",
-        "originalKey": "OV_COL_DOWNSPD"
-    },
     "OV_COL_UPSPD": {
         "message": "Скорость отдачи"
-    },
-    "OV_COL_UPSPD_SHORT": {
-        "message": "Отд. скор.",
-        "originalKey": "OV_COL_UPSPD"
     },
     "OV_COL_ETA": {
         "message": "Время"
@@ -78,10 +70,6 @@
     },
     "OV_COL_SHARED": {
         "message": "Коэффициент"
-    },
-    "OV_COL_SHARED_SHORT": {
-        "message": "Коэфф.",
-        "originalKey": "OV_COL_SHARED"
     },
     "OV_COL_AVAIL": {
         "message": "Доступность"
@@ -158,6 +146,9 @@
     "OV_FL_STOPPED": {
         "message": "Остановлен"
     },
+    "OV_FL_STALLED": {
+        "message": "Простаивает"
+    },
     "MF_DONT": {
         "message": "Не загружать"
     },
@@ -176,20 +167,8 @@
     "ML_START": {
         "message": "Запустить"
     },
-    "ML_PAUSE": {
-        "message": "Пауза"
-    },
     "ML_STOP": {
         "message": "Остановить"
-    },
-    "OV_REMOVE_LABEL": {
-        "message": "Удалить метку"
-    },
-    "OV_NEW_LABEL": {
-        "message": "Создать новую метку..."
-    },
-    "ML_FORCE_START": {
-        "message": "Запустить принудительно"
     },
     "ML_FORCE_RECHECK": {
         "message": "Перехешировать"
@@ -209,9 +188,6 @@
     },
     "ML_DELETE_DATATORRENT": {
         "message": ".torrent и файл(ы)"
-    },
-    "DLG_RSSDOWNLOADER_24": {
-        "message": "Загрузить"
     },
     "MENU_UNLIMITED": {
         "message": "Неограниченно",
@@ -263,17 +239,9 @@
     "DLG_BTN_OK": {
         "message": "OK"
     },
-    "ST_CAPT_FOLDER": {
-        "message": "Директория",
-        "modifed": 1
-    },
     "Paste_a_torrent_URL": {
         "message": "Вставьте URL торрента",
         "originalKey": "Paste a torrent or feed URL",
-        "modifed": 1
-    },
-    "OV_NEWLABEL_CAPTION": {
-        "message": "Введите новую метку",
         "modifed": 1
     },
     "DLG_SETTINGS_4_CONN_16": {
@@ -290,11 +258,6 @@
     },
     "ST_CAPT_ADVANCED": {
         "message": "Дополнительно"
-    },
-    "resume": {
-        "message": "Возобновить",
-        "originalKey": "STM_TORRENTS_RESUMEALL",
-        "modifed": 1
     },
     "enterNewLabel": {
         "message": "Введите название метки",
@@ -333,9 +296,6 @@
         "originalKey": "DLG_RSSDOWNLOADER_35",
         "modifed": 1
     },
-
-
-
     "torrentAdded": {
         "message": "Торрент добавлен!"
     },
@@ -347,9 +307,6 @@
     },
     "addInTorrentClient": {
         "message": "Добавить в Transmission"
-    },
-    "enterNewDirPath": {
-        "message": "Введите путь к новой директории"
     },
     "torrentFileExists": {
         "message": "Возможно торрент файл уже существует!"
@@ -418,15 +375,6 @@
     "popupUpdateInterval": {
         "message": "Интервал обновления списка торрентов"
     },
-    "fixCyrillicIf": {
-        "message": "Исправить кириллицу если..."
-    },
-    "fixCyrillicTitle": {
-        "message": "Неправильно отображаются имена торрентов"
-    },
-    "fixCyrillicTorrentPath": {
-        "message": "Неправильно присваивается директория к добавленному торренту"
-    },
     "showNotificationOnDownloadComplete": {
         "message": "Уведомлять при завершении загрузки торрента"
     },
@@ -435,15 +383,6 @@
     },
     "backgroundUpdateInterval": {
         "message": "Интервал фонового обновления списка торрентов"
-    },
-    "notificationTimeout": {
-        "message": "Время отображения уведомлений"
-    },
-    "folderContextMenu": {
-        "message": "Отображать список директорий"
-    },
-    "labelContextMenu": {
-        "message": "Отображать список меток"
     },
     "selectDownloadCategoryOnAddItemFromContextMenu": {
         "message": "Перейти в категорию \"Загрузки\" при успешном добавлении торрента"
@@ -457,11 +396,14 @@
     "dirList": {
         "message": "Список директорий"
     },
+    "dirListHint": {
+        "message": "Щёлкните правой кнопкой по ссылке на торрент, чтобы выбрать директорию"
+    },
+    "options": {
+        "message": "Параметры"
+    },
     "subPath": {
         "message": "Подкаталог"
-    },
-    "labelList": {
-        "message": "Список меток"
     },
     "optSaveInCloud": {
         "message": "Сохранить в облаке"
@@ -514,9 +456,6 @@
     "moveNewPath": {
         "message": "Введите новый путь"
     },
-    "fullPath": {
-        "message": "Каталог (полный путь)"
-    },
     "guiPath": {
         "message": "Путь к веб интерфейсу"
     },
@@ -549,9 +488,6 @@
     },
     "copy": {
         "message": "Копировать"
-    },
-    "addItem": {
-        "message": "Добавить элемент"
     },
     "shortName": {
         "message": "Короткое имя"
@@ -600,5 +536,393 @@
     },
     "clearSearch": {
         "message": "Очистить поиск"
+    },
+    "errorRetry": {
+        "message": "Повторить"
+    },
+    "errorDetails": {
+        "message": "Подробности"
+    },
+    "speedGraph": {
+        "message": "График скорости"
+    },
+    "optServer": {
+        "message": "Сервер"
+    },
+    "blocklist": {
+        "message": "Чёрный список"
+    },
+    "blocklistEnable": {
+        "message": "Включить чёрный список"
+    },
+    "blocklistUrl": {
+        "message": "URL чёрного списка"
+    },
+    "blocklistRules": {
+        "message": "Правила"
+    },
+    "blocklistUpdateNow": {
+        "message": "Обновить чёрный список сейчас"
+    },
+    "peerFlags": {
+        "message": "Флаги"
+    },
+    "peerSettings": {
+        "message": "Пиры"
+    },
+    "peerLimitGlobal": {
+        "message": "Макс. пиров всего"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Макс. пиров на торрент"
+    },
+    "seedingSettings": {
+        "message": "Раздача"
+    },
+    "seedRatioLimited": {
+        "message": "Прекращать раздачу при рейтинге"
+    },
+    "seedRatioLimit": {
+        "message": "Лимит рейтинга раздачи"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Прекращать раздачу при простое"
+    },
+    "idleSeedingLimit": {
+        "message": "Лимит простоя"
+    },
+    "networkSettings": {
+        "message": "Сеть"
+    },
+    "peerPort": {
+        "message": "Порт для входящих соединений"
+    },
+    "portForwardingEnabled": {
+        "message": "Включить UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Шифрование"
+    },
+    "encryptionRequired": {
+        "message": "Обязательно"
+    },
+    "encryptionPreferred": {
+        "message": "Предпочтительно"
+    },
+    "encryptionTolerated": {
+        "message": "Допустимо"
+    },
+    "dhtEnabled": {
+        "message": "Включить DHT"
+    },
+    "pexEnabled": {
+        "message": "Включить PEX"
+    },
+    "lpdEnabled": {
+        "message": "Включить LPD"
+    },
+    "utpEnabled": {
+        "message": "Включить uTP"
+    },
+    "minutes": {
+        "message": "мин"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Без метки"
+    },
+    "generalSettings": {
+        "message": "Общие"
+    },
+    "startAddedTorrents": {
+        "message": "Запускать добавленные торренты"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Удалять исходные .torrent-файлы"
+    },
+    "incompleteDirSettings": {
+        "message": "Незавершённые загрузки"
+    },
+    "incompleteDirEnabled": {
+        "message": "Использовать директорию для незавершённых загрузок"
+    },
+    "incompleteDir": {
+        "message": "Директория для незавершённых"
+    },
+    "renamePartialFiles": {
+        "message": "Добавлять расширение .part к незавершённым файлам"
+    },
+    "queueSettings": {
+        "message": "Очередь"
+    },
+    "downloadQueueEnabled": {
+        "message": "Ограничить очередь загрузки"
+    },
+    "downloadQueueSize": {
+        "message": "Макс. одновременных загрузок"
+    },
+    "seedQueueEnabled": {
+        "message": "Ограничить очередь раздачи"
+    },
+    "seedQueueSize": {
+        "message": "Макс. одновременных раздач"
+    },
+    "queueStalledEnabled": {
+        "message": "Считать простаивающим через"
+    },
+    "queueStalledMinutes": {
+        "message": "Тайм-аут простоя"
+    },
+    "altSpeedSchedule": {
+        "message": "Расписание ограничения скорости"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Включить расписание ограничения скорости"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Время начала"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Время окончания"
+    },
+    "altSpeedTimeDays": {
+        "message": "Активные дни"
+    },
+    "daySunday": {
+        "message": "Вс"
+    },
+    "dayMonday": {
+        "message": "Пн"
+    },
+    "dayTuesday": {
+        "message": "Вт"
+    },
+    "dayWednesday": {
+        "message": "Ср"
+    },
+    "dayThursday": {
+        "message": "Чт"
+    },
+    "dayFriday": {
+        "message": "Пт"
+    },
+    "daySaturday": {
+        "message": "Сб"
+    },
+    "scriptSettings": {
+        "message": "Скрипты"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Запускать скрипт по завершении загрузки"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Путь к скрипту"
+    },
+    "portTest": {
+        "message": "Проверить порт"
+    },
+    "portOpen": {
+        "message": "Порт открыт"
+    },
+    "portClosed": {
+        "message": "Порт закрыт"
+    },
+    "portTesting": {
+        "message": "Проверка..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Информация"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Трекеры"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Лимиты раздачи"
+    },
+    "DT_COMMENT": {
+        "message": "Комментарий"
+    },
+    "DT_CREATOR": {
+        "message": "Создатель"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Дата создания"
+    },
+    "DT_PIECES": {
+        "message": "Части"
+    },
+    "DT_CORRUPT": {
+        "message": "Повреждено"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Время загрузки"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Время раздачи"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Веб-сиды"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Уровень"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Сиды"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Пиры"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Статус"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Список трекеров"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Один URL на строку, пустая строка между уровнями"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Режим рейтинга раздачи"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Лимит рейтинга раздачи"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Режим простоя раздачи"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Лимит простоя раздачи (мин)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Использовать общие настройки"
+    },
+    "DT_CUSTOM": {
+        "message": "Особые"
+    },
+    "DT_UNLIMITED": {
+        "message": "Без ограничений"
+    },
+    "DT_APPLY": {
+        "message": "Применить"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Последняя активность"
+    },
+    "OV_COL_STARTED": {
+        "message": "Запущен"
+    },
+    "OV_COL_EDITED": {
+        "message": "Изменён"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Эфф. размер"
+    },
+    "DT_METADATA": {
+        "message": "Метаданные"
+    },
+    "DT_PRIVATE": {
+        "message": "Приватный"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Источники пиров"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Трекер"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Входящие"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Кэш"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Ограничение загрузки"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Ограничение отдачи"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Учитывать ограничения сессии"
+    },
+    "DT_ENABLED": {
+        "message": "Включено"
+    },
+    "DT_DISABLED": {
+        "message": "Выключено"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Тайм-аут простоя"
+    },
+    "sessionStats": {
+        "message": "$active$ активных, $paused$ на паузе",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Запускать скрипт при добавлении торрента"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Путь к скрипту (добавление)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Запускать скрипт по завершении раздачи"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Путь к скрипту (завершение раздачи)"
+    },
+    "sequentialDownload": {
+        "message": "Последовательная загрузка"
+    },
+    "fileCount": {
+        "message": "Количество файлов"
+    },
+    "primaryMimeType": {
+        "message": "Тип содержимого"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Внимание: без SSL логин и пароль передаются по сети в незашифрованном виде."
+    },
+    "backupIncludesCredentials": {
+        "message": "Резервная копия содержит логин и пароль от сервера."
+    },
+    "restoreConnectionChanged": {
+        "message": "Эта резервная копия изменяет подключение к серверу: $changes$. Продолжить?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    },
+    "OV_COL_DOWNSPD_SHORT": {
+        "message": "Загр. скор.",
+        "originalKey": "OV_COL_DOWNSPD"
+    },
+    "OV_COL_UPSPD_SHORT": {
+        "message": "Отд. скор.",
+        "originalKey": "OV_COL_UPSPD"
+    },
+    "OV_COL_SHARED_SHORT": {
+        "message": "Коэфф.",
+        "originalKey": "OV_COL_SHARED"
     }
 }

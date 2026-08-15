@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Extensie voegt Transmission web GUI toe aan uw browser" },
-    "lang": { "message": "nl" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"w\", \"d\", \"u\", \"m\", \"s\"]" },
-    "OV_COL_NAME": { "message": "Naam" },
-    "OV_COL_ORDER": { "message": "Wachtrij" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Grootte" },
-    "OV_COL_REMAINING": { "message": "Resterend" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Status" },
-    "OV_COL_SEEDS": { "message": "Seeds" },
-    "OV_COL_PEERS": { "message": "Peers" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seeds/Peers" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Download" },
-    "OV_COL_UPSPD": { "message": "Upload" },
-    "OV_COL_ETA": { "message": "ETA" },
-    "OV_COL_UPPED": { "message": "Geüpload" },
-    "OV_COL_DOWNLOADED": { "message": "Gedownload" },
-    "OV_COL_SHARED": { "message": "Ratio" },
-    "OV_COL_AVAIL": { "message": "Beschikbaarheid" },
-    "OV_COL_AVAIL_SHORT": { "message": "Besch." },
-    "OV_COL_LABEL": { "message": "Label" },
-    "OV_COL_DATE_ADDED": { "message": "Toegevoegd" },
-    "OV_COL_DATE_COMPLETED": { "message": "Voltooid op" },
-    "Actions": { "message": "Acties" },
-    "FI_COL_NAME": { "message": "Naam" },
-    "FI_COL_SIZE": { "message": "Grootte" },
-    "FI_COL_PRIO": { "message": "Prioriteit" },
-    "OV_FL_SEEDING": { "message": "Seeding" },
-    "OV_CAT_ACTIVE": { "message": "Actief" },
-    "OV_CAT_ALL": { "message": "Alles" },
-    "OV_CAT_COMPL": { "message": "Voltooid" },
-    "OV_CAT_DL": { "message": "Downloaden" },
-    "OV_CAT_INACTIVE": { "message": "Inactief" },
-    "OV_CAT_NOLABEL": { "message": "Geen label" },
-    "OV_FL_CHECKED": { "message": "Gecontroleerd" },
-    "OV_FL_DOWNLOADING": { "message": "Downloaden" },
-    "OV_FL_ERROR": { "message": "Fout" },
-    "OV_FL_FINISHED": { "message": "Voltooid" },
-    "OV_FL_PAUSED": { "message": "Gepauzeerd" },
-    "OV_FL_QUEUED": { "message": "In wachtrij" },
-    "OV_FL_QUEUED_SEED": { "message": "Seed in wachtrij" },
-    "OV_FL_STOPPED": { "message": "Gestopt" },
-    "MF_DONT": { "message": "Niet downloaden" },
-    "MF_HIGH": { "message": "Hoog" },
-    "MF_LOW": { "message": "Laag" },
-    "MF_NORMAL": { "message": "Normaal" },
-    "ML_START": { "message": "Starten" },
-    "ML_PAUSE": { "message": "Pauzeren" },
-    "ML_STOP": { "message": "Stoppen" },
-    "OV_REMOVE_LABEL": { "message": "Label verwijderen" },
-    "OV_NEW_LABEL": { "message": "Nieuw label..." },
-    "ML_FORCE_START": { "message": "Forceer start" },
-    "ML_FORCE_RECHECK": { "message": "Opnieuw controleren" },
-    "ML_REMOVE": { "message": "Verwijderen" },
-    "ML_REMOVE_AND": { "message": "Verwijderen en" },
-    "ML_DELETE_TORRENT": { "message": ".torrent verwijderen" },
-    "ML_DELETE_DATA": { "message": "Data verwijderen" },
-    "ML_DELETE_DATATORRENT": { "message": ".torrent + data verwijderen" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Downloaden" },
-    "MENU_UNLIMITED": { "message": "Onbeperkt" },
-    "Open_file": { "message": "Torrentbestand toevoegen..." },
-    "ST_CAPT_WEBUI": { "message": "Web UI" },
-    "MM_FILE_ADD_URL": { "message": "Torrent van URL toevoegen..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Alle torrents hervatten" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Alle torrents pauzeren" },
-    "DLG_BTN_CLOSE": { "message": "Sluiten" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Weet u zeker dat u de geselecteerde torrent wilt verwijderen?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Weet u zeker dat u de %d geselecteerde torrents wilt verwijderen?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Weet u zeker dat u de geselecteerde torrent EN alle gedownloade data wilt verwijderen?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Weet u zeker dat u de %d geselecteerde torrents EN alle gedownloade data wilt verwijderen?" },
-    "DLG_BTN_YES": { "message": "Ja" },
-    "DLG_BTN_NO": { "message": "Nee" },
-    "DLG_BTN_CANCEL": { "message": "Annuleren" },
-    "DLG_BTN_APPLY": { "message": "Toepassen" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Mappen" },
-    "Paste_a_torrent_URL": { "message": "Plak een torrent URL" },
-    "OV_NEWLABEL_CAPTION": { "message": "Voer label in" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Gebruikersnaam" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Wachtwoord" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Poort" },
-    "ST_CAPT_ADVANCED": { "message": "Geavanceerd" },
-    "resume": { "message": "Hervatten" },
-    "enterNewLabel": { "message": "Voer het nieuwe label in voor de geselecteerde torrent" },
-    "defaultPath": { "message": "Standaardmap" },
-    "add": { "message": "Toevoegen" },
-    "available": { "message": "Beschikbaar" },
-    "up": { "message": "Omhoog" },
-    "down": { "message": "Omlaag" },
-    "update": { "message": "Bijwerken" },
-    "deleteSelected": { "message": "Geselecteerde verwijderen" },
-    "torrentAdded": { "message": "Torrent toegevoegd!" },
-    "unexpectedError": { "message": "Onverwachte fout!" },
-    "fileSizeError": { "message": "Bestand is te groot" },
-    "addInTorrentClient": { "message": "Toevoegen aan Transmission" },
-    "enterNewDirPath": { "message": "Voer het pad naar de nieuwe map in" },
-    "torrentFileExists": { "message": "Torrentbestand bestaat waarschijnlijk al!" },
-    "currentDirectory": { "message": "Huidige map" },
-    "openInTab": { "message": "Openen in tabblad" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Algemeen" },
-    "optNotify": { "message": "Meldingen" },
-    "optCtx": { "message": "Contextmenu" },
-    "backup": { "message": "Back-up" },
-    "restore": { "message": "Herstellen" },
-    "backupRestore": { "message": "Back-up & Herstel" },
-    "backupHint": { "message": "Exporteer uw instellingen om te bewaren of te synchroniseren met de cloud" },
-    "restoreHint": { "message": "Importeer instellingen van een eerdere back-up of uit de cloud" },
-    "loadCurrentConfig": { "message": "Huidige configuratie laden" },
-    "configData": { "message": "Configuratiegegevens" },
-    "clickLoadConfig": { "message": "Klik op \"Huidige configuratie laden\" om uw instellingen te bekijken" },
-    "useSSL": { "message": "SSL gebruiken" },
-    "path": { "message": "Pad" },
-    "hideSeedStatusItem": { "message": "Torrents met status \"Seeding\" verbergen" },
-    "hideFinishStatusItem": { "message": "Torrents met status \"Voltooid\" verbergen" },
-    "showSpeedGraph": { "message": "Snelheidsgrafiek tonen" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Update-interval torrentlijst" },
-    "fixCyrillicIf": { "message": "Cyrillisch corrigeren als..." },
-    "fixCyrillicTitle": { "message": "Torrentnamen worden onjuist weergegeven" },
-    "fixCyrillicTorrentPath": { "message": "Map voor nieuwe torrent wordt onjuist ingesteld" },
-    "showNotificationOnDownloadComplete": { "message": "Melding tonen bij voltooiing download" },
-    "displayActiveTorrentCountIcon": { "message": "Aantal downloads tonen op extensie-icoon" },
-    "backgroundUpdateInterval": { "message": "Achtergrond update-interval" },
-    "notificationTimeout": { "message": "Melding verbergen na" },
-    "folderContextMenu": { "message": "Mappenlijst tonen" },
-    "labelContextMenu": { "message": "Labellijst tonen" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "\"Downloaden\" categorie openen bij toevoegen torrent" },
-    "treeViewContextMenu": { "message": "Mappen als boom groeperen" },
-    "treeViewContextMenuHint": { "message": "Mappen hiërarchisch organiseren in plaats van platte lijst" },
-    "showDefaultFolderContextMenuItem": { "message": "\"Standaardpad\" optie tonen" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Optie toevoegen om naar Transmission's standaardmap te downloaden" },
-    "dirList": { "message": "Downloadmappen" },
-    "dirListHint": { "message": "Rechtsklik op een torrentlink om bestemming te kiezen" },
-    "options": { "message": "Opties" },
-    "subPath": { "message": "Submap" },
-    "labelList": { "message": "Labellijst" },
-    "optSaveInCloud": { "message": "Opslaan in cloud" },
-    "toRestore": { "message": "Herstellen" },
-    "optGetFromCloud": { "message": "Ophalen uit cloud" },
-    "optClearCloudStorage": { "message": "Cloud-opslag wissen" },
-    "confirmRestore": { "message": "Weet u zeker dat u deze configuratie wilt herstellen? Alle huidige instellingen worden overschreven." },
-    "confirmClearCloud": { "message": "Weet u zeker dat u de cloud back-up wilt wissen?" },
-    "showFileList": { "message": "Bestandslijst" },
-    "selectAll": { "message": "Alles selecteren" },
-    "refresh": { "message": "Vernieuwen" },
-    "checkSettings": { "message": "Instellingen controleren" },
-    "showFreeSpace": { "message": "Beschikbare schijfruimte tonen" },
-    "freeSpace": { "message": "Vrije ruimte" },
-    "startNow": { "message": "Nu starten" },
-    "rename": { "message": "Hernoemen" },
-    "renameText": { "message": "Voer bestandsnaam in" },
-    "move": { "message": "Verplaatsen" },
-    "moveNewPath": { "message": "Voer nieuw pad in" },
-    "fullPath": { "message": "Map (volledig pad)" },
-    "guiPath": { "message": "WebUI-pad" },
-    "altSpeedEnable": { "message": "Tijdelijke snelheidslimieten" },
-    "torrentFileIsExists": { "message": "Torrent is eerder toegevoegd" },
-    "reannounce": { "message": "Meer peers vragen" },
-    "extra": { "message": "Extra" },
-    "queueTop": { "message": "Bovenaan" },
-    "queueBottom": { "message": "Onderaan" },
-    "requireAuthentication": { "message": "Authenticatie vereist" },
-    "badgeColor": { "message": "Badge-kleur icoon" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Kopiëren" },
-    "addItem": { "message": "Item toevoegen" },
-    "shortName": { "message": "Korte naam" },
-    "portIncorrect": { "message": "Poort is onjuist" },
-    "search": { "message": "Zoeken" },
-    "theme": { "message": "Thema" },
-    "themeSystem": { "message": "Systeem" },
-    "themeLight": { "message": "Licht" },
-    "themeDark": { "message": "Donker" },
-    "configureClient": { "message": "Transmission configureren" },
-    "configureClientHint": { "message": "Configureer uw Transmission-serververbinding om te beginnen." },
-    "openOptions": { "message": "Instellingen openen" },
-    "properties": { "message": "Eigenschappen" },
-    "copyName": { "message": "Naam kopiëren" },
-    "copyHash": { "message": "Hash kopiëren" },
-    "sessionTotals": { "message": "Sessietotalen" },
-    "responseEmpty": { "message": "Antwoord is leeg" },
-    "clearSearch": { "message": "Zoekopdracht wissen" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Extensie voegt Transmission web GUI toe aan uw browser"
+    },
+    "lang": {
+        "message": "nl"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"w\", \"d\", \"u\", \"m\", \"s\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Naam"
+    },
+    "OV_COL_ORDER": {
+        "message": "Wachtrij"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Grootte"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Resterend"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Status"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seeds"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peers"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seeds/Peers"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Download"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Upload"
+    },
+    "OV_COL_ETA": {
+        "message": "ETA"
+    },
+    "OV_COL_UPPED": {
+        "message": "Geüpload"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Gedownload"
+    },
+    "OV_COL_SHARED": {
+        "message": "Ratio"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Beschikbaarheid"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Besch."
+    },
+    "OV_COL_LABEL": {
+        "message": "Label"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Toegevoegd"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Voltooid op"
+    },
+    "Actions": {
+        "message": "Acties"
+    },
+    "FI_COL_NAME": {
+        "message": "Naam"
+    },
+    "FI_COL_SIZE": {
+        "message": "Grootte"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioriteit"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Seeding"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Actief"
+    },
+    "OV_CAT_ALL": {
+        "message": "Alles"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Voltooid"
+    },
+    "OV_CAT_DL": {
+        "message": "Downloaden"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Inactief"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Geen label"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Gecontroleerd"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Downloaden"
+    },
+    "OV_FL_ERROR": {
+        "message": "Fout"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Voltooid"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Gepauzeerd"
+    },
+    "OV_FL_QUEUED": {
+        "message": "In wachtrij"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Seed in wachtrij"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Gestopt"
+    },
+    "OV_FL_STALLED": {
+        "message": "Vastgelopen"
+    },
+    "MF_DONT": {
+        "message": "Niet downloaden"
+    },
+    "MF_HIGH": {
+        "message": "Hoog"
+    },
+    "MF_LOW": {
+        "message": "Laag"
+    },
+    "MF_NORMAL": {
+        "message": "Normaal"
+    },
+    "ML_START": {
+        "message": "Starten"
+    },
+    "ML_STOP": {
+        "message": "Stoppen"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Opnieuw controleren"
+    },
+    "ML_REMOVE": {
+        "message": "Verwijderen"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Verwijderen en"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": ".torrent verwijderen"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Data verwijderen"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": ".torrent + data verwijderen"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Onbeperkt"
+    },
+    "Open_file": {
+        "message": "Torrentbestand toevoegen..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Web UI"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Torrent van URL toevoegen..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Alle torrents hervatten"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Alle torrents pauzeren"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Sluiten"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Weet u zeker dat u de geselecteerde torrent wilt verwijderen?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Weet u zeker dat u de %d geselecteerde torrents wilt verwijderen?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Weet u zeker dat u de geselecteerde torrent EN alle gedownloade data wilt verwijderen?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Weet u zeker dat u de %d geselecteerde torrents EN alle gedownloade data wilt verwijderen?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ja"
+    },
+    "DLG_BTN_NO": {
+        "message": "Nee"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Annuleren"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Toepassen"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Plak een torrent URL"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Gebruikersnaam"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Wachtwoord"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Poort"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Geavanceerd"
+    },
+    "enterNewLabel": {
+        "message": "Voer het nieuwe label in voor de geselecteerde torrent"
+    },
+    "defaultPath": {
+        "message": "Standaardmap"
+    },
+    "add": {
+        "message": "Toevoegen"
+    },
+    "available": {
+        "message": "Beschikbaar"
+    },
+    "up": {
+        "message": "Omhoog"
+    },
+    "down": {
+        "message": "Omlaag"
+    },
+    "update": {
+        "message": "Bijwerken"
+    },
+    "deleteSelected": {
+        "message": "Geselecteerde verwijderen"
+    },
+    "torrentAdded": {
+        "message": "Torrent toegevoegd!"
+    },
+    "unexpectedError": {
+        "message": "Onverwachte fout!"
+    },
+    "fileSizeError": {
+        "message": "Bestand is te groot"
+    },
+    "addInTorrentClient": {
+        "message": "Toevoegen aan Transmission"
+    },
+    "torrentFileExists": {
+        "message": "Torrentbestand bestaat waarschijnlijk al!"
+    },
+    "currentDirectory": {
+        "message": "Huidige map"
+    },
+    "openInTab": {
+        "message": "Openen in tabblad"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Algemeen"
+    },
+    "optNotify": {
+        "message": "Meldingen"
+    },
+    "optCtx": {
+        "message": "Contextmenu"
+    },
+    "backup": {
+        "message": "Back-up"
+    },
+    "restore": {
+        "message": "Herstellen"
+    },
+    "backupRestore": {
+        "message": "Back-up & Herstel"
+    },
+    "backupHint": {
+        "message": "Exporteer uw instellingen om te bewaren of te synchroniseren met de cloud"
+    },
+    "restoreHint": {
+        "message": "Importeer instellingen van een eerdere back-up of uit de cloud"
+    },
+    "loadCurrentConfig": {
+        "message": "Huidige configuratie laden"
+    },
+    "configData": {
+        "message": "Configuratiegegevens"
+    },
+    "clickLoadConfig": {
+        "message": "Klik op \"Huidige configuratie laden\" om uw instellingen te bekijken"
+    },
+    "useSSL": {
+        "message": "SSL gebruiken"
+    },
+    "path": {
+        "message": "Pad"
+    },
+    "hideSeedStatusItem": {
+        "message": "Torrents met status \"Seeding\" verbergen"
+    },
+    "hideFinishStatusItem": {
+        "message": "Torrents met status \"Voltooid\" verbergen"
+    },
+    "showSpeedGraph": {
+        "message": "Snelheidsgrafiek tonen"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Update-interval torrentlijst"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Melding tonen bij voltooiing download"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Aantal downloads tonen op extensie-icoon"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Achtergrond update-interval"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "\"Downloaden\" categorie openen bij toevoegen torrent"
+    },
+    "treeViewContextMenu": {
+        "message": "Mappen als boom groeperen"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "\"Standaardpad\" optie tonen"
+    },
+    "dirList": {
+        "message": "Downloadmappen"
+    },
+    "dirListHint": {
+        "message": "Rechtsklik op een torrentlink om bestemming te kiezen"
+    },
+    "options": {
+        "message": "Opties"
+    },
+    "subPath": {
+        "message": "Submap"
+    },
+    "optSaveInCloud": {
+        "message": "Opslaan in cloud"
+    },
+    "toRestore": {
+        "message": "Herstellen"
+    },
+    "optGetFromCloud": {
+        "message": "Ophalen uit cloud"
+    },
+    "optClearCloudStorage": {
+        "message": "Cloud-opslag wissen"
+    },
+    "confirmRestore": {
+        "message": "Weet u zeker dat u deze configuratie wilt herstellen? Alle huidige instellingen worden overschreven."
+    },
+    "confirmClearCloud": {
+        "message": "Weet u zeker dat u de cloud back-up wilt wissen?"
+    },
+    "showFileList": {
+        "message": "Bestandslijst"
+    },
+    "selectAll": {
+        "message": "Alles selecteren"
+    },
+    "refresh": {
+        "message": "Vernieuwen"
+    },
+    "checkSettings": {
+        "message": "Instellingen controleren"
+    },
+    "showFreeSpace": {
+        "message": "Beschikbare schijfruimte tonen"
+    },
+    "freeSpace": {
+        "message": "Vrije ruimte"
+    },
+    "startNow": {
+        "message": "Nu starten"
+    },
+    "rename": {
+        "message": "Hernoemen"
+    },
+    "renameText": {
+        "message": "Voer bestandsnaam in"
+    },
+    "move": {
+        "message": "Verplaatsen"
+    },
+    "moveNewPath": {
+        "message": "Voer nieuw pad in"
+    },
+    "guiPath": {
+        "message": "WebUI-pad"
+    },
+    "altSpeedEnable": {
+        "message": "Tijdelijke snelheidslimieten"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrent is eerder toegevoegd"
+    },
+    "reannounce": {
+        "message": "Meer peers vragen"
+    },
+    "extra": {
+        "message": "Extra"
+    },
+    "queueTop": {
+        "message": "Bovenaan"
+    },
+    "queueBottom": {
+        "message": "Onderaan"
+    },
+    "requireAuthentication": {
+        "message": "Authenticatie vereist"
+    },
+    "badgeColor": {
+        "message": "Badge-kleur icoon"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Kopiëren"
+    },
+    "shortName": {
+        "message": "Korte naam"
+    },
+    "portIncorrect": {
+        "message": "Poort is onjuist"
+    },
+    "search": {
+        "message": "Zoeken"
+    },
+    "theme": {
+        "message": "Thema"
+    },
+    "themeSystem": {
+        "message": "Systeem"
+    },
+    "themeLight": {
+        "message": "Licht"
+    },
+    "themeDark": {
+        "message": "Donker"
+    },
+    "configureClient": {
+        "message": "Transmission configureren"
+    },
+    "configureClientHint": {
+        "message": "Configureer uw Transmission-serververbinding om te beginnen."
+    },
+    "openOptions": {
+        "message": "Instellingen openen"
+    },
+    "properties": {
+        "message": "Eigenschappen"
+    },
+    "copyName": {
+        "message": "Naam kopiëren"
+    },
+    "copyHash": {
+        "message": "Hash kopiëren"
+    },
+    "sessionTotals": {
+        "message": "Sessietotalen"
+    },
+    "responseEmpty": {
+        "message": "Antwoord is leeg"
+    },
+    "clearSearch": {
+        "message": "Zoekopdracht wissen"
+    },
+    "errorRetry": {
+        "message": "Opnieuw proberen"
+    },
+    "errorDetails": {
+        "message": "Details"
+    },
+    "speedGraph": {
+        "message": "Snelheidsgrafiek"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Blokkeerlijst"
+    },
+    "blocklistEnable": {
+        "message": "Blokkeerlijst inschakelen"
+    },
+    "blocklistUrl": {
+        "message": "Blokkeerlijst-URL"
+    },
+    "blocklistRules": {
+        "message": "Regels"
+    },
+    "blocklistUpdateNow": {
+        "message": "Blokkeerlijst nu bijwerken"
+    },
+    "peerFlags": {
+        "message": "Vlaggen"
+    },
+    "peerSettings": {
+        "message": "Peers"
+    },
+    "peerLimitGlobal": {
+        "message": "Max. peers totaal"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Max. peers per torrent"
+    },
+    "seedingSettings": {
+        "message": "Seeden"
+    },
+    "seedRatioLimited": {
+        "message": "Stoppen met seeden bij ratio"
+    },
+    "seedRatioLimit": {
+        "message": "Seedratiolimiet"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Stoppen met seeden indien inactief gedurende"
+    },
+    "idleSeedingLimit": {
+        "message": "Inactiviteitslimiet"
+    },
+    "networkSettings": {
+        "message": "Netwerk"
+    },
+    "peerPort": {
+        "message": "Luisterpoort"
+    },
+    "portForwardingEnabled": {
+        "message": "UPnP / NAT-PMP inschakelen"
+    },
+    "encryption": {
+        "message": "Versleuteling"
+    },
+    "encryptionRequired": {
+        "message": "Vereist"
+    },
+    "encryptionPreferred": {
+        "message": "Voorkeur"
+    },
+    "encryptionTolerated": {
+        "message": "Toegestaan"
+    },
+    "dhtEnabled": {
+        "message": "DHT inschakelen"
+    },
+    "pexEnabled": {
+        "message": "PEX inschakelen"
+    },
+    "lpdEnabled": {
+        "message": "LPD inschakelen"
+    },
+    "utpEnabled": {
+        "message": "uTP inschakelen"
+    },
+    "minutes": {
+        "message": "min"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Geen label"
+    },
+    "generalSettings": {
+        "message": "Algemeen"
+    },
+    "startAddedTorrents": {
+        "message": "Toegevoegde torrents starten"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Originele .torrent-bestanden verwijderen"
+    },
+    "incompleteDirSettings": {
+        "message": "Onvolledige downloads"
+    },
+    "incompleteDirEnabled": {
+        "message": "Map voor onvolledige downloads gebruiken"
+    },
+    "incompleteDir": {
+        "message": "Map voor onvolledige downloads"
+    },
+    "renamePartialFiles": {
+        "message": "Onvolledige bestanden hernoemen met extensie .part"
+    },
+    "queueSettings": {
+        "message": "Wachtrij"
+    },
+    "downloadQueueEnabled": {
+        "message": "Downloadwachtrij beperken"
+    },
+    "downloadQueueSize": {
+        "message": "Max. gelijktijdige downloads"
+    },
+    "seedQueueEnabled": {
+        "message": "Seedwachtrij beperken"
+    },
+    "seedQueueSize": {
+        "message": "Max. gelijktijdige seeds"
+    },
+    "queueStalledEnabled": {
+        "message": "Als inactief beschouwen na"
+    },
+    "queueStalledMinutes": {
+        "message": "Time-out bij vastlopen"
+    },
+    "altSpeedSchedule": {
+        "message": "Schema voor snelheidslimiet"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Schema voor snelheidslimiet inschakelen"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Begintijd"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Eindtijd"
+    },
+    "altSpeedTimeDays": {
+        "message": "Actieve dagen"
+    },
+    "daySunday": {
+        "message": "zo"
+    },
+    "dayMonday": {
+        "message": "ma"
+    },
+    "dayTuesday": {
+        "message": "di"
+    },
+    "dayWednesday": {
+        "message": "wo"
+    },
+    "dayThursday": {
+        "message": "do"
+    },
+    "dayFriday": {
+        "message": "vr"
+    },
+    "daySaturday": {
+        "message": "za"
+    },
+    "scriptSettings": {
+        "message": "Script"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Script uitvoeren wanneer download voltooid is"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Scriptpad"
+    },
+    "portTest": {
+        "message": "Poort testen"
+    },
+    "portOpen": {
+        "message": "Poort is open"
+    },
+    "portClosed": {
+        "message": "Poort is gesloten"
+    },
+    "portTesting": {
+        "message": "Testen..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Info"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Trackers"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Seedlimieten"
+    },
+    "DT_COMMENT": {
+        "message": "Opmerking"
+    },
+    "DT_CREATOR": {
+        "message": "Gemaakt door"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Aanmaakdatum"
+    },
+    "DT_PIECES": {
+        "message": "Delen"
+    },
+    "DT_CORRUPT": {
+        "message": "Beschadigd"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Downloadtijd"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Seedtijd"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Webseeds"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Tier"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seeds"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peers"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Status"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Trackerlijst"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Eén URL per regel, lege regel tussen tiers"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Seedratiomodus"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Seedratiolimiet"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Modus inactief seeden"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Inactiviteitslimiet seeden (min)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Algemene instellingen gebruiken"
+    },
+    "DT_CUSTOM": {
+        "message": "Aangepast"
+    },
+    "DT_UNLIMITED": {
+        "message": "Onbeperkt"
+    },
+    "DT_APPLY": {
+        "message": "Toepassen"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Laatst actief"
+    },
+    "OV_COL_STARTED": {
+        "message": "Gestart"
+    },
+    "OV_COL_EDITED": {
+        "message": "Bewerkt"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Eff. grootte"
+    },
+    "DT_METADATA": {
+        "message": "Metadata"
+    },
+    "DT_PRIVATE": {
+        "message": "Privé"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Peer-bronnen"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Inkomend"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Downloadlimiet"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Uploadlimiet"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Volgt sessielimieten"
+    },
+    "DT_ENABLED": {
+        "message": "Ingeschakeld"
+    },
+    "DT_DISABLED": {
+        "message": "Uitgeschakeld"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Inactiviteits-time-out"
+    },
+    "sessionStats": {
+        "message": "$active$ actief, $paused$ gepauzeerd",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Script uitvoeren wanneer torrent wordt toegevoegd"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Scriptpad (toegevoegd)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Script uitvoeren wanneer seeden voltooid is"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Scriptpad (seeden voltooid)"
+    },
+    "sequentialDownload": {
+        "message": "Sequentieel downloaden"
+    },
+    "fileCount": {
+        "message": "Aantal bestanden"
+    },
+    "primaryMimeType": {
+        "message": "Inhoudstype"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Waarschuwing: zonder SSL worden uw gebruikersnaam en wachtwoord onversleuteld over het netwerk verzonden."
+    },
+    "backupIncludesCredentials": {
+        "message": "De back-up bevat uw gebruikersnaam en wachtwoord voor de server."
+    },
+    "restoreConnectionChanged": {
+        "message": "Deze back-up wijzigt de serververbinding: $changes$. Doorgaan?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

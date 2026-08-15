@@ -168,20 +168,8 @@
     "ML_START": {
         "message": "Start"
     },
-    "ML_PAUSE": {
-        "message": "Pause"
-    },
     "ML_STOP": {
         "message": "Stop"
-    },
-    "OV_REMOVE_LABEL": {
-        "message": "Remove Label"
-    },
-    "OV_NEW_LABEL": {
-        "message": "New Label..."
-    },
-    "ML_FORCE_START": {
-        "message": "Force Start"
     },
     "ML_FORCE_RECHECK": {
         "message": "Force Re-Check"
@@ -200,9 +188,6 @@
     },
     "ML_DELETE_DATATORRENT": {
         "message": "Delete .torrent + Data"
-    },
-    "DLG_RSSDOWNLOADER_24": {
-        "message": "Download"
     },
     "MENU_UNLIMITED": {
         "message": "Unlimited"
@@ -253,17 +238,9 @@
     "DLG_BTN_OK": {
         "message": "OK"
     },
-    "ST_CAPT_FOLDER": {
-        "message": "Directories",
-        "modifed": 1
-    },
     "Paste_a_torrent_URL": {
         "message": "Paste a torrent URL",
         "originalKey": "Paste a torrent or feed URL",
-        "modifed": 1
-    },
-    "OV_NEWLABEL_CAPTION": {
-        "message": "Enter label",
         "modifed": 1
     },
     "DLG_SETTINGS_4_CONN_16": {
@@ -280,11 +257,6 @@
     },
     "ST_CAPT_ADVANCED": {
         "message": "Advanced"
-    },
-    "resume": {
-        "message": "Resume",
-        "originalKey": "STM_TORRENTS_RESUMEALL",
-        "modifed": 1
     },
     "enterNewLabel": {
         "message": "Enter the new label for the selected torrent",
@@ -323,9 +295,6 @@
         "originalKey": "DLG_RSSDOWNLOADER_35",
         "modifed": 1
     },
-
-
-
     "torrentAdded": {
         "message": "Torrent was added!"
     },
@@ -337,9 +306,6 @@
     },
     "addInTorrentClient": {
         "message": "Add in Transmission"
-    },
-    "enterNewDirPath": {
-        "message": "Enter the path to the new directory"
     },
     "torrentFileExists": {
         "message": "Probably the torrent file already exists!"
@@ -408,15 +374,6 @@
     "popupUpdateInterval": {
         "message": "Update interval the list of torrents"
     },
-    "fixCyrillicIf": {
-        "message": "Fix Cyrillic if..."
-    },
-    "fixCyrillicTitle": {
-        "message": "Incorrectly displays the names of the torrents"
-    },
-    "fixCyrillicTorrentPath": {
-        "message": "Incorrectly sets the directory to the newly added torrent"
-    },
     "showNotificationOnDownloadComplete": {
         "message": "Show notify when completing download"
     },
@@ -426,29 +383,14 @@
     "backgroundUpdateInterval": {
         "message": "Interval background update the list of torrents"
     },
-    "notificationTimeout": {
-        "message": "Hide notification after"
-    },
-    "folderContextMenu": {
-        "message": "Show list of directories"
-    },
-    "labelContextMenu": {
-        "message": "Show list of labels"
-    },
     "selectDownloadCategoryOnAddItemFromContextMenu": {
         "message": "Open \"Downloading\" category when adding a torrent"
     },
     "treeViewContextMenu": {
         "message": "Group folders as tree"
     },
-    "treeViewContextMenuHint": {
-        "message": "Organize folders hierarchically instead of flat list"
-    },
     "showDefaultFolderContextMenuItem": {
         "message": "Show \"Default path\" option"
-    },
-    "showDefaultFolderContextMenuItemHint": {
-        "message": "Add option to download to Transmission's default directory"
     },
     "dirList": {
         "message": "Download directories"
@@ -461,9 +403,6 @@
     },
     "subPath": {
         "message": "Sub-path"
-    },
-    "labelList": {
-        "message": "List of labels"
     },
     "optSaveInCloud": {
         "message": "Save in cloud"
@@ -516,9 +455,6 @@
     "moveNewPath": {
         "message": "Enter new path"
     },
-    "fullPath": {
-        "message": "Directory (full path)"
-    },
     "guiPath": {
         "message": "WebUI path"
     },
@@ -551,9 +487,6 @@
     },
     "copy": {
         "message": "Copy"
-    },
-    "addItem": {
-        "message": "Add item"
     },
     "shortName": {
         "message": "Short name"
@@ -936,8 +869,12 @@
     "sessionStats": {
         "message": "$active$ active, $paused$ paused",
         "placeholders": {
-            "active": { "content": "$1" },
-            "paused": { "content": "$2" }
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
         }
     },
     "scriptTorrentAddedEnabled": {
@@ -970,7 +907,9 @@
     "restoreConnectionChanged": {
         "message": "This backup changes the server connection: $changes$. Continue?",
         "placeholders": {
-            "changes": { "content": "$1" }
+            "changes": {
+                "content": "$1"
+            }
         }
     }
 }

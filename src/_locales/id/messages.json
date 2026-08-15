@@ -1,191 +1,888 @@
 {
-    "appName": { "message": "Transmission Easy Client" },
-    "appDesc": { "message": "Ekstensi menambahkan antarmuka web Transmission ke browser Anda" },
-    "lang": { "message": "id" },
-    "sizeList": { "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]" },
-    "sizePsList": { "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]" },
-    "timeOutList": { "message": "[\"mg\", \"h\", \"j\", \"m\", \"d\"]" },
-    "OV_COL_NAME": { "message": "Nama" },
-    "OV_COL_ORDER": { "message": "Antrian" },
-    "OV_COL_ORDER_SHORT": { "message": "#" },
-    "OV_COL_SIZE": { "message": "Ukuran" },
-    "OV_COL_REMAINING": { "message": "Tersisa" },
-    "OV_COL_DONE": { "message": "%" },
-    "OV_COL_STATUS": { "message": "Status" },
-    "OV_COL_SEEDS": { "message": "Seed" },
-    "OV_COL_PEERS": { "message": "Peer" },
-    "OV_COL_SEEDS_PEERS": { "message": "Seed/Peer" },
-    "OV_COL_SEEDS_PEERS_SHORT": { "message": "S/P" },
-    "OV_COL_DOWNSPD": { "message": "Kec. Unduh" },
-    "OV_COL_UPSPD": { "message": "Kec. Unggah" },
-    "OV_COL_ETA": { "message": "ETA" },
-    "OV_COL_UPPED": { "message": "Terunggah" },
-    "OV_COL_DOWNLOADED": { "message": "Terunduh" },
-    "OV_COL_SHARED": { "message": "Rasio" },
-    "OV_COL_AVAIL": { "message": "Ketersediaan" },
-    "OV_COL_AVAIL_SHORT": { "message": "Ters." },
-    "OV_COL_LABEL": { "message": "Label" },
-    "OV_COL_DATE_ADDED": { "message": "Ditambahkan" },
-    "OV_COL_DATE_COMPLETED": { "message": "Selesai" },
-    "Actions": { "message": "Aksi" },
-    "FI_COL_NAME": { "message": "Nama" },
-    "FI_COL_SIZE": { "message": "Ukuran" },
-    "FI_COL_PRIO": { "message": "Prioritas" },
-    "OV_FL_SEEDING": { "message": "Menyemai" },
-    "OV_CAT_ACTIVE": { "message": "Aktif" },
-    "OV_CAT_ALL": { "message": "Semua" },
-    "OV_CAT_COMPL": { "message": "Selesai" },
-    "OV_CAT_DL": { "message": "Mengunduh" },
-    "OV_CAT_INACTIVE": { "message": "Tidak Aktif" },
-    "OV_CAT_NOLABEL": { "message": "Tanpa Label" },
-    "OV_FL_CHECKED": { "message": "Diperiksa" },
-    "OV_FL_DOWNLOADING": { "message": "Mengunduh" },
-    "OV_FL_ERROR": { "message": "Error" },
-    "OV_FL_FINISHED": { "message": "Selesai" },
-    "OV_FL_PAUSED": { "message": "Dijeda" },
-    "OV_FL_QUEUED": { "message": "Dalam Antrian" },
-    "OV_FL_QUEUED_SEED": { "message": "Antrian Semai" },
-    "OV_FL_STOPPED": { "message": "Dihentikan" },
-    "MF_DONT": { "message": "Jangan Unduh" },
-    "MF_HIGH": { "message": "Tinggi" },
-    "MF_LOW": { "message": "Rendah" },
-    "MF_NORMAL": { "message": "Normal" },
-    "ML_START": { "message": "Mulai" },
-    "ML_PAUSE": { "message": "Jeda" },
-    "ML_STOP": { "message": "Hentikan" },
-    "OV_REMOVE_LABEL": { "message": "Hapus Label" },
-    "OV_NEW_LABEL": { "message": "Label Baru..." },
-    "ML_FORCE_START": { "message": "Paksa Mulai" },
-    "ML_FORCE_RECHECK": { "message": "Paksa Periksa Ulang" },
-    "ML_REMOVE": { "message": "Hapus" },
-    "ML_REMOVE_AND": { "message": "Hapus dan" },
-    "ML_DELETE_TORRENT": { "message": "Hapus .torrent" },
-    "ML_DELETE_DATA": { "message": "Hapus Data" },
-    "ML_DELETE_DATATORRENT": { "message": "Hapus .torrent + Data" },
-    "DLG_RSSDOWNLOADER_24": { "message": "Unduh" },
-    "MENU_UNLIMITED": { "message": "Tak Terbatas" },
-    "Open_file": { "message": "Tambah file torrent..." },
-    "ST_CAPT_WEBUI": { "message": "Antarmuka Web" },
-    "MM_FILE_ADD_URL": { "message": "Tambah Torrent dari URL..." },
-    "STM_TORRENTS_RESUMEALL": { "message": "Lanjutkan semua torrent" },
-    "STM_TORRENTS_PAUSEALL": { "message": "Jeda semua torrent" },
-    "DLG_BTN_CLOSE": { "message": "Tutup" },
-    "OV_CONFIRM_DELETE_ONE": { "message": "Apakah Anda yakin ingin menghapus torrent yang dipilih?" },
-    "OV_CONFIRM_DELETE_MULTIPLE": { "message": "Apakah Anda yakin ingin menghapus %d torrent yang dipilih?" },
-    "OV_CONFIRM_DELETE_DATA_ONE": { "message": "Apakah Anda yakin ingin menghapus torrent yang dipilih DAN menghapus semua data yang diunduh?" },
-    "OV_CONFIRM_DELETE_DATA_MULTIPLE": { "message": "Apakah Anda yakin ingin menghapus %d torrent yang dipilih DAN menghapus semua data yang diunduh?" },
-    "DLG_BTN_YES": { "message": "Ya" },
-    "DLG_BTN_NO": { "message": "Tidak" },
-    "DLG_BTN_CANCEL": { "message": "Batal" },
-    "DLG_BTN_APPLY": { "message": "Terapkan" },
-    "DLG_BTN_OK": { "message": "OK" },
-    "ST_CAPT_FOLDER": { "message": "Direktori" },
-    "Paste_a_torrent_URL": { "message": "Tempel URL torrent" },
-    "OV_NEWLABEL_CAPTION": { "message": "Masukkan label" },
-    "DLG_SETTINGS_4_CONN_16": { "message": "Nama Pengguna" },
-    "DLG_SETTINGS_4_CONN_18": { "message": "Kata Sandi" },
-    "PRS_COL_IP": { "message": "IP/Host" },
-    "PRS_COL_PORT": { "message": "Port" },
-    "ST_CAPT_ADVANCED": { "message": "Lanjutan" },
-    "resume": { "message": "Lanjutkan" },
-    "enterNewLabel": { "message": "Masukkan label baru untuk torrent yang dipilih" },
-    "defaultPath": { "message": "Direktori default" },
-    "add": { "message": "Tambah" },
-    "available": { "message": "Tersedia" },
-    "up": { "message": "Naik" },
-    "down": { "message": "Turun" },
-    "update": { "message": "Perbarui" },
-    "deleteSelected": { "message": "Hapus yang dipilih" },
-    "torrentAdded": { "message": "Torrent ditambahkan!" },
-    "unexpectedError": { "message": "Error tidak terduga!" },
-    "fileSizeError": { "message": "File terlalu besar" },
-    "addInTorrentClient": { "message": "Tambah di Transmission" },
-    "enterNewDirPath": { "message": "Masukkan jalur ke direktori baru" },
-    "torrentFileExists": { "message": "File torrent mungkin sudah ada!" },
-    "currentDirectory": { "message": "Direktori saat ini" },
-    "openInTab": { "message": "Buka di tab" },
-    "optClient": { "message": "Transmission" },
-    "optMain": { "message": "Utama" },
-    "optNotify": { "message": "Notifikasi" },
-    "optCtx": { "message": "Menu konteks" },
-    "backup": { "message": "Cadangan" },
-    "restore": { "message": "Pulihkan" },
-    "backupRestore": { "message": "Cadangan & Pemulihan" },
-    "backupHint": { "message": "Ekspor pengaturan Anda untuk disimpan atau disinkronkan ke cloud" },
-    "restoreHint": { "message": "Impor pengaturan dari cadangan sebelumnya atau dari cloud" },
-    "loadCurrentConfig": { "message": "Muat konfigurasi saat ini" },
-    "configData": { "message": "Data konfigurasi" },
-    "clickLoadConfig": { "message": "Klik \"Muat konfigurasi saat ini\" untuk melihat pengaturan Anda" },
-    "useSSL": { "message": "Gunakan SSL" },
-    "path": { "message": "Jalur" },
-    "hideSeedStatusItem": { "message": "Sembunyikan torrent dengan status \"Menyemai\"" },
-    "hideFinishStatusItem": { "message": "Sembunyikan torrent dengan status \"Selesai\"" },
-    "showSpeedGraph": { "message": "Tampilkan grafik kecepatan" },
-    "ms": { "message": "ms" },
-    "popupUpdateInterval": { "message": "Interval pembaruan daftar torrent" },
-    "fixCyrillicIf": { "message": "Perbaiki Sirilik jika..." },
-    "fixCyrillicTitle": { "message": "Nama torrent ditampilkan salah" },
-    "fixCyrillicTorrentPath": { "message": "Direktori untuk torrent baru diatur salah" },
-    "showNotificationOnDownloadComplete": { "message": "Tampilkan notifikasi saat unduhan selesai" },
-    "displayActiveTorrentCountIcon": { "message": "Tampilkan jumlah torrent yang diunduh pada ikon ekstensi" },
-    "backgroundUpdateInterval": { "message": "Interval pembaruan latar belakang" },
-    "notificationTimeout": { "message": "Sembunyikan notifikasi setelah" },
-    "folderContextMenu": { "message": "Tampilkan daftar direktori" },
-    "labelContextMenu": { "message": "Tampilkan daftar label" },
-    "selectDownloadCategoryOnAddItemFromContextMenu": { "message": "Buka kategori \"Mengunduh\" saat menambahkan torrent" },
-    "treeViewContextMenu": { "message": "Kelompokkan folder sebagai pohon" },
-    "treeViewContextMenuHint": { "message": "Susun folder secara hierarkis daripada daftar datar" },
-    "showDefaultFolderContextMenuItem": { "message": "Tampilkan opsi \"Jalur default\"" },
-    "showDefaultFolderContextMenuItemHint": { "message": "Tambah opsi untuk mengunduh ke direktori default Transmission" },
-    "dirList": { "message": "Direktori unduhan" },
-    "dirListHint": { "message": "Klik kanan pada tautan torrent untuk memilih tujuan" },
-    "options": { "message": "Opsi" },
-    "subPath": { "message": "Sub-jalur" },
-    "labelList": { "message": "Daftar label" },
-    "optSaveInCloud": { "message": "Simpan di cloud" },
-    "toRestore": { "message": "Pulihkan" },
-    "optGetFromCloud": { "message": "Dapatkan pengaturan dari cloud" },
-    "optClearCloudStorage": { "message": "Hapus penyimpanan cloud" },
-    "confirmRestore": { "message": "Apakah Anda yakin ingin memulihkan konfigurasi ini? Ini akan menimpa semua pengaturan saat ini." },
-    "confirmClearCloud": { "message": "Apakah Anda yakin ingin menghapus cadangan cloud?" },
-    "showFileList": { "message": "Daftar file" },
-    "selectAll": { "message": "Pilih semua" },
-    "refresh": { "message": "Segarkan" },
-    "checkSettings": { "message": "Periksa pengaturan" },
-    "showFreeSpace": { "message": "Tampilkan ruang disk yang tersedia" },
-    "freeSpace": { "message": "Ruang kosong" },
-    "startNow": { "message": "Mulai sekarang" },
-    "rename": { "message": "Ubah nama" },
-    "renameText": { "message": "Masukkan nama file" },
-    "move": { "message": "Pindahkan" },
-    "moveNewPath": { "message": "Masukkan jalur baru" },
-    "fullPath": { "message": "Direktori (jalur lengkap)" },
-    "guiPath": { "message": "Jalur WebUI" },
-    "altSpeedEnable": { "message": "Batas kecepatan sementara" },
-    "torrentFileIsExists": { "message": "Torrent sudah ditambahkan sebelumnya" },
-    "reannounce": { "message": "Minta lebih banyak peer" },
-    "extra": { "message": "Ekstra" },
-    "queueTop": { "message": "Ke atas" },
-    "queueBottom": { "message": "Ke bawah" },
-    "requireAuthentication": { "message": "Autentikasi diperlukan" },
-    "badgeColor": { "message": "Warna lencana ikon" },
-    "magnetUri": { "message": "Magnet-URI" },
-    "copy": { "message": "Salin" },
-    "addItem": { "message": "Tambah item" },
-    "shortName": { "message": "Nama pendek" },
-    "portIncorrect": { "message": "Port tidak valid" },
-    "search": { "message": "Cari" },
-    "theme": { "message": "Tema" },
-    "themeSystem": { "message": "Sistem" },
-    "themeLight": { "message": "Terang" },
-    "themeDark": { "message": "Gelap" },
-    "configureClient": { "message": "Konfigurasi Transmission" },
-    "configureClientHint": { "message": "Silakan konfigurasi koneksi server Transmission Anda untuk memulai." },
-    "openOptions": { "message": "Buka Pengaturan" },
-    "properties": { "message": "Properti" },
-    "copyName": { "message": "Salin Nama" },
-    "copyHash": { "message": "Salin Hash" },
-    "sessionTotals": { "message": "Total sesi" },
-    "responseEmpty": { "message": "Respons kosong" },
-    "clearSearch": { "message": "Hapus pencarian" }
+    "appName": {
+        "message": "Transmission Easy Client"
+    },
+    "appDesc": {
+        "message": "Ekstensi menambahkan antarmuka web Transmission ke browser Anda"
+    },
+    "lang": {
+        "message": "id"
+    },
+    "sizeList": {
+        "message": "[\"B\", \"kB\", \"MB\", \"GB\", \"TB\", \"PB\", \"EB\"]"
+    },
+    "sizePsList": {
+        "message": "[\"B/s\", \"kB/s\", \"MB/s\", \"GB/s\", \"TB/s\", \"PB/s\", \"EB/s\"]"
+    },
+    "timeOutList": {
+        "message": "[\"mg\", \"h\", \"j\", \"m\", \"d\"]"
+    },
+    "OV_COL_NAME": {
+        "message": "Nama"
+    },
+    "OV_COL_ORDER": {
+        "message": "Antrian"
+    },
+    "OV_COL_ORDER_SHORT": {
+        "message": "#"
+    },
+    "OV_COL_SIZE": {
+        "message": "Ukuran"
+    },
+    "OV_COL_REMAINING": {
+        "message": "Tersisa"
+    },
+    "OV_COL_DONE": {
+        "message": "%"
+    },
+    "OV_COL_STATUS": {
+        "message": "Status"
+    },
+    "OV_COL_SEEDS": {
+        "message": "Seed"
+    },
+    "OV_COL_PEERS": {
+        "message": "Peer"
+    },
+    "OV_COL_SEEDS_PEERS": {
+        "message": "Seed/Peer"
+    },
+    "OV_COL_SEEDS_PEERS_SHORT": {
+        "message": "S/P"
+    },
+    "OV_COL_DOWNSPD": {
+        "message": "Kec. Unduh"
+    },
+    "OV_COL_UPSPD": {
+        "message": "Kec. Unggah"
+    },
+    "OV_COL_ETA": {
+        "message": "ETA"
+    },
+    "OV_COL_UPPED": {
+        "message": "Terunggah"
+    },
+    "OV_COL_DOWNLOADED": {
+        "message": "Terunduh"
+    },
+    "OV_COL_SHARED": {
+        "message": "Rasio"
+    },
+    "OV_COL_AVAIL": {
+        "message": "Ketersediaan"
+    },
+    "OV_COL_AVAIL_SHORT": {
+        "message": "Ters."
+    },
+    "OV_COL_LABEL": {
+        "message": "Label"
+    },
+    "OV_COL_DATE_ADDED": {
+        "message": "Ditambahkan"
+    },
+    "OV_COL_DATE_COMPLETED": {
+        "message": "Selesai"
+    },
+    "Actions": {
+        "message": "Aksi"
+    },
+    "FI_COL_NAME": {
+        "message": "Nama"
+    },
+    "FI_COL_SIZE": {
+        "message": "Ukuran"
+    },
+    "FI_COL_PRIO": {
+        "message": "Prioritas"
+    },
+    "OV_FL_SEEDING": {
+        "message": "Menyemai"
+    },
+    "OV_CAT_ACTIVE": {
+        "message": "Aktif"
+    },
+    "OV_CAT_ALL": {
+        "message": "Semua"
+    },
+    "OV_CAT_COMPL": {
+        "message": "Selesai"
+    },
+    "OV_CAT_DL": {
+        "message": "Mengunduh"
+    },
+    "OV_CAT_INACTIVE": {
+        "message": "Tidak Aktif"
+    },
+    "OV_CAT_NOLABEL": {
+        "message": "Tanpa Label"
+    },
+    "OV_FL_CHECKED": {
+        "message": "Diperiksa"
+    },
+    "OV_FL_DOWNLOADING": {
+        "message": "Mengunduh"
+    },
+    "OV_FL_ERROR": {
+        "message": "Error"
+    },
+    "OV_FL_FINISHED": {
+        "message": "Selesai"
+    },
+    "OV_FL_PAUSED": {
+        "message": "Dijeda"
+    },
+    "OV_FL_QUEUED": {
+        "message": "Dalam Antrian"
+    },
+    "OV_FL_QUEUED_SEED": {
+        "message": "Antrian Semai"
+    },
+    "OV_FL_STOPPED": {
+        "message": "Dihentikan"
+    },
+    "OV_FL_STALLED": {
+        "message": "Terhenti"
+    },
+    "MF_DONT": {
+        "message": "Jangan Unduh"
+    },
+    "MF_HIGH": {
+        "message": "Tinggi"
+    },
+    "MF_LOW": {
+        "message": "Rendah"
+    },
+    "MF_NORMAL": {
+        "message": "Normal"
+    },
+    "ML_START": {
+        "message": "Mulai"
+    },
+    "ML_STOP": {
+        "message": "Hentikan"
+    },
+    "ML_FORCE_RECHECK": {
+        "message": "Paksa Periksa Ulang"
+    },
+    "ML_REMOVE": {
+        "message": "Hapus"
+    },
+    "ML_REMOVE_AND": {
+        "message": "Hapus dan"
+    },
+    "ML_DELETE_TORRENT": {
+        "message": "Hapus .torrent"
+    },
+    "ML_DELETE_DATA": {
+        "message": "Hapus Data"
+    },
+    "ML_DELETE_DATATORRENT": {
+        "message": "Hapus .torrent + Data"
+    },
+    "MENU_UNLIMITED": {
+        "message": "Tak Terbatas"
+    },
+    "Open_file": {
+        "message": "Tambah file torrent..."
+    },
+    "ST_CAPT_WEBUI": {
+        "message": "Antarmuka Web"
+    },
+    "MM_FILE_ADD_URL": {
+        "message": "Tambah Torrent dari URL..."
+    },
+    "STM_TORRENTS_RESUMEALL": {
+        "message": "Lanjutkan semua torrent"
+    },
+    "STM_TORRENTS_PAUSEALL": {
+        "message": "Jeda semua torrent"
+    },
+    "DLG_BTN_CLOSE": {
+        "message": "Tutup"
+    },
+    "OV_CONFIRM_DELETE_ONE": {
+        "message": "Apakah Anda yakin ingin menghapus torrent yang dipilih?"
+    },
+    "OV_CONFIRM_DELETE_MULTIPLE": {
+        "message": "Apakah Anda yakin ingin menghapus %d torrent yang dipilih?"
+    },
+    "OV_CONFIRM_DELETE_DATA_ONE": {
+        "message": "Apakah Anda yakin ingin menghapus torrent yang dipilih DAN menghapus semua data yang diunduh?"
+    },
+    "OV_CONFIRM_DELETE_DATA_MULTIPLE": {
+        "message": "Apakah Anda yakin ingin menghapus %d torrent yang dipilih DAN menghapus semua data yang diunduh?"
+    },
+    "DLG_BTN_YES": {
+        "message": "Ya"
+    },
+    "DLG_BTN_NO": {
+        "message": "Tidak"
+    },
+    "DLG_BTN_CANCEL": {
+        "message": "Batal"
+    },
+    "DLG_BTN_APPLY": {
+        "message": "Terapkan"
+    },
+    "DLG_BTN_OK": {
+        "message": "OK"
+    },
+    "Paste_a_torrent_URL": {
+        "message": "Tempel URL torrent"
+    },
+    "DLG_SETTINGS_4_CONN_16": {
+        "message": "Nama Pengguna"
+    },
+    "DLG_SETTINGS_4_CONN_18": {
+        "message": "Kata Sandi"
+    },
+    "PRS_COL_IP": {
+        "message": "IP/Host"
+    },
+    "PRS_COL_PORT": {
+        "message": "Port"
+    },
+    "ST_CAPT_ADVANCED": {
+        "message": "Lanjutan"
+    },
+    "enterNewLabel": {
+        "message": "Masukkan label baru untuk torrent yang dipilih"
+    },
+    "defaultPath": {
+        "message": "Direktori default"
+    },
+    "add": {
+        "message": "Tambah"
+    },
+    "available": {
+        "message": "Tersedia"
+    },
+    "up": {
+        "message": "Naik"
+    },
+    "down": {
+        "message": "Turun"
+    },
+    "update": {
+        "message": "Perbarui"
+    },
+    "deleteSelected": {
+        "message": "Hapus yang dipilih"
+    },
+    "torrentAdded": {
+        "message": "Torrent ditambahkan!"
+    },
+    "unexpectedError": {
+        "message": "Error tidak terduga!"
+    },
+    "fileSizeError": {
+        "message": "File terlalu besar"
+    },
+    "addInTorrentClient": {
+        "message": "Tambah di Transmission"
+    },
+    "torrentFileExists": {
+        "message": "File torrent mungkin sudah ada!"
+    },
+    "currentDirectory": {
+        "message": "Direktori saat ini"
+    },
+    "openInTab": {
+        "message": "Buka di tab"
+    },
+    "optClient": {
+        "message": "Transmission"
+    },
+    "optMain": {
+        "message": "Utama"
+    },
+    "optNotify": {
+        "message": "Notifikasi"
+    },
+    "optCtx": {
+        "message": "Menu konteks"
+    },
+    "backup": {
+        "message": "Cadangan"
+    },
+    "restore": {
+        "message": "Pulihkan"
+    },
+    "backupRestore": {
+        "message": "Cadangan & Pemulihan"
+    },
+    "backupHint": {
+        "message": "Ekspor pengaturan Anda untuk disimpan atau disinkronkan ke cloud"
+    },
+    "restoreHint": {
+        "message": "Impor pengaturan dari cadangan sebelumnya atau dari cloud"
+    },
+    "loadCurrentConfig": {
+        "message": "Muat konfigurasi saat ini"
+    },
+    "configData": {
+        "message": "Data konfigurasi"
+    },
+    "clickLoadConfig": {
+        "message": "Klik \"Muat konfigurasi saat ini\" untuk melihat pengaturan Anda"
+    },
+    "useSSL": {
+        "message": "Gunakan SSL"
+    },
+    "path": {
+        "message": "Jalur"
+    },
+    "hideSeedStatusItem": {
+        "message": "Sembunyikan torrent dengan status \"Menyemai\""
+    },
+    "hideFinishStatusItem": {
+        "message": "Sembunyikan torrent dengan status \"Selesai\""
+    },
+    "showSpeedGraph": {
+        "message": "Tampilkan grafik kecepatan"
+    },
+    "ms": {
+        "message": "ms"
+    },
+    "popupUpdateInterval": {
+        "message": "Interval pembaruan daftar torrent"
+    },
+    "showNotificationOnDownloadComplete": {
+        "message": "Tampilkan notifikasi saat unduhan selesai"
+    },
+    "displayActiveTorrentCountIcon": {
+        "message": "Tampilkan jumlah torrent yang diunduh pada ikon ekstensi"
+    },
+    "backgroundUpdateInterval": {
+        "message": "Interval pembaruan latar belakang"
+    },
+    "selectDownloadCategoryOnAddItemFromContextMenu": {
+        "message": "Buka kategori \"Mengunduh\" saat menambahkan torrent"
+    },
+    "treeViewContextMenu": {
+        "message": "Kelompokkan folder sebagai pohon"
+    },
+    "showDefaultFolderContextMenuItem": {
+        "message": "Tampilkan opsi \"Jalur default\""
+    },
+    "dirList": {
+        "message": "Direktori unduhan"
+    },
+    "dirListHint": {
+        "message": "Klik kanan pada tautan torrent untuk memilih tujuan"
+    },
+    "options": {
+        "message": "Opsi"
+    },
+    "subPath": {
+        "message": "Sub-jalur"
+    },
+    "optSaveInCloud": {
+        "message": "Simpan di cloud"
+    },
+    "toRestore": {
+        "message": "Pulihkan"
+    },
+    "optGetFromCloud": {
+        "message": "Dapatkan pengaturan dari cloud"
+    },
+    "optClearCloudStorage": {
+        "message": "Hapus penyimpanan cloud"
+    },
+    "confirmRestore": {
+        "message": "Apakah Anda yakin ingin memulihkan konfigurasi ini? Ini akan menimpa semua pengaturan saat ini."
+    },
+    "confirmClearCloud": {
+        "message": "Apakah Anda yakin ingin menghapus cadangan cloud?"
+    },
+    "showFileList": {
+        "message": "Daftar file"
+    },
+    "selectAll": {
+        "message": "Pilih semua"
+    },
+    "refresh": {
+        "message": "Segarkan"
+    },
+    "checkSettings": {
+        "message": "Periksa pengaturan"
+    },
+    "showFreeSpace": {
+        "message": "Tampilkan ruang disk yang tersedia"
+    },
+    "freeSpace": {
+        "message": "Ruang kosong"
+    },
+    "startNow": {
+        "message": "Mulai sekarang"
+    },
+    "rename": {
+        "message": "Ubah nama"
+    },
+    "renameText": {
+        "message": "Masukkan nama file"
+    },
+    "move": {
+        "message": "Pindahkan"
+    },
+    "moveNewPath": {
+        "message": "Masukkan jalur baru"
+    },
+    "guiPath": {
+        "message": "Jalur WebUI"
+    },
+    "altSpeedEnable": {
+        "message": "Batas kecepatan sementara"
+    },
+    "torrentFileIsExists": {
+        "message": "Torrent sudah ditambahkan sebelumnya"
+    },
+    "reannounce": {
+        "message": "Minta lebih banyak peer"
+    },
+    "extra": {
+        "message": "Ekstra"
+    },
+    "queueTop": {
+        "message": "Ke atas"
+    },
+    "queueBottom": {
+        "message": "Ke bawah"
+    },
+    "requireAuthentication": {
+        "message": "Autentikasi diperlukan"
+    },
+    "badgeColor": {
+        "message": "Warna lencana ikon"
+    },
+    "magnetUri": {
+        "message": "Magnet-URI"
+    },
+    "copy": {
+        "message": "Salin"
+    },
+    "shortName": {
+        "message": "Nama pendek"
+    },
+    "portIncorrect": {
+        "message": "Port tidak valid"
+    },
+    "search": {
+        "message": "Cari"
+    },
+    "theme": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "Sistem"
+    },
+    "themeLight": {
+        "message": "Terang"
+    },
+    "themeDark": {
+        "message": "Gelap"
+    },
+    "configureClient": {
+        "message": "Konfigurasi Transmission"
+    },
+    "configureClientHint": {
+        "message": "Silakan konfigurasi koneksi server Transmission Anda untuk memulai."
+    },
+    "openOptions": {
+        "message": "Buka Pengaturan"
+    },
+    "properties": {
+        "message": "Properti"
+    },
+    "copyName": {
+        "message": "Salin Nama"
+    },
+    "copyHash": {
+        "message": "Salin Hash"
+    },
+    "sessionTotals": {
+        "message": "Total sesi"
+    },
+    "responseEmpty": {
+        "message": "Respons kosong"
+    },
+    "clearSearch": {
+        "message": "Hapus pencarian"
+    },
+    "errorRetry": {
+        "message": "Coba lagi"
+    },
+    "errorDetails": {
+        "message": "Detail"
+    },
+    "speedGraph": {
+        "message": "Grafik kecepatan"
+    },
+    "optServer": {
+        "message": "Server"
+    },
+    "blocklist": {
+        "message": "Daftar blokir"
+    },
+    "blocklistEnable": {
+        "message": "Aktifkan daftar blokir"
+    },
+    "blocklistUrl": {
+        "message": "URL daftar blokir"
+    },
+    "blocklistRules": {
+        "message": "Aturan"
+    },
+    "blocklistUpdateNow": {
+        "message": "Perbarui daftar blokir sekarang"
+    },
+    "peerFlags": {
+        "message": "Flag"
+    },
+    "peerSettings": {
+        "message": "Peer"
+    },
+    "peerLimitGlobal": {
+        "message": "Maksimum peer keseluruhan"
+    },
+    "peerLimitPerTorrent": {
+        "message": "Maksimum peer per torrent"
+    },
+    "seedingSettings": {
+        "message": "Penyemaian"
+    },
+    "seedRatioLimited": {
+        "message": "Berhenti menyemai pada rasio"
+    },
+    "seedRatioLimit": {
+        "message": "Batas rasio seed"
+    },
+    "idleSeedingLimitEnabled": {
+        "message": "Berhenti menyemai jika diam selama"
+    },
+    "idleSeedingLimit": {
+        "message": "Batas diam"
+    },
+    "networkSettings": {
+        "message": "Jaringan"
+    },
+    "peerPort": {
+        "message": "Port dengar"
+    },
+    "portForwardingEnabled": {
+        "message": "Aktifkan UPnP / NAT-PMP"
+    },
+    "encryption": {
+        "message": "Enkripsi"
+    },
+    "encryptionRequired": {
+        "message": "Wajib"
+    },
+    "encryptionPreferred": {
+        "message": "Diutamakan"
+    },
+    "encryptionTolerated": {
+        "message": "Ditoleransi"
+    },
+    "dhtEnabled": {
+        "message": "Aktifkan DHT"
+    },
+    "pexEnabled": {
+        "message": "Aktifkan PEX"
+    },
+    "lpdEnabled": {
+        "message": "Aktifkan LPD"
+    },
+    "utpEnabled": {
+        "message": "Aktifkan uTP"
+    },
+    "minutes": {
+        "message": "mnt"
+    },
+    "OV_CAT_NO_LABEL": {
+        "message": "Tanpa label"
+    },
+    "generalSettings": {
+        "message": "Umum"
+    },
+    "startAddedTorrents": {
+        "message": "Mulai torrent yang ditambahkan"
+    },
+    "trashOriginalTorrentFiles": {
+        "message": "Buang file .torrent asli"
+    },
+    "incompleteDirSettings": {
+        "message": "Unduhan Belum Selesai"
+    },
+    "incompleteDirEnabled": {
+        "message": "Gunakan direktori unduhan belum selesai"
+    },
+    "incompleteDir": {
+        "message": "Direktori unduhan belum selesai"
+    },
+    "renamePartialFiles": {
+        "message": "Ganti nama file parsial dengan ekstensi .part"
+    },
+    "queueSettings": {
+        "message": "Antrian"
+    },
+    "downloadQueueEnabled": {
+        "message": "Batasi antrian unduhan"
+    },
+    "downloadQueueSize": {
+        "message": "Maksimum unduhan bersamaan"
+    },
+    "seedQueueEnabled": {
+        "message": "Batasi antrian semai"
+    },
+    "seedQueueSize": {
+        "message": "Maksimum penyemaian bersamaan"
+    },
+    "queueStalledEnabled": {
+        "message": "Anggap diam setelah"
+    },
+    "queueStalledMinutes": {
+        "message": "Batas waktu terhenti"
+    },
+    "altSpeedSchedule": {
+        "message": "Jadwal Batas Kecepatan"
+    },
+    "altSpeedTimeEnabled": {
+        "message": "Aktifkan jadwal batas kecepatan"
+    },
+    "altSpeedTimeBegin": {
+        "message": "Waktu mulai"
+    },
+    "altSpeedTimeEnd": {
+        "message": "Waktu selesai"
+    },
+    "altSpeedTimeDays": {
+        "message": "Hari aktif"
+    },
+    "daySunday": {
+        "message": "Min"
+    },
+    "dayMonday": {
+        "message": "Sen"
+    },
+    "dayTuesday": {
+        "message": "Sel"
+    },
+    "dayWednesday": {
+        "message": "Rab"
+    },
+    "dayThursday": {
+        "message": "Kam"
+    },
+    "dayFriday": {
+        "message": "Jum"
+    },
+    "daySaturday": {
+        "message": "Sab"
+    },
+    "scriptSettings": {
+        "message": "Skrip"
+    },
+    "scriptTorrentDoneEnabled": {
+        "message": "Jalankan skrip saat unduhan selesai"
+    },
+    "scriptTorrentDoneFilename": {
+        "message": "Jalur skrip"
+    },
+    "portTest": {
+        "message": "Uji port"
+    },
+    "portOpen": {
+        "message": "Port terbuka"
+    },
+    "portClosed": {
+        "message": "Port tertutup"
+    },
+    "portTesting": {
+        "message": "Menguji..."
+    },
+    "DT_TAB_INFO": {
+        "message": "Info"
+    },
+    "DT_TAB_TRACKERS": {
+        "message": "Tracker"
+    },
+    "DT_TAB_SEED_LIMITS": {
+        "message": "Batas Semai"
+    },
+    "DT_COMMENT": {
+        "message": "Komentar"
+    },
+    "DT_CREATOR": {
+        "message": "Pembuat"
+    },
+    "DT_DATE_CREATED": {
+        "message": "Tanggal Dibuat"
+    },
+    "DT_PIECES": {
+        "message": "Potongan"
+    },
+    "DT_CORRUPT": {
+        "message": "Rusak"
+    },
+    "DT_TIME_DOWNLOADING": {
+        "message": "Waktu Mengunduh"
+    },
+    "DT_TIME_SEEDING": {
+        "message": "Waktu Menyemai"
+    },
+    "DT_WEBSEEDS": {
+        "message": "Seed Web"
+    },
+    "DT_TRACKER_URL": {
+        "message": "URL"
+    },
+    "DT_TRACKER_TIER": {
+        "message": "Tingkat"
+    },
+    "DT_TRACKER_SEEDS": {
+        "message": "Seed"
+    },
+    "DT_TRACKER_PEERS": {
+        "message": "Peer"
+    },
+    "DT_TRACKER_STATUS": {
+        "message": "Status"
+    },
+    "DT_TRACKER_LIST": {
+        "message": "Daftar Tracker"
+    },
+    "DT_TRACKER_LIST_HELP": {
+        "message": "Satu URL per baris, baris kosong di antara tingkat"
+    },
+    "DT_SEED_RATIO_MODE": {
+        "message": "Mode Rasio Seed"
+    },
+    "DT_SEED_RATIO_LIMIT": {
+        "message": "Batas Rasio Seed"
+    },
+    "DT_SEED_IDLE_MODE": {
+        "message": "Mode Semai Diam"
+    },
+    "DT_SEED_IDLE_LIMIT": {
+        "message": "Batas Semai Diam (mnt)"
+    },
+    "DT_USE_GLOBAL": {
+        "message": "Gunakan Pengaturan Global"
+    },
+    "DT_CUSTOM": {
+        "message": "Kustom"
+    },
+    "DT_UNLIMITED": {
+        "message": "Tak terbatas"
+    },
+    "DT_APPLY": {
+        "message": "Terapkan"
+    },
+    "OV_COL_ACTIVITY": {
+        "message": "Aktif Terakhir"
+    },
+    "OV_COL_STARTED": {
+        "message": "Dimulai"
+    },
+    "OV_COL_EDITED": {
+        "message": "Diubah"
+    },
+    "OV_COL_SIZE_WHEN_DONE": {
+        "message": "Ukuran Efektif"
+    },
+    "DT_METADATA": {
+        "message": "Metadata"
+    },
+    "DT_PRIVATE": {
+        "message": "Privat"
+    },
+    "DT_PEERS_FROM": {
+        "message": "Sumber Peer"
+    },
+    "DT_PEERS_FROM_TRACKER": {
+        "message": "Tracker"
+    },
+    "DT_PEERS_FROM_DHT": {
+        "message": "DHT"
+    },
+    "DT_PEERS_FROM_PEX": {
+        "message": "PEX"
+    },
+    "DT_PEERS_FROM_LPD": {
+        "message": "LPD"
+    },
+    "DT_PEERS_FROM_LTEP": {
+        "message": "LTEP"
+    },
+    "DT_PEERS_FROM_INCOMING": {
+        "message": "Masuk"
+    },
+    "DT_PEERS_FROM_CACHE": {
+        "message": "Cache"
+    },
+    "DT_DOWNLOAD_LIMIT": {
+        "message": "Batas Unduh"
+    },
+    "DT_UPLOAD_LIMIT": {
+        "message": "Batas Unggah"
+    },
+    "DT_HONORS_SESSION_LIMITS": {
+        "message": "Ikuti Batas Sesi"
+    },
+    "DT_ENABLED": {
+        "message": "Diaktifkan"
+    },
+    "DT_DISABLED": {
+        "message": "Dinonaktifkan"
+    },
+    "DT_ETA_IDLE": {
+        "message": "Batas Waktu Diam"
+    },
+    "sessionStats": {
+        "message": "$active$ aktif, $paused$ dijeda",
+        "placeholders": {
+            "active": {
+                "content": "$1"
+            },
+            "paused": {
+                "content": "$2"
+            }
+        }
+    },
+    "scriptTorrentAddedEnabled": {
+        "message": "Jalankan skrip saat torrent ditambahkan"
+    },
+    "scriptTorrentAddedFilename": {
+        "message": "Jalur skrip (ditambahkan)"
+    },
+    "scriptTorrentDoneSeedingEnabled": {
+        "message": "Jalankan skrip saat penyemaian selesai"
+    },
+    "scriptTorrentDoneSeedingFilename": {
+        "message": "Jalur skrip (selesai menyemai)"
+    },
+    "sequentialDownload": {
+        "message": "Unduhan berurutan"
+    },
+    "fileCount": {
+        "message": "Jumlah file"
+    },
+    "primaryMimeType": {
+        "message": "Tipe konten"
+    },
+    "warningBasicAuthNoSsl": {
+        "message": "Peringatan: tanpa SSL, nama pengguna dan kata sandi Anda dikirim tanpa enkripsi melalui jaringan."
+    },
+    "backupIncludesCredentials": {
+        "message": "Cadangan ini menyertakan nama pengguna dan kata sandi server Anda."
+    },
+    "restoreConnectionChanged": {
+        "message": "Cadangan ini mengubah koneksi server: $changes$. Lanjutkan?",
+        "placeholders": {
+            "changes": {
+                "content": "$1"
+            }
+        }
+    }
 }

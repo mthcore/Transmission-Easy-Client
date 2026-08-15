@@ -12,6 +12,13 @@ import type { BandwidthPriority } from '../types/transmission';
 
 const logger = getLogger('TorrentService');
 
+/** Order-insensitive comparison of the completed-torrent id sets */
+function sameIdSet(a: number[] | null, b: number[]): boolean {
+  if (a === null || a.length !== b.length) return false;
+  const set = new Set(a);
+  return b.every((id) => set.has(id));
+}
+
 export interface PeerData {
   address: string;
   client: string;
@@ -273,8 +280,12 @@ class TorrentService {
           }
         }
 
+        // Only persist when the completed set actually changed: this runs on
+        // every poll cycle
+        if (!sameIdSet(previousNotifiedIds, completedIds)) {
+          chrome.storage.local.set({ _notifiedIds: completedIds });
+        }
         this._notifiedIdsPromise = Promise.resolve(completedIds);
-        chrome.storage.local.set({ _notifiedIds: completedIds });
 
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);

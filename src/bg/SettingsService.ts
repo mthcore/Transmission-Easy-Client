@@ -360,9 +360,10 @@ class SettingsService {
 
   portTest(ipProtocol?: 'ipv4' | 'ipv6'): Promise<boolean> {
     const args: Record<string, unknown> = {};
-    // ip-protocol argument exists since Transmission 4.1 (rpc 18)
+    // The ip-protocol argument was born in Transmission 4.1 (rpc 18), in the
+    // snake_case era, so snake is its canonical name on the legacy endpoint
     if (ipProtocol && this.transport.rpcVersion >= RPC_VERSION_4_1) {
-      args['ip-protocol'] = ipProtocol;
+      args['ip_protocol'] = ipProtocol;
     }
     return this.transport
       .sendAction({

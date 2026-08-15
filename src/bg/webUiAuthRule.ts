@@ -10,20 +10,33 @@ import { toBasicAuthValue } from '../tools/basicAuth';
  * - string-literal resource types (the ResourceType enum objects don't exist
  *   on Firefox and would throw at rule build time);
  * - origin computed through new URL() so default ports (80/443) and IPv6
- *   literals produce a urlFilter that actually matches;
+ *   literals (stored unbracketed, matching the RPC transport's convention)
+ *   produce a urlFilter that actually matches;
+ * - rules are scoped to the configured Web UI and RPC paths, not the whole
+ *   origin, so a shared host behind a reverse proxy doesn't get Transmission
+ *   credentials on unrelated applications;
  * - subresource requests are scoped to pages served by the Transmission host
  *   itself (initiatorDomains), so third-party websites cannot make the browser
  *   attach the header via <img>/fetch;
- * - credentials encoded UTF-8-safely (btoa alone throws on non-Latin-1).
+ * - credentials encoded UTF-8-safely (btoa alone emits Latin-1 or throws).
  */
 
 export const WEB_UI_MAIN_FRAME_RULE_ID = 1;
 export const WEB_UI_SUBRESOURCE_RULE_ID = 2;
+export const RPC_SUBRESOURCE_RULE_ID = 3;
+
+const ALL_RULE_IDS = [
+  WEB_UI_MAIN_FRAME_RULE_ID,
+  WEB_UI_SUBRESOURCE_RULE_ID,
+  RPC_SUBRESOURCE_RULE_ID,
+];
 
 export interface WebUiAuthConfig {
   ssl: boolean;
   hostname: string;
   port: number;
+  pathname: string;
+  webPathname: string;
   authenticationRequired: boolean;
   login: string;
   password: string;
@@ -46,27 +59,41 @@ function isIpHost(hostname: string): boolean {
   return hostname.startsWith('[') || /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname);
 }
 
+/** Leading slash enforced; empty path means the origin root. */
+function normalizePath(path: string): string {
+  if (!path) return '/';
+  return path.startsWith('/') ? path : `/${path}`;
+}
+
 async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   const dnr = chrome.declarativeNetRequest;
   if (!dnr?.updateDynamicRules) return;
 
-  const removeRuleIds = [WEB_UI_MAIN_FRAME_RULE_ID, WEB_UI_SUBRESOURCE_RULE_ID];
-
   if (!config.authenticationRequired || !config.hostname) {
-    await dnr.updateDynamicRules({ removeRuleIds });
+    await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS });
     return;
   }
+
+  // IPv6 literals are stored unbracketed (url.format brackets them for the
+  // RPC URL); new URL() needs them bracketed
+  const urlHost =
+    config.hostname.includes(':') && !config.hostname.startsWith('[')
+      ? `[${config.hostname}]`
+      : config.hostname;
 
   let origin: string;
   let originHostname: string;
   try {
-    const parsed = new URL(`${config.ssl ? 'https' : 'http'}://${config.hostname}:${config.port}`);
+    const parsed = new URL(`${config.ssl ? 'https' : 'http'}://${urlHost}:${config.port}`);
     origin = parsed.origin;
     originHostname = parsed.hostname;
   } catch {
-    await dnr.updateDynamicRules({ removeRuleIds });
+    await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS });
     return;
   }
+
+  const webPath = normalizePath(config.webPathname);
+  const rpcPath = normalizePath(config.pathname);
 
   const requestHeaders = [
     {
@@ -77,37 +104,46 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   ];
   const actionType = 'modifyHeaders' as chrome.declarativeNetRequest.RuleActionType;
 
-  const subresourceCondition: chrome.declarativeNetRequest.RuleCondition = {
-    urlFilter: `|${origin}/`,
-    resourceTypes: SUBRESOURCE_TYPES,
-  };
   // initiatorDomains matching is only reliable for real domain names; for raw
   // IP hosts skip it (residual risk is presence probing only — RPC mutations
   // stay protected by the X-Transmission-Session-Id CSRF token).
-  if (!isIpHost(originHostname)) {
-    subresourceCondition.initiatorDomains = [originHostname];
-  }
+  const initiatorDomains = isIpHost(originHostname) ? undefined : [originHostname];
 
-  await dnr.updateDynamicRules({
-    removeRuleIds,
-    addRules: [
-      {
-        id: WEB_UI_MAIN_FRAME_RULE_ID,
-        priority: 1,
-        action: { type: actionType, requestHeaders },
-        condition: {
-          urlFilter: `|${origin}/`,
-          resourceTypes: MAIN_FRAME_TYPES,
-        },
+  const addRules: chrome.declarativeNetRequest.Rule[] = [
+    {
+      id: WEB_UI_MAIN_FRAME_RULE_ID,
+      priority: 1,
+      action: { type: actionType, requestHeaders },
+      condition: {
+        urlFilter: `|${origin}${webPath}`,
+        resourceTypes: MAIN_FRAME_TYPES,
       },
-      {
-        id: WEB_UI_SUBRESOURCE_RULE_ID,
-        priority: 1,
-        action: { type: actionType, requestHeaders },
-        condition: subresourceCondition,
+    },
+    {
+      id: WEB_UI_SUBRESOURCE_RULE_ID,
+      priority: 1,
+      action: { type: actionType, requestHeaders },
+      condition: {
+        urlFilter: `|${origin}${webPath}`,
+        resourceTypes: SUBRESOURCE_TYPES,
+        ...(initiatorDomains ? { initiatorDomains } : {}),
       },
-    ],
-  });
+    },
+    // The Web UI's own RPC calls target the RPC path, which may live outside
+    // the Web UI path prefix
+    {
+      id: RPC_SUBRESOURCE_RULE_ID,
+      priority: 1,
+      action: { type: actionType, requestHeaders },
+      condition: {
+        urlFilter: `|${origin}${rpcPath}`,
+        resourceTypes: SUBRESOURCE_TYPES,
+        ...(initiatorDomains ? { initiatorDomains } : {}),
+      },
+    },
+  ];
+
+  await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS, addRules });
 }
 
 export default updateWebUiAuthRule;

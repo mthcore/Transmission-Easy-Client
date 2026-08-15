@@ -94,6 +94,23 @@ describe('createColumnSorter with column mapping', () => {
     expect(result.map((i) => i.name)).toEqual(['C', 'B', 'A']);
   });
 
+  it('sorts eta -2 (unknown) with -1 (infinite) at the end, not before real ETAs', () => {
+    const items = [
+      { name: 'A', eta: -2 },
+      { name: 'B', eta: 100 },
+      { name: 'C', eta: -1 },
+      { name: 'D', eta: 10 },
+    ];
+    const result = sorter(items, 'eta', 1);
+    expect(result.map((i) => i.name).slice(0, 2)).toEqual(['D', 'B']);
+    expect(
+      result
+        .map((i) => i.name)
+        .slice(2)
+        .sort()
+    ).toEqual(['A', 'C']);
+  });
+
   it('applies date handler (0 treated as Infinity)', () => {
     const items = [
       { name: 'A', addedTime: 0 },

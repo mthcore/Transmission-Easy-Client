@@ -120,7 +120,7 @@ describe('SettingsService.portTest', () => {
     expect(sendAction).toHaveBeenCalledWith({ method: 'port-test' });
   });
 
-  it('sends ip-protocol at rpc 18 and reads a snake_case response', async () => {
+  it('sends ip_protocol (snake_case, born in rpc 18) at rpc 18 and reads a snake_case response', async () => {
     const { service, sendAction } = createService(18);
     sendAction.mockResolvedValue({
       result: 'success',
@@ -129,7 +129,7 @@ describe('SettingsService.portTest', () => {
     await expect(service.portTest('ipv6')).resolves.toBe(true);
     expect(sendAction).toHaveBeenCalledWith({
       method: 'port-test',
-      arguments: { 'ip-protocol': 'ipv6' },
+      arguments: { ip_protocol: 'ipv6' },
     });
   });
 });

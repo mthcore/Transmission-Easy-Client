@@ -50,8 +50,8 @@ export function createColumnSorter<T extends Sortable>(
   };
 }
 
-// Special handler for ETA column (-1 means infinite)
-const etaHandler: SpecialHandler = (value) => (value === -1 ? Infinity : value);
+// Special handler for ETA column (-1 = infinite, -2 = unknown: both sort last)
+const etaHandler: SpecialHandler = (value) => ((value as number) < 0 ? Infinity : value);
 
 // Special handler for date columns (0/null/undefined means infinite)
 const dateHandler: SpecialHandler = (value) => (!value ? Infinity : value);

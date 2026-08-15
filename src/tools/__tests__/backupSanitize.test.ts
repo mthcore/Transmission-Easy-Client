@@ -31,6 +31,15 @@ describe('sanitizeRestoreConfig', () => {
     expect(config).toEqual({ hostname: 'nas.local' });
     expect(droppedKeys.sort()).toEqual(['_notifiedIds', 'evilKey']);
   });
+
+  it('drops a nested backup blob (sync-area key must not enter local storage)', () => {
+    const { config, droppedKeys } = sanitizeRestoreConfig({
+      hostname: 'nas.local',
+      backup: '{"huge":"nested blob"}',
+    });
+    expect(config).toEqual({ hostname: 'nas.local' });
+    expect(droppedKeys).toEqual(['backup']);
+  });
 });
 
 describe('getConnectionChanges', () => {

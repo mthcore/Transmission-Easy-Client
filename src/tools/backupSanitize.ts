@@ -6,7 +6,10 @@ export const BACKUP_EXCLUDE_KEYS = ['_notifiedIds', '_activeIds'];
 /** Keys that change which server the extension talks to */
 export const CONNECTION_KEYS = ['hostname', 'port', 'ssl', 'pathname'] as const;
 
-const RESTORE_ALLOWED_KEYS = new Set<string>([...configKeys, 'configVersion', 'backup']);
+// Note: the 'backup' key (the cloud copy, sync area only) is deliberately NOT
+// allowed — letting it into local storage would nest stale blobs into every
+// subsequent backup until the sync quota is exceeded.
+const RESTORE_ALLOWED_KEYS = new Set<string>([...configKeys, 'configVersion']);
 
 /**
  * Allowlist-filter a parsed restore blob against the known config keys, so a

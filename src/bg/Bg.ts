@@ -105,6 +105,8 @@ class Bg {
           ssl: config.ssl,
           hostname: config.hostname,
           port: config.port,
+          pathname: config.pathname,
+          webPathname: config.webPathname,
           authenticationRequired: config.authenticationRequired,
           login: config.login,
           password: config.password,
@@ -337,7 +339,9 @@ class Bg {
         break;
       }
       case 'setSequentialDownload': {
-        promise = this.requireClient().setSequentialDownload(message.ids, message.enabled);
+        promise = this.whenReady().then(() =>
+          this.requireClient().setSequentialDownload(message.ids, message.enabled)
+        );
         break;
       }
       case 'getTorrentDetails': {

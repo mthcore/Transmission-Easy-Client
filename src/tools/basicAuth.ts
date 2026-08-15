@@ -1,18 +1,15 @@
 /**
  * Build an HTTP Basic Authorization header value.
- * btoa throws on non-Latin-1 input, so fall back to UTF-8 encoding
- * (what current servers, including Transmission, expect per RFC 7617).
+ * Credentials are always encoded as UTF-8 (what current servers, including
+ * Transmission, expect per RFC 7617). Encoding through btoa alone would emit
+ * Latin-1 bytes for U+0080–U+00FF characters (e.g. "café") and throw above
+ * U+00FF, so the byte string is built explicitly from the UTF-8 encoding.
  */
 export function toBasicAuthValue(login: string, password: string): string {
-  const raw = `${login}:${password}`;
-  try {
-    return 'Basic ' + btoa(raw);
-  } catch {
-    const bytes = new TextEncoder().encode(raw);
-    let binary = '';
-    for (const byte of bytes) {
-      binary += String.fromCharCode(byte);
-    }
-    return 'Basic ' + btoa(binary);
+  const bytes = new TextEncoder().encode(`${login}:${password}`);
+  let binary = '';
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
   }
+  return 'Basic ' + btoa(binary);
 }

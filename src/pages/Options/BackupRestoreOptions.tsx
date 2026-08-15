@@ -141,7 +141,14 @@ const BackupRestoreOptions = () => {
       }
       // A restore that repoints the extension at another server deserves its
       // own explicit confirmation (the Basic-auth header follows the hostname)
-      const current = await storageGet({ hostname: '', port: 0, ssl: true, pathname: '' });
+      // Fallbacks must mirror ConfigStore's defaults, otherwise never-persisted
+      // keys show up as fake connection changes (e.g. "port: 0 → 9091")
+      const current = await storageGet({
+        hostname: '',
+        port: 9091,
+        ssl: true,
+        pathname: '/transmission/rpc',
+      });
       const connectionChanges = getConnectionChanges(cleanConfig, current);
       if (connectionChanges.length) {
         const changeMessage =

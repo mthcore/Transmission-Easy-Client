@@ -1,4 +1,5 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
+import fetchWithTimeout from '../tools/fetchWithTimeout';
 import { toBasicAuthValue } from '../tools/basicAuth';
 
 export interface TransmissionResponse {
@@ -29,9 +30,13 @@ interface TransportOptions {
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY = 1000;
 
-function isNetworkError(err: unknown): boolean {
-  // TypeError is thrown by fetch for network failures (DNS, connection refused, etc.)
-  return err instanceof TypeError;
+function isRetryableFetchError(err: unknown): boolean {
+  // TypeError is thrown by fetch for network failures (DNS, connection refused, etc.).
+  // FETCH_TIMEOUT is thrown by fetchWithTimeout when the daemon never responds at all
+  // (hung connection behind a proxy/firewall, no TypeError ever raised). Both are
+  // transient conditions worth the same retry-with-backoff treatment.
+  if (err instanceof TypeError) return true;
+  return err instanceof ErrorWithCode && err.code === 'FETCH_TIMEOUT';
 }
 
 /**
@@ -101,7 +106,7 @@ class TransmissionTransport {
     customParser?: (text: string) => TransmissionResponse,
     attempt = 0
   ): Promise<TransmissionResponse> {
-    return fetch(
+    return fetchWithTimeout(
       this.url,
       this.sign({
         method: 'POST',
@@ -136,8 +141,8 @@ class TransmissionTransport {
         }
       },
       (err: Error) => {
-        // Retry only on network errors (fetch failures), not HTTP or auth errors
-        if (attempt < MAX_RETRIES && isNetworkError(err)) {
+        // Retry only on network/timeout errors (fetch failures), not HTTP or auth errors
+        if (attempt < MAX_RETRIES && isRetryableFetchError(err)) {
           const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
           return new Promise<TransmissionResponse>((resolve) =>
             setTimeout(() => resolve(this.fetchWithRetry(body, customParser, attempt + 1)), delay)

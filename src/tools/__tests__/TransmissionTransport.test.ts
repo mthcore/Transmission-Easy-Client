@@ -193,6 +193,40 @@ describe('TransmissionTransport', () => {
     await expect(transport.sendAction({ method: 'test' })).rejects.toThrow('Server error');
   });
 
+  it('aborts a request that never resolves and retries it with backoff', async () => {
+    // Simulates a daemon that accepts the connection but never answers (hung
+    // proxy/firewall) -- no TypeError is ever thrown, so only a timeout can
+    // unblock this. fetch() here never settles on its own; it only resolves
+    // once fetchWithTimeout's AbortController fires the abort signal.
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(
+        (_url: string, init: RequestInit) =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener('abort', () => {
+              const abortError = new DOMException('The operation was aborted.', 'AbortError');
+              reject(abortError);
+            });
+          })
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ result: 'success', arguments: {} }),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const promise = transport.sendAction({ method: 'torrent-get' });
+
+    // FETCH_TIMEOUT (30s) elapses and aborts the hung request.
+    await vi.advanceTimersByTimeAsync(30_000);
+    // Then the retry backoff (1000ms) fires.
+    await vi.advanceTimersByTimeAsync(1000);
+
+    const result = await promise;
+    expect(result.result).toBe('success');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it('adds auth header when authentication is required', async () => {
     const authTransport = new TransmissionTransport({
       url: 'http://localhost:9091/transmission/rpc',

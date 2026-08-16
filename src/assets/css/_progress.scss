@@ -17,6 +17,11 @@ table {
       display: flex;
       flex-shrink: 0;
       position: relative;
+      // Establishes a local stacking context so .progress_b_i's z-index
+      // stays scoped to this cell instead of leaking into the document's
+      // root stacking context, where it would tie with (and, by DOM order,
+      // paint over) the sticky torrent-table-head (also z-index: 2).
+      z-index: 0;
       border: none;
       background-color: var(--progress-bg);
       border-radius: 2px;

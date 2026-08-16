@@ -1,4 +1,11 @@
-import { getPropertyMembers, resolveIdentifier, types, Instance, cast } from 'mobx-state-tree';
+import {
+  getPropertyMembers,
+  getSnapshot,
+  resolveIdentifier,
+  types,
+  Instance,
+  cast,
+} from 'mobx-state-tree';
 import { storageSet } from '../tools/chromeStorage';
 import url from 'url';
 import { BG_UPDATE_INTERVAL, UI_UPDATE_INTERVAL } from '../constants';
@@ -209,7 +216,20 @@ const ConfigStore = types
 
         if (!column || !columnTarget) return;
 
-        const columns = moveColumn(sourceColumns.slice(0), column, columnTarget);
+        // Reorder via snapshots, not live nodes: ColumnStore.column is a
+        // types.identifier, so reassigning self.torrentColumns[Popup] with an
+        // array that still holds live nodes from that very array makes
+        // mobx-state-tree try to tear down nodes it's simultaneously
+        // reconciling back in, crashing with "no longer part of a state tree"
+        // (this reordering broke silently across the mobx-state-tree 5→7
+        // bump; nothing exercised it until this store had tests). Snapshots
+        // are plain data, so identifier-based reconciliation just reorders
+        // the existing nodes in place instead.
+        const columns = moveColumn(
+          sourceColumns.map((c) => getSnapshot(c)),
+          getSnapshot(column),
+          getSnapshot(columnTarget)
+        );
 
         if (self.isPopupMode) {
           self.torrentColumnsPopup = cast(columns);
@@ -240,7 +260,12 @@ const ConfigStore = types
 
         if (!column || !columnTarget) return;
 
-        const columns = moveColumn(self.filesColumns.slice(0), column, columnTarget);
+        // Same live-node-vs-snapshot pitfall as moveTorrentsColumn above.
+        const columns = moveColumn(
+          self.filesColumns.map((c) => getSnapshot(c)),
+          getSnapshot(column),
+          getSnapshot(columnTarget)
+        );
 
         self.filesColumns = cast(columns);
         return storageSet({

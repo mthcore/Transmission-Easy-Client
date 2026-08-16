@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ContextMenu from '../ContextMenu';
 import type { Folder, IBgForContextMenu } from '../../types';
 
@@ -8,25 +8,10 @@ import type { Folder, IBgForContextMenu } from '../../types';
  * the tree builder produces becomes exactly one `chrome.contextMenus.create` call, in order, with
  * the item name as `title`, its own `id` and its `parentId`.
  *
- * ContextMenu.ts does `require('path')`. Webpack aliases `path` to `path-browserify` (see
- * webpack.config.js), so the shipped extension always gets POSIX semantics. Under Node on Windows
- * the very same require yields the win32 implementation, whose `normalize()` rewrites '/' to '\'
- * and defeats the whole tree builder. The spy below pins `normalize` to its POSIX behaviour so the
- * suite tests what actually ships, and behaves identically on every platform.
+ * ContextMenu.ts normalizes paths with its own `posixNormalizePath()` rather than the 'path'
+ * module, specifically so this suite doesn't need to fight Node's platform-dependent `path`
+ * implementation (win32 vs posix) to test what actually ships. No Node `path` involved here.
  */
-const nodePath = require('path') as typeof import('path');
-let normalizeSpy: ReturnType<typeof vi.spyOn>;
-
-beforeAll(() => {
-  normalizeSpy = vi
-    .spyOn(nodePath, 'normalize')
-    .mockImplementation((p: string) => nodePath.posix.normalize(p));
-});
-
-afterAll(() => {
-  normalizeSpy.mockRestore();
-});
-
 const ROOT = 'ROOT_MENU_ID';
 
 interface MenuNode {

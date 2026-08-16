@@ -106,9 +106,6 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: [
-              ['@babel/plugin-proposal-decorators', {'legacy': true}],
-            ],
             presets: [
               '@babel/preset-react',
               ['@babel/preset-env', babelEnvOptions],
@@ -139,10 +136,7 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     fallback: {
-      "path": require.resolve("path-browserify"),
       "url": require.resolve("url/"),
-      "querystring": require.resolve("querystring-es3"),
-      "util": require.resolve("util/"),
       "process": require.resolve("process/browser.js"),
     },
     alias: {

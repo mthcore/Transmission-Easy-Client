@@ -87,13 +87,3 @@
   position: absolute;
   left: 8px;
 }
-
-// Legacy context menu
-ul.context-menu-list label {
-  position: absolute;
-  left: 4px;
-
-  &.context {
-    left: auto;
-  }
-}

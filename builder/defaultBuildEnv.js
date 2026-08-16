@@ -7,7 +7,9 @@ const version = require('../src/manifest').version;
 
 const browser = process.env.BROWSER || getArgvValue('--BROWSER') || 'chrome';
 
-const targets = browser === 'firefox' ? { firefox: '109' } : { chrome: '88' };
+// Kept in sync with the real floors: src/manifest.json's minimum_chrome_version
+// and the gecko.strict_min_version webpack.config.js writes into the Firefox manifest.
+const targets = browser === 'firefox' ? { firefox: '113' } : { chrome: '101' };
 const babelEnvOptions = { targets };
 
 global.BUILD_ENV = {

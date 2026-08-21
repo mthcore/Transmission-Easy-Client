@@ -59,6 +59,22 @@ describe('createColumnSorter', () => {
     expect(result.map((i) => i.name)).toEqual(['B', 'C', 'A']);
   });
 
+  it('pushes missing values to the end when sorting ascending too', () => {
+    const withNulls = [
+      { name: 'B', value: 2 },
+      { name: 'A', value: null },
+      { name: 'C', value: 1 },
+    ];
+    const result = sorter(withNulls, 'value', 1);
+    expect(result.map((i) => i.name)).toEqual(['C', 'B', 'A']);
+  });
+
+  it('sorts names case-insensitively instead of by code point', () => {
+    const names = [{ name: 'Zoo' }, { name: 'apple' }, { name: 'Banana' }];
+    const result = sorter(names, 'name', 1);
+    expect(result.map((i) => i.name)).toEqual(['apple', 'Banana', 'Zoo']);
+  });
+
   it('handles equal values', () => {
     const items = [
       { name: 'A', value: 1 },
@@ -82,6 +98,26 @@ describe('createColumnSorter with column mapping', () => {
     ];
     const result = sorter(items, 'done', 1);
     expect(result.map((i) => i.name)).toEqual(['C', 'A', 'B']);
+  });
+
+  it('actually sorts the seeds/peers column', () => {
+    const items = [
+      { name: 'A', activeSeeds: 9 },
+      { name: 'B', activeSeeds: 1 },
+      { name: 'C', activeSeeds: 5 },
+    ];
+    // Used to be a silent no-op: no mapping meant every row compared undefined
+    expect(sorter(items, 'seeds_peers', 1).map((i) => i.name)).toEqual(['B', 'C', 'A']);
+    expect(sorter(items, 'seeds_peers', -1).map((i) => i.name)).toEqual(['A', 'C', 'B']);
+  });
+
+  it('sorts the infinite-ratio sentinel (-2) above every finite ratio', () => {
+    const items = [
+      { name: 'A', shared: 1500 },
+      { name: 'B', shared: -2 }, // seeded without downloading = infinite
+      { name: 'C', shared: 300 },
+    ];
+    expect(sorter(items, 'shared', -1).map((i) => i.name)).toEqual(['B', 'A', 'C']);
   });
 
   it('applies eta special handler (-1 treated as Infinity)', () => {

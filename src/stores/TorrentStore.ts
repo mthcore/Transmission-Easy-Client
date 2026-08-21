@@ -62,11 +62,12 @@ const TorrentStore = types
     return {
       get remaining(): number {
         const base = self.sizeWhenDone > 0 ? self.sizeWhenDone : self.size;
-        let result = base - self.downloaded;
-        if (result < 0) {
-          result = 0;
-        }
-        return result;
+        // Derive from percentDone, not from downloadedEver: that counter is
+        // lifetime traffic, so a torrent seeded from existing data (0 bytes
+        // downloaded) reported its whole size as remaining, and a re-download
+        // reported 0 while still incomplete.
+        const result = Math.round(base * (1 - self.percentDone));
+        return result > 0 ? result : 0;
       },
       get remainingStr(): string {
         return formatBytes(this.remaining);
@@ -125,6 +126,9 @@ const TorrentStore = types
         return formatBytes(self.uploaded);
       },
       get sharedStr(): string {
+        // -2 is Transmission's "infinite ratio" sentinel (uploaded with
+        // nothing downloaded), which must not read as 0.00
+        if (self.shared === -2) return '∞';
         return (self.shared / 1000).toFixed(2);
       },
       get downloadedStr(): string {
@@ -170,8 +174,9 @@ const TorrentStore = types
         return `${(self.metadataPercentComplete * 100).toFixed(0)}%`;
       },
       get stateText(): string {
-        // Show metadata resolution progress for magnets
-        if (self.metadataPercentComplete < 1) {
+        // Metadata progress for magnets, but only while the torrent is
+        // actually running — a stopped magnet used to read "Downloading"
+        if (self.metadataPercentComplete < 1 && self.statusCode !== 0) {
           const pct = (self.metadataPercentComplete * 100).toFixed(0);
           return `${chrome.i18n.getMessage('OV_FL_DOWNLOADING')} (${chrome.i18n.getMessage('DT_METADATA')} ${pct}%)`;
         }

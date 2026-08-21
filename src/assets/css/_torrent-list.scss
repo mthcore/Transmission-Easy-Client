@@ -5,9 +5,13 @@
 @use "variables" as *;
 @use "mixins" as *;
 
-// Column widths via CSS custom properties (set on container via JS)
-$torrent-columns: checkbox, name, order, size, remaining, done, status, seeds, peers,
-  seeds_peers, downspd, upspd, eta, upped, downloaded, shared, added, completed, actions;
+// Column widths via CSS custom properties (set on container via JS).
+// Must list EVERY column ConfigStore can show: a missing entry means no
+// width rule is generated, so the configured width is ignored and dragging
+// the column's resize handle does nothing visible.
+$torrent-columns: checkbox, name, order, size, sizeWhenDone, remaining, done, status, seeds,
+  peers, seeds_peers, downspd, upspd, eta, upped, downloaded, shared, added, completed, label,
+  priority, activity, started, edited, actions;
 
 .torrent-list-layer {
   position: relative;

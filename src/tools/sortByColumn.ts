@@ -37,9 +37,17 @@ export function createColumnSorter<T extends Sortable>(
       if (a === b) {
         return 0;
       }
-      // Handle null/undefined - push them to the end
-      if (a == null) return down;
-      if (b == null) return up;
+      // Missing values always land at the end, whichever direction is active
+      // (returning a direction-dependent value floated them to the top when
+      // sorting ascending)
+      if (a == null) return 1;
+      if (b == null) return -1;
+      // Names must not split into an uppercase block and a lowercase one
+      if (typeof a === 'string' && typeof b === 'string') {
+        const compared = a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        if (compared === 0) return 0;
+        return compared > 0 ? up : down;
+      }
       if (a > b) {
         return up;
       }
@@ -56,6 +64,10 @@ const etaHandler: SpecialHandler = (value) => ((value as number) < 0 ? Infinity 
 // Special handler for date columns (0/null/undefined means infinite)
 const dateHandler: SpecialHandler = (value) => (!value ? Infinity : value);
 
+// -2 is Transmission's infinite-ratio sentinel: it belongs at the TOP, not
+// below every finite ratio
+const sharedHandler: SpecialHandler = (value) => ((value as number) === -2 ? Infinity : value);
+
 // Pre-configured sorter for torrents
 export const torrentColumnMap: ColumnMap = {
   done: 'progress',
@@ -70,6 +82,9 @@ export const torrentColumnMap: ColumnMap = {
   status: 'statusCode',
   label: 'labelsStr',
   priority: 'bandwidthPriority',
+  // The cell shows activeSeeds/activePeers; without this entry the comparator
+  // read an undefined property and the column silently refused to sort
+  seeds_peers: 'activeSeeds',
 };
 
 export const torrentSpecialHandlers: SpecialHandlers = {
@@ -79,6 +94,7 @@ export const torrentSpecialHandlers: SpecialHandlers = {
   activityDate: dateHandler,
   startDate: dateHandler,
   editDate: dateHandler,
+  shared: sharedHandler,
 };
 
 // Pre-configured sorter for files

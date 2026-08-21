@@ -1,5 +1,6 @@
 import React from 'react';
 import { speedToStr, formatBytes } from '../../../tools/format';
+import { SPEED_LIMIT_UNIT } from '../../../stores/ClientStore';
 import type { PeerData, TorrentDetailData } from '../../../bg/TorrentService';
 import type { MouseEvent } from 'react';
 
@@ -263,12 +264,12 @@ const TorrentDetailsInfoTab = ({
                 <label>{chrome.i18n.getMessage('DT_DOWNLOAD_LIMIT')}</label>
                 <span>
                   {details.downloadLimited
-                    ? `${speedToStr(details.downloadLimit * 1024)}`
+                    ? `${speedToStr(details.downloadLimit * SPEED_LIMIT_UNIT)}`
                     : chrome.i18n.getMessage('DT_DISABLED')}
                   {' / '}
                   {chrome.i18n.getMessage('DT_UPLOAD_LIMIT')}:{' '}
                   {details.uploadLimited
-                    ? `${speedToStr(details.uploadLimit * 1024)}`
+                    ? `${speedToStr(details.uploadLimit * SPEED_LIMIT_UNIT)}`
                     : chrome.i18n.getMessage('DT_DISABLED')}
                   {' — '}
                   {chrome.i18n.getMessage('DT_HONORS_SESSION_LIMITS')}:{' '}

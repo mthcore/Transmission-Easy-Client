@@ -16,6 +16,10 @@ import useRootStore from '../hooks/useRootStore';
 import { useTheme } from '../hooks/useTheme';
 import DialogLoader from '../components/dialogs/DialogLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
+import applyStoredTheme from '../tools/applyStoredTheme';
+
+// Before React renders, so an explicit theme doesn't flash the OS one first
+applyStoredTheme();
 
 const logger = getLogger('Index');
 
@@ -62,10 +66,24 @@ const Index = observer(() => {
 
       if (!rootStore.client) return;
 
-      // R - Refresh
-      if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
-        rootStore.client.updateTorrentList(true);
-        rootStore.client.updateSettings();
+      // Every shortcut below acts on the torrent list behind an open dialog:
+      // without this guard, Enter/Delete/F2 kept firing while a confirmation
+      // dialog was up (Enter could start the very torrents about to be removed)
+      if (rootStore.dialogs.size) return;
+
+      // R - Refresh. Guarded like the toolbar button: key auto-repeat used to
+      // fire dozens of forced full refreshes per second.
+      if (e.key === 'r' && !e.ctrlKey && !e.metaKey && !e.repeat) {
+        if (rootStore.isRefreshing) return;
+        rootStore.setRefreshing(true);
+        Promise.all([
+          rootStore.client.updateTorrentList(true).catch((err) => {
+            logger.error('refresh shortcut: updateTorrentList error', err);
+          }),
+          rootStore.client.updateSettings().catch((err) => {
+            logger.error('refresh shortcut: updateSettings error', err);
+          }),
+        ]).finally(() => rootStore.setRefreshing(false));
         return;
       }
 
@@ -95,8 +113,12 @@ const Index = observer(() => {
       // Enter - Start/Stop selected
       if (e.key === 'Enter' && rootStore.torrentList.selectedIds.length) {
         const ids = rootStore.torrentList.selectedIds;
-        const firstTorrent = rootStore.client.torrents.get(ids[0]);
-        if (firstTorrent?.isActive) {
+        // Decide on the run state, not on instantaneous speed: isActive is
+        // speed-based, so a started-but-idle torrent could never be paused
+        const anyRunning = ids.some(
+          (id) => (rootStore.client?.torrents.get(id)?.statusCode ?? 0) !== 0
+        );
+        if (anyRunning) {
           rootStore.client.torrentsStop(ids);
         } else {
           rootStore.client.torrentsStart(ids);

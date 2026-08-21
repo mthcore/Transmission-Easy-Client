@@ -51,6 +51,7 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
   const refSpan = useRef<HTMLSpanElement>(null);
   const prevNameRef = useRef(name);
   const prevWidthRef = useRef(width);
+  const acquiredClassRef = useRef<string | null>(null);
 
   // Reset calculation flag when name or width changes
   useEffect(() => {
@@ -61,14 +62,15 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
     }
   }, [name, width]);
 
-  // Cleanup on unmount
+  // Releases the previous class when it changes, and on unmount. This is the
+  // ONLY release path: releasing in the handler too double-decremented the
+  // shared refcount and deleted a <style> other rows were still using.
   useEffect(() => {
     return () => releaseStyle(movebleClassName);
   }, [movebleClassName]);
 
   const handleMouseEnter = useCallback(() => {
     setShouldUpdateCalc(false);
-    releaseStyle(movebleClassName);
 
     const spanWidth = refSpan.current?.offsetWidth || 0;
     if (spanWidth < width) {
@@ -81,9 +83,13 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
     if (elWidth < 100) elWidth = 100;
 
     const moveName = `mv_${width}_${elWidth}`;
+    // Acquire once per distinct class: re-hovering the same bucket would
+    // otherwise bump the refcount with no matching release
+    if (moveName === acquiredClassRef.current) return;
     getOrCreateStyle(moveName, width, elWidth);
+    acquiredClassRef.current = moveName;
     setMovebleClassName(moveName);
-  }, [width, movebleClassName]);
+  }, [width]);
 
   const classList = ['title'];
   if (!shouldUpdateCalc && movebleClassName) {

@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect, useMemo, MouseEvent } from 'react';
+import { MIN_COLUMN_WIDTH } from '../constants';
 
 interface UseResizableColumnsProps {
   defaultWidths: Record<string, number>;
@@ -11,7 +12,7 @@ interface ResizeHandleProps {
   onClick: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
-const MIN_WIDTH = 24;
+const MIN_WIDTH = MIN_COLUMN_WIDTH;
 
 export function useResizableColumns({
   defaultWidths,
@@ -48,6 +49,12 @@ export function useResizableColumns({
     resizeRef.current = { key, startX: clientX, startWidth: currentWidth };
 
     const move = (e: globalThis.MouseEvent) => {
+      // Button released outside the window: no mouseup reaches us, so the drag
+      // would stay armed and keep resizing on the next mouse move
+      if (e.buttons === 0) {
+        up();
+        return;
+      }
       const delta = e.clientX - resizeRef.current.startX;
       const newWidth = Math.max(MIN_WIDTH, resizeRef.current.startWidth + delta);
       setWidths((prev) => ({ ...prev, [resizeRef.current.key]: newWidth }));

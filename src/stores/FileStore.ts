@@ -18,7 +18,10 @@ const FileStore = types
     return {
       get progress(): number {
         if (self.size === 0) return 100;
-        return Math.round(((self.downloaded * 100) / self.size) * 10) / 10;
+        // Truncate like the torrent-list progress: rounding made 99.96% render
+        // as a finished '100%' while bytes were still missing
+        const percent = (self.downloaded * 100) / self.size;
+        return percent >= 100 ? 100 : Math.trunc(percent * 10) / 10;
       },
       get progressStr(): string {
         const progress = this.progress;

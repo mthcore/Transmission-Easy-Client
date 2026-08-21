@@ -44,6 +44,14 @@ const chromeMock = {
   notifications: {
     create: vi.fn(),
     clear: vi.fn(),
+    onClicked: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
+  },
+  tabs: {
+    create: vi.fn(),
+    sendMessage: vi.fn(),
   },
   action: {
     setBadgeText: vi.fn(),

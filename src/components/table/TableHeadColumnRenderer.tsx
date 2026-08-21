@@ -94,7 +94,9 @@ const TableHeadColumnRenderer = observer((props: TableHeadColumnRendererProps) =
 
   let ariaSort: 'ascending' | 'descending' | 'none' | undefined;
   if (column.order !== 0) {
-    ariaSort = isSorted ? (sortDirection === 1 ? 'descending' : 'ascending') : 'none';
+    // direction 1 IS ascending in the sorter — the mapping was inverted, so
+    // screen readers announced the opposite of the visible order
+    ariaSort = isSorted ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none';
   }
 
   return (

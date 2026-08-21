@@ -53,6 +53,8 @@ class Bg {
     chrome.runtime.onMessage.addListener(this.handleMessage);
     // chrome.alarms listener must be registered synchronously at SW startup
     chrome.alarms.onAlarm.addListener(this.handleAlarm);
+    // Clicking a notification used to do nothing at all
+    chrome.notifications.onClicked.addListener(this.handleNotificationClick);
     // Cast needed because MST types with 'maybe' are complex
     this.daemon = new Daemon(this as unknown as IBgForDaemon);
     this.contextMenu = new ContextMenu(this as unknown as IBgForContextMenu);
@@ -403,6 +405,21 @@ class Bg {
           logger.error('Send response error', err);
         });
       return true;
+    }
+  };
+
+  handleNotificationClick = (notificationId: string) => {
+    chrome.notifications.clear(notificationId);
+    // The popup can't be opened programmatically on every browser, so fall
+    // back to the extension page in a tab
+    const openPage = () => chrome.tabs.create({ url: '/index.html' });
+    const action = chrome.action as typeof chrome.action & {
+      openPopup?: () => Promise<void>;
+    };
+    if (typeof action.openPopup === 'function') {
+      Promise.resolve(action.openPopup()).catch(openPage);
+    } else {
+      openPage();
     }
   };
 

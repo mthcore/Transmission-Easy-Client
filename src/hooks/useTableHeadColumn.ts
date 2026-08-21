@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { DragEvent, MouseEvent } from 'react';
+import { MIN_COLUMN_WIDTH } from '../constants';
 
 interface Column {
   column: string;
@@ -72,33 +73,47 @@ export function useTableHeadColumn({
   );
 
   // Resize handlers - using refs to avoid recreating functions
+  // Set once the resize handlers exist; lets a handler end the drag without a
+  // circular reference between the callbacks
+  const endResizeRef = useRef<(() => void) | null>(null);
+
   const handleBodyMouseMove = useCallback(
     (e: globalThis.MouseEvent) => {
+      // The button was released outside the window: no mouseup ever reached us,
+      // so the drag would stay armed and resize on the next mouse move
+      if (e.buttons === 0) {
+        endResizeRef.current?.();
+        return;
+      }
       const delta = e.clientX - resizeStartClientX.current;
       let newSize = resizeStartSize.current + delta;
-      if (newSize < 16) {
-        newSize = 16;
+      if (newSize < MIN_COLUMN_WIDTH) {
+        newSize = MIN_COLUMN_WIDTH;
       }
       column.setWidth(newSize);
     },
     [column]
   );
 
-  const handleBodyMouseUp = useCallback(
-    (e: globalThis.MouseEvent) => {
-      e.stopPropagation();
+  const handleBodyMouseUp = useCallback((e: globalThis.MouseEvent) => {
+    e.stopPropagation();
+    endResizeRef.current?.();
+  }, []);
 
-      document.body.removeEventListener('mousemove', handleBodyMouseMove);
-      document.body.removeEventListener('mouseup', handleBodyMouseUp);
+  const endResize = useCallback(() => {
+    document.body.removeEventListener('mousemove', handleBodyMouseMove);
+    document.body.removeEventListener('mouseup', handleBodyMouseUp);
 
-      if (refTh.current) {
-        refTh.current.draggable = true;
-      }
+    if (refTh.current) {
+      refTh.current.draggable = true;
+    }
 
-      onSaveColumns();
-    },
-    [handleBodyMouseMove, onSaveColumns]
-  );
+    onSaveColumns();
+  }, [handleBodyMouseMove, handleBodyMouseUp, onSaveColumns]);
+
+  useEffect(() => {
+    endResizeRef.current = endResize;
+  }, [endResize]);
 
   const handleResizeClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

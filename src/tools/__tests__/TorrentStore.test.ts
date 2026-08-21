@@ -37,14 +37,25 @@ function createTorrent(overrides: Partial<Record<string, unknown>> = {}) {
 
 describe('TorrentStore computed views', () => {
   describe('remaining / remainingStr', () => {
-    it('calculates remaining bytes', () => {
-      const t = createTorrent({ size: 1000, downloaded: 700 });
+    it('derives remaining bytes from percentDone', () => {
+      const t = createTorrent({ size: 1000, sizeWhenDone: 1000, percentDone: 0.7 });
       expect(t.remaining).toBe(300);
     });
 
-    it('returns 0 when downloaded exceeds size', () => {
-      const t = createTorrent({ size: 1000, downloaded: 1200 });
+    it('returns 0 for a complete torrent seeded from existing data', () => {
+      // downloadedEver is 0 here: deriving from it reported the whole size
+      const t = createTorrent({ size: 1000, sizeWhenDone: 1000, percentDone: 1, downloaded: 0 });
       expect(t.remaining).toBe(0);
+    });
+
+    it('ignores lifetime downloadedEver overshoot on a re-download', () => {
+      const t = createTorrent({
+        size: 1000,
+        sizeWhenDone: 1000,
+        percentDone: 0.5,
+        downloaded: 1800,
+      });
+      expect(t.remaining).toBe(500);
     });
   });
 

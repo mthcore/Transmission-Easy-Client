@@ -44,8 +44,19 @@ const MoveDialog = observer(({ dialogStore }: MoveDialogProps) => {
       }
 
       if (location === null) {
-        const locationInput = form.elements.namedItem('location') as HTMLInputElement;
-        location = locationInput.value.trim();
+        // The custom-location input only exists when that option is selected;
+        // a folder that vanished (or settings not synced yet) used to make
+        // this throw and abandon the move with no feedback
+        const locationInput = form.elements.namedItem('location') as HTMLInputElement | null;
+        location = locationInput ? locationInput.value.trim() : '';
+      }
+
+      if (!location) {
+        showError(
+          chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to move torrent',
+          new Error('No destination selected')
+        );
+        return;
       }
 
       client?.torrentSetLocation(dialogStore.torrentIds, location).catch((err) => {

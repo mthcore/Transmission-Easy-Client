@@ -418,26 +418,27 @@ function removeItems<T>(array: T[], items: T[]): T[] {
   return array;
 }
 
+/**
+ * Move the selected entries one step up (index < 0) or down. Each selected
+ * entry moves by one position, so a non-contiguous selection keeps its
+ * relative order — collapsing everything to a single insertion point used to
+ * teleport later entries past unrelated ones.
+ */
 function moveItems<T>(array: T[], items: T[], index: number): T[] {
-  let startPos: number | null = null;
-  items.forEach((folder) => {
-    const pos = array.indexOf(folder);
-    if (pos !== -1) {
-      if (startPos === null) {
-        startPos = pos;
-      }
-      array.splice(pos, 1);
-    }
-  });
+  const selected = new Set(items);
+  const up = index < 0;
+  // Walk from the edge the items move toward, so an already-moved neighbour
+  // blocks the next one instead of being leapfrogged
+  const positions = array
+    .map((item, pos) => (selected.has(item) ? pos : -1))
+    .filter((pos) => pos !== -1);
+  if (!up) positions.reverse();
 
-  if (startPos !== null) {
-    if (index < 0) {
-      // Clamp: splice(-1) would insert before the LAST element, so moving the
-      // top item up used to scramble the order instead of no-opping
-      array.splice(Math.max(0, startPos - 1), 0, ...items);
-    } else {
-      array.splice(startPos + 1, 0, ...items);
-    }
+  for (const pos of positions) {
+    const target = up ? pos - 1 : pos + 1;
+    if (target < 0 || target >= array.length) continue;
+    if (selected.has(array[target])) continue;
+    [array[pos], array[target]] = [array[target], array[pos]];
   }
 
   return array;

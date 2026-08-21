@@ -2,9 +2,6 @@
 
 ## Version 3.4.0 (August 2026)
 
-**Deep audit pass: 25 verified bug fixes.** A full-codebase review with every
-finding traced end-to-end before fixing.
-
 - **Add-torrent fix** - the folder selected in the add-by-URL and drop-files
   dialogs was silently ignored; torrents landed in the daemon's default
   directory. The chosen folder is now honored on every add path
@@ -29,6 +26,10 @@ finding traced end-to-end before fixing.
   millisecond rates mid-keystroke, and a too-small background interval can no
   longer silently kill badge updates and notifications
 - **435 tests** (up from 418), including regression tests for every fix above
+
+## Version 3.3.1 (August 2026)
+
+- Fix backup on Cloud.
 
 ## Version 3.3.0 (August 2026)
 

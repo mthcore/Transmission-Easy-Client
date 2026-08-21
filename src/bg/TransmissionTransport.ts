@@ -99,12 +99,13 @@ class TransmissionTransport {
 
   sendAction(
     body: Record<string, unknown>,
-    customParser?: (text: string) => TransmissionResponse
+    customParser?: (text: string) => TransmissionResponse,
+    timeoutMs: number = FETCH_TIMEOUT
   ): Promise<TransmissionResponse> {
     // Legacy argument names are sent as-is: the bespoke /transmission/rpc
     // endpoint accepts them on every daemon from 2.x through 4.2+.
     return this.retryIfTokenInvalid(() => {
-      return this.fetchWithRetry(body, customParser);
+      return this.fetchWithRetry(body, customParser, 0, timeoutMs);
     }).then((response) => {
       if (response.result !== 'success') {
         throw new ErrorWithCode(response.result, 'TRANSMISSION_ERROR');
@@ -116,7 +117,8 @@ class TransmissionTransport {
   private fetchWithRetry(
     body: Record<string, unknown>,
     customParser?: (text: string) => TransmissionResponse,
-    attempt = 0
+    attempt = 0,
+    timeoutMs: number = FETCH_TIMEOUT
   ): Promise<TransmissionResponse> {
     return fetchWithTimeout(
       this.url,
@@ -128,7 +130,7 @@ class TransmissionTransport {
         },
         body: JSON.stringify(body),
       }),
-      FETCH_TIMEOUT,
+      timeoutMs,
       // The body is read inside the timeout window: a daemon/proxy that sends
       // headers then stalls the body must still trip FETCH_TIMEOUT
       (response) => {
@@ -164,7 +166,10 @@ class TransmissionTransport {
       ) {
         const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
         return new Promise<TransmissionResponse>((resolve) =>
-          setTimeout(() => resolve(this.fetchWithRetry(body, customParser, attempt + 1)), delay)
+          setTimeout(
+            () => resolve(this.fetchWithRetry(body, customParser, attempt + 1, timeoutMs)),
+            delay
+          )
         );
       }
       throw err;

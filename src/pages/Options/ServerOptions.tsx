@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 
@@ -38,6 +38,17 @@ const ServerOptions = observer(() => {
   const [portTestResult, setPortTestResult] = useState<boolean | null>(null);
   const [portTesting, setPortTesting] = useState(false);
 
+  const [actionError, setActionError] = useState('');
+
+  // Every daemon mutation on this page used to fail silently: the error only
+  // went to ClientStore.lastErrorMessage, which no options component renders.
+  const runAction = useCallback((promise: Promise<unknown> | undefined) => {
+    setActionError('');
+    Promise.resolve(promise).catch((err: Error) => {
+      setActionError(`${err.name}: ${err.message || 'Unknown error'}`);
+    });
+  }, []);
+
   const fetchSettings = useCallback(() => {
     if (!client) return;
     setLoading(true);
@@ -51,11 +62,13 @@ const ServerOptions = observer(() => {
     );
   }, [client]);
 
+  // Always refresh on mount: the background mirror can hold settings fetched
+  // long ago (or changed since from another client), and this page has no
+  // polling loop, so it used to display frozen values whenever the service
+  // worker happened to be warm.
   useEffect(() => {
-    if (!settings) {
-      fetchSettings();
-    }
-  }, [fetchSettings, settings]);
+    fetchSettings();
+  }, [fetchSettings]);
 
   // All hooks below must run unconditionally on every render — the actual
   // "not ready yet" branching happens only in the JSX at the very end, so the
@@ -125,24 +138,39 @@ const ServerOptions = observer(() => {
     if (!client) return;
     setPortTesting(true);
     setPortTestResult(null);
+    setActionError('');
     client.portTest().then(
       (isOpen) => {
         setPortTestResult(isOpen);
         setPortTesting(false);
       },
-      () => {
-        setPortTestResult(false);
+      (err: Error) => {
+        // A failed check is NOT a closed port: reporting it as one sent users
+        // debugging their router for a request that never ran
+        setPortTestResult(null);
+        setActionError(`${err.name}: ${err.message}`);
         setPortTesting(false);
       }
     );
   }, [client]);
 
+  // The daemon's bitfield only reaches us after a full session-set/get round
+  // trip, so XOR-ing against the mirror lost days when several were clicked in
+  // a row. Track the pending value locally and apply successive toggles to it.
+  const pendingDayRef = useRef<number | null>(null);
+  useEffect(() => {
+    pendingDayRef.current = null;
+  }, [settings?.altSpeedTimeDay]);
+
   const handleDayToggle = useCallback(
     (dayBit: number) => () => {
-      if (!settings) return;
-      client?.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
+      if (!settings || !client) return;
+      const base = pendingDayRef.current ?? settings.altSpeedTimeDay;
+      const next = base ^ dayBit;
+      pendingDayRef.current = next;
+      runAction(client.setAltSpeedTimeDay(next));
     },
-    [client, settings]
+    [client, settings, runAction]
   );
 
   if (!client || !settings) {
@@ -188,22 +216,34 @@ const ServerOptions = observer(() => {
   }
 
   const handleToggle = (setter: (enabled: boolean) => Promise<unknown>, current: boolean) => () => {
-    setter(!current);
+    runAction(setter(!current));
+  };
+
+  /** Clamp to the input's own min/max — typed values bypass those attributes */
+  const clampToInput = (value: number, input: HTMLInputElement): number => {
+    const min = parseFloat(input.min);
+    const max = parseFloat(input.max);
+    let result = value;
+    if (Number.isFinite(min) && result < min) result = min;
+    if (Number.isFinite(max) && result > max) result = max;
+    return result;
   };
 
   const handleNumberBlur =
     (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseFloat(e.target.value);
-      if (Number.isFinite(val) && val > 0) {
-        setter(val);
+      // 0 is a legitimate value (e.g. "stop seeding immediately"); requiring
+      // > 0 silently dropped it
+      if (Number.isFinite(val)) {
+        runAction(setter(clampToInput(val, e.target)));
       }
     };
 
   const handleIntBlur =
     (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseInt(e.target.value, 10);
-      if (Number.isFinite(val) && val > 0) {
-        setter(val);
+      if (Number.isFinite(val)) {
+        runAction(setter(clampToInput(val, e.target)));
       }
     };
 
@@ -211,7 +251,7 @@ const ServerOptions = observer(() => {
     (setter: (minutes: number) => Promise<unknown>) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const [h, m] = e.target.value.split(':').map(Number);
       if (Number.isFinite(h) && Number.isFinite(m)) {
-        setter(h * 60 + m);
+        runAction(setter(h * 60 + m));
       }
     };
 
@@ -220,6 +260,8 @@ const ServerOptions = observer(() => {
       <h2>{chrome.i18n.getMessage('optServer')}</h2>
 
       {settings.daemonVersionStr && <p className="daemon-version">{settings.daemonVersionStr}</p>}
+
+      {actionError && <p className="red">{actionError}</p>}
 
       <h3>{chrome.i18n.getMessage('generalSettings')}</h3>
 

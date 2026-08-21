@@ -21,8 +21,13 @@ function parseBadgeColor(badgeColor: string): RgbColor {
   };
 }
 
-function rgbToStorageString(color: RgbColor): string {
-  return [color.r, color.g, color.b, 1].join(',');
+function parseBadgeAlpha(badgeColor: string): number {
+  const alpha = parseFloat(badgeColor.split(',')[3]);
+  return Number.isFinite(alpha) ? alpha : 1;
+}
+
+function rgbToStorageString(color: RgbColor, alpha: number): string {
+  return [color.r, color.g, color.b, alpha].join(',');
 }
 
 const NotifyOptions = observer(() => {
@@ -33,13 +38,19 @@ const NotifyOptions = observer(() => {
   );
   const pickerColorRef = useRef(pickerColor);
 
+  // Tracks whether the user actually picked a colour: closing the picker
+  // untouched used to commit anyway, rewriting the default's 0.40 alpha to 1
+  const colorTouchedRef = useRef(false);
+
   const handleColorChange = useCallback((color: RgbColor) => {
+    colorTouchedRef.current = true;
     pickerColorRef.current = color;
     setPickerColor(color);
   }, []);
 
   const handleOpenColorPicker = useCallback(() => {
     const color = parseBadgeColor(configStore.badgeColor);
+    colorTouchedRef.current = false;
     pickerColorRef.current = color;
     setPickerColor(color);
     setColorPickerOpened(true);
@@ -47,7 +58,10 @@ const NotifyOptions = observer(() => {
 
   const handleCloseColorPicker = useCallback(() => {
     setColorPickerOpened(false);
-    configStore.setOptions({ badgeColor: rgbToStorageString(pickerColorRef.current) });
+    if (!colorTouchedRef.current) return;
+    // Preserve the configured alpha — the picker only edits RGB
+    const alpha = parseBadgeAlpha(configStore.badgeColor);
+    configStore.setOptions({ badgeColor: rgbToStorageString(pickerColorRef.current, alpha) });
   }, [configStore]);
 
   return (

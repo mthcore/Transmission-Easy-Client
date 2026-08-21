@@ -99,16 +99,33 @@ const BackupRestoreOptions = () => {
     }
   }, []);
 
+  // These used to report failures only through logger.error, which is a no-op
+  // in production builds: a rejected sync read/remove looked like the button
+  // did nothing at all.
   const handleLoadFromCloud = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setRestoreError('');
     try {
       const backup = await loadCloudBackup();
       if (!refPage.current) return;
-      if (backup && refData.current) {
-        refData.current.value = backup;
+      if (!refData.current) {
+        // The textarea only exists once the local config loaded
+        setRestoreState('error');
+        setRestoreError(chrome.i18n.getMessage('clickLoadConfig'));
+        return;
       }
+      if (!backup) {
+        setRestoreState('error');
+        setRestoreError(chrome.i18n.getMessage('OV_FL_ERROR'));
+        setHasCloudData(false);
+        return;
+      }
+      refData.current.value = backup;
     } catch (err) {
       logger.error('handleLoadFromCloud error', err);
+      if (!refPage.current) return;
+      setRestoreState('error');
+      setRestoreError(errorMessage(err));
     }
   }, []);
 
@@ -124,6 +141,9 @@ const BackupRestoreOptions = () => {
       setHasCloudData(false);
     } catch (err) {
       logger.error('handleClearCloud error', err);
+      if (!refPage.current) return;
+      setRestoreState('error');
+      setRestoreError(errorMessage(err));
     }
   }, []);
 

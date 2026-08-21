@@ -115,9 +115,16 @@ const TorrentMenuContent = observer(() => {
 
   const handleCopyMagnetUrl = () => {
     if (!firstTorrent) return;
+    // magnetLink is optional on old daemons; the store field is required, so
+    // passing undefined threw an MST typecheck error inside the menu handler.
+    // The hash is enough to rebuild a usable magnet URI.
+    const magnetLink =
+      firstTorrent.magnetLink ||
+      (firstTorrent.hash ? `magnet:?xt=urn:btih:${firstTorrent.hash}` : '');
+    if (!magnetLink) return;
     rootStore.createDialog({
       type: 'copyMagnetUrl',
-      magnetLink: firstTorrent.magnetLink,
+      magnetLink,
       torrentIds: selectedIds.slice(0),
     });
   };

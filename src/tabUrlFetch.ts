@@ -1,6 +1,7 @@
 import { arrayBufferToBase64 } from './tools/binaryConversion';
 import getLogger from './tools/getLogger';
 import ErrorWithCode from './tools/ErrorWithCode';
+import fetchWithTimeout from './tools/fetchWithTimeout';
 import { serializeError } from 'serialize-error';
 import { MAX_FETCH_SIZE } from './constants';
 
@@ -76,7 +77,9 @@ declare global {
     );
 
     function fetchUrl(url: string): Promise<FetchResult> {
-      return fetch(url).then((response) => {
+      // Timeout spans the body read too — a stalled server must not keep the
+      // closeLockWrap beforeunload handler engaged forever
+      return fetchWithTimeout(url, undefined, undefined, (response) => {
         if (!response.ok) {
           throw new ErrorWithCode(
             `${response.status}: ${response.statusText}`,
@@ -100,6 +103,11 @@ declare global {
         };
 
         return response.arrayBuffer().then((arrayBuffer) => {
+          // Content-Length is absent on chunked responses — enforce the cap
+          // on what actually arrived, like downloadFileFromUrl does
+          if (arrayBuffer.byteLength > MAX_FETCH_SIZE) {
+            throw new ErrorWithCode(`Size is more then 10mb`, 'FILE_SIZE_EXCEEDED');
+          }
           return { response: safeResponse, base64: arrayBufferToBase64(arrayBuffer) };
         });
       });

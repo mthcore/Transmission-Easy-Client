@@ -11,17 +11,20 @@ async function downloadFileFromUrl(url: string): Promise<DownloadResult> {
     throw new ErrorWithCode('Link is not supported', 'LINK_IS_NOT_SUPPORTED');
   }
 
-  const response = await fetchWithTimeout(url);
-  if (!response.ok) {
-    throw new ErrorWithCode(`${response.status}: ${response.statusText}`, 'RESPONSE_IS_NOT_OK');
-  }
+  // The body is read inside the timeout window so a stalled server can't
+  // hang the download after headers are received
+  const blob = await fetchWithTimeout(url, undefined, undefined, (response) => {
+    if (!response.ok) {
+      throw new ErrorWithCode(`${response.status}: ${response.statusText}`, 'RESPONSE_IS_NOT_OK');
+    }
 
-  const contentLength = response.headers.get('Content-Length');
-  if (contentLength && parseInt(contentLength, 10) > MAX_FETCH_SIZE) {
-    throw new ErrorWithCode('File size exceeds the allowed limit', 'FILE_SIZE_EXCEEDED');
-  }
+    const contentLength = response.headers.get('Content-Length');
+    if (contentLength && parseInt(contentLength, 10) > MAX_FETCH_SIZE) {
+      throw new ErrorWithCode('File size exceeds the allowed limit', 'FILE_SIZE_EXCEEDED');
+    }
 
-  const blob = await response.blob();
+    return response.blob();
+  });
   if (blob.size > MAX_FETCH_SIZE) {
     throw new ErrorWithCode('File size exceeds the allowed limit', 'FILE_SIZE_EXCEEDED');
   }

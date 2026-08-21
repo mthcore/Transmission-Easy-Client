@@ -27,8 +27,13 @@ export const UI_UPDATE_INTERVAL = 1000; // 1 second
 export const MAX_FETCH_SIZE = 1024 * 1024 * 10; // 10 MB
 
 // Messaging
-export const MESSAGE_TIMEOUT = 15_000; // 15 seconds
 export const FETCH_TIMEOUT = 30_000; // 30 seconds
+// The UI-side message timeout is only a backstop for a hung background
+// handler (a dead service worker rejects sendMessage immediately). It must
+// exceed the transport's worst case — FETCH_TIMEOUT × 4 attempts plus
+// 1+2+4s backoff (~127s) — or the UI reports failure for operations the
+// background later completes, prompting harmful retries.
+export const MESSAGE_TIMEOUT = 140_000;
 
 // Daemon
 export const DAEMON_MAX_RETRIES = 3;

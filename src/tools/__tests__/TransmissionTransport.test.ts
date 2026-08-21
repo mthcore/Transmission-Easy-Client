@@ -227,6 +227,51 @@ describe('TransmissionTransport', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it('aborts a response whose body stalls after the headers arrived', async () => {
+    // Headers come back 200 but the body never arrives (proxy died upstream).
+    // The timeout must cover the body read, or the RPC hangs forever.
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce((_url: string, init: RequestInit) =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            new Promise((_resolve, reject) => {
+              init.signal?.addEventListener('abort', () => {
+                reject(new DOMException('The operation was aborted.', 'AbortError'));
+              });
+            }),
+        })
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ result: 'success', arguments: {} }),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const promise = transport.sendAction({ method: 'torrent-get' });
+
+    // FETCH_TIMEOUT (30s) elapses mid-body-read, then the retry backoff fires.
+    await vi.advanceTimersByTimeAsync(30_000);
+    await vi.advanceTimersByTimeAsync(1000);
+
+    const result = await promise;
+    expect(result.result).toBe('success');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not retry non-idempotent methods on timeout/network errors', async () => {
+    // A timed-out torrent-add may already have reached the daemon; re-sending
+    // it could apply the operation twice.
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(transport.sendAction({ method: 'torrent-add' })).rejects.toThrow(
+      'Failed to fetch'
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('adds auth header when authentication is required', async () => {
     const authTransport = new TransmissionTransport({
       url: 'http://localhost:9091/transmission/rpc',

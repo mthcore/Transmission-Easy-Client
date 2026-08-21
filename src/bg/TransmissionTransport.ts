@@ -1,6 +1,7 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
 import fetchWithTimeout from '../tools/fetchWithTimeout';
 import { toBasicAuthValue } from '../tools/basicAuth';
+import { FETCH_TIMEOUT } from '../constants';
 
 export interface TransmissionResponse {
   result: string;
@@ -29,6 +30,17 @@ interface TransportOptions {
 
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY = 1000;
+
+// A timed-out or reset request may still have reached the daemon, so blindly
+// re-sending it can apply the operation twice. Everything else (reads, absolute
+// sets, start/stop/remove) is safe to repeat.
+const NON_IDEMPOTENT_METHODS = new Set([
+  'torrent-add',
+  'queue-move-up',
+  'queue-move-down',
+  'torrent-rename-path',
+  'blocklist-update',
+]);
 
 function isRetryableFetchError(err: unknown): boolean {
   // TypeError is thrown by fetch for network failures (DNS, connection refused, etc.).
@@ -115,8 +127,10 @@ class TransmissionTransport {
           'X-Transmission-Session-Id': this.token || '',
         },
         body: JSON.stringify(body),
-      })
-    ).then(
+      }),
+      FETCH_TIMEOUT,
+      // The body is read inside the timeout window: a daemon/proxy that sends
+      // headers then stalls the body must still trip FETCH_TIMEOUT
       (response) => {
         if (!response.ok) {
           const error = new ErrorWithCode(
@@ -136,21 +150,25 @@ class TransmissionTransport {
 
         if (customParser) {
           return response.text().then((text) => customParser(text));
-        } else {
-          return response.json() as Promise<TransmissionResponse>;
         }
-      },
-      (err: Error) => {
-        // Retry only on network/timeout errors (fetch failures), not HTTP or auth errors
-        if (attempt < MAX_RETRIES && isRetryableFetchError(err)) {
-          const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
-          return new Promise<TransmissionResponse>((resolve) =>
-            setTimeout(() => resolve(this.fetchWithRetry(body, customParser, attempt + 1)), delay)
-          );
-        }
-        throw err;
+        return response.json() as Promise<TransmissionResponse>;
       }
-    );
+    ).catch((err: Error) => {
+      // Retry only on network/timeout errors (fetch failures), not HTTP or
+      // auth errors — and never for methods a duplicate delivery could apply
+      // twice, since an aborted request may still have reached the daemon
+      if (
+        attempt < MAX_RETRIES &&
+        isRetryableFetchError(err) &&
+        !NON_IDEMPOTENT_METHODS.has(body.method as string)
+      ) {
+        const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
+        return new Promise<TransmissionResponse>((resolve) =>
+          setTimeout(() => resolve(this.fetchWithRetry(body, customParser, attempt + 1)), delay)
+        );
+      }
+      throw err;
+    });
   }
 
   private retryIfTokenInvalid<T>(callback: () => Promise<T>): Promise<T> {

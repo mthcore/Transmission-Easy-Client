@@ -1,6 +1,6 @@
 {
   "name": "transmission-easy-client",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },

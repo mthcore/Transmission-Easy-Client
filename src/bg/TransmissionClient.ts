@@ -151,12 +151,12 @@ class TransmissionClient {
   queueBottom(ids: number[]): Promise<TransmissionResponse> {
     return this.torrentService.queueBottom(ids);
   }
-  sendFiles(urls: string[], directory?: Folder): Promise<TransmissionResponse> {
+  sendFiles(urls: string[], directory?: string): Promise<TransmissionResponse> {
     return this.torrentService.sendFiles(urls, directory);
   }
   putTorrent(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<void> {
     return this.torrentService.putTorrent(data, directory, options);

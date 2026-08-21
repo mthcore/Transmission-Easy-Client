@@ -55,7 +55,7 @@ export interface IBgForContextMenu {
     };
   };
   client: {
-    putTorrent(data: { blob?: Blob; url?: string }, directory?: Folder): Promise<void>;
+    putTorrent(data: { blob?: Blob; url?: string }, directory?: string): Promise<void>;
     updateTorrents(): Promise<void>;
   } | null;
   whenReady(): Promise<void>;

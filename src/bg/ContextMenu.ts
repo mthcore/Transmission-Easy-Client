@@ -50,7 +50,7 @@ class ContextMenu {
     url: string,
     tabId: number,
     frameId: number | undefined,
-    directory?: Folder
+    directory?: string
   ): Promise<void> {
     try {
       let data: { blob?: Blob; url?: string };
@@ -98,7 +98,11 @@ class ContextMenu {
         }
         return;
       }
+      // The production logger is a no-op — without a notification a dead
+      // link (404, network error) would look like the click did nothing
       logger.error('onSendLink error', err);
+      const message = (err as { message?: string }).message;
+      this.bg.torrentErrorNotify(message || chrome.i18n.getMessage('unexpectedError'));
     }
   }
 
@@ -136,7 +140,7 @@ class ContextMenu {
           await this.bg.whenReady();
           if (!linkUrl || !tab?.id || itemInfo.index === undefined) return;
           const folder = this.bgStore.config.folders[itemInfo.index];
-          await this.onSendLink(linkUrl, tab.id, frameId, folder);
+          await this.onSendLink(linkUrl, tab.id, frameId, folder?.path);
           break;
         }
       }

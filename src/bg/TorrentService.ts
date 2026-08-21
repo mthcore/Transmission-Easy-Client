@@ -7,7 +7,6 @@ import { assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCo
 import { RECENTLY_ACTIVE_THRESHOLD } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 import type { TransmissionResponse } from './TransmissionTransport';
-import type { Folder } from '../types/bg';
 import type { BandwidthPriority } from '../types/transmission';
 
 const logger = getLogger('TorrentService');
@@ -173,10 +172,13 @@ class TorrentService {
     this.getShowNotifications = options.getShowNotifications;
     this.torrentsResponseTime = 0;
 
+    // A failed read must not poison every later poll's Promise.all — null
+    // just skips completion notifications for the first cycle
     this._notifiedIdsPromise = chrome.storage.local
       .get('_notifiedIds')
-      .then((data) => (data._notifiedIds as number[] | undefined) ?? null);
-    chrome.storage.local.remove('_activeIds');
+      .then((data) => (data._notifiedIds as number[] | undefined) ?? null)
+      .catch(() => null);
+    Promise.resolve(chrome.storage.local.remove('_activeIds')).catch(() => {});
   }
 
   resetResponseTime(): void {
@@ -385,7 +387,7 @@ class TorrentService {
 
   sendFile(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<TransmissionResponse> {
     const transport = this.transport;
@@ -396,7 +398,8 @@ class TorrentService {
             applyOptions({
               method: 'torrent-add',
               arguments: { filename: data.url },
-            })
+            }),
+            parseTransmissionResponse
           );
         } else if (data.blob) {
           return readBlobAsArrayBuffer(data.blob)
@@ -406,7 +409,8 @@ class TorrentService {
                 applyOptions({
                   method: 'torrent-add',
                   arguments: { metainfo: base64 },
-                })
+                }),
+                parseTransmissionResponse
               );
             });
         } else {
@@ -427,7 +431,7 @@ class TorrentService {
       arguments: Record<string, unknown>;
     } {
       if (directory) {
-        query.arguments['download-dir'] = directory.path;
+        query.arguments['download-dir'] = directory;
       }
       if (options) {
         if (options.paused !== undefined) query.arguments['paused'] = options.paused;
@@ -453,33 +457,25 @@ class TorrentService {
 
   putTorrent(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<void> {
-    return this.sendFile(data, directory, options).then(
-      (response) => {
-        const args = response.arguments as Record<string, { id: number; name: string } | undefined>;
-        const torrentAdded = args['torrent_added'] ?? args['torrent-added'];
-        const torrentDuplicate = args['torrent_duplicate'] ?? args['torrent-duplicate'];
-        if (torrentAdded) {
-          this.notifier.torrentAddedNotify(torrentAdded);
-        }
-        if (torrentDuplicate) {
-          this.notifier.torrentIsExistsNotify(torrentDuplicate);
-        }
-      },
-      (err) => {
-        if (err.code === 'TRANSMISSION_ERROR') {
-          this.notifier.torrentErrorNotify(err.message);
-        } else {
-          this.notifier.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
-        }
-        throw err;
+    // Failure notification is owned by sendFile's catch — no handler here,
+    // or every failed add would notify twice
+    return this.sendFile(data, directory, options).then((response) => {
+      const args = response.arguments as Record<string, { id: number; name: string } | undefined>;
+      const torrentAdded = args['torrent_added'] ?? args['torrent-added'];
+      const torrentDuplicate = args['torrent_duplicate'] ?? args['torrent-duplicate'];
+      if (torrentAdded) {
+        this.notifier.torrentAddedNotify(torrentAdded);
       }
-    );
+      if (torrentDuplicate) {
+        this.notifier.torrentIsExistsNotify(torrentDuplicate);
+      }
+    });
   }
 
-  sendFiles(urls: string[], directory?: Folder): Promise<TransmissionResponse> {
+  sendFiles(urls: string[], directory?: string): Promise<TransmissionResponse> {
     return Promise.all(
       urls.map((url) => {
         return downloadFileFromUrl(url)
@@ -517,13 +513,16 @@ class TorrentService {
 
   getPeers(id: number): Promise<PeerData[]> {
     return this.transport
-      .sendAction({
-        method: 'torrent-get',
-        arguments: {
-          fields: ['id', 'peers'],
-          ids: [id],
+      .sendAction(
+        {
+          method: 'torrent-get',
+          arguments: {
+            fields: ['id', 'peers'],
+            ids: [id],
+          },
         },
-      })
+        parseTransmissionResponse
+      )
       .then((response) => {
         type RawPeer = {
           address: string;

@@ -1,5 +1,6 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
 import splitByPart from '../tools/splitByPart';
+import { parseTransmissionResponse } from '../tools/safeJsonParse';
 import { FILE_PRIORITY_CHUNK_SIZE } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 
@@ -20,13 +21,17 @@ class FileService {
 
   getFileList(id: number): Promise<NormalizedFile[]> {
     return this.transport
-      .sendAction({
-        method: 'torrent-get',
-        arguments: {
-          fields: ['id', 'files', 'fileStats'],
-          ids: [id],
+      .sendAction(
+        {
+          method: 'torrent-get',
+          arguments: {
+            fields: ['id', 'files', 'fileStats'],
+            ids: [id],
+          },
         },
-      })
+        // File names are arbitrary bytes — repair-parse like the torrent list
+        parseTransmissionResponse
+      )
       .then((response) => {
         let files: NormalizedFile[] | null = null;
         type TorrentFiles = {

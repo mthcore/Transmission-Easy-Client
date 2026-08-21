@@ -81,4 +81,32 @@ describe('TorrentService.sendFiles', () => {
     expect(addCall).toBeUndefined();
     expect(notifier.torrentErrorNotify).toHaveBeenCalled();
   });
+
+  it('sends the selected directory as download-dir (dialogs pass a plain path string)', async () => {
+    const magnet = 'magnet:?xt=urn:btih:ABCDEF1234567890ABCDEF1234567890ABCDEF12&dn=Test';
+
+    await service.sendFiles([magnet], '/mnt/media/films');
+
+    const addCall = transport.sendAction.mock.calls.find(
+      ([query]) => (query as { method: string }).method === 'torrent-add'
+    );
+    const addArgs = addCall?.[0] as { arguments: Record<string, unknown> } | undefined;
+    expect(addArgs?.arguments['download-dir']).toBe('/mnt/media/films');
+  });
+
+  it('notifies exactly once when the add fails', async () => {
+    transport.sendAction.mockImplementation((query: { method: string }) => {
+      if (query.method === 'torrent-add') {
+        const err = new Error('invalid or corrupt torrent file') as Error & { code: string };
+        err.code = 'TRANSMISSION_ERROR';
+        return Promise.reject(err);
+      }
+      return Promise.resolve({ result: 'success', arguments: { torrents: [] } });
+    });
+    const magnet = 'magnet:?xt=urn:btih:ABCDEF1234567890ABCDEF1234567890ABCDEF12&dn=Test';
+
+    await service.sendFiles([magnet]);
+
+    expect(notifier.torrentErrorNotify).toHaveBeenCalledTimes(1);
+  });
 });

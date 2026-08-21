@@ -7,7 +7,7 @@ import { HashRouter, NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import RootStoreCtx from '../../tools/rootStoreCtx';
 import useRootStore from '../../hooks/useRootStore';
 import { useTheme } from '../../hooks/useTheme';
-import applyStoredTheme from '../../tools/applyStoredTheme';
+import applyStoredTheme, { applyLocaleDirection } from '../../tools/applyStoredTheme';
 import ClientOptions from './ClientOptions';
 import UiOptions from './UiOptions';
 import NotifyOptions from './NotifyOptions';
@@ -17,6 +17,7 @@ import ServerOptions from './ServerOptions';
 
 // Before React renders, so an explicit theme doesn't flash the OS one first
 applyStoredTheme();
+applyLocaleDirection();
 
 const Options = observer(() => {
   const rootStore = useRootStore();

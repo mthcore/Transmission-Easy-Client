@@ -7,8 +7,11 @@ import {
   cast,
 } from 'mobx-state-tree';
 import { storageSet } from '../tools/chromeStorage';
+import getLogger from '../tools/getLogger';
 import url from 'url';
 import { BG_UPDATE_INTERVAL, UI_UPDATE_INTERVAL } from '../constants';
+
+const logger = getLogger('ConfigStore');
 
 interface ColumnDef {
   column: string;
@@ -195,7 +198,17 @@ const ConfigStore = types
   .actions((self) => {
     return {
       setKeyValue(keyValue: Record<string, unknown>) {
-        Object.assign(self, keyValue);
+        // Per key, not one Object.assign: a single wrongly-typed value (a
+        // hand-edited backup, a version skew) threw mid-assignment and silently
+        // dropped every remaining key of the batch, in the background AND in
+        // every open page
+        Object.entries(keyValue).forEach(([key, value]) => {
+          try {
+            (self as unknown as Record<string, unknown>)[key] = value;
+          } catch (err) {
+            logger.error(`setKeyValue: ignoring bad value for ${key}`, err);
+          }
+        });
       },
       setPopupMode(isPopup: boolean) {
         self.isPopupMode = isPopup;

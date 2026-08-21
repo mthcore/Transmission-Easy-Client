@@ -83,6 +83,15 @@ $folder-colors: (
   --shadow-sm: #{$shadow-sm};
   --shadow-md: #{$shadow-md};
   --icon-filter: none;
+  // Referenced across the stylesheets but never defined until now, so their
+  // fallbacks (or nothing at all) rendered in both themes
+  --warning-color: #b45309;
+  --text-muted: #6b7280;
+  --focus-ring: #2563eb;
+  // Backing RGB triplet for the translucent refresh overlay
+  --bg-color-rgb: 255, 255, 255;
+  // Text that sits on a filled status colour (progress bar, badges, chips)
+  --on-accent-color: #{$text-color};
 }
 
 // Dark theme
@@ -104,6 +113,11 @@ $folder-colors: (
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
   --icon-filter: invert(0.75);
+  --warning-color: #f0b849;
+  --text-muted: #909296;
+  --focus-ring: #74c0fc;
+  --bg-color-rgb: 26, 27, 30;
+  --on-accent-color: #111214;
 }
 
 // System preference (when theme is 'system')
@@ -126,5 +140,23 @@ $folder-colors: (
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
     --icon-filter: invert(0.75);
+    --warning-color: #f0b849;
+    --text-muted: #909296;
+    --focus-ring: #74c0fc;
+    --bg-color-rgb: 26, 27, 30;
+    --on-accent-color: #111214;
+  }
+}
+
+// Respect the OS "reduce motion" setting: the spinners run infinitely and the
+// torrent-name marquee is injected at runtime, so both need a global brake.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

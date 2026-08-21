@@ -41,15 +41,14 @@ $torrent-columns: checkbox, name, order, size, sizeWhenDone, remaining, done, st
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(var(--bg-color-rgb, 255, 255, 255), 0.7);
+  // --bg-color-rgb follows the theme; the old `.dark &` override never applied
+  // (the theme is set via data-theme on <html>, not a class), so dark mode got
+  // a full white sheet over the list on every manual refresh
+  background: rgba(var(--bg-color-rgb), 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-
-  .dark & {
-    background: rgba(0, 0, 0, 0.5);
-  }
 }
 
 // Full screen mode - table fills width, scroll when needed

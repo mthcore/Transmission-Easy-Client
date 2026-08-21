@@ -50,7 +50,13 @@ const SpaceWatcherStore = types
           }
           if (isAlive(self)) {
             const settings = rootStore.client.settings;
-            if (!settings) return;
+            // A bare return here left state on 'pending' forever, and the
+            // re-entry guard then blocked every later attempt: the free-space
+            // indicator stuck on "Loading…" for the rest of the session
+            if (!settings) {
+              self.state = 'idle';
+              return;
+            }
             const { downloadDir, downloadDirFreeSpace } = settings;
             if (typeof downloadDirFreeSpace === 'number') {
               result.push({

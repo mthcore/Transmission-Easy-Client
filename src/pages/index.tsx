@@ -16,10 +16,11 @@ import useRootStore from '../hooks/useRootStore';
 import { useTheme } from '../hooks/useTheme';
 import DialogLoader from '../components/dialogs/DialogLoader';
 import ErrorBoundary from '../components/ErrorBoundary';
-import applyStoredTheme from '../tools/applyStoredTheme';
+import applyStoredTheme, { applyLocaleDirection } from '../tools/applyStoredTheme';
 
 // Before React renders, so an explicit theme doesn't flash the OS one first
 applyStoredTheme();
+applyLocaleDirection();
 
 const logger = getLogger('Index');
 
@@ -218,7 +219,16 @@ const Index = observer(() => {
   // Set together in RootStore.init(), so config is guaranteed once state is 'done'
   const config = rootStore.config;
   if (rootStore.state !== 'done' || !config) {
-    return <>{`Loading: ${rootStore.state}`}</>;
+    // A failed startup is recoverable — offer the retry instead of stranding
+    // the user on a dead screen until they reopen the popup
+    return (
+      <div className="startup-error" role="alert">
+        <p>{chrome.i18n.getMessage('OV_FL_ERROR')}</p>
+        <button type="button" onClick={() => rootStore.retryInit()}>
+          {chrome.i18n.getMessage('errorRetry')}
+        </button>
+      </div>
+    );
   }
 
   let fileList: ReactNode = null;

@@ -52,57 +52,62 @@ class ContextMenu {
     frameId: number | undefined,
     directory?: string
   ): Promise<void> {
+    // Download phase. The torrent service never sees these failures, so this
+    // is the only place that can tell the user a dead link did nothing.
+    let data: { blob?: Blob; url?: string };
     try {
-      let data: { blob?: Blob; url?: string };
       try {
         data = await downloadFileFromTab(url, tabId, frameId);
       } catch (err: unknown) {
         const error = err as { code?: string; message?: string };
-        if (!['FILE_SIZE_EXCEEDED', 'LINK_IS_NOT_SUPPORTED'].includes(error.code ?? '')) {
-          logger.error(
-            'onSendLink: downloadFileFromTab error, fallback to downloadFileFromUrl',
-            error.message || String(err)
-          );
-          data = await downloadFileFromUrl(url);
-        } else {
+        if (['FILE_SIZE_EXCEEDED', 'LINK_IS_NOT_SUPPORTED'].includes(error.code ?? '')) {
           throw err;
         }
+        logger.error(
+          'onSendLink: downloadFileFromTab error, fallback to downloadFileFromUrl',
+          error.message || String(err)
+        );
+        data = await downloadFileFromUrl(url);
       }
-      if (!this.bg.client) throw new Error('Client not initialized');
-      await this.bg.client.putTorrent(data, directory);
-      if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
-        this.bgStore.config.setSelectedLabel('DL', true);
-      }
-      if (!this.bg.client) throw new Error('Client not initialized');
-      await this.bg.client.updateTorrents();
     } catch (err: unknown) {
-      const error = err as { code?: string };
-      if (error.code === 'FILE_SIZE_EXCEEDED') {
-        this.bg.torrentErrorNotify(chrome.i18n.getMessage('fileSizeError'));
-        return;
-      }
+      const error = err as { code?: string; message?: string };
       if (error.code === 'LINK_IS_NOT_SUPPORTED') {
-        // Fallback to URL
-        try {
-          if (!this.bg.client) throw new Error('Client not initialized');
-          await this.bg.client.putTorrent({ url }, directory);
-          if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
-            this.bgStore.config.setSelectedLabel('DL', true);
-          }
-          if (!this.bg.client) throw new Error('Client not initialized');
-          await this.bg.client.updateTorrents();
-        } catch (fallbackErr) {
-          const error = fallbackErr as { message?: string };
-          logger.error('onSendLink error:', error.message || String(fallbackErr));
-          this.bg.torrentErrorNotify(error.message || 'Failed to add torrent');
-        }
+        // Magnet or other non-downloadable scheme: hand the URI to the daemon
+        data = { url };
+      } else {
+        logger.error('onSendLink: download error', err);
+        this.bg.torrentErrorNotify(
+          error.code === 'FILE_SIZE_EXCEEDED'
+            ? chrome.i18n.getMessage('fileSizeError')
+            : error.message || chrome.i18n.getMessage('unexpectedError')
+        );
         return;
       }
-      // The production logger is a no-op — without a notification a dead
-      // link (404, network error) would look like the click did nothing
-      logger.error('onSendLink error', err);
-      const message = (err as { message?: string }).message;
-      this.bg.torrentErrorNotify(message || chrome.i18n.getMessage('unexpectedError'));
+    }
+
+    // Add phase: putTorrent's own catch already notifies on failure, so
+    // notifying here too would report every failed add twice.
+    if (!this.bg.client) {
+      this.bg.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
+      return;
+    }
+    try {
+      await this.bg.client.putTorrent(data, directory);
+    } catch (err) {
+      logger.error('onSendLink: putTorrent error', err);
+      return;
+    }
+
+    if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
+      this.bgStore.config.setSelectedLabel('DL', true);
+    }
+
+    // Refresh only — the torrent is already added, so a failure here must not
+    // be reported as if the add had failed.
+    try {
+      await this.bg.client?.updateTorrents();
+    } catch (err) {
+      logger.error('onSendLink: updateTorrents error', err);
     }
   }
 
@@ -140,7 +145,14 @@ class ContextMenu {
           await this.bg.whenReady();
           if (!linkUrl || !tab?.id || itemInfo.index === undefined) return;
           const folder = this.bgStore.config.folders[itemInfo.index];
-          await this.onSendLink(linkUrl, tab.id, frameId, folder?.path);
+          if (!folder) {
+            // The folder list changed after this menu was built: sending the
+            // torrent to the daemon's default directory would be silent and
+            // wrong, so report it instead
+            this.bg.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
+            return;
+          }
+          await this.onSendLink(linkUrl, tab.id, frameId, folder.path);
           break;
         }
       }

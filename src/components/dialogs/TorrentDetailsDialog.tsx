@@ -117,6 +117,15 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
 
   const torrentId = torrent?.id;
 
+  // The torrent was removed elsewhere while the dialog was open: destroy the
+  // store entry, or it stays in rootStore.dialogs forever with no handler to
+  // close it (and keeps swallowing Escape for the rest of the session)
+  useEffect(() => {
+    if (!torrent) {
+      handleClose();
+    }
+  }, [torrent, handleClose]);
+
   useEffect(() => {
     if (torrentId == null) return;
     setPeersLoading(true);

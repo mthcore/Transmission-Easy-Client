@@ -110,6 +110,23 @@ describe('updateWebUiAuthRule', () => {
     ]);
   });
 
+  it('never falls back to origin-wide rules when the RPC path sits at the root', async () => {
+    // parentDir('/rpc') is '/', which as a prefix filter would match the whole
+    // origin again — the prefix rules must be dropped instead
+    await updateWebUiAuthRule({ ...baseConfig, ssl: true, port: 443, pathname: '/rpc' });
+    const rules = lastCall().addRules!;
+    const filters = rules.map((rule) => rule.condition.urlFilter);
+    expect(filters).not.toContain('|https://nas.example.com/');
+    expect(filters).toEqual(['|https://nas.example.com/rpc', '|https://nas.example.com/|']);
+  });
+
+  it('ignores a trailing slash on the RPC path when deriving the web path', async () => {
+    await updateWebUiAuthRule({ ...baseConfig, pathname: '/transmission/rpc/' });
+    expect(lastCall().addRules![0].condition.urlFilter).toBe(
+      '|http://nas.example.com:9091/transmission/'
+    );
+  });
+
   it('normalizes default ports out of the url filter', async () => {
     await updateWebUiAuthRule({ ...baseConfig, ssl: true, port: 443 });
     expect(lastCall().addRules![0].condition.urlFilter).toBe(

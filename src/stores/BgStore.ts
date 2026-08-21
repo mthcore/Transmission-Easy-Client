@@ -40,10 +40,20 @@ const BgStore = types
             }
           });
 
-          self.config = cast({});
+          // Reuse the existing node: reassigning it resets every field to its
+          // default inside this action, which refires all config autoruns
+          // (client flush + rebuild, DNR rewrite, context-menu rebuild) even
+          // when nothing actually changed — and fetchConfig runs on every
+          // connection re-check.
+          if (!self.config) {
+            self.config = cast({});
+          }
+          const target = self.config as unknown as Record<string, unknown>;
           Object.entries(config).forEach(([key, value]) => {
             try {
-              (self.config as unknown as Record<string, unknown>)[key] = value;
+              if (JSON.stringify(target[key]) !== JSON.stringify(value)) {
+                target[key] = value;
+              }
             } catch (err) {
               logger.error(`fetchConfig key (${key}) error, use default value`, err);
             }

@@ -3,7 +3,7 @@ import getLogger from './tools/getLogger';
 import ErrorWithCode from './tools/ErrorWithCode';
 import fetchWithTimeout from './tools/fetchWithTimeout';
 import { serializeError } from 'serialize-error';
-import { MAX_FETCH_SIZE } from './constants';
+import { DOWNLOAD_TIMEOUT, MAX_FETCH_SIZE } from './constants';
 
 const logger = getLogger('tabUrlFetch');
 
@@ -79,7 +79,7 @@ declare global {
     function fetchUrl(url: string): Promise<FetchResult> {
       // Timeout spans the body read too — a stalled server must not keep the
       // closeLockWrap beforeunload handler engaged forever
-      return fetchWithTimeout(url, undefined, undefined, (response) => {
+      return fetchWithTimeout(url, undefined, DOWNLOAD_TIMEOUT, (response) => {
         if (!response.ok) {
           throw new ErrorWithCode(
             `${response.status}: ${response.statusText}`,

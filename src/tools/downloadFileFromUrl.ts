@@ -1,6 +1,6 @@
 import ErrorWithCode from './ErrorWithCode';
 import fetchWithTimeout from './fetchWithTimeout';
-import { MAX_FETCH_SIZE } from '../constants';
+import { DOWNLOAD_TIMEOUT, MAX_FETCH_SIZE } from '../constants';
 
 interface DownloadResult {
   blob: Blob;
@@ -13,7 +13,7 @@ async function downloadFileFromUrl(url: string): Promise<DownloadResult> {
 
   // The body is read inside the timeout window so a stalled server can't
   // hang the download after headers are received
-  const blob = await fetchWithTimeout(url, undefined, undefined, (response) => {
+  const blob = await fetchWithTimeout(url, undefined, DOWNLOAD_TIMEOUT, (response) => {
     if (!response.ok) {
       throw new ErrorWithCode(`${response.status}: ${response.statusText}`, 'RESPONSE_IS_NOT_OK');
     }

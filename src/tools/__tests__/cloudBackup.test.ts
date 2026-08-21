@@ -102,20 +102,20 @@ describe('cloudBackup storage', () => {
   });
 
   it('refuses to save an empty backup and leaves the existing one intact', async () => {
-    syncStore.backup = '{"legacy":true}';
-    syncStore.backupChunks = 1;
-    syncStore.backup_0 = '{"chunked":true}';
+    await saveCloudBackup('{"chunked":true}');
+    const meta = syncStore.backupMeta as { gen: string };
     await expect(saveCloudBackup('')).rejects.toThrow('empty backup');
     await expect(saveCloudBackup('  \n ')).rejects.toThrow('empty backup');
-    expect(syncStore.backup).toBe('{"legacy":true}');
-    expect(syncStore.backup_0).toBe('{"chunked":true}');
+    expect(syncStore[`backup_${meta.gen}_0`]).toBe('{"chunked":true}');
     await expect(loadCloudBackup()).resolves.toBe('{"chunked":true}');
   });
 
-  it('round-trips a small backup through chunked keys', async () => {
+  it('round-trips a small backup through generation-tagged chunk keys', async () => {
     await saveCloudBackup('{"hostname":"nas"}');
-    expect(syncStore.backupChunks).toBe(1);
-    expect(syncStore.backup_0).toBe('{"hostname":"nas"}');
+    const meta = syncStore.backupMeta as { gen: string; chunks: number; length: number };
+    expect(meta.chunks).toBe(1);
+    expect(meta.length).toBe('{"hostname":"nas"}'.length);
+    expect(syncStore[`backup_${meta.gen}_0`]).toBe('{"hostname":"nas"}');
     await expect(loadCloudBackup()).resolves.toBe('{"hostname":"nas"}');
     await expect(hasCloudBackup()).resolves.toBe(true);
   });
@@ -123,14 +123,45 @@ describe('cloudBackup storage', () => {
   it('round-trips a backup larger than the per-item quota', async () => {
     const blob = JSON.stringify({ data: 'x'.repeat(30000) }, null, 2);
     await saveCloudBackup(blob);
-    expect(syncStore.backupChunks as number).toBeGreaterThan(1);
+    const meta = syncStore.backupMeta as { chunks: number };
+    expect(meta.chunks).toBeGreaterThan(1);
     await expect(loadCloudBackup()).resolves.toBe(blob);
+  });
+
+  it('ignores chunks from another save generation instead of mixing them', async () => {
+    // chrome.storage.sync merges per key, so a concurrent save on another
+    // machine can leave a losing generation's chunks behind
+    await saveCloudBackup(JSON.stringify({ machine: 'A', data: 'x'.repeat(20000) }, null, 2));
+    const staleGen = (syncStore.backupMeta as { gen: string }).gen;
+    const blobB = JSON.stringify({ machine: 'B', data: 'y'.repeat(20000) }, null, 2);
+    await saveCloudBackup(blobB);
+    // simulate machine A's chunks arriving late, after B's save
+    syncStore[`backup_${staleGen}_0`] = 'stale chunk from the other machine';
+
+    await expect(loadCloudBackup()).resolves.toBe(blobB);
+  });
+
+  it('rejects a partially propagated generation rather than truncating', async () => {
+    const blob = JSON.stringify({ data: 'x'.repeat(30000) }, null, 2);
+    await saveCloudBackup(blob);
+    const meta = syncStore.backupMeta as { gen: string; chunks: number };
+    // last chunk hasn't synced yet
+    delete syncStore[`backup_${meta.gen}_${meta.chunks - 1}`];
+
+    await expect(loadCloudBackup()).resolves.toBeNull();
   });
 
   it('still reads a legacy single-key backup', async () => {
     syncStore.backup = '{"legacy":true}';
     await expect(loadCloudBackup()).resolves.toBe('{"legacy":true}');
     await expect(hasCloudBackup()).resolves.toBe(true);
+  });
+
+  it('still reads the pre-generation chunked format', async () => {
+    syncStore.backupChunks = 2;
+    syncStore.backup_0 = '{"old":';
+    syncStore.backup_1 = '"format"}';
+    await expect(loadCloudBackup()).resolves.toBe('{"old":"format"}');
   });
 
   it('reports no backup on a fresh sync area', async () => {
@@ -145,17 +176,21 @@ describe('cloudBackup storage', () => {
     await expect(loadCloudBackup()).resolves.toBe('{"legacy":true}');
   });
 
-  it('removes the legacy key and stale higher-index chunks on save', async () => {
+  it('removes the legacy key and every previous generation on save', async () => {
     syncStore.backup = 'old single-key backup';
+    syncStore.backupChunks = 1;
+    syncStore.backup_0 = 'older chunked backup';
     const big = JSON.stringify({ data: 'x'.repeat(30000) }, null, 2);
     await saveCloudBackup(big);
-    const bigChunkCount = syncStore.backupChunks as number;
+    const firstGen = (syncStore.backupMeta as { gen: string; chunks: number }).gen;
+    const firstChunkCount = (syncStore.backupMeta as { chunks: number }).chunks;
     expect(syncStore.backup).toBeUndefined();
+    expect(syncStore.backupChunks).toBeUndefined();
+    expect(syncStore.backup_0).toBeUndefined();
 
     await saveCloudBackup('small');
-    expect(syncStore.backupChunks).toBe(1);
-    for (let index = 1; index < bigChunkCount; index++) {
-      expect(syncStore[`backup_${index}`]).toBeUndefined();
+    for (let index = 0; index < firstChunkCount; index++) {
+      expect(syncStore[`backup_${firstGen}_${index}`]).toBeUndefined();
     }
     await expect(loadCloudBackup()).resolves.toBe('small');
   });

@@ -69,8 +69,10 @@ function normalizePath(path: string): string {
 
 /** Parent directory with trailing slash: '/transmission/rpc' → '/transmission/' */
 function parentDir(path: string): string {
-  const idx = path.lastIndexOf('/');
-  return idx <= 0 ? '/' : path.slice(0, idx + 1);
+  // Trailing slashes would make a path its own parent ('/transmission/rpc/')
+  const trimmed = path.replace(/\/+$/, '');
+  const idx = trimmed.lastIndexOf('/');
+  return idx <= 0 ? '/' : trimmed.slice(0, idx + 1);
 }
 
 async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
@@ -109,6 +111,11 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   // redirect with a separate EXACT-match root rule, never a prefix.
   const hasExplicitWebPath = Boolean(config.webPathname);
   const webPath = hasExplicitWebPath ? normalizePath(config.webPathname) : parentDir(rpcPath);
+  // A '/' web path (RPC mounted at the origin root, e.g. pathname '/rpc')
+  // would turn the prefix rules back into origin-wide injection, so those
+  // rules are dropped entirely: only the exact RPC and root rules remain.
+  // Users on such a deployment set an explicit "GUI path" to get Web UI auth.
+  const webPathIsOriginRoot = webPath === '/';
 
   const requestHeaders = [
     {
@@ -124,39 +131,44 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   // stay protected by the X-Transmission-Session-Id CSRF token).
   const initiatorDomains = isIpHost(originHostname) ? undefined : [originHostname];
 
-  const addRules: chrome.declarativeNetRequest.Rule[] = [
-    {
-      id: WEB_UI_MAIN_FRAME_RULE_ID,
-      priority: 1,
-      action: { type: actionType, requestHeaders },
-      condition: {
-        urlFilter: `|${origin}${webPath}`,
-        resourceTypes: MAIN_FRAME_TYPES,
+  const addRules: chrome.declarativeNetRequest.Rule[] = [];
+
+  if (!webPathIsOriginRoot) {
+    addRules.push(
+      {
+        id: WEB_UI_MAIN_FRAME_RULE_ID,
+        priority: 1,
+        action: { type: actionType, requestHeaders },
+        condition: {
+          urlFilter: `|${origin}${webPath}`,
+          resourceTypes: MAIN_FRAME_TYPES,
+        },
       },
+      {
+        id: WEB_UI_SUBRESOURCE_RULE_ID,
+        priority: 1,
+        action: { type: actionType, requestHeaders },
+        condition: {
+          urlFilter: `|${origin}${webPath}`,
+          resourceTypes: SUBRESOURCE_TYPES,
+          ...(initiatorDomains ? { initiatorDomains } : {}),
+        },
+      }
+    );
+  }
+
+  // The Web UI's own RPC calls target the RPC path, which may live outside
+  // the Web UI path prefix
+  addRules.push({
+    id: RPC_SUBRESOURCE_RULE_ID,
+    priority: 1,
+    action: { type: actionType, requestHeaders },
+    condition: {
+      urlFilter: `|${origin}${rpcPath}`,
+      resourceTypes: SUBRESOURCE_TYPES,
+      ...(initiatorDomains ? { initiatorDomains } : {}),
     },
-    {
-      id: WEB_UI_SUBRESOURCE_RULE_ID,
-      priority: 1,
-      action: { type: actionType, requestHeaders },
-      condition: {
-        urlFilter: `|${origin}${webPath}`,
-        resourceTypes: SUBRESOURCE_TYPES,
-        ...(initiatorDomains ? { initiatorDomains } : {}),
-      },
-    },
-    // The Web UI's own RPC calls target the RPC path, which may live outside
-    // the Web UI path prefix
-    {
-      id: RPC_SUBRESOURCE_RULE_ID,
-      priority: 1,
-      action: { type: actionType, requestHeaders },
-      condition: {
-        urlFilter: `|${origin}${rpcPath}`,
-        resourceTypes: SUBRESOURCE_TYPES,
-        ...(initiatorDomains ? { initiatorDomains } : {}),
-      },
-    },
-  ];
+  });
 
   if (!hasExplicitWebPath) {
     // Entry point when no Web UI path is set: the extension opens the bare

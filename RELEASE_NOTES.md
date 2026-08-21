@@ -1,5 +1,45 @@
 # Release Notes - Transmission Easy Client
 
+## Version 3.4.1 (August 2026)
+
+**Second audit pass: 62 verified fixes**, including regressions introduced by
+3.4.0. Recommended for everyone on 3.4.0.
+
+- **Popup no longer resets the list** - opening the popup (or pressing Refresh)
+  cleared and reloaded the background state, so the torrent list blanked and
+  repopulated, and the badge flickered, every single time
+- **Deleting a torrent is safe again** - the remove-confirmation dialog put
+  keyboard focus on "Yes" instead of "No", so a reflex Enter could delete a
+  torrent and its data
+- **Security** - with the RPC path at the server root, the credential-scoping
+  fix from 3.4.0 still fell back to injecting the Basic-auth header on the
+  whole origin
+- **Correct torrent after a daemon restart** - Transmission reuses torrent ids
+  between sessions; the selection and open dialogs could end up pointing at a
+  different torrent than the one displayed
+- **Notifications** - no more burst of bogus "download complete" toasts after
+  switching servers or restarting the daemon, no repeat after a data
+  verification, and clicking a notification now opens the extension
+- **Speed limits** - the speed menu no longer offers a "0" entry that froze all
+  transfers, and every limit is displayed with Transmission's own unit (a
+  512 KB/s limit showed as 524.29 kB/s)
+- **Values shown correctly** - remaining bytes, infinite share ratio, seeds and
+  peers (they were multiplied by the number of trackers), per-file progress,
+  session totals, and the active/paused counts
+- **Tables** - the file-list folder navigation works again, six columns can be
+  resized, the seeds/peers column actually sorts, names sort case-insensitively
+  and missing values always sort last
+- **Options** - a seed ratio of 0 can be saved, alt-speed days no longer
+  un-check each other, the Server tab refreshes instead of showing stale
+  values, failed changes are reported instead of silently ignored, and opening
+  the badge colour picker no longer changes the badge
+- **Add torrents** - files added from the popup are no longer lost when the
+  popup closes mid-transfer, duplicate labels no longer make the daemon reject
+  the whole request, and slow .torrent downloads are no longer cut off
+- **Upgrades from very old versions** restore two settings that were silently
+  dropped ("notify on completion" and "hide finished")
+- **454 tests** (up from 435)
+
 ## Version 3.4.0 (August 2026)
 
 - **Add-torrent fix** - the folder selected in the add-by-URL and drop-files

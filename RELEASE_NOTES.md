@@ -1,5 +1,35 @@
 # Release Notes - Transmission Easy Client
 
+## Version 3.4.0 (August 2026)
+
+**Deep audit pass: 25 verified bug fixes.** A full-codebase review with every
+finding traced end-to-end before fixing.
+
+- **Add-torrent fix** - the folder selected in the add-by-URL and drop-files
+  dialogs was silently ignored; torrents landed in the daemon's default
+  directory. The chosen folder is now honored on every add path
+- **Security** - with no "GUI path" configured, the Basic-auth header was
+  injected into every request on the server's origin; on a shared host behind
+  a reverse proxy this leaked Transmission credentials to co-hosted
+  applications. Rules are now scoped to the Transmission paths only
+- **Cloud backup** - saving an emptied config text area no longer destroys the
+  existing cloud backup; save/restore failures now show a visible error
+- **Network reliability** - the RPC timeout now covers the whole response (a
+  proxy stalling mid-body used to hang background polling until the service
+  worker died); operations that could be applied twice are no longer retried
+  after a timeout; the UI no longer reports failure for slow operations that
+  later succeed
+- **UI fixes** - blank-page crash when the first background sync failed;
+  Ctrl+O now opens the file picker instead of doing nothing; Escape closes one
+  dialog at a time instead of the whole stack; the label filter dropdown stays
+  in sync with the applied filter; reordering context-menu folders no longer
+  scrambles them or crashes; recheck progress, speed graph, free-space display
+  and details-dialog durations corrected
+- **Options hardening** - typing an interval no longer hammers the daemon at
+  millisecond rates mid-keystroke, and a too-small background interval can no
+  longer silently kill badge updates and notifications
+- **435 tests** (up from 418), including regression tests for every fix above
+
 ## Version 3.3.0 (August 2026)
 
 **Transmission 4.x support & security hardening.** A full audit pass covering

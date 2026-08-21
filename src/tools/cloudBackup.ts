@@ -46,6 +46,11 @@ export function splitIntoChunks(value: string): string[] {
 }
 
 export async function saveCloudBackup(value: string): Promise<void> {
+  // An accidental save of an emptied textarea must not wipe the existing
+  // backup — clearing the cloud copy has its own explicit button.
+  if (!value.trim()) {
+    throw new Error('Cannot save an empty backup');
+  }
   const chunks = splitIntoChunks(value);
   const items: Record<string, unknown> = { [COUNT_KEY]: chunks.length };
   chunks.forEach((chunk, index) => {

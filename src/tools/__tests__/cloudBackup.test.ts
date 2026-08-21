@@ -101,6 +101,17 @@ describe('cloudBackup storage', () => {
     installSyncStorage();
   });
 
+  it('refuses to save an empty backup and leaves the existing one intact', async () => {
+    syncStore.backup = '{"legacy":true}';
+    syncStore.backupChunks = 1;
+    syncStore.backup_0 = '{"chunked":true}';
+    await expect(saveCloudBackup('')).rejects.toThrow('empty backup');
+    await expect(saveCloudBackup('  \n ')).rejects.toThrow('empty backup');
+    expect(syncStore.backup).toBe('{"legacy":true}');
+    expect(syncStore.backup_0).toBe('{"chunked":true}');
+    await expect(loadCloudBackup()).resolves.toBe('{"chunked":true}');
+  });
+
   it('round-trips a small backup through chunked keys', async () => {
     await saveCloudBackup('{"hostname":"nas"}');
     expect(syncStore.backupChunks).toBe(1);

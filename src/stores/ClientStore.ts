@@ -157,7 +157,20 @@ const ClientStore = types
       },
       syncChanges(torrents: TorrentSnapshot[]) {
         torrents.forEach((torrent) => {
-          self.torrents.set(String(torrent.id), torrent as never);
+          const key = String(torrent.id);
+          const existing = self.torrents.get(key);
+          // Same session-scoped-id hazard as sync(): this is the path taken by
+          // almost every poll, including the first one after a daemon restart
+          // that renumbered the ids.
+          if (
+            existing &&
+            torrent.hashString &&
+            existing.hashString &&
+            existing.hashString !== torrent.hashString
+          ) {
+            self.torrents.delete(key);
+          }
+          self.torrents.set(key, torrent as never);
         });
       },
       setTorrents(torrents: Map<string, ITorrentStore>) {

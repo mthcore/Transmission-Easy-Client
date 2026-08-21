@@ -74,6 +74,7 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
             <input
               onClick={handleClose}
               autoFocus
+              data-autofocus
               type="button"
               value={chrome.i18n.getMessage('DLG_BTN_NO')}
             />

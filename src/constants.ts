@@ -36,15 +36,17 @@ export const FETCH_TIMEOUT = 30_000; // 30 seconds
 // and the deadline now spans the body read, so a link slower than ~2.7 Mbit/s
 // would fail under FETCH_TIMEOUT.
 export const DOWNLOAD_TIMEOUT = 120_000; // 2 minutes
-// blocklist-update blocks while the daemon fetches and parses the list
-export const BLOCKLIST_UPDATE_TIMEOUT = 180_000; // 3 minutes
+// blocklist-update blocks while the daemon fetches and parses the list.
+// Kept well under MESSAGE_TIMEOUT: the page gives up at that point, and the
+// call is followed by a settings refresh, so the whole exchange must fit.
+export const BLOCKLIST_UPDATE_TIMEOUT = 120_000; // 2 minutes
 // The UI-side message timeout is only a backstop for a hung background
 // handler (a dead service worker rejects sendMessage immediately). It must
 // exceed the transport's worst case: FETCH_TIMEOUT × 4 attempts plus 1+2+4s
 // backoff (~127s), and sendAction can run that whole ladder twice when a 409
 // forces a session-token refresh (~254s). Below that the UI reports failure
 // for operations the background later completes, prompting harmful retries.
-export const MESSAGE_TIMEOUT = 260_000;
+export const MESSAGE_TIMEOUT = 320_000;
 
 // Daemon
 export const DAEMON_MAX_RETRIES = 3;

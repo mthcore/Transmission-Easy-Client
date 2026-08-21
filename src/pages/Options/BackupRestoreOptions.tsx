@@ -60,9 +60,13 @@ const BackupRestoreOptions = () => {
     try {
       const raw: StorageData = await storageGet(null);
       if (!refPage.current) return;
-      // Filter out transient local-only keys from backup
-      for (const key of BACKUP_EXCLUDE_KEYS) {
-        delete raw[key];
+      // Filter out transient local-only keys from the backup (background
+      // bookkeeping is '_'-prefixed and can be large: the completion-notify
+      // record holds every torrent hash on the server)
+      for (const key of Object.keys(raw)) {
+        if (BACKUP_EXCLUDE_KEYS.includes(key) || key.startsWith('_')) {
+          delete raw[key];
+        }
       }
       setLoadState('done');
       setStorage(JSON.stringify(raw, null, 2));
@@ -185,6 +189,9 @@ const BackupRestoreOptions = () => {
         port: 9091,
         ssl: true,
         pathname: '/transmission/rpc',
+        webPathname: '',
+        login: '',
+        authenticationRequired: true,
       });
       const connectionChanges = getConnectionChanges(cleanConfig, current);
       if (connectionChanges.length) {

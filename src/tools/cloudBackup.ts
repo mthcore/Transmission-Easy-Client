@@ -96,8 +96,18 @@ export async function saveCloudBackup(value: string): Promise<void> {
   const stale = Object.keys(existing).filter((key) => isBackupKey(key) && !written.has(key));
 
   // Chunks first, then the meta that points at them: a reader that sees the new
-  // meta is guaranteed to find its chunks already written.
-  await storageSet(items, 'sync');
+  // meta is guaranteed to find its chunks. The previous generation is only
+  // dropped afterwards, so a failed write leaves the old backup restorable.
+  const staleChunks = stale.filter((key) => key !== META_KEY);
+  try {
+    await storageSet(items, 'sync');
+  } catch (err) {
+    // Both generations don't fit in sync's ~100KB total budget. Free the old
+    // chunks and retry: losing the previous copy beats being unable to save.
+    if (!staleChunks.length) throw err;
+    await storageRemove(staleChunks, 'sync');
+    await storageSet(items, 'sync');
+  }
   await storageSet({ [META_KEY]: meta }, 'sync');
   if (stale.length) {
     await storageRemove(stale, 'sync');

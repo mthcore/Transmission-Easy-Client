@@ -32,7 +32,12 @@ const NumberField = ({
         setText(e.target.value);
         if (e.target.value !== '') {
           const parsed = Number(e.target.value);
-          if (Number.isFinite(parsed)) onChange(parsed);
+          // The min attribute is validation-only: a typed negative value still
+          // reaches .value and would be sent to the daemon
+          const floor = Number(min);
+          if (Number.isFinite(parsed)) {
+            onChange(Number.isFinite(floor) ? Math.max(floor, parsed) : parsed);
+          }
         }
       }}
       onBlur={(e) => {

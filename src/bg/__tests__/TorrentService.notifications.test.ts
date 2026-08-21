@@ -5,6 +5,7 @@ type Torrent = {
   id: number;
   hashString: string;
   percentDone: number;
+  downloaded: number;
   stateText: string;
 };
 
@@ -41,7 +42,7 @@ function createNotifier() {
   };
 }
 
-function rawTorrent(id: number, hash: string, percentDone: number) {
+function rawTorrent(id: number, hash: string, percentDone: number, downloadedEver?: number) {
   return {
     id,
     hashString: hash,
@@ -50,7 +51,7 @@ function rawTorrent(id: number, hash: string, percentDone: number) {
     status: percentDone === 1 ? 6 : 4,
     totalSize: 100,
     sizeWhenDone: 100,
-    downloadedEver: 100 * percentDone,
+    downloadedEver: downloadedEver ?? 100 * percentDone,
     uploadedEver: 0,
     uploadRatio: 0,
     rateUpload: 0,
@@ -74,37 +75,63 @@ function rawTorrent(id: number, hash: string, percentDone: number) {
 /** Storage that survives across TorrentService instances in one test */
 let storage: Record<string, unknown>;
 
-function makeService(url: string, torrents: ReturnType<typeof rawTorrent>[]) {
+function makeService(
+  url: string,
+  torrents: ReturnType<typeof rawTorrent>[],
+  options: { showNotifications?: boolean; deferResponse?: boolean } = {}
+) {
   const clientStore = createClientStore();
   const notifier = createNotifier();
+  const pending: (() => void)[] = [];
   const transport = {
     url,
     rpcVersion: 18,
-    sendAction: vi.fn(() => Promise.resolve({ result: 'success', arguments: { torrents } })),
+    sendAction: vi.fn((body: { arguments?: { ids?: unknown } }) => {
+      const response = { result: 'success', arguments: { torrents, removed: [] } };
+      requests.push(body?.arguments?.ids);
+      if (!options.deferResponse) return Promise.resolve(response);
+      return new Promise((resolve) => {
+        pending.push(() => resolve(response));
+      });
+    }),
   };
+  const requests: unknown[] = [];
   const service = new TorrentService({
     transport: transport as never,
     clientStore: clientStore as never,
     notifier,
-    getShowNotifications: () => true,
+    getShowNotifications: () => options.showNotifications ?? true,
   });
-  return { service, notifier, transport, clientStore };
+  return {
+    service,
+    notifier,
+    transport,
+    clientStore,
+    requests,
+    release: () => pending.splice(0).forEach((resolve) => resolve()),
+  };
 }
 
 describe('TorrentService completion notifications', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     storage = {};
-    vi.mocked(chrome.storage.local.get).mockImplementation((async (key: string) => {
+    vi.mocked(chrome.storage.local.get).mockImplementation(((
+      key: string,
+      cb: (items: Record<string, unknown>) => void
+    ) => {
       const name = typeof key === 'string' ? key : '';
-      return name in storage ? { [name]: storage[name] } : {};
+      cb(name in storage ? { [name]: storage[name] } : {});
     }) as never);
-    vi.mocked(chrome.storage.local.set).mockImplementation((async (
-      items: Record<string, unknown>
+    vi.mocked(chrome.storage.local.set).mockImplementation(((
+      items: Record<string, unknown>,
+      cb: () => void
     ) => {
       Object.assign(storage, items);
+      cb();
     }) as never);
-    vi.mocked(chrome.storage.local.remove).mockImplementation((async () => {}) as never);
+    vi.mocked(chrome.storage.local.remove).mockImplementation(((_keys: unknown, cb: () => void) =>
+      cb()) as never);
   });
 
   it('stays silent on the very first poll of a server', async () => {
@@ -132,13 +159,13 @@ describe('TorrentService completion notifications', () => {
     expect(third.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
   });
 
-  it('does not notify for torrents already complete on their first sighting', async () => {
+  it('does not notify a torrent re-seeded from data already on disk', async () => {
     const url = 'http://nas:9091/rpc';
     const first = makeService(url, [rawTorrent(1, 'aaa', 1)]);
     await first.service.updateTorrents(true);
 
-    // A re-seeded torrent shows up already at 100%
-    const second = makeService(url, [rawTorrent(1, 'aaa', 1), rawTorrent(2, 'bbb', 1)]);
+    // Added for existing files: complete on first sighting AND downloadedEver 0
+    const second = makeService(url, [rawTorrent(1, 'aaa', 1), rawTorrent(2, 'bbb', 1, 0)]);
     await second.service.updateTorrents(true);
     expect(second.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
   });
@@ -173,11 +200,48 @@ describe('TorrentService completion notifications', () => {
     expect(b.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
   });
 
-  it('coalesces concurrent polls into a single request', async () => {
-    const { service, transport } = makeService('http://nas:9091/rpc', [rawTorrent(1, 'aaa', 1)]);
-    const [first, second] = [service.updateTorrents(true), service.updateTorrents(true)];
-    expect(first).toBe(second);
-    await Promise.all([first, second]);
-    expect(transport.sendAction).toHaveBeenCalledTimes(1);
+  it('notifies a torrent that was added AND finished between two polls', async () => {
+    const url = 'http://nas:9091/rpc';
+    const first = makeService(url, [rawTorrent(1, 'aaa', 1)]);
+    await first.service.updateTorrents(true);
+
+    // Background polling is minutes apart: a small torrent can be seen at 100%
+    // on its very first sighting. downloadedEver > 0 proves it really downloaded.
+    const second = makeService(url, [rawTorrent(1, 'aaa', 1), rawTorrent(2, 'bbb', 1)]);
+    await second.service.updateTorrents(true);
+    expect(second.notifier.torrentCompleteNotify).toHaveBeenCalledTimes(1);
+  });
+
+  it('respects the "show notifications" setting', async () => {
+    const url = 'http://nas:9091/rpc';
+    const first = makeService(url, [rawTorrent(1, 'aaa', 0.5)], { showNotifications: false });
+    await first.service.updateTorrents(true);
+    const second = makeService(url, [rawTorrent(1, 'aaa', 1)], { showNotifications: false });
+    await second.service.updateTorrents(true);
+    expect(second.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
+  });
+
+  it('coalesces periodic polls but never downgrades a forced refresh', async () => {
+    const { service, transport, requests, release } = makeService(
+      'http://nas:9091/rpc',
+      [rawTorrent(1, 'aaa', 1)],
+      { deferResponse: true }
+    );
+    // Seed the recently-active window so a non-forced poll asks for a delta
+    service.resetResponseTime();
+    const periodic = service.updateTorrents(false);
+    const periodicAgain = service.updateTorrents(false);
+    expect(periodicAgain).toBe(periodic);
+
+    // A forced refresh must issue its OWN request rather than reuse the
+    // in-flight partial one, or Refresh could never repair a stale list
+    const forced = service.updateTorrents(true);
+    expect(forced).not.toBe(periodic);
+
+    release();
+    await Promise.all([periodic, forced]);
+    expect(transport.sendAction).toHaveBeenCalledTimes(2);
+    // The forced request must not carry the 'recently-active' filter
+    expect(requests).toContain(undefined);
   });
 });

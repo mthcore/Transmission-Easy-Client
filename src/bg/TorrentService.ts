@@ -3,6 +3,7 @@ import readBlobAsArrayBuffer from '../tools/readBlobAsArrayBuffer';
 import { arrayBufferToBase64 } from '../tools/binaryConversion';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
 import { parseTransmissionResponse } from '../tools/safeJsonParse';
+import { storageGet, storageSet, storageRemove } from '../tools/chromeStorage';
 import {
   assertRpcVersion,
   RPC_VERSION_3,
@@ -143,7 +144,7 @@ interface TorrentStore {
   removeTorrentByIds: (ids: number[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
-  torrents: Map<number, { stateText: string; hashString?: string }>;
+  torrents: Map<number, { stateText: string; hashString?: string; downloaded?: number }>;
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
   speedRoll: { add: (download: number, upload: number) => void };
 }
@@ -195,37 +196,52 @@ class TorrentService {
     this.torrentsResponseTime = 0;
 
     // A failed read must not poison every later poll — null just skips
-    // completion notifications for the first cycle
-    this._notifiedStatePromise = Promise.resolve(chrome.storage.local.get(NOTIFIED_STORAGE_KEY))
-      .then((data) => (data[NOTIFIED_STORAGE_KEY] as NotifiedState | undefined) ?? null)
+    // completion notifications for the first cycle. Callback-based helper:
+    // chrome.* returns no promise on Firefox.
+    this._notifiedStatePromise = storageGet<Record<string, NotifiedState | undefined>>(
+      NOTIFIED_STORAGE_KEY
+    )
+      .then((data) => data[NOTIFIED_STORAGE_KEY] ?? null)
       .catch(() => null);
     // Drop the pre-3.5 id-keyed sets: ids are session-scoped, so they could
     // only ever produce wrong notifications
-    Promise.resolve(chrome.storage.local.remove(['_activeIds', '_notifiedIds'])).catch(() => {});
+    storageRemove(['_activeIds', '_notifiedIds']).catch(() => {});
   }
 
   resetResponseTime(): void {
     this.torrentsResponseTime = 0;
   }
 
+  /**
+   * Refresh chained after a mutating action. Forced, because it must observe
+   * the action it follows — a shared in-flight poll could have been issued
+   * before it.
+   */
   private thenUpdateTorrents = <T>(result: T): Promise<T> => {
-    return this.updateTorrents().then(() => result);
+    return this.updateTorrents(true).then(() => result);
   };
 
   /**
-   * Coalesces concurrent callers (1s UI poll, background alarm, every action's
-   * follow-up refresh). Without this, overlapping responses notify the same
-   * completion twice and a slow response can land after a newer one, briefly
-   * resurrecting torrents the user just removed.
+   * Coalesces the periodic polls only (1s UI Interval, background alarm), which
+   * pile up on a slow daemon with nothing to distinguish them.
+   *
+   * A forced refresh NEVER reuses an in-flight poll: it would be answered by a
+   * partial 'recently-active' response that may predate the very action or
+   * button press that asked for it, so the Refresh button would stop being able
+   * to repair a stale list and actions would appear to do nothing.
    */
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
-    if (this._inFlightUpdate) {
+    if (!force && this._inFlightUpdate) {
       return this._inFlightUpdate;
     }
     const promise = this.doUpdateTorrents(force).finally(() => {
-      this._inFlightUpdate = null;
+      if (this._inFlightUpdate === promise) {
+        this._inFlightUpdate = null;
+      }
     });
-    this._inFlightUpdate = promise;
+    if (!force) {
+      this._inFlightUpdate = promise;
+    }
     return promise;
   }
 
@@ -289,8 +305,11 @@ class TorrentService {
       parseTransmissionResponse
     );
 
-    return Promise.all([requestPromise, this._notifiedStatePromise]).then(
-      ([response, previousState]) => {
+    // The notified state is read when the RESPONSE lands, not when the request
+    // is issued: two overlapping polls would otherwise compute completions from
+    // the same stale baseline and both notify.
+    return requestPromise.then((response) =>
+      this._notifiedStatePromise.then((previousState) => {
         this.torrentsResponseTime = now;
 
         if (isRecently) {
@@ -310,7 +329,10 @@ class TorrentService {
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
         const knownHashes: string[] = [];
         const completedHashes: string[] = [];
-        const completedTorrents: { hash: string; torrent: { stateText: string } }[] = [];
+        const completedTorrents: {
+          hash: string;
+          torrent: { stateText: string; downloaded?: number };
+        }[] = [];
         for (const id of this.clientStore.torrentIds) {
           const torrent = this.clientStore.torrents.get(id);
           const hash = torrent?.hashString;
@@ -330,9 +352,14 @@ class TorrentService {
           const alreadyNotified = new Set(previousState.completed);
           const seenBefore = new Set(previousState.known);
           for (const { hash, torrent } of completedTorrents) {
-            // seenBefore filters first sightings: a torrent added for data that
-            // is already on disk never "completed" in this client
-            if (!alreadyNotified.has(hash) && seenBefore.has(hash)) {
+            if (alreadyNotified.has(hash)) continue;
+            // A torrent can legitimately be complete on its first sighting: the
+            // background poll is minutes apart, so anything added and finished
+            // in between is seen at 100% straight away. What must stay silent
+            // is a torrent added for data ALREADY on disk, which never
+            // downloaded anything here — downloadedEver tells them apart.
+            const downloadedSomething = (torrent.downloaded ?? 0) > 0;
+            if (seenBefore.has(hash) || downloadedSomething) {
               this.notifier.torrentCompleteNotify(torrent);
             }
           }
@@ -360,9 +387,7 @@ class TorrentService {
           !sameIdSet(previousState.completed, persistedCompleted) ||
           !sameIdSet(previousState.known, knownHashes)
         ) {
-          Promise.resolve(chrome.storage.local.set({ [NOTIFIED_STORAGE_KEY]: nextState })).catch(
-            () => {}
-          );
+          storageSet({ [NOTIFIED_STORAGE_KEY]: nextState }).catch(() => {});
         }
         this._notifiedStatePromise = Promise.resolve(nextState);
 
@@ -370,7 +395,7 @@ class TorrentService {
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
 
         return response;
-      }
+      })
     );
   }
 

@@ -103,6 +103,9 @@ const Menu = observer(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+      // Same guard as the page-level shortcuts: opening a file picker on top of
+      // a modal (and stacking a second dialog behind it) is never wanted
+      if (rootStore?.dialogs.size) return;
       if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
         e.preventDefault();
         handleAddFile();
@@ -110,7 +113,7 @@ const Menu = observer(() => {
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleAddFile]);
+  }, [handleAddFile, rootStore]);
 
   const handleAddUrl = useCallback(() => {
     rootStore?.createDialog({

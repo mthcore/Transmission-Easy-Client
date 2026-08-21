@@ -123,7 +123,10 @@ class Bg {
         if (!config) return;
 
         if (config.showActiveCountBadge) {
-          const count = this.bgStore.client.activeCount;
+          // The option is labelled "number of DOWNLOADING torrents", so it
+          // counts unfinished ones — activeCount means "running" and would
+          // never clear while anything is seeding
+          const count = this.bgStore.client.incompleteTorrentIds.length;
           if (count > 0) {
             setBadgeText('' + count);
           } else {
@@ -173,9 +176,23 @@ class Bg {
 
   handleMessage = (
     message: BgMessage,
-    _sender: chrome.runtime.MessageSender,
+    sender: chrome.runtime.MessageSender,
     response: (result: unknown) => void
   ): boolean | void => {
+    // Only this extension's own pages may drive the dispatcher. It answers
+    // 'getConfigStore' with the daemon password and serves every destructive
+    // action, while our content script lives in arbitrary web pages — so the
+    // boundary is asserted here rather than left to depend on that script
+    // never growing a page-facing bridge.
+    // Note the check is on the URL, not on sender.tab: the options page and the
+    // full-page view legitimately run IN a tab (options_ui.open_in_tab), while
+    // a content script reports the web page's own URL.
+    const ownOrigin = chrome.runtime.getURL('');
+    if (sender.id !== chrome.runtime.id || (sender.url && !sender.url.startsWith(ownOrigin))) {
+      logger.warn('Rejected a message from outside the extension', sender.id, sender.url);
+      return;
+    }
+
     let promise: Promise<unknown> | null = null;
 
     // Type narrowing happens automatically in each case block

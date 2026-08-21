@@ -76,11 +76,14 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
-    // Respect an explicit autoFocus: this effect runs after the child's commit,
-    // so blindly focusing the first element stole focus from the safe default
-    // (the destructive confirm dialog marks its "No" button autoFocus, and a
-    // reflex Enter used to hit "Yes")
-    const explicit = dialog.querySelector<HTMLElement>('[autofocus]');
+    // Respect an explicit focus target: this effect runs after the child's
+    // commit, so blindly focusing the first element steals focus from the safe
+    // default (the destructive confirm dialog marks its "No" button, and a
+    // reflex Enter would otherwise hit "Yes").
+    // React does NOT render an `autofocus` attribute for the autoFocus prop —
+    // it only calls .focus() at mount — so a data attribute is the only
+    // selector that actually matches here.
+    const explicit = dialog.querySelector<HTMLElement>('[data-autofocus]');
     (explicit ?? firstElement)?.focus();
 
     const handleTab = (e: KeyboardEvent) => {

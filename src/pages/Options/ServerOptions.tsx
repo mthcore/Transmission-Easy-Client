@@ -159,7 +159,11 @@ const ServerOptions = observer(() => {
   // a row. Track the pending value locally and apply successive toggles to it.
   const pendingDayRef = useRef<number | null>(null);
   useEffect(() => {
-    pendingDayRef.current = null;
+    // Only clear once the daemon actually reports the pending value, or a
+    // toggle still in flight would be recomputed from the stale mirror
+    if (pendingDayRef.current === settings?.altSpeedTimeDay) {
+      pendingDayRef.current = null;
+    }
   }, [settings?.altSpeedTimeDay]);
 
   const handleDayToggle = useCallback(
@@ -168,9 +172,17 @@ const ServerOptions = observer(() => {
       const base = pendingDayRef.current ?? settings.altSpeedTimeDay;
       const next = base ^ dayBit;
       pendingDayRef.current = next;
-      runAction(client.setAltSpeedTimeDay(next));
+      Promise.resolve(client.setAltSpeedTimeDay(next)).catch((err: Error) => {
+        // A failed toggle must not stay latched, or it would silently ride
+        // along with the next successful one
+        if (pendingDayRef.current === next) {
+          pendingDayRef.current = null;
+        }
+        setActionError(`${err.name}: ${err.message || 'Unknown error'}`);
+      });
+      setActionError('');
     },
-    [client, settings, runAction]
+    [client, settings]
   );
 
   if (!client || !settings) {
@@ -506,6 +518,8 @@ const ServerOptions = observer(() => {
           {portTestResult !== null && (
             <span className={portTestResult ? 'port-open' : 'port-closed'}>
               {' '}
+              {/* Colour alone is not a status indicator */}
+              <span aria-hidden="true">{portTestResult ? '✓' : '✗'}</span>{' '}
               {portTestResult
                 ? chrome.i18n.getMessage('portOpen')
                 : chrome.i18n.getMessage('portClosed')}

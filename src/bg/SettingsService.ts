@@ -89,6 +89,7 @@ export interface NormalizedBandwidthGroup {
 class SettingsService {
   private transport: TransmissionTransport;
   private applySettings: (settings: NormalizedSettings) => void;
+  private _lastSessionStats: { sessionDownloaded?: number; sessionUploaded?: number } = {};
 
   constructor(
     transport: TransmissionTransport,
@@ -108,14 +109,17 @@ class SettingsService {
       // torrent is removed. Best-effort: a failure here must not fail settings.
       return this.getSessionStats().then(
         (stats) => {
-          this.applySettings({
-            ...normalized,
+          this._lastSessionStats = {
             sessionDownloaded: stats.currentStats.downloadedBytes,
             sessionUploaded: stats.currentStats.uploadedBytes,
-          });
+          };
+          this.applySettings({ ...normalized, ...this._lastSessionStats });
         },
         () => {
-          this.applySettings(normalized);
+          // Reuse the last known counters: dropping them would flip the footer
+          // back to the per-torrent lifetime sum, so the displayed totals would
+          // jump between two completely different quantities
+          this.applySettings({ ...normalized, ...this._lastSessionStats });
         }
       );
     });

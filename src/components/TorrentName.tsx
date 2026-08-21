@@ -74,6 +74,9 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
 
     const spanWidth = refSpan.current?.offsetWidth || 0;
     if (spanWidth < width) {
+      // Clear the guard too: the effect cleanup is about to release this class,
+      // so leaving the ref set would block ever re-acquiring it
+      acquiredClassRef.current = null;
       setMovebleClassName(null);
       return;
     }

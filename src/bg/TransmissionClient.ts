@@ -28,7 +28,7 @@ interface BgStore {
     removeTorrentByIds: (ids: number[]) => void;
     syncChanges: (torrents: NormalizedTorrent[]) => void;
     sync: (torrents: NormalizedTorrent[]) => void;
-    torrents: Map<number, { stateText: string; hashString?: string }>;
+    torrents: Map<number, { stateText: string; hashString?: string; downloaded?: number }>;
     currentSpeed: { downloadSpeed: number; uploadSpeed: number };
     speedRoll: { add: (download: number, upload: number) => void };
     setSettings: (settings: NormalizedSettings) => void;

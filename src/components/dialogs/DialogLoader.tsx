@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Spinner from '../Spinner';
 import ErrorBoundary from '../ErrorBoundary';
 import getLogger from '../../tools/getLogger';
@@ -27,11 +27,17 @@ const DialogLoader = ({ type, dialogStore }: DialogLoaderProps) => {
   const Component = dialogComponents[type as DialogType];
   const store = dialogStore as { close?: () => void } | null;
 
+  // Destroy an entry with no renderable component: it can never be closed by
+  // the user and would block Escape for the whole session. In an effect, not
+  // during render — closing mutates the map the parent is iterating.
+  useEffect(() => {
+    if (!Component) {
+      logger.warn(`Unknown dialog type: ${type}`);
+      store?.close?.();
+    }
+  }, [Component, type, store]);
+
   if (!Component) {
-    logger.warn(`Unknown dialog type: ${type}`);
-    // Destroy the store entry too: an entry with no renderable component can
-    // never be closed by the user and blocks Escape for the whole session
-    store?.close?.();
     return null;
   }
 

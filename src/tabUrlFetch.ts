@@ -2,6 +2,7 @@ import { arrayBufferToBase64 } from './tools/binaryConversion';
 import getLogger from './tools/getLogger';
 import ErrorWithCode from './tools/ErrorWithCode';
 import fetchWithTimeout from './tools/fetchWithTimeout';
+import readBoundedBlob from './tools/readBoundedBlob';
 import { serializeError } from 'serialize-error';
 import { DOWNLOAD_TIMEOUT, MAX_FETCH_SIZE } from './constants';
 
@@ -102,14 +103,14 @@ declare global {
           headers: Array.from(response.headers.entries()) as [string, string][],
         };
 
-        return response.arrayBuffer().then((arrayBuffer) => {
-          // Content-Length is absent on chunked responses — enforce the cap
-          // on what actually arrived, like downloadFileFromUrl does
-          if (arrayBuffer.byteLength > MAX_FETCH_SIZE) {
-            throw new ErrorWithCode(`Size is more then 10mb`, 'FILE_SIZE_EXCEEDED');
-          }
-          return { response: safeResponse, base64: arrayBufferToBase64(arrayBuffer) };
-        });
+        // Streamed with a running total: Content-Length is absent on chunked
+        // responses, and buffering first would let a hostile server spend the
+        // whole timeout filling the visitor's tab before the cap applied
+        return readBoundedBlob(response)
+          .then((blob) => blob.arrayBuffer())
+          .then((arrayBuffer) => {
+            return { response: safeResponse, base64: arrayBufferToBase64(arrayBuffer) };
+          });
       });
     }
 

@@ -24,11 +24,13 @@ import { toBasicAuthValue } from '../tools/basicAuth';
 export const WEB_UI_MAIN_FRAME_RULE_ID = 1;
 export const WEB_UI_SUBRESOURCE_RULE_ID = 2;
 export const RPC_SUBRESOURCE_RULE_ID = 3;
+export const WEB_UI_ROOT_RULE_ID = 4;
 
 const ALL_RULE_IDS = [
   WEB_UI_MAIN_FRAME_RULE_ID,
   WEB_UI_SUBRESOURCE_RULE_ID,
   RPC_SUBRESOURCE_RULE_ID,
+  WEB_UI_ROOT_RULE_ID,
 ];
 
 export interface WebUiAuthConfig {
@@ -65,6 +67,12 @@ function normalizePath(path: string): string {
   return path.startsWith('/') ? path : `/${path}`;
 }
 
+/** Parent directory with trailing slash: '/transmission/rpc' → '/transmission/' */
+function parentDir(path: string): string {
+  const idx = path.lastIndexOf('/');
+  return idx <= 0 ? '/' : path.slice(0, idx + 1);
+}
+
 async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   const dnr = chrome.declarativeNetRequest;
   if (!dnr?.updateDynamicRules) return;
@@ -92,8 +100,15 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
     return;
   }
 
-  const webPath = normalizePath(config.webPathname);
   const rpcPath = normalizePath(config.pathname);
+  // With no explicit Web UI path the old fallback was '/', which turned the
+  // prefix rules into an origin-wide credential injection — exactly the leak
+  // this file promises to prevent on shared reverse-proxy hosts. Instead,
+  // scope to the RPC path's parent directory (stock daemon: '/transmission/',
+  // which contains '/transmission/web/'), and cover the daemon's '/' → Web UI
+  // redirect with a separate EXACT-match root rule, never a prefix.
+  const hasExplicitWebPath = Boolean(config.webPathname);
+  const webPath = hasExplicitWebPath ? normalizePath(config.webPathname) : parentDir(rpcPath);
 
   const requestHeaders = [
     {
@@ -142,6 +157,21 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
       },
     },
   ];
+
+  if (!hasExplicitWebPath) {
+    // Entry point when no Web UI path is set: the extension opens the bare
+    // origin and the daemon 301s to its Web UI. Anchored at BOTH ends so it
+    // matches only the root navigation itself.
+    addRules.push({
+      id: WEB_UI_ROOT_RULE_ID,
+      priority: 1,
+      action: { type: actionType, requestHeaders },
+      condition: {
+        urlFilter: `|${origin}/|`,
+        resourceTypes: MAIN_FRAME_TYPES,
+      },
+    });
+  }
 
   await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS, addRules });
 }

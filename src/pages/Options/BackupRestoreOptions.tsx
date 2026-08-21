@@ -1,21 +1,33 @@
 import React, { useState, useCallback, useRef, useEffect, type MouseEvent } from 'react';
 import getLogger from '../../tools/getLogger';
-import { storageGet, storageSet, storageRemove } from '../../tools/chromeStorage';
+import { storageGet, storageSet } from '../../tools/chromeStorage';
 import { migrateConfig } from '../../tools/loadConfig';
 import {
   BACKUP_EXCLUDE_KEYS,
   getConnectionChanges,
   sanitizeRestoreConfig,
 } from '../../tools/backupSanitize';
+import {
+  saveCloudBackup,
+  loadCloudBackup,
+  hasCloudBackup,
+  clearCloudBackup,
+} from '../../tools/cloudBackup';
 
 const logger = getLogger('BackupRestoreOptions');
+
+// Storage rejections are chrome.runtime.lastError-like objects, not Errors
+const errorMessage = (err: unknown): string => {
+  if (err instanceof Error) return err.message;
+  const message = (err as { message?: unknown } | null)?.message;
+  return typeof message === 'string' ? message : String(err);
+};
 
 type LoadState = 'idle' | 'pending' | 'done' | 'error';
 type SaveState = 'idle' | 'pending' | 'done' | 'error';
 type RestoreState = 'idle' | 'pending' | 'done' | 'error';
 
 interface StorageData {
-  backup?: string;
   configVersion?: number;
   [key: string]: unknown;
 }
@@ -27,14 +39,16 @@ const BackupRestoreOptions = () => {
   const [loadState, setLoadState] = useState<LoadState>('idle');
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [restoreState, setRestoreState] = useState<RestoreState>('idle');
+  const [saveError, setSaveError] = useState('');
+  const [restoreError, setRestoreError] = useState('');
   const [hasCloudData, setHasCloudData] = useState(false);
   const [storage, setStorage] = useState<string | null>(null);
 
   const checkCloudData = useCallback(async () => {
     try {
-      const storage: StorageData = await storageGet({ backup: '' }, 'sync');
+      const hasBackup = await hasCloudBackup();
       if (!refPage.current) return;
-      setHasCloudData(!!storage.backup);
+      setHasCloudData(hasBackup);
     } catch (err) {
       logger.error('checkCloudData error', err);
     }
@@ -67,8 +81,9 @@ const BackupRestoreOptions = () => {
   const handleSaveToCloud = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSaveState('pending');
+    setSaveError('');
     try {
-      await storageSet({ backup: refData.current?.value }, 'sync');
+      await saveCloudBackup(refData.current?.value ?? '');
       if (!refPage.current) return;
       setSaveState('done');
       setHasCloudData(true);
@@ -80,16 +95,17 @@ const BackupRestoreOptions = () => {
       logger.error('handleSaveToCloud error', err);
       if (!refPage.current) return;
       setSaveState('error');
+      setSaveError(errorMessage(err));
     }
   }, []);
 
   const handleLoadFromCloud = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const storage: StorageData = await storageGet({ backup: '' }, 'sync');
+      const backup = await loadCloudBackup();
       if (!refPage.current) return;
-      if (storage.backup && refData.current) {
-        refData.current.value = storage.backup;
+      if (backup && refData.current) {
+        refData.current.value = backup;
       }
     } catch (err) {
       logger.error('handleLoadFromCloud error', err);
@@ -103,7 +119,7 @@ const BackupRestoreOptions = () => {
       'Are you sure you want to clear the cloud backup?';
     if (!window.confirm(confirmMessage)) return;
     try {
-      await storageRemove(['backup'], 'sync');
+      await clearCloudBackup();
       if (!refPage.current) return;
       setHasCloudData(false);
     } catch (err) {
@@ -118,6 +134,7 @@ const BackupRestoreOptions = () => {
       'Are you sure you want to restore this configuration? This will overwrite all current settings.';
     if (!window.confirm(confirmMessage)) return;
     setRestoreState('pending');
+    setRestoreError('');
     try {
       const parsed = JSON.parse(refData.current?.value || '{}');
       // Strip transient keys that may have been included in older backups
@@ -170,6 +187,7 @@ const BackupRestoreOptions = () => {
       logger.error('handleRestore error', err);
       if (!refPage.current) return;
       setRestoreState('error');
+      setRestoreError(errorMessage(err));
     }
   }, []);
 
@@ -197,6 +215,12 @@ const BackupRestoreOptions = () => {
                 : chrome.i18n.getMessage('optSaveInCloud')}
           </button>
         </div>
+        {saveState === 'error' && (
+          <p className="red">
+            {chrome.i18n.getMessage('OV_FL_ERROR')}
+            {saveError ? `: ${saveError}` : ''}
+          </p>
+        )}
       </div>
 
       <div className="backup-section">
@@ -234,6 +258,12 @@ const BackupRestoreOptions = () => {
             {chrome.i18n.getMessage('optClearCloudStorage')}
           </button>
         </div>
+        {restoreState === 'error' && (
+          <p className="red">
+            {chrome.i18n.getMessage('OV_FL_ERROR')}
+            {restoreError ? `: ${restoreError}` : ''}
+          </p>
+        )}
       </div>
     </div>
   );

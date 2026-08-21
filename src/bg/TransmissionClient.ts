@@ -23,12 +23,12 @@ interface BgStore {
     showDownloadCompleteNotifications: boolean;
   };
   client: {
-    activeTorrentIds: number[];
+    incompleteTorrentIds: number[];
     torrentIds: number[];
     removeTorrentByIds: (ids: number[]) => void;
     syncChanges: (torrents: NormalizedTorrent[]) => void;
     sync: (torrents: NormalizedTorrent[]) => void;
-    torrents: Map<number, { stateText: string }>;
+    torrents: Map<number, { stateText: string; hashString?: string }>;
     currentSpeed: { downloadSpeed: number; uploadSpeed: number };
     speedRoll: { add: (download: number, upload: number) => void };
     setSettings: (settings: NormalizedSettings) => void;

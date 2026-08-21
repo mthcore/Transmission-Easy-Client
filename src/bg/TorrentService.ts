@@ -3,7 +3,12 @@ import readBlobAsArrayBuffer from '../tools/readBlobAsArrayBuffer';
 import { arrayBufferToBase64 } from '../tools/binaryConversion';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
 import { parseTransmissionResponse } from '../tools/safeJsonParse';
-import { assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
+import {
+  assertRpcVersion,
+  RPC_VERSION_3,
+  RPC_VERSION_4,
+  RPC_VERSION_4_1,
+} from '../tools/rpcCompat';
 import { RECENTLY_ACTIVE_THRESHOLD } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 import type { TransmissionResponse } from './TransmissionTransport';
@@ -11,11 +16,11 @@ import type { BandwidthPriority } from '../types/transmission';
 
 const logger = getLogger('TorrentService');
 
-/** Order-insensitive comparison of the completed-torrent id sets */
-function sameIdSet(a: number[] | null, b: number[]): boolean {
+/** Order-insensitive set comparison, used to skip redundant storage writes */
+function sameIdSet<T>(a: T[] | null, b: T[]): boolean {
   if (a === null || a.length !== b.length) return false;
   const set = new Set(a);
-  return b.every((id) => set.has(id));
+  return b.every((item) => set.has(item));
 }
 
 export interface PeerData {
@@ -133,15 +138,31 @@ export interface NormalizedTorrent {
 }
 
 interface TorrentStore {
-  activeTorrentIds: number[];
+  incompleteTorrentIds: number[];
   torrentIds: number[];
   removeTorrentByIds: (ids: number[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
-  torrents: Map<number, { stateText: string }>;
+  torrents: Map<number, { stateText: string; hashString?: string }>;
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
   speedRoll: { add: (download: number, upload: number) => void };
 }
+
+/**
+ * Completion-notification bookkeeping, persisted across service-worker
+ * restarts. Keyed by hashString (Transmission's numeric ids are unique only
+ * within one daemon session) and scoped to one server, so switching servers or
+ * restarting the daemon can't produce a burst of bogus "complete" toasts.
+ */
+interface NotifiedState {
+  url: string;
+  /** Hashes already notified as complete */
+  completed: string[];
+  /** Every hash present on the previous poll, to spot first sightings */
+  known: string[];
+}
+
+const NOTIFIED_STORAGE_KEY = '_notifiedState';
 
 interface TorrentNotifier {
   torrentCompleteNotify: (torrent: { stateText: string }) => void;
@@ -163,7 +184,8 @@ class TorrentService {
   private notifier: TorrentNotifier;
   private getShowNotifications: () => boolean;
   private torrentsResponseTime: number;
-  private _notifiedIdsPromise: Promise<number[] | null>;
+  private _notifiedStatePromise: Promise<NotifiedState | null>;
+  private _inFlightUpdate: Promise<TransmissionResponse> | null = null;
 
   constructor(options: TorrentServiceOptions) {
     this.transport = options.transport;
@@ -172,13 +194,14 @@ class TorrentService {
     this.getShowNotifications = options.getShowNotifications;
     this.torrentsResponseTime = 0;
 
-    // A failed read must not poison every later poll's Promise.all — null
-    // just skips completion notifications for the first cycle
-    this._notifiedIdsPromise = chrome.storage.local
-      .get('_notifiedIds')
-      .then((data) => (data._notifiedIds as number[] | undefined) ?? null)
+    // A failed read must not poison every later poll — null just skips
+    // completion notifications for the first cycle
+    this._notifiedStatePromise = Promise.resolve(chrome.storage.local.get(NOTIFIED_STORAGE_KEY))
+      .then((data) => (data[NOTIFIED_STORAGE_KEY] as NotifiedState | undefined) ?? null)
       .catch(() => null);
-    Promise.resolve(chrome.storage.local.remove('_activeIds')).catch(() => {});
+    // Drop the pre-3.5 id-keyed sets: ids are session-scoped, so they could
+    // only ever produce wrong notifications
+    Promise.resolve(chrome.storage.local.remove(['_activeIds', '_notifiedIds'])).catch(() => {});
   }
 
   resetResponseTime(): void {
@@ -189,7 +212,24 @@ class TorrentService {
     return this.updateTorrents().then(() => result);
   };
 
+  /**
+   * Coalesces concurrent callers (1s UI poll, background alarm, every action's
+   * follow-up refresh). Without this, overlapping responses notify the same
+   * completion twice and a slow response can land after a newer one, briefly
+   * resurrecting torrents the user just removed.
+   */
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
+    if (this._inFlightUpdate) {
+      return this._inFlightUpdate;
+    }
+    const promise = this.doUpdateTorrents(force).finally(() => {
+      this._inFlightUpdate = null;
+    });
+    this._inFlightUpdate = promise;
+    return promise;
+  }
+
+  private doUpdateTorrents(force?: boolean): Promise<TransmissionResponse> {
     const now = Math.trunc(Date.now() / 1000);
 
     let isRecently = false;
@@ -249,8 +289,8 @@ class TorrentService {
       parseTransmissionResponse
     );
 
-    return Promise.all([requestPromise, this._notifiedIdsPromise]).then(
-      ([response, previousNotifiedIds]) => {
+    return Promise.all([requestPromise, this._notifiedStatePromise]).then(
+      ([response, previousState]) => {
         this.torrentsResponseTime = now;
 
         if (isRecently) {
@@ -266,28 +306,65 @@ class TorrentService {
           this.clientStore.sync(torrents.map(this.normalizeTorrent));
         }
 
-        // Completion detection via persisted notified set
-        const activeSet = new Set(this.clientStore.activeTorrentIds);
-        const completedIds = this.clientStore.torrentIds.filter((id) => !activeSet.has(id));
+        // Completion detection, keyed by hashString and scoped to this server
+        const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
+        const knownHashes: string[] = [];
+        const completedHashes: string[] = [];
+        const completedTorrents: { hash: string; torrent: { stateText: string } }[] = [];
+        for (const id of this.clientStore.torrentIds) {
+          const torrent = this.clientStore.torrents.get(id);
+          const hash = torrent?.hashString;
+          if (!torrent || !hash) continue;
+          knownHashes.push(hash);
+          if (!incompleteIds.has(id)) {
+            completedHashes.push(hash);
+            completedTorrents.push({ hash, torrent });
+          }
+        }
 
-        if (this.getShowNotifications() && previousNotifiedIds !== null) {
-          const notifiedSet = new Set(previousNotifiedIds);
-          for (const id of completedIds) {
-            if (!notifiedSet.has(id)) {
-              const torrent = this.clientStore.torrents.get(id);
-              if (torrent) {
-                this.notifier.torrentCompleteNotify(torrent);
-              }
+        // A different server (or no state yet) means nothing here was ever
+        // "just completed" — stay silent for one cycle instead of announcing
+        // every finished torrent the other daemon holds
+        const sameServer = previousState !== null && previousState.url === this.transport.url;
+        if (this.getShowNotifications() && sameServer) {
+          const alreadyNotified = new Set(previousState.completed);
+          const seenBefore = new Set(previousState.known);
+          for (const { hash, torrent } of completedTorrents) {
+            // seenBefore filters first sightings: a torrent added for data that
+            // is already on disk never "completed" in this client
+            if (!alreadyNotified.has(hash) && seenBefore.has(hash)) {
+              this.notifier.torrentCompleteNotify(torrent);
             }
           }
         }
 
-        // Only persist when the completed set actually changed: this runs on
-        // every poll cycle
-        if (!sameIdSet(previousNotifiedIds, completedIds)) {
-          chrome.storage.local.set({ _notifiedIds: completedIds });
+        // Keep hashes already notified while their torrent is still listed, so
+        // a re-check that dips below 100% doesn't re-notify on the way back up
+        const presentHashes = new Set(knownHashes);
+        const persistedCompleted = sameServer
+          ? Array.from(
+              new Set([
+                ...previousState.completed.filter((hash) => presentHashes.has(hash)),
+                ...completedHashes,
+              ])
+            )
+          : completedHashes;
+        const nextState: NotifiedState = {
+          url: this.transport.url,
+          completed: persistedCompleted,
+          known: knownHashes,
+        };
+
+        if (
+          !sameServer ||
+          !sameIdSet(previousState.completed, persistedCompleted) ||
+          !sameIdSet(previousState.known, knownHashes)
+        ) {
+          Promise.resolve(chrome.storage.local.set({ [NOTIFIED_STORAGE_KEY]: nextState })).catch(
+            () => {}
+          );
         }
-        this._notifiedIdsPromise = Promise.resolve(completedIds);
+        this._notifiedStatePromise = Promise.resolve(nextState);
 
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
@@ -346,6 +423,9 @@ class TorrentService {
   }
 
   setLabels(ids: number[], labels: string[]): Promise<TransmissionResponse> {
+    // Labels landed in RPC 16 (Transmission 3.00); older daemons answer
+    // 'success' while silently ignoring the argument
+    assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_3, 'Labels');
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, labels } })
       .then(this.thenUpdateTorrents);
@@ -751,6 +831,9 @@ class TorrentService {
   }
 
   setTrackerList(ids: number[], trackerList: string): Promise<TransmissionResponse> {
+    // trackerList replaced trackerAdd/Remove/Replace in RPC 17; older daemons
+    // ignore it silently, so fail loudly like every other 4.x-only path
+    assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'Editing the tracker list');
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, trackerList } })
       .then(this.thenUpdateTorrents);
@@ -784,7 +867,10 @@ class TorrentService {
     const downloaded = torrent.downloadedEver as number;
     const uploaded = torrent.uploadedEver as number;
     const uploadRatio = torrent.uploadRatio as number;
-    const shared = uploadRatio >= 0 ? Math.round(uploadRatio * 1000) : 0;
+    // Transmission sentinels: -1 = not applicable, -2 = infinite (seeded
+    // without downloading). Mapping -2 to 0 showed the best seeders as the
+    // worst ratio; keep it as a sentinel the UI can render as ∞.
+    const shared = uploadRatio >= 0 ? Math.round(uploadRatio * 1000) : uploadRatio === -2 ? -2 : 0;
     const uploadSpeed = torrent.rateUpload as number;
     const downloadSpeed = torrent.rateDownload as number;
     // Preserve sentinels: -1 = not available/infinite, -2 = unknown
@@ -798,12 +884,14 @@ class TorrentService {
     const trackerStats = torrent.trackerStats as
       Array<{ leecherCount: number; seederCount: number }> | undefined;
     if (Array.isArray(trackerStats)) {
+      // Every tracker scrapes the SAME swarm, so summing multiplied the counts
+      // by the number of working trackers — the best estimate is the max
       trackerStats.forEach((tracker) => {
-        if (tracker.leecherCount > 0) {
-          _peers += tracker.leecherCount;
+        if (tracker.leecherCount > _peers) {
+          _peers = tracker.leecherCount;
         }
-        if (tracker.seederCount > 0) {
-          _seeds += tracker.seederCount;
+        if (tracker.seederCount > _seeds) {
+          _seeds = tracker.seederCount;
         }
       });
     }

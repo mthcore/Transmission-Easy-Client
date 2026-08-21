@@ -10,12 +10,15 @@ import ErrorWithCode from './ErrorWithCode';
  * Feature availability is gated on the daemon's reported rpc-version.
  */
 
+/** Transmission 3.00: torrent labels */
+export const RPC_VERSION_3 = 16;
 /** Transmission 4.0.0: groups, default-trackers, trackerList, script-torrent-added, ... */
 export const RPC_VERSION_4 = 17;
 /** Transmission 4.1.0: sequential download, port-test ip-protocol, ... */
 export const RPC_VERSION_4_1 = 18;
 
 export interface RpcFeatures {
+  labels: boolean;
   groups: boolean;
   defaultTrackers: boolean;
   trackerList: boolean;
@@ -28,6 +31,7 @@ export interface RpcFeatures {
 /** Feature availability for a daemon rpc-version; all false while unknown (0). */
 export function getRpcFeatures(rpcVersion: number): RpcFeatures {
   return {
+    labels: rpcVersion >= RPC_VERSION_3,
     groups: rpcVersion >= RPC_VERSION_4,
     defaultTrackers: rpcVersion >= RPC_VERSION_4,
     trackerList: rpcVersion >= RPC_VERSION_4,

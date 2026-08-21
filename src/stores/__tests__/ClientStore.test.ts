@@ -114,13 +114,32 @@ describe('ClientStore', () => {
   });
 
   describe('views', () => {
-    it('activeTorrentIds/activeCount exclude completed torrents', () => {
+    it('incompleteTorrentIds excludes completed torrents (completion baseline)', () => {
       const r = createRoot([
         makeTorrent({ id: 1, percentDone: 1 }), // completed
         makeTorrent({ id: 2, percentDone: 0.5 }),
       ]);
-      expect(r.client.activeTorrentIds).toEqual([2]);
-      expect(r.client.activeCount).toBe(1);
+      expect(r.client.incompleteTorrentIds).toEqual([2]);
+    });
+
+    it('activeTorrentIds/activeCount/pausedCount reflect the run state, not completion', () => {
+      const r = createRoot([
+        makeTorrent({ id: 1, percentDone: 1, statusCode: 6 }), // completed, seeding
+        makeTorrent({ id: 2, percentDone: 0.5, statusCode: 0 }), // incomplete, stopped
+        makeTorrent({ id: 3, percentDone: 0.2, statusCode: 4 }), // downloading
+      ]);
+      expect(r.client.activeTorrentIds.sort()).toEqual([1, 3]);
+      expect(r.client.activeCount).toBe(2);
+      expect(r.client.pausedCount).toBe(1);
+    });
+
+    it('replaces a torrent whose id was reused by a different hash', () => {
+      // Daemon restart renumbers ids: reconciling stale state onto the new
+      // torrent made selection and open dialogs point at the wrong one
+      const r = createRoot([makeTorrent({ id: 1, hashString: 'aaa', name: 'old' })]);
+      r.client.sync([makeTorrent({ id: 1, hashString: 'bbb', name: 'new' })]);
+      expect(r.client.torrents.get('1')?.name).toBe('new');
+      expect(r.client.torrents.get('1')?.hashString).toBe('bbb');
     });
 
     it('currentSpeed sums download/upload speed across torrents', () => {

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { speedToStr } from '../../tools/format';
 import useRootStore from '../../hooks/useRootStore';
 import { SPEED_ARRAY_COUNT, DEFAULT_SPEED_LIMIT } from '../../constants';
+import { SPEED_LIMIT_UNIT } from '../../stores/ClientStore';
 
 type SpeedType = 'download' | 'upload';
 
@@ -108,7 +109,7 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
       {settings && (
         <>
           <ContextMenu.Separator className="context-menu-separator" />
-          {getSpeedArray(speedLimit, SPEED_ARRAY_COUNT, true).map((speed) => {
+          {getSpeedArray(speedLimit, SPEED_ARRAY_COUNT, false).map((speed) => {
             const selected = speedLimitEnabled && speed === speedLimit;
             const isDefault = speed === speedLimit;
             return (
@@ -118,7 +119,11 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
                 onSelect={() => handleSetSpeedLimit(speed)}
               >
                 {selected && <span className="context-menu-check">●</span>}
-                {isDefault ? <b>{speedToStr(speed * 1024)}</b> : speedToStr(speed * 1024)}
+                {isDefault ? (
+                  <b>{speedToStr(speed * SPEED_LIMIT_UNIT)}</b>
+                ) : (
+                  speedToStr(speed * SPEED_LIMIT_UNIT)
+                )}
               </ContextMenu.Item>
             );
           })}
@@ -142,11 +147,9 @@ function getSpeedArray(currentLimit: number, count: number, maybeZero: boolean):
   for (let i = 0; i < count; i++) {
     arr[i] = Math.round(((i + 1) / middle) * middleSpeed);
   }
-  if (limit === 0) {
-    arr.pop();
-    arr.unshift(limit);
-  }
-  return arr;
+  // Never offer 0: picking it would ENABLE a zero-byte limit and stall every
+  // transfer. "Unlimited" is the menu's first entry for turning limits off.
+  return arr.filter((speed) => speed > 0);
 }
 
 export default SpeedContextMenu;

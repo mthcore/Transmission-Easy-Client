@@ -29,16 +29,27 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
 
   // Close on click outside
   useEffect(() => {
+    // A click event fires on the common ancestor of mousedown/mouseup, so a
+    // text selection dragged from inside the dialog to outside it reports
+    // <body> as its target and used to close the dialog, losing the input.
+    // Only a press that STARTED outside counts as an outside click.
+    let pressedInside = false;
+    const handleBodyPointerDown = (e: MouseEvent) => {
+      pressedInside = !!refDialog.current?.contains(e.target as Node);
+    };
     const handleBodyClick = (e: MouseEvent) => {
+      if (pressedInside) return;
       if (isTopmost() && refDialog.current && !refDialog.current.contains(e.target as Node)) {
         onClose();
       }
     };
     const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleBodyPointerDown, true);
       document.addEventListener('click', handleBodyClick);
     }, 0);
     return () => {
       clearTimeout(timeoutId);
+      document.removeEventListener('mousedown', handleBodyPointerDown, true);
       document.removeEventListener('click', handleBodyClick);
     };
   }, [onClose]);
@@ -65,8 +76,12 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
-    // Auto-focus first element
-    firstElement?.focus();
+    // Respect an explicit autoFocus: this effect runs after the child's commit,
+    // so blindly focusing the first element stole focus from the safe default
+    // (the destructive confirm dialog marks its "No" button autoFocus, and a
+    // reflex Enter used to hit "Yes")
+    const explicit = dialog.querySelector<HTMLElement>('[autofocus]');
+    (explicit ?? firstElement)?.focus();
 
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;

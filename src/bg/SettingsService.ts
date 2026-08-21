@@ -1,5 +1,6 @@
 import type TransmissionTransport from './TransmissionTransport';
 import { readKey, assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
+import { BLOCKLIST_UPDATE_TIMEOUT } from '../constants';
 import type { SessionStatistics, BandwidthGroup } from '../types/transmission';
 
 /** Map a missing field or Transmission's -1 'unknown' sentinel to undefined */
@@ -19,6 +20,9 @@ export interface NormalizedSettings {
   // undefined when the daemon omits the deprecated field (RPC 17+) or reports
   // the -1 'unknown' sentinel — lets the free-space RPC fallback engage
   downloadDirFreeSpace: number | undefined;
+  // From session-stats current-stats; undefined when that call failed
+  sessionDownloaded?: number;
+  sessionUploaded?: number;
   blocklistEnabled: boolean;
   blocklistUrl: string;
   blocklistSize: number;
@@ -98,7 +102,22 @@ class SettingsService {
     return this.transport.sendAction({ method: 'session-get' }).then((response) => {
       const settings = response.arguments as Record<string, unknown>;
       this.transport.rpcVersion = readKey<number>(settings, 'rpc-version', 0);
-      this.applySettings(this.normalizeSettings(settings));
+      const normalized = this.normalizeSettings(settings);
+      // The daemon owns the session counters; summing per-torrent lifetime
+      // totals in the UI reports all-time bytes and can even go down when a
+      // torrent is removed. Best-effort: a failure here must not fail settings.
+      return this.getSessionStats().then(
+        (stats) => {
+          this.applySettings({
+            ...normalized,
+            sessionDownloaded: stats.currentStats.downloadedBytes,
+            sessionUploaded: stats.currentStats.uploadedBytes,
+          });
+        },
+        () => {
+          this.applySettings(normalized);
+        }
+      );
     });
   }
 
@@ -384,15 +403,19 @@ class SettingsService {
   }
 
   blocklistUpdate(): Promise<{ blocklistSize: number }> {
-    return this.transport
-      .sendAction({ method: 'blocklist-update' })
-      .then((response) => {
-        const args = response.arguments as Record<string, unknown>;
-        return { blocklistSize: readKey<number>(args, 'blocklist-size', 0) };
-      })
-      .then((result) => {
-        return this.updateSettings().then(() => result);
-      });
+    return (
+      this.transport
+        // The daemon downloads and parses a multi-MB list before answering,
+        // which routinely takes longer than a normal RPC deadline
+        .sendAction({ method: 'blocklist-update' }, undefined, BLOCKLIST_UPDATE_TIMEOUT)
+        .then((response) => {
+          const args = response.arguments as Record<string, unknown>;
+          return { blocklistSize: readKey<number>(args, 'blocklist-size', 0) };
+        })
+        .then((result) => {
+          return this.updateSettings().then(() => result);
+        })
+    );
   }
 
   private normalizeStatistics = (stats: Record<string, unknown>): SessionStatistics => {

@@ -19,7 +19,7 @@ const LabelSelect = observer(() => {
 
   const selectedLabel = config.selectedLabel;
 
-  let defaultValue: string | null = null;
+  let selectedValue: string | null = null;
   const options = rootStore.torrentList.filters.map(({ label, custom: isCustom }) => {
     const id = JSON.stringify({ label, custom: isCustom });
 
@@ -42,7 +42,7 @@ const LabelSelect = observer(() => {
     }
 
     if (selectedLabel.id === id) {
-      defaultValue = id;
+      selectedValue = id;
     }
 
     return (
@@ -56,7 +56,10 @@ const LabelSelect = observer(() => {
   return (
     <li className="select">
       <Select
-        defaultValue={defaultValue || undefined}
+        // Controlled: with defaultValue only, an external change (context-menu
+        // auto-switch to DL, another window's storage sync) filtered the list
+        // while the dropdown kept displaying the stale label
+        value={selectedValue || undefined}
         onChange={handleChange}
         showSearch={false}
         optionLabelProp="children"

@@ -3,13 +3,34 @@ import { useRef, useEffect, RefObject } from 'react';
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
+// Stacked dialogs portal as SIBLINGS under document.body, so a click inside
+// the top dialog is "outside" every dialog below it, and each dialog's
+// document-level Escape handler fires on the same keypress. Only the topmost
+// dialog may react, or one interaction closes the whole stack.
+const dialogStack: symbol[] = [];
+
 export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null> {
   const refDialog = useRef<HTMLDivElement>(null);
+  const tokenRef = useRef<symbol | null>(null);
+  if (tokenRef.current === null) {
+    tokenRef.current = Symbol('dialog');
+  }
+
+  useEffect(() => {
+    const token = tokenRef.current as symbol;
+    dialogStack.push(token);
+    return () => {
+      const pos = dialogStack.indexOf(token);
+      if (pos !== -1) dialogStack.splice(pos, 1);
+    };
+  }, []);
+
+  const isTopmost = () => dialogStack[dialogStack.length - 1] === tokenRef.current;
 
   // Close on click outside
   useEffect(() => {
     const handleBodyClick = (e: MouseEvent) => {
-      if (refDialog.current && !refDialog.current.contains(e.target as Node)) {
+      if (isTopmost() && refDialog.current && !refDialog.current.contains(e.target as Node)) {
         onClose();
       }
     };
@@ -25,7 +46,7 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
   // Close on ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && isTopmost()) {
         onClose();
       }
     };

@@ -48,16 +48,20 @@ interface TorrentDetailsInfoTabProps {
   getPeerResizeProps: (key: string) => ResizeHandleProps;
 }
 
+// Same locale-provided unit suffixes ([w, d, h, m, s]) as getEta, so the
+// durations here match the ETA row instead of hardcoding English units
+const timeUnits: string[] = JSON.parse(chrome.i18n.getMessage('timeOutList'));
+
 function formatDuration(seconds: number): string {
   if (seconds <= 0) return '-';
   const d = Math.floor(seconds / 86400);
   const h = Math.floor((seconds % 86400) / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const parts: string[] = [];
-  if (d > 0) parts.push(`${d}d`);
-  if (h > 0) parts.push(`${h}h`);
-  if (m > 0) parts.push(`${m}m`);
-  return parts.length > 0 ? parts.join(' ') : '< 1m';
+  if (d > 0) parts.push(`${d}${timeUnits[1]}`);
+  if (h > 0) parts.push(`${h}${timeUnits[2]}`);
+  if (m > 0) parts.push(`${m}${timeUnits[3]}`);
+  return parts.length > 0 ? parts.join(' ') : `< 1${timeUnits[3]}`;
 }
 
 function formatDate(timestamp: number): string {

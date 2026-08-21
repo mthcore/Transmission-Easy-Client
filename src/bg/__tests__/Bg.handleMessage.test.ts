@@ -114,7 +114,8 @@ beforeEach(() => {
   client = createClientStub();
   bg.client = client;
   bg.initPromise = Promise.resolve();
-  bg.bgStore = { config: undefined };
+  // updateSettings re-reads the config before validating (connection-change race)
+  bg.bgStore = { config: undefined, fetchConfig: vi.fn().mockResolvedValue(undefined) };
   bg.bgStorePathLine = { getDelta: vi.fn().mockReturnValue({ type: 'patch', result: [] }) };
 });
 

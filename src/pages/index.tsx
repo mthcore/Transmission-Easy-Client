@@ -15,6 +15,7 @@ import RootStoreCtx from '../tools/rootStoreCtx';
 import useRootStore from '../hooks/useRootStore';
 import { useTheme } from '../hooks/useTheme';
 import DialogLoader from '../components/dialogs/DialogLoader';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const logger = getLogger('Index');
 
@@ -50,12 +51,10 @@ const Index = observer(() => {
       const target = e.target as HTMLElement;
       if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
 
-      // Escape - close dialogs/filelist
+      // Escape - close the file list. Open dialogs handle Escape themselves,
+      // topmost first (useDialog); closing them here too would pop two per press
       if (e.key === 'Escape') {
-        if (rootStore.dialogs.size) {
-          const lastId = Array.from(rootStore.dialogs.keys()).pop();
-          if (lastId) rootStore.destroyDialog(lastId);
-        } else if (rootStore.fileList) {
+        if (!rootStore.dialogs.size && rootStore.fileList) {
           rootStore.destroyFileList();
         }
         return;
@@ -105,12 +104,7 @@ const Index = observer(() => {
         return;
       }
 
-      // Ctrl+O - Add torrent file
-      if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
-        e.preventDefault();
-        rootStore.createDialog({ type: 'putFiles' });
-        return;
-      }
+      // Ctrl+O (add torrent file) is handled in Menu, next to its file input
 
       // F2 - Rename selected torrent
       if (e.key === 'F2' && rootStore.torrentList.selectedIds.length === 1) {
@@ -290,6 +284,8 @@ const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 createRoot(rootElement).render(
   <RootStoreCtx.Provider value={rootStore}>
-    <Index />
+    <ErrorBoundary>
+      <Index />
+    </ErrorBoundary>
   </RootStoreCtx.Provider>
 );

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, type FormEventHandler, type React
 import { observer } from 'mobx-react';
 import { useLocation } from 'react-router-dom';
 import useRootStore from '../../hooks/useRootStore';
+import callApi from '../../tools/callApi';
 
 interface FormElements extends HTMLFormControlsCollection {
   login: HTMLInputElement;
@@ -61,7 +62,9 @@ const ClientOptions = observer(() => {
           authenticationRequired,
         });
         if (!refPage.current) return;
-        await rootStore.client?.updateSettings();
+        // Direct message, not the mirror store: a missing mirror used to skip
+        // the check silently and show a green OK for an unverified config
+        await callApi({ action: 'updateSettings' });
         if (!refPage.current) return;
         setClientStatus('done');
 
@@ -77,7 +80,7 @@ const ClientOptions = observer(() => {
         setClientStatusText(`${error.name}: ${error.message}`);
       }
     },
-    [rootStore, configStore, location]
+    [configStore, location]
   );
 
   if (!configStore) {

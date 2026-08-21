@@ -57,12 +57,15 @@ describe('Daemon', () => {
       });
     });
 
-    it('does not create alarm for sub-second intervals', () => {
+    it('clamps sub-second intervals instead of leaving polling dead', () => {
       const bg = createMockBg();
       (bg.bgStore.config as { backgroundUpdateInterval: number }).backgroundUpdateInterval = 500;
       const daemon = new Daemon(bg);
       daemon.start();
-      expect(chrome.alarms.create).not.toHaveBeenCalled();
+      expect(chrome.alarms.create).toHaveBeenCalledWith(ALARM_NAME, {
+        delayInMinutes: 1,
+        periodInMinutes: 1,
+      });
     });
   });
 

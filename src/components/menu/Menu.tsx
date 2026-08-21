@@ -96,6 +96,22 @@ const Menu = observer(() => {
     refFileInput.current?.dispatchEvent(new MouseEvent('click'));
   }, []);
 
+  // Ctrl+O lives here, next to the hidden file input: creating a bare
+  // 'putFiles' dialog from the page shortcut handler produced an invisible
+  // never-ready dialog (the renderer waits for isReady) instead of a picker
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+        e.preventDefault();
+        handleAddFile();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleAddFile]);
+
   const handleAddUrl = useCallback(() => {
     rootStore?.createDialog({
       type: 'putUrl',

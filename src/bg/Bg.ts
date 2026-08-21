@@ -263,9 +263,13 @@ class Bg {
         break;
       }
       case 'updateSettings': {
-        promise = this.whenReady().then(() => {
-          return this.requireClient().updateSettings();
-        });
+        // The options page sends this right after writing new connection
+        // settings to validate them; the async storage.onChanged listener may
+        // not have rebuilt the client yet. Re-reading the config here makes
+        // the rebuild happen before the check, so the NEW server is validated.
+        promise = this.whenReady()
+          .then(() => this.bgStore.fetchConfig())
+          .then(() => this.requireClient().updateSettings());
         break;
       }
       case 'sendFiles': {

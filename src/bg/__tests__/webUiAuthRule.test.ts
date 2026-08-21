@@ -120,6 +120,15 @@ describe('updateWebUiAuthRule', () => {
     expect(filters).toEqual(['|https://nas.example.com/rpc', '|https://nas.example.com/|']);
   });
 
+  it('anchors an explicit web path on a path boundary', async () => {
+    // '/transmission/web' as a bare DNR prefix also matches
+    // '/transmission/webmail' — a co-hosted app would receive the credentials
+    await updateWebUiAuthRule({ ...baseConfig, webPathname: '/transmission/web' });
+    const filters = lastCall().addRules!.map((rule) => rule.condition.urlFilter);
+    expect(filters[0]).toBe('|http://nas.example.com:9091/transmission/web/');
+    expect(filters).not.toContain('|http://nas.example.com:9091/transmission/web');
+  });
+
   it('ignores a trailing slash on the RPC path when deriving the web path', async () => {
     await updateWebUiAuthRule({ ...baseConfig, pathname: '/transmission/rpc/' });
     expect(lastCall().addRules![0].condition.urlFilter).toBe(

@@ -45,7 +45,9 @@ function baseTorrent(overrides: Record<string, unknown> = {}) {
 }
 
 function createService(rpcVersion: number) {
-  (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({});
+  (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+    (_query: unknown, cb?: (items: Record<string, unknown>) => void) => cb?.({})
+  );
   const sendAction = vi.fn().mockResolvedValue({
     result: 'success',
     arguments: { torrents: [] },

@@ -283,6 +283,7 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
     sep = '/';
   }
 
+  // Maps a full path prefix to the display segment used for its menu node
   const lowKeyMap: Record<string, string> = {};
   const tree: Record<string, unknown> = {};
   places.forEach((place) => {
@@ -293,13 +294,14 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
 
     let parentThree: Record<string, unknown> = tree;
     parts.forEach((part, index) => {
-      const lowPart = parts
-        .slice(0, index + 1)
-        .join('/')
-        .toLowerCase();
-      let caseKey = lowKeyMap[lowPart];
+      // Case-SENSITIVE key: Transmission daemons are overwhelmingly POSIX, so
+      // '/data/Movies' and '/data/movies' are two different directories.
+      // Folding them collapsed both into one menu entry pointing at whichever
+      // came last, silently downloading into the wrong folder.
+      const pathKey = parts.slice(0, index + 1).join('/');
+      let caseKey = lowKeyMap[pathKey];
       if (!caseKey) {
-        caseKey = lowKeyMap[lowPart] = part;
+        caseKey = lowKeyMap[pathKey] = part;
       }
       let subTree = parentThree[caseKey] as Record<string, unknown> | undefined;
       if (!subTree) {
@@ -366,8 +368,17 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
   return menus;
 }
 
-const contextMenusRemoveAll = async (): Promise<void> => {
-  await chrome.contextMenus.removeAll();
+const contextMenusRemoveAll = (): Promise<void> => {
+  // Callback form: on Firefox the chrome.* namespace returns undefined, so
+  // `await removeAll()` resolved immediately and the recreated items raced the
+  // still-pending removal (leaving the user with no menu at all)
+  return new Promise((resolve) => {
+    chrome.contextMenus.removeAll(() => {
+      // A failed removal is not fatal: create() reports its own errors
+      void chrome.runtime.lastError;
+      resolve();
+    });
+  });
 };
 
 const contextMenusCreate = async (details: chrome.contextMenus.CreateProperties): Promise<void> => {

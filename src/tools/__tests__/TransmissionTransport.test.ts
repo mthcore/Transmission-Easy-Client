@@ -48,15 +48,20 @@ describe('TransmissionTransport', () => {
     await transport.sendAction({ method: 'session-get' });
 
     expect(transport.token).toBe('fresh-token');
-    expect(chrome.storage.session.set).toHaveBeenCalledWith({
-      _sessionToken: { url: transport.url, token: 'fresh-token' },
-    });
+    // storageSet passes a callback as its second argument
+    expect(chrome.storage.session.set).toHaveBeenCalledWith(
+      { _sessionToken: { url: transport.url, token: 'fresh-token' } },
+      expect.any(Function)
+    );
   });
 
   it('restores a cached session token for the same url', async () => {
-    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      _sessionToken: { url: 'http://localhost:9091/transmission/rpc', token: 'cached-token' },
-    });
+    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockImplementationOnce(
+      (_query: unknown, cb: (items: Record<string, unknown>) => void) =>
+        cb({
+          _sessionToken: { url: 'http://localhost:9091/transmission/rpc', token: 'cached-token' },
+        })
+    );
     const restored = new TransmissionTransport({
       url: 'http://localhost:9091/transmission/rpc',
       getConfig,
@@ -67,9 +72,12 @@ describe('TransmissionTransport', () => {
   });
 
   it('ignores a cached session token belonging to another url', async () => {
-    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      _sessionToken: { url: 'http://other-host:9091/transmission/rpc', token: 'stale-token' },
-    });
+    (chrome.storage.session.get as ReturnType<typeof vi.fn>).mockImplementationOnce(
+      (_query: unknown, cb: (items: Record<string, unknown>) => void) =>
+        cb({
+          _sessionToken: { url: 'http://other-host:9091/transmission/rpc', token: 'stale-token' },
+        })
+    );
     const restored = new TransmissionTransport({
       url: 'http://localhost:9091/transmission/rpc',
       getConfig,

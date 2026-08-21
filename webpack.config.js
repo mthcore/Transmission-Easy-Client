@@ -159,11 +159,31 @@ const config = {
             if (browser === 'firefox') {
               // Firefox V3: add gecko settings, remove Chrome-specific
               delete manifest.minimum_chrome_version;
+              // Firefox has no extension service workers: an MV3 add-on
+              // declaring only background.service_worker is REJECTED at install
+              // ("background.service_worker is currently disabled"). The bundle
+              // is a classic script, so an event page runs it as-is.
+              manifest.background = {
+                scripts: [manifest.background.service_worker],
+              };
+              // No `id` here on purpose: the AMO listing already owns the GUID
+              // (the release workflow passes it as FIREFOX_ADDON_GUID), and
+              // hardcoding a different one would orphan existing installs.
               manifest.browser_specific_settings = {
                 gecko: {
-                  strict_min_version: '113.0'
-                }
+                  // Host permissions are only granted at install from 127; on
+                  // older versions the extension installs with no host access
+                  // and every RPC fails with no way to grant it in-product.
+                  strict_min_version: '127.0',
+                },
               };
+              // Required by AMO since 2025-11: declare that nothing is collected
+              manifest.browser_specific_settings.gecko.data_collection_permissions = {
+                required: ['none'],
+              };
+              // navigator.clipboard.writeText outside a user gesture needs this
+              // on Firefox (Chrome grants it implicitly to extension pages)
+              manifest.permissions = [...manifest.permissions, 'clipboardWrite'];
             }
             return JSON.stringify(manifest, null, 4);
           }

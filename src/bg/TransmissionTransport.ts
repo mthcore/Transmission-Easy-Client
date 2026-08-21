@@ -1,6 +1,7 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
 import fetchWithTimeout from '../tools/fetchWithTimeout';
 import { toBasicAuthValue } from '../tools/basicAuth';
+import { storageGet, storageSet, storageRemove } from '../tools/chromeStorage';
 import { FETCH_TIMEOUT } from '../constants';
 
 export interface TransmissionResponse {
@@ -73,26 +74,33 @@ class TransmissionTransport {
     this.onTokenRefresh = options.onTokenRefresh;
 
     // Restore the cached session id so an MV3 wake-up doesn't cost a 409
-    // round-trip on its first request
-    chrome.storage.session
-      ?.get(TOKEN_STORAGE_KEY)
-      .then((data) => {
-        const cached = data?.[TOKEN_STORAGE_KEY] as { url: string; token: string } | undefined;
-        if (this.token === null && cached?.url === this.url && cached.token) {
-          this.token = cached.token;
-        }
-      })
-      .catch(() => {
-        // A missing cache only costs one extra 409 round-trip
-      });
+    // round-trip on its first request. Goes through the callback-based helpers:
+    // Firefox's chrome.* namespace has no promise support and returns
+    // undefined, so `chrome.storage.session.get(...).then(...)` would throw
+    // right here and leave the whole client unbuilt.
+    if (chrome.storage.session) {
+      storageGet<Record<string, { url: string; token: string } | undefined>>(
+        TOKEN_STORAGE_KEY,
+        'session'
+      )
+        .then((data) => {
+          const cached = data?.[TOKEN_STORAGE_KEY];
+          if (this.token === null && cached?.url === this.url && cached.token) {
+            this.token = cached.token;
+          }
+        })
+        .catch(() => {
+          // A missing cache only costs one extra 409 round-trip
+        });
+    }
   }
 
   private persistToken(): void {
     if (!chrome.storage.session) return;
     const promise = this.token
-      ? chrome.storage.session.set({ [TOKEN_STORAGE_KEY]: { url: this.url, token: this.token } })
-      : chrome.storage.session.remove(TOKEN_STORAGE_KEY);
-    promise?.catch(() => {
+      ? storageSet({ [TOKEN_STORAGE_KEY]: { url: this.url, token: this.token } }, 'session')
+      : storageRemove(TOKEN_STORAGE_KEY, 'session');
+    promise.catch(() => {
       // Best-effort cache only
     });
   }

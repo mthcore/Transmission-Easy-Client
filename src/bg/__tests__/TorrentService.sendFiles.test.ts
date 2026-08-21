@@ -33,7 +33,9 @@ describe('TorrentService.sendFiles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Constructor reads the persisted notified-ids set from storage.
-    (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (_query: unknown, cb?: (items: Record<string, unknown>) => void) => cb?.({})
+    );
 
     transport = {
       sendAction: vi.fn((query: { method: string }) => {

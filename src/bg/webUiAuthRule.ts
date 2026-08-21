@@ -56,6 +56,24 @@ const SUBRESOURCE_TYPES = [
 
 const MAIN_FRAME_TYPES = ['main_frame'] as chrome.declarativeNetRequest.ResourceType[];
 
+/**
+ * updateDynamicRules through a callback, so a rejected rule set actually
+ * rejects: on Firefox the chrome.* namespace returns undefined, so `await`
+ * resolved instantly and a rule the validator refused (or missing host access)
+ * silently left the Web UI unauthenticated with nothing logged.
+ */
+function updateRules(
+  dnr: typeof chrome.declarativeNetRequest,
+  options: chrome.declarativeNetRequest.UpdateRuleOptions
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    dnr.updateDynamicRules(options, () => {
+      const err = chrome.runtime.lastError;
+      err ? reject(new Error(err.message)) : resolve();
+    });
+  });
+}
+
 function isIpHost(hostname: string): boolean {
   // IPv6 hostnames from URL come bracketed ([::1]); IPv4 is dotted digits
   return hostname.startsWith('[') || /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname);
@@ -75,12 +93,21 @@ function parentDir(path: string): string {
   return idx <= 0 ? '/' : trimmed.slice(0, idx + 1);
 }
 
+/**
+ * A DNR urlFilter is a plain prefix, so '/transmission/web' would also match
+ * '/transmission/webmail' and leak the credentials to a co-hosted app. Anchor
+ * the prefix on a path boundary by making sure it ends with a slash.
+ */
+function asDirectoryPrefix(path: string): string {
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
 async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   const dnr = chrome.declarativeNetRequest;
   if (!dnr?.updateDynamicRules) return;
 
   if (!config.authenticationRequired || !config.hostname) {
-    await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS });
+    await updateRules(dnr, { removeRuleIds: ALL_RULE_IDS });
     return;
   }
 
@@ -98,7 +125,7 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
     origin = parsed.origin;
     originHostname = parsed.hostname;
   } catch {
-    await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS });
+    await updateRules(dnr, { removeRuleIds: ALL_RULE_IDS });
     return;
   }
 
@@ -110,7 +137,9 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
   // which contains '/transmission/web/'), and cover the daemon's '/' → Web UI
   // redirect with a separate EXACT-match root rule, never a prefix.
   const hasExplicitWebPath = Boolean(config.webPathname);
-  const webPath = hasExplicitWebPath ? normalizePath(config.webPathname) : parentDir(rpcPath);
+  const webPath = hasExplicitWebPath
+    ? asDirectoryPrefix(normalizePath(config.webPathname))
+    : parentDir(rpcPath);
   // A '/' web path (RPC mounted at the origin root, e.g. pathname '/rpc')
   // would turn the prefix rules back into origin-wide injection, so those
   // rules are dropped entirely: only the exact RPC and root rules remain.
@@ -185,7 +214,7 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
     });
   }
 
-  await dnr.updateDynamicRules({ removeRuleIds: ALL_RULE_IDS, addRules });
+  await updateRules(dnr, { removeRuleIds: ALL_RULE_IDS, addRules });
 }
 
 export default updateWebUiAuthRule;

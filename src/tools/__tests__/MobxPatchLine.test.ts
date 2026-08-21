@@ -94,7 +94,9 @@ describe('MobxPatchLine', () => {
       const line = createLine(Store.create(), null);
       expect(Number.isInteger(line.id)).toBe(true);
       expect(line.id).toBeGreaterThanOrEqual(0);
-      expect(line.id).toBeLessThan(1000);
+      // Wide id space: a service-worker restart must not collide with a
+      // surviving page's session id (1/2^31 instead of the old 1/1000)
+      expect(line.id).toBeLessThan(2 ** 31);
     });
 
     it('starts with an empty line and a null lastPatchId', () => {

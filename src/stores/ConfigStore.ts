@@ -300,13 +300,17 @@ const ConfigStore = types
         return storageSet(obj);
       },
       removeFolders(selectedFolders: Instance<typeof FolderStore>[]) {
-        self.folders = cast(removeItems(self.folders.slice(0), selectedFolders));
+        // Compute with live nodes (identity matching), assign snapshots: the
+        // same live-node-vs-snapshot pitfall as moveTorrentsColumn above
+        const remaining = removeItems(self.folders.slice(0), selectedFolders);
+        self.folders = cast(remaining.map((folder) => getSnapshot(folder)));
         return storageSet({
           folders: self.folders.toJSON(),
         });
       },
       moveFolders(selectedFolders: Instance<typeof FolderStore>[], index: number) {
-        self.folders = cast(moveItems(self.folders.slice(0), selectedFolders, index));
+        const reordered = moveItems(self.folders.slice(0), selectedFolders, index);
+        self.folders = cast(reordered.map((folder) => getSnapshot(folder)));
         return storageSet({
           folders: self.folders.toJSON(),
         });
@@ -428,7 +432,9 @@ function moveItems<T>(array: T[], items: T[], index: number): T[] {
 
   if (startPos !== null) {
     if (index < 0) {
-      array.splice(startPos - 1, 0, ...items);
+      // Clamp: splice(-1) would insert before the LAST element, so moving the
+      // top item up used to scramble the order instead of no-opping
+      array.splice(Math.max(0, startPos - 1), 0, ...items);
     } else {
       array.splice(startPos + 1, 0, ...items);
     }

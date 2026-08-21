@@ -2,6 +2,11 @@ import type TransmissionTransport from './TransmissionTransport';
 import { readKey, assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
 import type { SessionStatistics, BandwidthGroup } from '../types/transmission';
 
+/** Map a missing field or Transmission's -1 'unknown' sentinel to undefined */
+function normalizeFreeSpace(value: number | undefined): number | undefined {
+  return typeof value === 'number' && value >= 0 ? value : undefined;
+}
+
 export interface NormalizedSettings {
   downloadSpeedLimit: number;
   downloadSpeedLimitEnabled: boolean;
@@ -11,7 +16,9 @@ export interface NormalizedSettings {
   altDownloadSpeedLimit: number;
   altUploadSpeedLimit: number;
   downloadDir: string;
-  downloadDirFreeSpace: number;
+  // undefined when the daemon omits the deprecated field (RPC 17+) or reports
+  // the -1 'unknown' sentinel — lets the free-space RPC fallback engage
+  downloadDirFreeSpace: number | undefined;
   blocklistEnabled: boolean;
   blocklistUrl: string;
   blocklistSize: number;
@@ -408,7 +415,9 @@ class SettingsService {
       altDownloadSpeedLimit: readKey<number>(settings, 'alt-speed-down', 0),
       altUploadSpeedLimit: readKey<number>(settings, 'alt-speed-up', 0),
       downloadDir: readKey<string>(settings, 'download-dir', ''),
-      downloadDirFreeSpace: readKey<number>(settings, 'download-dir-free-space', 0),
+      downloadDirFreeSpace: normalizeFreeSpace(
+        readKey<number | undefined>(settings, 'download-dir-free-space', undefined)
+      ),
       blocklistEnabled: readKey<boolean>(settings, 'blocklist-enabled', false),
       blocklistUrl: readKey<string>(settings, 'blocklist-url', ''),
       blocklistSize: readKey<number>(settings, 'blocklist-size', 0),

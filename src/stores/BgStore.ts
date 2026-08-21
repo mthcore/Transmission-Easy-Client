@@ -50,6 +50,11 @@ const BgStore = types
           });
         } catch (err) {
           logger.error('fetchConfig error, use default config', err);
+          // Actually apply the promised default: leaving config undefined
+          // kills the daemon autorun and locks every page on 'Loading: error'
+          if (!self.config) {
+            self.config = cast({});
+          }
         }
       }),
       flushClient() {

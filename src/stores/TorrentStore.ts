@@ -84,7 +84,10 @@ const TorrentStore = types
         return formatBytes(self.size);
       },
       get progress(): number {
-        return Math.trunc((self.recheckProgress || self.percentDone) * 1000);
+        // Gate on the status, not on recheckProgress being truthy: a recheck
+        // sitting at exactly 0.0 must not show the stale percentDone (100%)
+        const isChecking = self.statusCode === 2;
+        return Math.trunc((isChecking ? self.recheckProgress : self.percentDone) * 1000);
       },
       get progressStr(): string {
         const progress = this.progress / 10;

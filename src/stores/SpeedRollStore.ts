@@ -42,7 +42,7 @@ const SpeedRollStore = types
       get maxSpeed(): number {
         let maxSpeed = 0;
         const minTime = this.minTime;
-        for (let i = self.data.length - 1; i > 0; i--) {
+        for (let i = self.data.length - 1; i >= 0; i--) {
           const item = self.data[i];
           if (item.time < minTime) {
             break;
@@ -66,7 +66,7 @@ const SpeedRollStore = types
       },
       getDataFromTime(minTime: number) {
         const result: { download: number; upload: number; time: number }[] = [];
-        for (let i = self.data.length - 1; i > 0; i--) {
+        for (let i = self.data.length - 1; i >= 0; i--) {
           const item = self.data[i];
           if (item.time < minTime) {
             break;

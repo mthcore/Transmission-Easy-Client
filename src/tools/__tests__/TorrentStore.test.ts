@@ -66,9 +66,19 @@ describe('TorrentStore computed views', () => {
       expect(t.progress).toBe(500);
     });
 
-    it('uses recheckProgress when set', () => {
-      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3 });
+    it('uses recheckProgress while the torrent is checking', () => {
+      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3, statusCode: 2 });
       expect(t.progress).toBe(300);
+    });
+
+    it('shows recheckProgress even at exactly 0 while checking', () => {
+      const t = createTorrent({ percentDone: 1, recheckProgress: 0, statusCode: 2 });
+      expect(t.progress).toBe(0);
+    });
+
+    it('ignores a stale recheckProgress when not checking', () => {
+      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3, statusCode: 4 });
+      expect(t.progress).toBe(500);
     });
 
     it('formats progress below 100% with one decimal', () => {

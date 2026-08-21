@@ -37,7 +37,7 @@ const SpaceWatcherStore = types
             client: {
               settings: {
                 downloadDir: string;
-                downloadDirFreeSpace: number;
+                downloadDirFreeSpace: number | undefined;
                 hasDownloadDirFreeSpace: boolean;
               } | null;
               updateSettings: () => Promise<void>;
@@ -51,8 +51,8 @@ const SpaceWatcherStore = types
           if (isAlive(self)) {
             const settings = rootStore.client.settings;
             if (!settings) return;
-            const { downloadDir, downloadDirFreeSpace, hasDownloadDirFreeSpace } = settings;
-            if (hasDownloadDirFreeSpace) {
+            const { downloadDir, downloadDirFreeSpace } = settings;
+            if (typeof downloadDirFreeSpace === 'number') {
               result.push({
                 path: downloadDir,
                 available: downloadDirFreeSpace,

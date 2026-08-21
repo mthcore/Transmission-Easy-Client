@@ -26,7 +26,12 @@ class MobxPatchLine {
   cleanTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(store: Record<string, unknown>, branches: string[] | null) {
-    this.id = Math.trunc(Math.random() * 1000);
+    // The id distinguishes service-worker generations: a surviving UI page
+    // holding an (id, patchId) cursor from the previous generation must get
+    // ID_IS_NOT_EQUAL -> snapshot. With a small id space a collision made
+    // getDelta trust the stale cursor and feed the page an incremental patch
+    // stream, silently missing everything that changed while the SW was down.
+    this.id = Math.trunc(Math.random() * 2 ** 31);
 
     this.patchLine = [];
     this.timeLine = [];

@@ -23,12 +23,16 @@ const TorrentListStore = types
   .views((self) => {
     return {
       get filters(): Filter[] {
+        // client is types.maybe on RootStore: state can be 'done' with client
+        // still undefined when the initial bg sync failed — render must not crash
         const rootStore = getRoot<{
-          client: { torrents: Map<number, ITorrentStore> };
+          client?: { torrents: Map<number, ITorrentStore> };
         }>(self);
 
         const result: Filter[] = [];
         customLabels.forEach((label) => result.push({ label, custom: true }));
+
+        if (!rootStore.client) return result;
 
         // Collect unique labels from all torrents
         const labelSet = new Set<string>();
@@ -54,17 +58,19 @@ const TorrentListStore = types
         return result;
       },
       get filteredTorrents(): ITorrentStore[] {
+        // Same maybe-guard as filters: config and client may not be attached yet
         const rootStore = getRoot<{
-          config: {
+          config?: {
             selectedLabel: { label: string; custom: boolean };
             hideSeedingTorrents: boolean;
             hideFinishedTorrents: boolean;
             searchQuery: string;
           };
-          client: {
+          client?: {
             torrents: Map<number, ITorrentStore>;
           };
         }>(self);
+        if (!rootStore.config || !rootStore.client) return [];
         const filter = rootStore.config.selectedLabel;
 
         const result: ITorrentStore[] = [];
@@ -144,10 +150,11 @@ const TorrentListStore = types
       },
       get sortedTorrents(): ITorrentStore[] {
         const rootStore = getRoot<{
-          config: {
+          config?: {
             torrentsSort: { by: string; direction: 1 | -1 };
           };
         }>(self);
+        if (!rootStore.config) return [];
         const { by, direction } = rootStore.config.torrentsSort;
         return sortTorrents(
           this.filteredTorrents as unknown as { [key: string]: unknown }[],

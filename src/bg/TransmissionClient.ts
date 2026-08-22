@@ -21,14 +21,19 @@ interface BgStore {
     login: string;
     password: string;
     showDownloadCompleteNotifications: boolean;
+    needsTrackerStats: boolean;
   };
   client: {
     incompleteTorrentIds: number[];
+    downloadingCount: number;
     torrentIds: number[];
     removeTorrentByIds: (ids: number[]) => void;
     syncChanges: (torrents: NormalizedTorrent[]) => void;
     sync: (torrents: NormalizedTorrent[]) => void;
-    torrents: Map<number, { stateText: string; hashString?: string; downloaded?: number }>;
+    torrents: Map<
+      number,
+      { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
+    >;
     currentSpeed: { downloadSpeed: number; uploadSpeed: number };
     speedRoll: { add: (download: number, upload: number) => void };
     setSettings: (settings: NormalizedSettings) => void;
@@ -72,6 +77,8 @@ class TransmissionClient {
       clientStore: bgStore.client,
       notifier: bg,
       getShowNotifications: () => bgStore.config.showDownloadCompleteNotifications,
+      // Only pay for trackerStats when a column that displays it is visible
+      getNeedsTrackerStats: () => bgStore.config.needsTrackerStats,
     });
 
     this.fileService = new FileService(this.transport);

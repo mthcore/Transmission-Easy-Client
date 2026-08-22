@@ -144,7 +144,10 @@ interface TorrentStore {
   removeTorrentByIds: (ids: number[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
-  torrents: Map<number, { stateText: string; hashString?: string; downloaded?: number }>;
+  torrents: Map<
+    number,
+    { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
+  >;
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
   speedRoll: { add: (download: number, upload: number) => void };
 }
@@ -165,6 +168,17 @@ interface NotifiedState {
 
 const NOTIFIED_STORAGE_KEY = '_notifiedState';
 
+/**
+ * How recently a torrent must have finished for a first-sighting completion to
+ * be announced (seconds). Wide enough to cover a background poll gap and a
+ * service-worker restart, short enough that a browser reopened the next day
+ * doesn't replay every completion that happened meanwhile.
+ */
+const COMPLETION_NOTIFY_WINDOW = 15 * 60;
+
+/** Session-scoped, so the recently-active window survives an SW restart */
+const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
+
 interface TorrentNotifier {
   torrentCompleteNotify: (torrent: { stateText: string }) => void;
   torrentAddedNotify: (torrent: { id: number; name?: string }) => void;
@@ -177,6 +191,8 @@ interface TorrentServiceOptions {
   clientStore: TorrentStore;
   notifier: TorrentNotifier;
   getShowNotifications: () => boolean;
+  /** Whether any visible column needs the (very heavy) trackerStats field */
+  getNeedsTrackerStats?: () => boolean;
 }
 
 class TorrentService {
@@ -184,16 +200,33 @@ class TorrentService {
   private clientStore: TorrentStore;
   private notifier: TorrentNotifier;
   private getShowNotifications: () => boolean;
+  private getNeedsTrackerStats: () => boolean;
   private torrentsResponseTime: number;
   private _notifiedStatePromise: Promise<NotifiedState | null>;
   private _inFlightUpdate: Promise<TransmissionResponse> | null = null;
+  /** Monotonic request counter, so out-of-order responses can be dropped */
+  private _requestSeq = 0;
+  private _lastAppliedSeq = 0;
 
   constructor(options: TorrentServiceOptions) {
     this.transport = options.transport;
     this.clientStore = options.clientStore;
     this.notifier = options.notifier;
     this.getShowNotifications = options.getShowNotifications;
+    this.getNeedsTrackerStats = options.getNeedsTrackerStats ?? (() => false);
     this.torrentsResponseTime = 0;
+
+    // Restore the recently-active window across service-worker restarts. The
+    // MV3 worker is killed after ~30s idle, so an instance-only value meant the
+    // 2-minute background poll ALWAYS refetched the full list.
+    storageGet<Record<string, number | undefined>>(RESPONSE_TIME_STORAGE_KEY, 'session')
+      .then((data) => {
+        const stored = data[RESPONSE_TIME_STORAGE_KEY];
+        if (typeof stored === 'number' && stored > this.torrentsResponseTime) {
+          this.torrentsResponseTime = stored;
+        }
+      })
+      .catch(() => {});
 
     // A failed read must not poison every later poll — null just skips
     // completion notifications for the first cycle. Callback-based helper:
@@ -210,46 +243,58 @@ class TorrentService {
 
   resetResponseTime(): void {
     this.torrentsResponseTime = 0;
+    storageRemove(RESPONSE_TIME_STORAGE_KEY, 'session').catch(() => {});
   }
 
   /**
-   * Refresh chained after a mutating action. Forced, because it must observe
-   * the action it follows — a shared in-flight poll could have been issued
-   * before it.
+   * Refresh chained after a mutating action. It needs a request issued AFTER
+   * the action (a shared in-flight poll could predate it), but not a full list:
+   * 'recently-active' returns every torrent the action touched plus a `removed`
+   * list, which is what makes a full fetch per action unnecessary — that costs
+   * megabytes on a large library and they stack when several actions run.
    */
   private thenUpdateTorrents = <T>(result: T): Promise<T> => {
-    return this.updateTorrents(true).then(() => result);
+    return this.requestTorrents({ full: false, reuseInFlight: false }).then(() => result);
   };
 
   /**
-   * Coalesces the periodic polls only (1s UI Interval, background alarm), which
-   * pile up on a slow daemon with nothing to distinguish them.
+   * `force` means the user explicitly asked for a refresh: a fresh request AND
+   * a full list, so a drifted list can always be repaired.
    *
-   * A forced refresh NEVER reuses an in-flight poll: it would be answered by a
-   * partial 'recently-active' response that may predate the very action or
-   * button press that asked for it, so the Refresh button would stop being able
-   * to repair a stale list and actions would appear to do nothing.
+   * Periodic polls (1s UI Interval, background alarm) coalesce, since they are
+   * interchangeable and pile up on a slow daemon.
    */
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
-    if (!force && this._inFlightUpdate) {
+    return this.requestTorrents({ full: !!force, reuseInFlight: !force });
+  }
+
+  private requestTorrents(options: {
+    full: boolean;
+    reuseInFlight: boolean;
+  }): Promise<TransmissionResponse> {
+    if (options.reuseInFlight && this._inFlightUpdate) {
       return this._inFlightUpdate;
     }
-    const promise = this.doUpdateTorrents(force).finally(() => {
+    const promise = this.doUpdateTorrents(options.full).finally(() => {
       if (this._inFlightUpdate === promise) {
         this._inFlightUpdate = null;
       }
     });
-    if (!force) {
+    if (options.reuseInFlight) {
       this._inFlightUpdate = promise;
     }
     return promise;
   }
 
-  private doUpdateTorrents(force?: boolean): Promise<TransmissionResponse> {
+  private doUpdateTorrents(full?: boolean): Promise<TransmissionResponse> {
     const now = Math.trunc(Date.now() / 1000);
+    // Requests can overlap and answer out of order; an older response must
+    // never be applied on top of a newer one, or it resurrects torrents the
+    // user just removed.
+    const requestSeq = ++this._requestSeq;
 
     let isRecently = false;
-    if (!force && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
+    if (!full && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
       isRecently = true;
     }
 
@@ -278,8 +323,6 @@ class TorrentService {
       'status',
       'error',
       'errorString',
-      'trackerStats',
-      'magnetLink',
       'uploadRatio',
       'hashString',
       'isStalled',
@@ -290,6 +333,14 @@ class TorrentService {
       'labels',
       'bandwidthPriority',
     ];
+    // trackerStats is by far the heaviest field (Transmission returns ~25
+    // subfields per tracker) and only feeds the seeds/peers columns, which are
+    // hidden by default. magnetLink is another ~0.5-2KB per torrent and is read
+    // once per session at most — the copy-magnet action rebuilds it from the
+    // hash. Fetching both on every poll cost a multi-GB/day idle transfer.
+    if (this.getNeedsTrackerStats()) {
+      listFields.push('trackerStats');
+    }
     if (this.transport.rpcVersion >= RPC_VERSION_4_1) {
       listFields.push('sequential_download');
     }
@@ -310,7 +361,16 @@ class TorrentService {
     // the same stale baseline and both notify.
     return requestPromise.then((response) =>
       this._notifiedStatePromise.then((previousState) => {
-        this.torrentsResponseTime = now;
+        // A response older than one already applied carries a pre-action view
+        // of the list: applying it would undo what the user just did
+        if (requestSeq < this._lastAppliedSeq) {
+          return response;
+        }
+        this._lastAppliedSeq = requestSeq;
+        if (now > this.torrentsResponseTime) {
+          this.torrentsResponseTime = now;
+          storageSet({ [RESPONSE_TIME_STORAGE_KEY]: now }, 'session').catch(() => {});
+        }
 
         if (isRecently) {
           const { removed, torrents } = response.arguments as {
@@ -325,13 +385,20 @@ class TorrentService {
           this.clientStore.sync(torrents.map(this.normalizeTorrent));
         }
 
-        // Completion detection, keyed by hashString and scoped to this server
+        // Completion detection, keyed by hashString and scoped to this server.
+        // Skipped entirely when notifications are off: the census walks every
+        // torrent and allocates a hash list the size of the whole library.
+        if (!this.getShowNotifications()) {
+          const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
+          this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
+          return response;
+        }
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
         const knownHashes: string[] = [];
         const completedHashes: string[] = [];
         const completedTorrents: {
           hash: string;
-          torrent: { stateText: string; downloaded?: number };
+          torrent: { stateText: string; downloaded?: number; completedTime?: number };
         }[] = [];
         for (const id of this.clientStore.torrentIds) {
           const torrent = this.clientStore.torrents.get(id);
@@ -348,18 +415,27 @@ class TorrentService {
         // "just completed" — stay silent for one cycle instead of announcing
         // every finished torrent the other daemon holds
         const sameServer = previousState !== null && previousState.url === this.transport.url;
-        if (this.getShowNotifications() && sameServer) {
+        if (sameServer) {
           const alreadyNotified = new Set(previousState.completed);
           const seenBefore = new Set(previousState.known);
           for (const { hash, torrent } of completedTorrents) {
             if (alreadyNotified.has(hash)) continue;
-            // A torrent can legitimately be complete on its first sighting: the
-            // background poll is minutes apart, so anything added and finished
-            // in between is seen at 100% straight away. What must stay silent
-            // is a torrent added for data ALREADY on disk, which never
-            // downloaded anything here — downloadedEver tells them apart.
+            if (seenBefore.has(hash)) {
+              // Watched it finish: always worth announcing
+              this.notifier.torrentCompleteNotify(torrent);
+              continue;
+            }
+            // Never seen before, yet already complete. That is either a torrent
+            // added and finished between two polls (worth announcing) or one
+            // that finished long ago — while the browser was closed, or added
+            // for data already on disk. downloadedEver rules out the latter,
+            // completedTime rules out the former; without both we stay silent.
             const downloadedSomething = (torrent.downloaded ?? 0) > 0;
-            if (seenBefore.has(hash) || downloadedSomething) {
+            const completedRecently =
+              typeof torrent.completedTime === 'number' &&
+              torrent.completedTime > 0 &&
+              now - torrent.completedTime < COMPLETION_NOTIFY_WINDOW;
+            if (downloadedSomething && completedRecently) {
               this.notifier.torrentCompleteNotify(torrent);
             }
           }

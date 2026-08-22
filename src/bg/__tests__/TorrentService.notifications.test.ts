@@ -6,6 +6,7 @@ type Torrent = {
   hashString: string;
   percentDone: number;
   downloaded: number;
+  completedTime: number;
   stateText: string;
 };
 
@@ -206,10 +207,31 @@ describe('TorrentService completion notifications', () => {
     await first.service.updateTorrents(true);
 
     // Background polling is minutes apart: a small torrent can be seen at 100%
-    // on its very first sighting. downloadedEver > 0 proves it really downloaded.
-    const second = makeService(url, [rawTorrent(1, 'aaa', 1), rawTorrent(2, 'bbb', 1)]);
+    // on its very first sighting. downloadedEver > 0 proves it really
+    // downloaded, and a fresh doneDate proves it happened just now.
+    const justNow = Math.trunc(Date.now() / 1000) - 30;
+    const second = makeService(url, [
+      rawTorrent(1, 'aaa', 1),
+      { ...rawTorrent(2, 'bbb', 1), doneDate: justNow },
+    ]);
     await second.service.updateTorrents(true);
     expect(second.notifier.torrentCompleteNotify).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays silent for a torrent that finished long ago (browser was closed)', async () => {
+    const url = 'http://nas:9091/rpc';
+    const first = makeService(url, [rawTorrent(1, 'aaa', 1)]);
+    await first.service.updateTorrents(true);
+
+    // Finished two days ago via another client: announcing it now would replay
+    // every completion that happened while the browser was shut
+    const longAgo = Math.trunc(Date.now() / 1000) - 2 * 24 * 3600;
+    const second = makeService(url, [
+      rawTorrent(1, 'aaa', 1),
+      { ...rawTorrent(2, 'bbb', 1), doneDate: longAgo },
+    ]);
+    await second.service.updateTorrents(true);
+    expect(second.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
   });
 
   it('respects the "show notifications" setting', async () => {

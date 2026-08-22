@@ -123,10 +123,10 @@ class Bg {
         if (!config) return;
 
         if (config.showActiveCountBadge) {
-          // The option is labelled "number of DOWNLOADING torrents", so it
-          // counts unfinished ones — activeCount means "running" and would
-          // never clear while anything is seeding
-          const count = this.bgStore.client.incompleteTorrentIds.length;
+          // The option is labelled "number of DOWNLOADING torrents": not
+          // "running" (would never clear while seeding) and not merely
+          // "unfinished" (would never clear while a paused torrent sits at 40%)
+          const count = this.bgStore.client.downloadingCount;
           if (count > 0) {
             setBadgeText('' + count);
           } else {

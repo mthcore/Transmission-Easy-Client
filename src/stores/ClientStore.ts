@@ -221,6 +221,14 @@ const ClientStore = types
       get activeCount(): number {
         return this.activeTorrentIds.length;
       },
+      /** Actually downloading right now (Transmission status 4) */
+      get downloadingCount(): number {
+        let count = 0;
+        for (const torrent of self.torrents.values()) {
+          if (torrent.statusCode === 4) count += 1;
+        }
+        return count;
+      },
       get pausedCount(): number {
         let count = 0;
         for (const torrent of self.torrents.values()) {

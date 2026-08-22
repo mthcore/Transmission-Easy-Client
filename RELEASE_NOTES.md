@@ -1,25 +1,34 @@
 # Release Notes - Transmission Easy Client
 
-## Version 3.4.1 (August 2026)
+## Version 3.4.0 (August 2026)
 
-**Second audit pass: 62 verified fixes**, including regressions introduced by
-3.4.0. Recommended for everyone on 3.4.0.
+**Deep audit: three review passes, ~150 verified bug fixes.** Every finding was
+traced end to end before being fixed, and covered by a test that fails without
+the fix.
 
-- **Popup no longer resets the list** - opening the popup (or pressing Refresh)
-  cleared and reloaded the background state, so the torrent list blanked and
-  repopulated, and the badge flickered, every single time
-- **Deleting a torrent is safe again** - the remove-confirmation dialog put
-  keyboard focus on "Yes" instead of "No", so a reflex Enter could delete a
-  torrent and its data
-- **Security** - with the RPC path at the server root, the credential-scoping
-  fix from 3.4.0 still fell back to injecting the Basic-auth header on the
-  whole origin
+- **Firefox works again** - the Firefox build declared a background type Firefox
+  has never supported, so the add-on could not even be installed; several
+  internal calls also used a browser API form that Firefox does not provide,
+  which left the extension inert. The published packages were malformed on all
+  three stores as well
+- **Add-torrent fix** - the folder selected in the add-by-URL and drop-files
+  dialogs was silently ignored; torrents landed in the daemon's default
+  directory. The chosen folder is now honored on every add path
+- **Deleting a torrent is safe** - the confirmation dialog put keyboard focus on
+  "Yes" instead of "No", so a reflex Enter could delete a torrent and its data
+- **Security** - the Basic-auth header could be injected into every request on
+  the server's origin (leaking Transmission credentials to other applications
+  behind the same reverse proxy); rules are now scoped to the Transmission
+  paths only. Requests are no longer followed onto private/local addresses via
+  redirects, downloads are size-limited while they stream, and the background
+  only answers this extension's own pages
 - **Correct torrent after a daemon restart** - Transmission reuses torrent ids
   between sessions; the selection and open dialogs could end up pointing at a
   different torrent than the one displayed
-- **Notifications** - no more burst of bogus "download complete" toasts after
-  switching servers or restarting the daemon, no repeat after a data
-  verification, and clicking a notification now opens the extension
+- **Notifications** - completion notices are no longer missed for torrents that
+  finish between two checks, no burst of bogus notices after switching servers
+  or restarting the daemon, no repeat after a data verification, and clicking a
+  notification opens the extension
 - **Speed limits** - the speed menu no longer offers a "0" entry that froze all
   transfers, and every limit is displayed with Transmission's own unit (a
   512 KB/s limit showed as 524.29 kB/s)
@@ -29,43 +38,26 @@
 - **Tables** - the file-list folder navigation works again, six columns can be
   resized, the seeds/peers column actually sorts, names sort case-insensitively
   and missing values always sort last
+- **Cloud backup** - saves no longer destroy the existing copy, two machines
+  syncing at once can't mix their backups, and failures are shown instead of
+  passing silently
 - **Options** - a seed ratio of 0 can be saved, alt-speed days no longer
-  un-check each other, the Server tab refreshes instead of showing stale
-  values, failed changes are reported instead of silently ignored, and opening
-  the badge colour picker no longer changes the badge
-- **Add torrents** - files added from the popup are no longer lost when the
-  popup closes mid-transfer, duplicate labels no longer make the daemon reject
-  the whole request, and slow .torrent downloads are no longer cut off
+  un-check each other, the Server tab refreshes instead of showing stale values,
+  failed changes are reported, typing an interval no longer hammers the daemon,
+  and opening the badge colour picker no longer changes the badge
+- **Network reliability** - timeouts now cover the whole response, operations
+  that could be applied twice are never retried, slow .torrent downloads are no
+  longer cut off, and the interface no longer reports failure for operations
+  that actually succeed
+- **Recovery** - a failed startup offers a retry instead of a blank screen, and
+  the free-space indicator no longer sticks on "Loading…"
+- **Appearance and accessibility** - keyboard focus is visible everywhere,
+  dialogs stay above menus, dark mode is readable (no more white flash on
+  refresh, unreadable folder chips or progress labels), Hebrew is laid out
+  right-to-left, and the "reduce motion" system setting is respected
 - **Upgrades from very old versions** restore two settings that were silently
   dropped ("notify on completion" and "hide finished")
-- **454 tests** (up from 435)
-
-## Version 3.4.0 (August 2026)
-
-- **Add-torrent fix** - the folder selected in the add-by-URL and drop-files
-  dialogs was silently ignored; torrents landed in the daemon's default
-  directory. The chosen folder is now honored on every add path
-- **Security** - with no "GUI path" configured, the Basic-auth header was
-  injected into every request on the server's origin; on a shared host behind
-  a reverse proxy this leaked Transmission credentials to co-hosted
-  applications. Rules are now scoped to the Transmission paths only
-- **Cloud backup** - saving an emptied config text area no longer destroys the
-  existing cloud backup; save/restore failures now show a visible error
-- **Network reliability** - the RPC timeout now covers the whole response (a
-  proxy stalling mid-body used to hang background polling until the service
-  worker died); operations that could be applied twice are no longer retried
-  after a timeout; the UI no longer reports failure for slow operations that
-  later succeed
-- **UI fixes** - blank-page crash when the first background sync failed;
-  Ctrl+O now opens the file picker instead of doing nothing; Escape closes one
-  dialog at a time instead of the whole stack; the label filter dropdown stays
-  in sync with the applied filter; reordering context-menu folders no longer
-  scrambles them or crashes; recheck progress, speed graph, free-space display
-  and details-dialog durations corrected
-- **Options hardening** - typing an interval no longer hammers the daemon at
-  millisecond rates mid-keystroke, and a too-small background interval can no
-  longer silently kill badge updates and notifications
-- **435 tests** (up from 418), including regression tests for every fix above
+- **490 tests** (up from 418)
 
 ## Version 3.3.1 (August 2026)
 

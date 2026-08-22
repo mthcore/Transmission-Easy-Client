@@ -32,7 +32,14 @@ const PutUrlDialog = observer(({ dialogStore }: PutUrlDialogProps) => {
 
       const urlInput = form.elements.namedItem('url') as HTMLInputElement;
       const url = urlInput.value.trim();
-      if (!url) return;
+      if (!url) {
+        // Whitespace passes the `required` check (spaces count as a value), so
+        // a silent return here looked like a dead OK button — clear the field
+        // and let the browser's own validation bubble explain
+        urlInput.value = '';
+        form.reportValidity();
+        return;
+      }
 
       const urls = [url];
 

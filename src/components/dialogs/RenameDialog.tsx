@@ -29,6 +29,16 @@ const RenameDialog = observer(({ dialogStore }: RenameDialogProps) => {
       const nameInput = form.elements.namedItem('name') as HTMLInputElement;
       const name = nameInput.value.trim();
 
+      // An empty name is never valid — the daemon rejects it, and the only
+      // trace was a generic error toast after the dialog had already closed.
+      // Keep the dialog open, like MoveDialog does for an empty location.
+      if (!name) return;
+      // Unchanged: nothing to send
+      if (name === dialogStore.name) {
+        dialogStore.close();
+        return;
+      }
+
       client?.rename(dialogStore.torrentIds, dialogStore.path, name).catch((err) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to rename', err);
       });

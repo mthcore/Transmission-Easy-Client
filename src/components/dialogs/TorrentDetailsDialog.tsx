@@ -8,6 +8,7 @@ import type { PeerData, TorrentDetailData } from '../../bg/TorrentService';
 import TorrentDetailsInfoTab from './tabs/TorrentDetailsInfoTab';
 import TorrentDetailsTrackersTab from './tabs/TorrentDetailsTrackersTab';
 import TorrentDetailsSeedLimitsTab from './tabs/TorrentDetailsSeedLimitsTab';
+import showError from '../../tools/showError';
 
 interface RootStore {
   client: {
@@ -83,6 +84,7 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   const [peersLoading, setPeersLoading] = useState(false);
   const [details, setDetails] = useState<TorrentDetailData | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState(false);
 
   // Tracker edit state
   const [trackerListText, setTrackerListText] = useState('');
@@ -129,7 +131,7 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   useEffect(() => {
     if (torrentId == null) return;
     setPeersLoading(true);
-    rootStore.client.getPeers(torrentId).then(
+    rootStore.client?.getPeers(torrentId).then(
       (data) => {
         setPeers(data);
         setPeersLoading(false);
@@ -138,40 +140,69 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
     );
   }, [torrentId, rootStore.client]);
 
+  const fetchDetails = useCallback(
+    (initFields: boolean) => {
+      if (torrentId == null) return;
+      setDetailsLoading(true);
+      rootStore.client?.getTorrentDetails(torrentId).then(
+        (data) => {
+          setDetails(data);
+          // The edit fields only re-seed on load/retry — a background refetch
+          // (after Apply) must not clobber what the user is typing
+          if (initFields) {
+            setTrackerListText(data.trackerList);
+            setSeedRatioMode(data.seedRatioMode);
+            setSeedRatioLimit(data.seedRatioLimit);
+            setSeedIdleMode(data.seedIdleMode);
+            setSeedIdleLimit(data.seedIdleLimit);
+          }
+          setDetailsError(false);
+          setDetailsLoading(false);
+        },
+        () => {
+          // Without an error state the Trackers and Seed-limit tabs rendered
+          // permanently blank with no explanation and no way to retry
+          setDetailsError(true);
+          setDetailsLoading(false);
+        }
+      );
+    },
+    [torrentId, rootStore.client]
+  );
+
   useEffect(() => {
-    if (torrentId == null) return;
-    setDetailsLoading(true);
-    rootStore.client.getTorrentDetails(torrentId).then(
-      (data) => {
-        setDetails(data);
-        setTrackerListText(data.trackerList);
-        setSeedRatioMode(data.seedRatioMode);
-        setSeedRatioLimit(data.seedRatioLimit);
-        setSeedIdleMode(data.seedIdleMode);
-        setSeedIdleLimit(data.seedIdleLimit);
-        setDetailsLoading(false);
-      },
-      () => setDetailsLoading(false)
-    );
-  }, [torrentId, rootStore.client]);
+    fetchDetails(true);
+  }, [fetchDetails]);
 
   const handleApplyTrackers = useCallback(() => {
     if (torrentId == null) return;
     setTrackerSaving(true);
-    rootStore.client.setTrackerList([torrentId], trackerListText).then(
-      () => setTrackerSaving(false),
-      () => setTrackerSaving(false)
+    rootStore.client?.setTrackerList([torrentId], trackerListText).then(
+      () => {
+        setTrackerSaving(false);
+        // The tracker table above the editor reads the one-shot details
+        // snapshot: without a refetch it kept showing the pre-edit trackers,
+        // making a successful apply look like a failure
+        fetchDetails(false);
+      },
+      (err) => {
+        setTrackerSaving(false);
+        showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
+      }
     );
-  }, [torrentId, trackerListText, rootStore.client]);
+  }, [torrentId, trackerListText, rootStore.client, fetchDetails]);
 
   const handleApplySeedLimits = useCallback(() => {
     if (torrentId == null) return;
     setSeedSaving(true);
     rootStore.client
-      .setSeedLimits([torrentId], seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit)
+      ?.setSeedLimits([torrentId], seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit)
       .then(
         () => setSeedSaving(false),
-        () => setSeedSaving(false)
+        (err) => {
+          setSeedSaving(false);
+          showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
+        }
       );
   }, [torrentId, seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit, rootStore.client]);
 
@@ -208,6 +239,16 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
         </div>
 
         <div className="torrent-details-content">
+          {/* A failed details fetch used to leave the Trackers and Seed-limit
+              tabs permanently blank with no explanation */}
+          {detailsError && !detailsLoading && (
+            <div className="dialog-error-inline" role="alert">
+              <span>{chrome.i18n.getMessage('OV_FL_ERROR')}</span>{' '}
+              <button type="button" onClick={() => fetchDetails(true)}>
+                {chrome.i18n.getMessage('errorRetry')}
+              </button>
+            </div>
+          )}
           {activeTab === 'info' && (
             <TorrentDetailsInfoTab
               torrent={torrent}
@@ -230,7 +271,7 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
               trackerSaving={trackerSaving}
               trackerWidths={trackerResize.widths}
               getTrackerResizeProps={trackerResize.getResizeProps}
-              canEditTrackers={rootStore.client.settings?.features.trackerList ?? false}
+              canEditTrackers={rootStore.client?.settings?.features.trackerList ?? false}
             />
           )}
 

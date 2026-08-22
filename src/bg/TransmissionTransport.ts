@@ -32,6 +32,14 @@ interface TransportOptions {
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY = 1000;
 
+/**
+ * Extra time granted on top of one attempt's timeout for ALL retries together.
+ * Without a whole-exchange budget, a daemon that stalls mid-body cost
+ * 4 x 30s attempts + backoff = ~127 seconds behind a disabled Refresh button —
+ * while the eventual error claimed the request "timed out after 30000ms".
+ */
+const RETRY_BUDGET_MS = 15000;
+
 // A timed-out or reset request may still have reached the daemon, so blindly
 // re-sending it can apply the operation twice. Everything else (reads, absolute
 // sets, start/stop/remove) is safe to repeat.
@@ -65,6 +73,8 @@ class TransmissionTransport {
   private getConfig: () => TransportConfig;
   private onConnected: () => void;
   private onTokenRefresh?: () => void;
+  /** Requests gate on the cached-token restore — see the constructor */
+  private tokenRestored: Promise<void>;
 
   constructor(options: TransportOptions) {
     this.url = options.url;
@@ -74,12 +84,15 @@ class TransmissionTransport {
     this.onTokenRefresh = options.onTokenRefresh;
 
     // Restore the cached session id so an MV3 wake-up doesn't cost a 409
-    // round-trip on its first request. Goes through the callback-based helpers:
-    // Firefox's chrome.* namespace has no promise support and returns
-    // undefined, so `chrome.storage.session.get(...).then(...)` would throw
-    // right here and leave the whole client unbuilt.
+    // round-trip on its first request. sendAction GATES on this: without the
+    // gate, wake-up requests were already in flight with an empty token by the
+    // time the restore resolved, and got 409'd — the very cost the cache was
+    // added to avoid. Goes through the callback-based helpers: Firefox's
+    // chrome.* namespace has no promise support and returns undefined, so
+    // `chrome.storage.session.get(...).then(...)` would throw right here and
+    // leave the whole client unbuilt.
     if (chrome.storage.session) {
-      storageGet<Record<string, { url: string; token: string } | undefined>>(
+      this.tokenRestored = storageGet<Record<string, { url: string; token: string } | undefined>>(
         TOKEN_STORAGE_KEY,
         'session'
       )
@@ -92,6 +105,8 @@ class TransmissionTransport {
         .catch(() => {
           // A missing cache only costs one extra 409 round-trip
         });
+    } else {
+      this.tokenRestored = Promise.resolve();
     }
   }
 
@@ -110,24 +125,38 @@ class TransmissionTransport {
     customParser?: (text: string) => TransmissionResponse,
     timeoutMs: number = FETCH_TIMEOUT
   ): Promise<TransmissionResponse> {
+    // The whole exchange — every retry included — must finish inside this
+    // deadline. Per-attempt timeouts alone let a stalling daemon hold the UI
+    // for 4 attempts plus backoff (~127s) behind a disabled Refresh button.
+    const deadline = Date.now() + timeoutMs + RETRY_BUDGET_MS;
     // Legacy argument names are sent as-is: the bespoke /transmission/rpc
     // endpoint accepts them on every daemon from 2.x through 4.2+.
-    return this.retryIfTokenInvalid(() => {
-      return this.fetchWithRetry(body, customParser, 0, timeoutMs);
-    }).then((response) => {
-      if (response.result !== 'success') {
-        throw new ErrorWithCode(response.result, 'TRANSMISSION_ERROR');
-      }
-      return response;
-    });
+    return this.tokenRestored
+      .then(() =>
+        this.retryIfTokenInvalid(() => {
+          return this.fetchWithRetry(body, customParser, 0, timeoutMs, deadline);
+        })
+      )
+      .then((response) => {
+        if (response.result !== 'success') {
+          throw new ErrorWithCode(response.result, 'TRANSMISSION_ERROR');
+        }
+        return response;
+      });
   }
 
   private fetchWithRetry(
     body: Record<string, unknown>,
-    customParser?: (text: string) => TransmissionResponse,
-    attempt = 0,
-    timeoutMs: number = FETCH_TIMEOUT
+    customParser: ((text: string) => TransmissionResponse) | undefined,
+    attempt: number,
+    timeoutMs: number,
+    deadline: number
   ): Promise<TransmissionResponse> {
+    // Never let one attempt run past the whole exchange's deadline
+    const attemptTimeout = Math.min(timeoutMs, deadline - Date.now());
+    if (attemptTimeout <= 0) {
+      return Promise.reject(new ErrorWithCode('Request deadline exceeded', 'FETCH_TIMEOUT'));
+    }
     return fetchWithTimeout(
       this.url,
       this.sign({
@@ -138,7 +167,7 @@ class TransmissionTransport {
         },
         body: JSON.stringify(body),
       }),
-      timeoutMs,
+      attemptTimeout,
       // The body is read inside the timeout window: a daemon/proxy that sends
       // headers then stalls the body must still trip FETCH_TIMEOUT
       (response) => {
@@ -167,15 +196,19 @@ class TransmissionTransport {
       // Retry only on network/timeout errors (fetch failures), not HTTP or
       // auth errors — and never for methods a duplicate delivery could apply
       // twice, since an aborted request may still have reached the daemon
+      const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
       if (
         attempt < MAX_RETRIES &&
         isRetryableFetchError(err) &&
-        !NON_IDEMPOTENT_METHODS.has(body.method as string)
+        !NON_IDEMPOTENT_METHODS.has(body.method as string) &&
+        // A retry that couldn't get at least a second of real work in would
+        // only delay the error the user is already waiting for
+        deadline - Date.now() - delay > 1000
       ) {
-        const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt);
         return new Promise<TransmissionResponse>((resolve) =>
           setTimeout(
-            () => resolve(this.fetchWithRetry(body, customParser, attempt + 1, timeoutMs)),
+            () =>
+              resolve(this.fetchWithRetry(body, customParser, attempt + 1, timeoutMs, deadline)),
             delay
           )
         );

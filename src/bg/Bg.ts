@@ -7,6 +7,7 @@ import TransmissionClient from './TransmissionClient';
 import updateWebUiAuthRule from './webUiAuthRule';
 import MobxPatchLine from '../tools/MobxPatchLine';
 import { serializeError } from 'serialize-error';
+import stripBidiControls from '../tools/stripBidiControls';
 import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
 import { getSnapshot } from 'mobx-state-tree';
 
@@ -53,6 +54,8 @@ class Bg {
     chrome.runtime.onMessage.addListener(this.handleMessage);
     // chrome.alarms listener must be registered synchronously at SW startup
     chrome.alarms.onAlarm.addListener(this.handleAlarm);
+    // Clicking a notification used to do nothing at all
+    chrome.notifications.onClicked.addListener(this.handleNotificationClick);
     // Cast needed because MST types with 'maybe' are complex
     this.daemon = new Daemon(this as unknown as IBgForDaemon);
     this.contextMenu = new ContextMenu(this as unknown as IBgForContextMenu);
@@ -121,7 +124,10 @@ class Bg {
         if (!config) return;
 
         if (config.showActiveCountBadge) {
-          const count = this.bgStore.client.activeCount;
+          // The option is labelled "number of DOWNLOADING torrents": not
+          // "running" (would never clear while seeding) and not merely
+          // "unfinished" (would never clear while a paused torrent sits at 40%)
+          const count = this.bgStore.client.downloadingCount;
           if (count > 0) {
             setBadgeText('' + count);
           } else {
@@ -171,9 +177,23 @@ class Bg {
 
   handleMessage = (
     message: BgMessage,
-    _sender: chrome.runtime.MessageSender,
+    sender: chrome.runtime.MessageSender,
     response: (result: unknown) => void
   ): boolean | void => {
+    // Only this extension's own pages may drive the dispatcher. It answers
+    // 'getConfigStore' with the daemon password and serves every destructive
+    // action, while our content script lives in arbitrary web pages — so the
+    // boundary is asserted here rather than left to depend on that script
+    // never growing a page-facing bridge.
+    // Note the check is on the URL, not on sender.tab: the options page and the
+    // full-page view legitimately run IN a tab (options_ui.open_in_tab), while
+    // a content script reports the web page's own URL.
+    const ownOrigin = chrome.runtime.getURL('');
+    if (sender.id !== chrome.runtime.id || (sender.url && !sender.url.startsWith(ownOrigin))) {
+      logger.warn('Rejected a message from outside the extension', sender.id, sender.url);
+      return;
+    }
+
     let promise: Promise<unknown> | null = null;
 
     // Type narrowing happens automatically in each case block
@@ -263,9 +283,13 @@ class Bg {
         break;
       }
       case 'updateSettings': {
-        promise = this.whenReady().then(() => {
-          return this.requireClient().updateSettings();
-        });
+        // The options page sends this right after writing new connection
+        // settings to validate them; the async storage.onChanged listener may
+        // not have rebuilt the client yet. Re-reading the config here makes
+        // the rebuild happen before the check, so the NEW server is validated.
+        promise = this.whenReady()
+          .then(() => this.bgStore.fetchConfig())
+          .then(() => this.requireClient().updateSettings());
         break;
       }
       case 'sendFiles': {
@@ -402,6 +426,21 @@ class Bg {
     }
   };
 
+  handleNotificationClick = (notificationId: string) => {
+    chrome.notifications.clear(notificationId);
+    // The popup can't be opened programmatically on every browser, so fall
+    // back to the extension page in a tab
+    const openPage = () => chrome.tabs.create({ url: '/index.html' });
+    const action = chrome.action as typeof chrome.action & {
+      openPopup?: () => Promise<void>;
+    };
+    if (typeof action.openPopup === 'function') {
+      Promise.resolve(action.openPopup()).catch(openPage);
+    } else {
+      openPage();
+    }
+  };
+
   handleAlarm = (alarm: chrome.alarms.Alarm) => {
     if (alarm.name !== ALARM_NAME) return;
     this.whenReady()
@@ -436,7 +475,9 @@ class Bg {
   torrentCompleteNotify(torrent: TorrentInfo): void {
     const icon = notificationIcons.complete;
     const statusText = chrome.i18n.getMessage('OV_COL_STATUS') + ': ' + torrent.stateText;
-    showNotification('complete-' + torrent.id, icon, torrent.name, statusText);
+    // OS notifications render the raw title: a bidi override in the torrent
+    // name spoofs the displayed extension right on the user's desktop
+    showNotification('complete-' + torrent.id, icon, stripBidiControls(torrent.name), statusText);
   }
 
   torrentErrorNotify(message: string): void {

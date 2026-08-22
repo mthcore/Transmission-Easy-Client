@@ -13,12 +13,15 @@ const TorrentDetailsDialogStore = types
   )
   .views((self) => ({
     get torrent(): ITorrentStore | undefined {
+      // client is types.maybe on RootStore: it can vanish mid-render (bg
+      // resync after the server config broke), and dereferencing it blindly
+      // threw a TypeError that killed the whole dialog into the error fallback
       const rootStore = getRoot<{
-        client: {
+        client?: {
           torrents: Map<number, ITorrentStore>;
         };
       }>(self);
-      return rootStore.client.torrents.get(self.torrentId);
+      return rootStore.client?.torrents.get(self.torrentId);
     },
   }));
 

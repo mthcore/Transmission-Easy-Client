@@ -34,4 +34,10 @@ export interface ChromeResponse<T = unknown> {
 }
 
 // ID types used throughout the app
-export type TorrentId = number;
+/**
+ * Transmission's `ids` fields accept the session-scoped numeric id OR the
+ * hashString. Destructive actions send hashes: numeric ids are reassigned on a
+ * daemon restart, so an id captured in a confirmation dialog could otherwise
+ * address a different torrent by the time the user clicks Yes.
+ */
+export type TorrentId = number | string;

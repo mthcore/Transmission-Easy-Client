@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Spinner from '../Spinner';
 import ErrorBoundary from '../ErrorBoundary';
 import getLogger from '../../tools/getLogger';
@@ -25,17 +25,33 @@ interface DialogLoaderProps {
 
 const DialogLoader = ({ type, dialogStore }: DialogLoaderProps) => {
   const Component = dialogComponents[type as DialogType];
+  const store = dialogStore as { close?: () => void } | null;
+
+  // Destroy an entry with no renderable component: it can never be closed by
+  // the user and would block Escape for the whole session. In an effect, not
+  // during render — closing mutates the map the parent is iterating.
+  useEffect(() => {
+    if (!Component) {
+      logger.warn(`Unknown dialog type: ${type}`);
+      store?.close?.();
+    }
+  }, [Component, type, store]);
 
   if (!Component) {
-    logger.warn(`Unknown dialog type: ${type}`);
     return null;
   }
 
   return (
     <ErrorBoundary
       fallback={
+        // Must stay dismissable: a dialog that throws on render has no
+        // useDialog handler, so without this button its store entry would
+        // live forever (and keep swallowing Escape)
         <div className="dialog-error">
-          {chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to load dialog'}
+          <p>{chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to load dialog'}</p>
+          <button type="button" onClick={() => store?.close?.()}>
+            {chrome.i18n.getMessage('DLG_BTN_CANCEL') || 'Close'}
+          </button>
         </div>
       }
     >

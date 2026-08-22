@@ -1,5 +1,6 @@
 import React, {
   useRef,
+  useState,
   useCallback,
   type FormEventHandler,
   type MouseEvent,
@@ -44,20 +45,34 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
     });
   }, [configStore]);
 
+  const [addError, setAddError] = useState('');
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
       const form = e.currentTarget as CtxOptionsDirsFormElement;
 
-      const path = form.elements.path.value.trim();
+      // Trailing slashes are stripped ('/' itself excepted): '/data/x' and
+      // '/data/x/' passed the exact-string duplicate check as "different" and
+      // then collapsed to one entry in the context-menu folder tree
+      let path = form.elements.path.value.trim();
+      if (path.length > 1) {
+        path = path.replace(/[/\\]+$/, '') || path;
+      }
       const name = form.elements.name.value.trim();
       if (!path) return;
 
-      if (!configStore.hasFolder(path)) {
-        configStore.addFolder(path, name);
-        form.elements.path.value = '';
-        form.elements.name.value = '';
+      if (configStore.hasFolder(path)) {
+        // A silent no-op looked like a broken Add button
+        setAddError(
+          chrome.i18n.getMessage('folderAlreadyExists') || 'This folder is already in the list'
+        );
+        return;
       }
+      setAddError('');
+      configStore.addFolder(path, name);
+      form.elements.path.value = '';
+      form.elements.name.value = '';
     },
     [configStore]
   );
@@ -108,6 +123,7 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
           <input name="name" type="text" placeholder={chrome.i18n.getMessage('shortName')} />
           <button type="submit">{chrome.i18n.getMessage('add')}</button>
         </div>
+        {addError && <p className="red">{addError}</p>}
       </form>
       <div className="dir-list-container">
         <select ref={refDirectorySelect} id="folderList" multiple>

@@ -21,25 +21,36 @@ function parseBadgeColor(badgeColor: string): RgbColor {
   };
 }
 
-function rgbToStorageString(color: RgbColor): string {
-  return [color.r, color.g, color.b, 1].join(',');
+function parseBadgeAlpha(badgeColor: string): number {
+  const alpha = parseFloat(badgeColor.split(',')[3]);
+  return Number.isFinite(alpha) ? alpha : 1;
+}
+
+function rgbToStorageString(color: RgbColor, alpha: number): string {
+  return [color.r, color.g, color.b, alpha].join(',');
 }
 
 const NotifyOptions = observer(() => {
-  const { configStore, handleChange, handleSetInt } = useOptionsPage<ConfigStore>();
+  const { configStore, handleChange, handleSetInt, handleIntBlur } = useOptionsPage<ConfigStore>();
   const [colorPickerOpened, setColorPickerOpened] = useState(false);
   const [pickerColor, setPickerColor] = useState<RgbColor>(() =>
     parseBadgeColor(configStore.badgeColor)
   );
   const pickerColorRef = useRef(pickerColor);
 
+  // Tracks whether the user actually picked a colour: closing the picker
+  // untouched used to commit anyway, rewriting the default's 0.40 alpha to 1
+  const colorTouchedRef = useRef(false);
+
   const handleColorChange = useCallback((color: RgbColor) => {
+    colorTouchedRef.current = true;
     pickerColorRef.current = color;
     setPickerColor(color);
   }, []);
 
   const handleOpenColorPicker = useCallback(() => {
     const color = parseBadgeColor(configStore.badgeColor);
+    colorTouchedRef.current = false;
     pickerColorRef.current = color;
     setPickerColor(color);
     setColorPickerOpened(true);
@@ -47,7 +58,10 @@ const NotifyOptions = observer(() => {
 
   const handleCloseColorPicker = useCallback(() => {
     setColorPickerOpened(false);
-    configStore.setOptions({ badgeColor: rgbToStorageString(pickerColorRef.current) });
+    if (!colorTouchedRef.current) return;
+    // Preserve the configured alpha — the picker only edits RGB
+    const alpha = parseBadgeAlpha(configStore.badgeColor);
+    configStore.setOptions({ badgeColor: rgbToStorageString(pickerColorRef.current, alpha) });
   }, [configStore]);
 
   return (
@@ -94,12 +108,17 @@ const NotifyOptions = observer(() => {
       </label>
       <label>
         <span>{chrome.i18n.getMessage('backgroundUpdateInterval')}</span>
+        {/* MV3 alarms floor at one minute: offering 1000ms promised a
+            granularity the platform cannot deliver — every value from 1000 to
+            59999 silently behaved as 60000 */}
         <input
           defaultValue={configStore.backgroundUpdateInterval}
           onChange={handleSetInt}
+          onBlur={handleIntBlur}
           type="number"
           name="backgroundUpdateInterval"
-          min="1000"
+          min="60000"
+          step="60000"
         />{' '}
         <span>{chrome.i18n.getMessage('ms')}</span>
       </label>

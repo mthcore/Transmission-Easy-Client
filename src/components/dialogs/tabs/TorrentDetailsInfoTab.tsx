@@ -1,5 +1,6 @@
 import React from 'react';
 import { speedToStr, formatBytes } from '../../../tools/format';
+import { SPEED_LIMIT_UNIT } from '../../../stores/ClientStore';
 import type { PeerData, TorrentDetailData } from '../../../bg/TorrentService';
 import type { MouseEvent } from 'react';
 
@@ -48,16 +49,20 @@ interface TorrentDetailsInfoTabProps {
   getPeerResizeProps: (key: string) => ResizeHandleProps;
 }
 
+// Same locale-provided unit suffixes ([w, d, h, m, s]) as getEta, so the
+// durations here match the ETA row instead of hardcoding English units
+const timeUnits: string[] = JSON.parse(chrome.i18n.getMessage('timeOutList'));
+
 function formatDuration(seconds: number): string {
   if (seconds <= 0) return '-';
   const d = Math.floor(seconds / 86400);
   const h = Math.floor((seconds % 86400) / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const parts: string[] = [];
-  if (d > 0) parts.push(`${d}d`);
-  if (h > 0) parts.push(`${h}h`);
-  if (m > 0) parts.push(`${m}m`);
-  return parts.length > 0 ? parts.join(' ') : '< 1m';
+  if (d > 0) parts.push(`${d}${timeUnits[1]}`);
+  if (h > 0) parts.push(`${h}${timeUnits[2]}`);
+  if (m > 0) parts.push(`${m}${timeUnits[3]}`);
+  return parts.length > 0 ? parts.join(' ') : `< 1${timeUnits[3]}`;
 }
 
 function formatDate(timestamp: number): string {
@@ -259,12 +264,12 @@ const TorrentDetailsInfoTab = ({
                 <label>{chrome.i18n.getMessage('DT_DOWNLOAD_LIMIT')}</label>
                 <span>
                   {details.downloadLimited
-                    ? `${speedToStr(details.downloadLimit * 1024)}`
+                    ? `${speedToStr(details.downloadLimit * SPEED_LIMIT_UNIT)}`
                     : chrome.i18n.getMessage('DT_DISABLED')}
                   {' / '}
                   {chrome.i18n.getMessage('DT_UPLOAD_LIMIT')}:{' '}
                   {details.uploadLimited
-                    ? `${speedToStr(details.uploadLimit * 1024)}`
+                    ? `${speedToStr(details.uploadLimit * SPEED_LIMIT_UNIT)}`
                     : chrome.i18n.getMessage('DT_DISABLED')}
                   {' — '}
                   {chrome.i18n.getMessage('DT_HONORS_SESSION_LIMITS')}:{' '}
@@ -388,8 +393,10 @@ const TorrentDetailsInfoTab = ({
                 </tr>
               </thead>
               <tbody>
-                {peers.map((peer) => (
-                  <tr key={peer.address}>
+                {/* address alone collides for two peers behind one NAT (the
+                    RPC's address field is the bare IP), mixing their rows up */}
+                {peers.map((peer, index) => (
+                  <tr key={`${peer.address}-${index}`}>
                     <td title={peer.address}>{peer.address}</td>
                     <td title={peer.client}>{peer.client}</td>
                     <td>{(peer.progress * 100).toFixed(0)}%</td>

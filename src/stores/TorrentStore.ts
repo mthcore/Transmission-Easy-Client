@@ -62,11 +62,12 @@ const TorrentStore = types
     return {
       get remaining(): number {
         const base = self.sizeWhenDone > 0 ? self.sizeWhenDone : self.size;
-        let result = base - self.downloaded;
-        if (result < 0) {
-          result = 0;
-        }
-        return result;
+        // Derive from percentDone, not from downloadedEver: that counter is
+        // lifetime traffic, so a torrent seeded from existing data (0 bytes
+        // downloaded) reported its whole size as remaining, and a re-download
+        // reported 0 while still incomplete.
+        const result = Math.round(base * (1 - self.percentDone));
+        return result > 0 ? result : 0;
       },
       get remainingStr(): string {
         return formatBytes(this.remaining);
@@ -84,7 +85,10 @@ const TorrentStore = types
         return formatBytes(self.size);
       },
       get progress(): number {
-        return Math.trunc((self.recheckProgress || self.percentDone) * 1000);
+        // Gate on the status, not on recheckProgress being truthy: a recheck
+        // sitting at exactly 0.0 must not show the stale percentDone (100%)
+        const isChecking = self.statusCode === 2;
+        return Math.trunc((isChecking ? self.recheckProgress : self.percentDone) * 1000);
       },
       get progressStr(): string {
         const progress = this.progress / 10;
@@ -122,6 +126,9 @@ const TorrentStore = types
         return formatBytes(self.uploaded);
       },
       get sharedStr(): string {
+        // -2 is Transmission's "infinite ratio" sentinel (uploaded with
+        // nothing downloaded), which must not read as 0.00
+        if (self.shared === -2) return '∞';
         return (self.shared / 1000).toFixed(2);
       },
       get downloadedStr(): string {
@@ -167,8 +174,9 @@ const TorrentStore = types
         return `${(self.metadataPercentComplete * 100).toFixed(0)}%`;
       },
       get stateText(): string {
-        // Show metadata resolution progress for magnets
-        if (self.metadataPercentComplete < 1) {
+        // Metadata progress for magnets, but only while the torrent is
+        // actually running — a stopped magnet used to read "Downloading"
+        if (self.metadataPercentComplete < 1 && self.statusCode !== 0) {
           const pct = (self.metadataPercentComplete * 100).toFixed(0);
           return `${chrome.i18n.getMessage('OV_FL_DOWNLOADING')} (${chrome.i18n.getMessage('DT_METADATA')} ${pct}%)`;
         }
@@ -204,7 +212,14 @@ const TorrentStore = types
         }
       },
       get errorMessage(): string {
-        if (self.errorCode > 0) {
+        // Code 1 is TR_STAT_TRACKER_WARNING: the torrent is healthy and a
+        // tracker merely said something. Painting it with the red error icon
+        // and an "Error:" prefix made it indistinguishable from a real
+        // tracker/local error (codes 2/3).
+        if (self.errorCode === 1) {
+          return self.errorString;
+        }
+        if (self.errorCode > 1) {
           let errorString = self.errorString;
           if (/^Error: /.test(errorString)) {
             errorString = errorString.substring(7);
@@ -215,6 +230,10 @@ const TorrentStore = types
           return chrome.i18n.getMessage('OV_FL_ERROR');
         }
         return '';
+      },
+      /** True only for real errors (2/3), not for a tracker warning (1) */
+      get hasError(): boolean {
+        return self.errorCode > 1;
       },
       get selected(): boolean {
         const rootStore = getRoot<{

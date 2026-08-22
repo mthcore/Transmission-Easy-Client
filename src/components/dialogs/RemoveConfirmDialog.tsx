@@ -1,9 +1,10 @@
-import React, { useCallback, FormEvent } from 'react';
+import React, { useCallback, useState, FormEvent } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import stripBidiControls from '../../tools/stripBidiControls';
 
 interface RemoveConfirmDialogStore {
   close: () => void;
@@ -20,6 +21,19 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   const client = rootStore?.client;
   const handleClose = useDialogClose(dialogStore);
 
+  // Hashes captured the moment the dialog opens: numeric ids are session
+  // scoped, so a daemon restart while this confirmation sits open can hand
+  // the same id to a DIFFERENT torrent — and "delete with data" would then
+  // destroy that torrent's files. The hash addresses the torrent immutably;
+  // the RPC accepts both forms in `ids`.
+  const [removalIds] = useState<(number | string)[]>(() =>
+    dialogStore.torrentIds.map((id) => {
+      const hash = (rootStore?.client?.torrents.get(id) as { hashString?: string } | undefined)
+        ?.hashString;
+      return hash ?? id;
+    })
+  );
+
   const handleSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -30,13 +44,13 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
         ? client.torrentsRemoveTorrentFiles
         : client.torrentsRemoveTorrent;
 
-      removeMethod(dialogStore.torrentIds).catch((err) => {
+      removeMethod(removalIds).catch((err) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to remove torrent', err);
       });
 
       dialogStore.close();
     },
-    [client, dialogStore]
+    [client, dialogStore, removalIds]
   );
 
   let label: React.ReactNode = null;
@@ -49,7 +63,9 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
     const id = dialogStore.torrentIds[0];
     const torrent = client?.torrents.get(id);
     if (torrent) {
-      filename = <span className="fileName">{torrent.name}</span>;
+      // Strip bidi overrides: the delete confirmation is exactly where a
+      // spoofed extension must not mislead the user
+      filename = <span className="fileName">{stripBidiControls(torrent.name)}</span>;
     }
 
     const messageKey = deleteData ? 'OV_CONFIRM_DELETE_DATA_ONE' : 'OV_CONFIRM_DELETE_ONE';
@@ -62,7 +78,7 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   }
 
   return (
-    <Dialog onClose={handleClose}>
+    <Dialog onClose={handleClose} isAlert>
       <div className="nf-notifi">
         <form onSubmit={handleSubmit}>
           <div className="nf-subItem">
@@ -74,6 +90,7 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
             <input
               onClick={handleClose}
               autoFocus
+              data-autofocus
               type="button"
               value={chrome.i18n.getMessage('DLG_BTN_NO')}
             />

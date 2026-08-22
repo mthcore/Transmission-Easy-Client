@@ -32,14 +32,16 @@ body {
   user-select: initial;
 }
 
-// Links
+// Links. Use the theme custom properties, not the raw SCSS literals: in dark
+// mode the literals move the wrong way (hover DARKENS to 2.28:1 on the dark
+// background) while --primary-hover is the lighter shade the theme intends.
 a {
-  color: $primary-color;
+  color: var(--primary-color);
   text-decoration: none;
   transition: color $transition-slow;
 
   &:hover {
-    color: $primary-hover;
+    color: var(--primary-hover);
   }
 }
 
@@ -130,7 +132,7 @@ div.container > .content > .left {
       color: white;
 
       &:hover {
-        background-color: $primary-hover;
+        background-color: var(--primary-hover);
       }
     }
   }
@@ -228,7 +230,7 @@ input[type="number"] {
     }
 
     &:focus + .toggle-slider {
-      box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+      box-shadow: 0 0 0 2px var(--focus-ring);
     }
   }
 
@@ -281,8 +283,12 @@ input[type="submit"] {
   transition: all $transition-slow;
   outline: none;
 
+  // Removing the UA outline without a replacement left keyboard users with no
+  // idea which control was focused on this whole page
+  @include focus-ring;
+
   &:hover {
-    background-color: $primary-hover;
+    background-color: var(--primary-hover);
     transform: translateY(-1px);
   }
 
@@ -666,5 +672,18 @@ ol.help li {
   textarea {
     min-height: 200px;
     font-size: 12px;
+  }
+}
+
+// Shown when the initial background sync failed and startup could not finish.
+// (Duplicated from _dialogs.scss, which this page does not import.)
+.startup-error {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-color);
+
+  p {
+    margin: 0 0 12px;
+    color: var(--error-color);
   }
 }

@@ -9,6 +9,9 @@ import type { PeerData, TorrentDetailData } from '../bg/TorrentService';
 
 const logger = getLogger('ClientStore');
 
+/** Transmission expresses speed limits in K = 1000 bytes/s (tr_speed_K) */
+export const SPEED_LIMIT_UNIT = 1000;
+
 interface TorrentSnapshot {
   id: number;
   [key: string]: unknown;
@@ -33,6 +36,8 @@ const SettingsStore = types
     altUploadSpeedLimit: types.number,
     downloadDir: types.string,
     downloadDirFreeSpace: types.maybe(types.number),
+    sessionDownloaded: types.maybe(types.number),
+    sessionUploaded: types.maybe(types.number),
     blocklistEnabled: types.optional(types.boolean, false),
     blocklistUrl: types.optional(types.string, ''),
     blocklistSize: types.optional(types.number, 0),
@@ -85,17 +90,20 @@ const SettingsStore = types
         const rpc = self.rpcVersion > 0 ? ` (RPC ${self.rpcVersion})` : '';
         return `Transmission ${self.version}${rpc}`;
       },
+      // Transmission's speed unit is K = 1000 bytes (tr_speed_K), and the
+      // formatter is base-10 too — multiplying by 1024 showed every limit
+      // ~2.4% too high, so a 512 KB/s limit read as '524.29 kB/s'
       get downloadSpeedLimitStr(): string {
-        return speedToStr(self.downloadSpeedLimit * 1024);
+        return speedToStr(self.downloadSpeedLimit * SPEED_LIMIT_UNIT);
       },
       get uploadSpeedLimitStr(): string {
-        return speedToStr(self.uploadSpeedLimit * 1024);
+        return speedToStr(self.uploadSpeedLimit * SPEED_LIMIT_UNIT);
       },
       get altDownloadSpeedLimitStr(): string {
-        return speedToStr(self.altDownloadSpeedLimit * 1024);
+        return speedToStr(self.altDownloadSpeedLimit * SPEED_LIMIT_UNIT);
       },
       get altUploadSpeedLimitStr(): string {
-        return speedToStr(self.altUploadSpeedLimit * 1024);
+        return speedToStr(self.altUploadSpeedLimit * SPEED_LIMIT_UNIT);
       },
       get hasDownloadDirFreeSpace(): boolean {
         return typeof self.downloadDirFreeSpace === 'number';
@@ -120,23 +128,49 @@ const ClientStore = types
         });
       },
       sync(torrents: TorrentSnapshot[]) {
-        const removedIds = (self as IClientStoreViews).torrentIds.slice();
+        const incomingIds = new Set<number>();
 
         torrents.forEach((torrent) => {
-          const id = torrent.id;
-          const pos = removedIds.indexOf(id);
-          if (pos !== -1) {
-            removedIds.splice(pos, 1);
+          const key = String(torrent.id);
+          const existing = self.torrents.get(key);
+          // Transmission ids are unique only within one daemon session: after a
+          // restart the same id can designate a different torrent. Drop the old
+          // node instead of reconciling stale state (and stale selection) onto
+          // it — hashString is the stable identity.
+          if (
+            existing &&
+            torrent.hashString &&
+            existing.hashString &&
+            existing.hashString !== torrent.hashString
+          ) {
+            self.torrents.delete(key);
           }
-          self.torrents.set(String(id), torrent as never);
+          incomingIds.add(torrent.id);
+          self.torrents.set(key, torrent as never);
         });
 
+        const removedIds = (self as IClientStoreViews).torrentIds.filter(
+          (id) => !incomingIds.has(id)
+        );
         // Cast needed because TypeScript can't see actions defined in the same block
         (self as unknown as IClientStoreActions).removeTorrentByIds(removedIds);
       },
       syncChanges(torrents: TorrentSnapshot[]) {
         torrents.forEach((torrent) => {
-          self.torrents.set(String(torrent.id), torrent as never);
+          const key = String(torrent.id);
+          const existing = self.torrents.get(key);
+          // Same session-scoped-id hazard as sync(): this is the path taken by
+          // almost every poll, including the first one after a daemon restart
+          // that renumbered the ids.
+          if (
+            existing &&
+            torrent.hashString &&
+            existing.hashString &&
+            existing.hashString !== torrent.hashString
+          ) {
+            self.torrents.delete(key);
+          }
+          self.torrents.set(key, torrent as never);
         });
       },
       setTorrents(torrents: Map<string, ITorrentStore>) {
@@ -164,7 +198,8 @@ const ClientStore = types
         }
         return result;
       },
-      get activeTorrentIds(): number[] {
+      /** Not finished downloading — the completion-notification baseline */
+      get incompleteTorrentIds(): number[] {
         const result: number[] = [];
         for (const torrent of self.torrents.values()) {
           if (!torrent.isCompleted) {
@@ -173,8 +208,33 @@ const ClientStore = types
         }
         return result;
       },
+      /** Running (not stopped), which is what "active" means to the user */
+      get activeTorrentIds(): number[] {
+        const result: number[] = [];
+        for (const torrent of self.torrents.values()) {
+          if (torrent.statusCode !== 0) {
+            result.push(torrent.id);
+          }
+        }
+        return result;
+      },
       get activeCount(): number {
         return this.activeTorrentIds.length;
+      },
+      /** Actually downloading right now (Transmission status 4) */
+      get downloadingCount(): number {
+        let count = 0;
+        for (const torrent of self.torrents.values()) {
+          if (torrent.statusCode === 4) count += 1;
+        }
+        return count;
+      },
+      get pausedCount(): number {
+        let count = 0;
+        for (const torrent of self.torrents.values()) {
+          if (torrent.statusCode === 0) count += 1;
+        }
+        return count;
       },
       get currentSpeed(): { downloadSpeed: number; uploadSpeed: number } {
         let downloadSpeed = 0;
@@ -193,6 +253,17 @@ const ClientStore = types
         };
       },
       get sessionTotals(): { downloaded: number; uploaded: number } {
+        // The daemon's own session counters when available; summing per-torrent
+        // lifetime totals reports all-time bytes and drops when a torrent is
+        // removed, which is not what "session" means
+        const settings = self.settings;
+        if (
+          settings &&
+          typeof settings.sessionDownloaded === 'number' &&
+          typeof settings.sessionUploaded === 'number'
+        ) {
+          return { downloaded: settings.sessionDownloaded, uploaded: settings.sessionUploaded };
+        }
         let downloaded = 0;
         let uploaded = 0;
         for (const torrent of self.torrents.values()) {
@@ -211,9 +282,11 @@ const ClientStore = types
       get torrentCountsStr(): string {
         const total = self.torrents.size;
         if (total === 0) return '';
-        const active = this.activeTorrentIds.length;
-        const paused = total - active;
-        return chrome.i18n.getMessage('sessionStats', [String(active), String(paused)]);
+        // "active"/"paused" are about the run state, not about completion
+        return chrome.i18n.getMessage('sessionStats', [
+          String(this.activeCount),
+          String(this.pausedCount),
+        ]);
       },
     };
   })
@@ -236,9 +309,11 @@ const ClientStore = types
       return (self as IClientStoreViews).syncClient().then(() => result);
     };
 
+    // ids accept hashes too: destructive dialogs send hashStrings, which stay
+    // valid across a daemon restart while numeric ids get reassigned
     const createTorrentAction =
       (action: string, sync = true) =>
-      (ids: number[]): Promise<unknown> => {
+      (ids: (number | string)[]): Promise<unknown> => {
         const promise = callApi({ action, ids }).then(...exceptionLog());
         return sync ? promise.then(thenSyncClient) : promise;
       };

@@ -175,7 +175,10 @@ function setFilesShortName(files: FileData[]): { dir: string; files: FileData[] 
     return dir === name.substring(0, pos);
   });
 
-  if (dir === null) {
+  // Only report a directory when EVERY file lives under it — dir is captured
+  // from the first file before the comparison can fail, so a mixed list would
+  // otherwise display a folder that holds only part of the data
+  if (dir === null || !isEvery) {
     dir = '';
   }
 

@@ -125,7 +125,7 @@ describe('BackupRestoreOptions', () => {
     await waitFor(() => {
       expect(screen.getByText('✓')).toBeTruthy();
     });
-    expect(areas.sync.backupChunks as number).toBeGreaterThan(1);
+    expect((areas.sync.backupMeta as { chunks: number }).chunks).toBeGreaterThan(1);
     expect(document.querySelector('.red')).toBeNull();
   });
 

@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import React, { useEffect, useCallback, MouseEvent } from 'react';
 import Interval from './Interval';
+import VisiblePage from './VisiblePage';
 import useRootStore from '../hooks/useRootStore';
 import { SPACE_WATCHER_INTERVAL } from '../constants';
 
@@ -50,7 +51,11 @@ const SpaceWatcher = observer(() => {
       <span className="space disk" onClick={handleUpdate} title={title || undefined}>
         {body}
       </span>
-      <Interval interval={SPACE_WATCHER_INTERVAL} onFire={onIntervalFire} />
+      {/* Gated on visibility: a backgrounded tab kept waking the service worker
+          with a free-space RPC every minute, forever */}
+      <VisiblePage>
+        <Interval interval={SPACE_WATCHER_INTERVAL} onFire={onIntervalFire} />
+      </VisiblePage>
     </>
   );
 });

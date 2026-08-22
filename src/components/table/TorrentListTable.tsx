@@ -6,6 +6,7 @@ import TableHeadColumnRenderer from './TableHeadColumnRenderer';
 import type { Column } from './TableHeadColumn';
 import useRootStore from '../../hooks/useRootStore';
 import { useScrollSync } from '../../hooks/useScrollSync';
+import { useVirtualRows, type VirtualRows } from '../../hooks/useVirtualRows';
 import type { Torrent } from '../../types/stores';
 
 // Column's `display` is typed boolean here but the MST ColumnStore models it
@@ -18,7 +19,23 @@ const TorrentListTable = observer(() => {
   const rootStore = useRootStore();
   const config = rootStore.config;
   const refFixedHead = useRef<HTMLTableElement>(null);
+  const refLayer = useRef<HTMLDivElement>(null);
   const handleScroll = useScrollSync(refFixedHead as React.RefObject<HTMLElement>);
+
+  // Windowing: only the viewport's rows (plus overscan) exist in the DOM —
+  // with the whole library rendered, a sort or select-all on 2000 torrents
+  // re-rendered 2000 rows and froze the popup for most of a second
+  const rowCount = rootStore.torrentList.sortedTorrents.length;
+  const virtual = useVirtualRows(refLayer, rowCount);
+
+  const { onScroll: onVirtualScroll } = virtual;
+  const onScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      handleScroll(e);
+      onVirtualScroll();
+    },
+    [handleScroll, onVirtualScroll]
+  );
 
   useEffect(() => {
     rootStore.flushTorrentList();
@@ -32,7 +49,7 @@ const TorrentListTable = observer(() => {
   });
 
   return (
-    <div onScroll={handleScroll} className="torrent-list-layer" style={columnVars}>
+    <div ref={refLayer} onScroll={onScroll} className="torrent-list-layer" style={columnVars}>
       {rootStore.isRefreshing && (
         <div className="torrent-list-loading">
           <div className="spinner spinner--large" />
@@ -54,7 +71,7 @@ const TorrentListTable = observer(() => {
       </ColumnContextMenu>
       <table className="torrent-table-body" border={0} cellSpacing={0} cellPadding={0}>
         <TorrentListTableHead />
-        <TorrentListTableTorrents />
+        <TorrentListTableTorrents virtual={virtual} />
       </table>
     </div>
   );
@@ -117,15 +134,36 @@ const TorrentListTableHead = observer(() => {
   );
 });
 
-const TorrentListTableTorrents = observer(() => {
+const TorrentListTableTorrents = observer(({ virtual }: { virtual: VirtualRows }) => {
   const rootStore = useRootStore();
   const torrentListStore = rootStore.torrentList;
+  const columnCount = rootStore.config?.visibleTorrentColumns.length ?? 1;
+
+  const { start, end, padTop, padBottom, bodyRef } = virtual;
+  const slice = torrentListStore.sortedTorrents.slice(start, end);
 
   return (
-    <tbody>
-      {torrentListStore.sortedTorrents.map((torrent) => (
-        <TorrentListTableItem key={torrent.id} torrent={torrent as unknown as Torrent} />
+    <tbody ref={bodyRef}>
+      {padTop > 0 && (
+        <tr data-virtual-spacer aria-hidden="true" style={{ height: padTop }}>
+          <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+        </tr>
+      )}
+      {slice.map((torrent, index) => (
+        <TorrentListTableItem
+          key={torrent.id}
+          torrent={torrent as unknown as Torrent}
+          // Striping follows the ABSOLUTE index: with a spacer row shifting
+          // DOM positions as the window moves, :nth-child stripes swapped on
+          // every scroll step
+          even={(start + index) % 2 === 1}
+        />
       ))}
+      {padBottom > 0 && (
+        <tr data-virtual-spacer aria-hidden="true" style={{ height: padBottom }}>
+          <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+        </tr>
+      )}
     </tbody>
   );
 });

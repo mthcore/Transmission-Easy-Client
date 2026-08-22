@@ -94,7 +94,9 @@ const TableHeadColumnRenderer = observer((props: TableHeadColumnRendererProps) =
 
   let ariaSort: 'ascending' | 'descending' | 'none' | undefined;
   if (column.order !== 0) {
-    ariaSort = isSorted ? (sortDirection === 1 ? 'descending' : 'ascending') : 'none';
+    // direction 1 IS ascending in the sorter — the mapping was inverted, so
+    // screen readers announced the opposite of the visible order
+    ariaSort = isSorted ? (sortDirection === 1 ? 'ascending' : 'descending') : 'none';
   }
 
   return (
@@ -102,12 +104,15 @@ const TableHeadColumnRenderer = observer((props: TableHeadColumnRendererProps) =
       ref={refTh}
       scope="col"
       onClick={onClick}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
+      onDragStart={isFixedColumn ? undefined : handleDragStart}
+      onDragOver={isFixedColumn ? undefined : handleDragOver}
+      onDrop={isFixedColumn ? undefined : handleDrop}
       className={classList.join(' ')}
       title={title}
-      draggable={true}
+      // The checkbox and actions columns are position-fixed by design (the
+      // actions cell is sticky to the row edge): letting them be dragged, or
+      // dropped onto, persisted a broken order with the sticky column mid-table
+      draggable={!isFixedColumn}
       aria-sort={ariaSort}
       aria-label={isFixedColumn ? column.column : undefined}
     >

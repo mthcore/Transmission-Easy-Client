@@ -1,4 +1,7 @@
 import { storageGet, storageSet } from './chromeStorage';
+import getLogger from './getLogger';
+
+const logger = getLogger('loadConfig');
 
 // OldFolder is a tuple: [unknown, path: string, label: string]
 type OldFolder = [unknown, string, string];
@@ -27,14 +30,21 @@ interface Config {
   [key: string]: unknown;
 }
 
+// The keys on the LEFT are what legacy installs actually wrote to storage,
+// typos included: 'showNotificationOnDownloadCompleate' and
+// 'hideFnishStatusItem' shipped that way for years, so "fixing" the spelling
+// here silently stopped migrating those two settings. Both spellings are
+// accepted, the historical one first.
 const oldConfigMap: Record<string, string> = {
   useSSL: 'ssl',
   ip: 'hostname',
   path: 'pathname',
   displayActiveTorrentCountIcon: 'showActiveCountBadge',
+  showNotificationOnDownloadCompleate: 'showDownloadCompleteNotifications',
   showNotificationOnDownloadComplete: 'showDownloadCompleteNotifications',
   popupUpdateInterval: 'uiUpdateInterval',
   hideSeedStatusItem: 'hideSeedingTorrents',
+  hideFnishStatusItem: 'hideFinishedTorrents',
   hideFinishStatusItem: 'hideFinishedTorrents',
   selectDownloadCategoryOnAddItemFromContextMenu:
     'selectDownloadCategoryAfterPutTorrentFromContextMenu',
@@ -82,8 +92,10 @@ function migrateConfig(oldConfig: Record<string, unknown>, config: Config): Conf
   const transformMap: Record<string, (value: unknown) => unknown> = {
     useSSL: intToBoolean,
     displayActiveTorrentCountIcon: intToBoolean,
+    showNotificationOnDownloadCompleate: intToBoolean,
     showNotificationOnDownloadComplete: intToBoolean,
     hideSeedStatusItem: intToBoolean,
+    hideFnishStatusItem: intToBoolean,
     hideFinishStatusItem: intToBoolean,
     showSpeedGraph: intToBoolean,
     selectDownloadCategoryOnAddItemFromContextMenu: intToBoolean,
@@ -99,7 +111,14 @@ function migrateConfig(oldConfig: Record<string, unknown>, config: Config): Conf
 
     const transform = transformMap[key];
     if (transform) {
-      value = transform(value);
+      try {
+        value = transform(value);
+      } catch (err) {
+        // This also runs on user-pasted restore blobs: one malformed field
+        // must not abort the whole restore with a raw TypeError
+        logger.warn(`migrateConfig: skipping malformed key (${key})`, err);
+        return;
+      }
     }
 
     (config as Record<string, unknown>)[newKey || key] = value;
@@ -110,16 +129,24 @@ function migrateConfig(oldConfig: Record<string, unknown>, config: Config): Conf
   }
 
   function folderListToFolders(value: unknown): NewFolder[] {
-    return (value as OldFolder[]).map(([, path, label]) => {
-      return {
-        path,
-        name: label || '',
-      };
-    });
+    if (!Array.isArray(value)) {
+      throw new TypeError('folderList is not an array');
+    }
+    return (value as OldFolder[])
+      .filter((entry) => Array.isArray(entry) && typeof entry[1] === 'string')
+      .map(([, path, label]) => {
+        return {
+          path,
+          name: typeof label === 'string' ? label : '',
+        };
+      });
   }
 
   function selectedLabelToLabel(value: unknown): NewSelectedLabel {
-    const v = value as OldSelectedLabel;
+    const v = value as OldSelectedLabel | null;
+    if (!v || typeof v.label !== 'string') {
+      throw new TypeError('selectedLabel has no label');
+    }
     return {
       label: v.label,
       custom: !!v.custom,

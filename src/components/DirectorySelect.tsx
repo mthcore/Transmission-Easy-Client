@@ -27,7 +27,12 @@ const DirectorySelect = ({
     <div className="nf-subItem">
       <label>{label || chrome.i18n.getMessage('path')}</label>
       <select name={name} defaultValue={defaultValue} onChange={onChange}>
-        {showCustomOption && <option value={CUSTOM_PATH_INDEX} />}
+        {/* This option was rendered with no text at all, and it is the
+            pre-selected one in the Move dialog: the user saw a blank line
+            with nothing saying it means "type a path below". */}
+        {showCustomOption && (
+          <option value={CUSTOM_PATH_INDEX}>{chrome.i18n.getMessage('DT_CUSTOM')}</option>
+        )}
         <option value={DEFAULT_PATH_INDEX}>{chrome.i18n.getMessage('defaultPath')}</option>
         {folders.map((folder, index) => (
           <option key={`option-${index}`} value={index}>

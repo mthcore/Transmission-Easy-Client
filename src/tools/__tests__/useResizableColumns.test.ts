@@ -88,7 +88,6 @@ describe('useResizableColumns — resize event simulation', () => {
 
   it('registers mousemove and mouseup on mouseDown', () => {
     // Simulate what startResize does
-    const key = 'col1';
     const startX = 100;
     const startWidth = 100;
     let currentWidth = startWidth;

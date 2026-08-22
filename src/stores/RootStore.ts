@@ -79,12 +79,23 @@ const RootStore = types
             (self as unknown as IRootStoreActions).syncClient(),
           ]);
           self.config = cast(config);
+          // syncClient swallows its errors so the periodic poll can't blow up,
+          // which used to let init succeed with no client at all: a blank list,
+          // a dead Refresh button and no error, unrecoverable without reopening
+          if (!self.client) {
+            throw new Error('Background sync did not provide a client');
+          }
           self.state = 'done';
         } catch (err) {
           logger.error('init error', err);
           self.state = 'error';
         }
       }),
+      retryInit() {
+        if (self.state === 'pending') return;
+        self.state = 'idle';
+        return (self as unknown as { init: () => Promise<void> }).init();
+      },
       applyPatchLine(delta: DeltaResult) {
         mobxApplyPatchLine(self as unknown as Record<string, unknown>, bgStoreSession, delta);
       },

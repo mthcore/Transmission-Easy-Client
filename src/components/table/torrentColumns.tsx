@@ -114,7 +114,9 @@ const torrentColumnRenderers: Record<string, ColumnRenderer> = {
   status: ({ torrent }) => {
     let errorIcon: React.ReactNode = null;
     const errorMessage = torrent.errorMessage;
-    if (errorMessage) {
+    // A tracker warning (errorCode 1) still shows its text in the tooltip via
+    // errorMessage, but only real errors get the red icon
+    if (errorMessage && torrent.hasError) {
       errorIcon = (
         <i className="error_icon" title={errorMessage} role="img" aria-label={errorMessage} />
       );

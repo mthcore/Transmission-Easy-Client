@@ -13,7 +13,9 @@ const RenameDialogStore = types
   )
   .views((self) => ({
     get name(): string | undefined {
-      const parts = self.path.split(/[\\/]/);
+      // Transmission paths are '/'-separated; '\' is a legal character in a
+      // file name on Linux daemons, so splitting on it truncated real names
+      const parts = self.path.split('/');
       return parts.pop();
     },
   }));

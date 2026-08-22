@@ -26,7 +26,7 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
 ## Supported Browsers
 
 - Google Chrome (101+)
-- Mozilla Firefox (113+)
+- Mozilla Firefox (140+)
 - Opera
 
 ## Supported Languages
@@ -90,7 +90,13 @@ The built extension will be in the `./dist` folder.
 | -------- | ------ |
 | `R` | Refresh torrent list |
 | `Ctrl+A` | Select/deselect all torrents |
+| `Ctrl+O` | Add torrent from file |
 | `Ctrl+U` | Add torrent from URL |
+| `Ctrl+I` | Show torrent properties |
+| `Ctrl+M` | Move selected torrents |
+| `F2` | Rename selected torrent |
+| `Ctrl+Shift+R` | Start all torrents |
+| `Ctrl+Shift+S` | Stop all torrents |
 | `Delete` | Remove selected torrents |
 | `Enter` | Start/stop selected torrents |
 | `Escape` | Close dialogs or file list |
@@ -100,6 +106,16 @@ The built extension will be in the `./dist` folder.
 ## Changelog
 
 > See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the full release history.
+
+### Version 3.4.0 (August 2026)
+
+- **Deep audit: three review passes, ~150 verified bug fixes** — see
+  [RELEASE_NOTES.md](RELEASE_NOTES.md) for the full list
+- **Firefox build repaired** — it declared a background type Firefox never
+  supported and could not be installed at all
+- **Security** — the Basic-auth header is scoped to the Transmission paths,
+  requests are not followed onto private addresses, and the background only
+  answers the extension's own pages
 
 ### Version 3.3.0 (August 2026)
 

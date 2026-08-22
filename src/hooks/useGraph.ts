@@ -119,7 +119,7 @@ export function useGraph(
     const height = 30;
     let minTime = speedRoll.minTime;
 
-    graphAutorunRef.current = autorun(() => {
+    const drawGraph = () => {
       if (!chartRef.current) return;
 
       const newWidth = ctr.clientWidth;
@@ -141,18 +141,41 @@ export function useGraph(
         minTime = speedRoll.minTime;
       }
 
-      const data = speedRoll.getDataFromTime(minTime);
+      // Never fetch points older than the x-domain start: they map to
+      // negative coordinates and drew a spurious lead-in segment entering the
+      // plot from outside after a speed spike aged out of the window
+      const data = speedRoll.getDataFromTime(Math.max(minTime, speedRoll.minTime));
 
       const uploadD = generatePath(data, xScale, yScale, 'upload');
       const downloadD = generatePath(data, xScale, yScale, 'download');
 
       uploadPathRef.current?.setAttribute('d', uploadD);
       downloadPathRef.current?.setAttribute('d', downloadD);
-    });
+    };
+
+    graphAutorunRef.current = autorun(drawGraph);
 
     ctr.appendChild(svgEl);
 
+    // clientWidth is not observable, so the autorun only re-ran when the speed
+    // data changed: the graph kept a stale width after a resize (indefinitely
+    // when polling was paused or the daemon was unreachable)
+    let resizeObserver: ResizeObserver | null = null;
+    const redraw = () => {
+      width = null;
+      graphAutorunRef.current?.();
+      graphAutorunRef.current = autorun(drawGraph);
+    };
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(redraw);
+      resizeObserver.observe(ctr);
+    } else {
+      window.addEventListener('resize', redraw);
+    }
+
     return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', redraw);
       if (graphAutorunRef.current) {
         graphAutorunRef.current();
         graphAutorunRef.current = null;

@@ -169,6 +169,47 @@ describe('ConfigStore', () => {
       await c.removeFolders([c.folders[0]]);
       expect(c.hasFolder('/downloads/movies')).toBe(false);
     });
+
+    it('moveFolders up on the top folder is a no-op (no negative splice)', async () => {
+      const c = create({
+        folders: [
+          { path: '/a', name: 'A' },
+          { path: '/b', name: 'B' },
+          { path: '/c', name: 'C' },
+        ],
+      });
+      await c.moveFolders([c.folders[0]], -1);
+      expect(c.folders.map((f) => f.path)).toEqual(['/a', '/b', '/c']);
+    });
+
+    it('moveFolders keeps relative order for a non-contiguous selection', async () => {
+      const c = create({
+        folders: [
+          { path: '/a', name: 'A' },
+          { path: '/b', name: 'B' },
+          { path: '/c', name: 'C' },
+          { path: '/d', name: 'D' },
+        ],
+      });
+      // B and D each move up one step: A and C must not be leapfrogged
+      await c.moveFolders([c.folders[1], c.folders[3]], -1);
+      expect(c.folders.map((f) => f.path)).toEqual(['/b', '/a', '/d', '/c']);
+    });
+
+    it('moveFolders moves a middle folder up and the last folder down is a no-op', async () => {
+      const c = create({
+        folders: [
+          { path: '/a', name: 'A' },
+          { path: '/b', name: 'B' },
+          { path: '/c', name: 'C' },
+        ],
+      });
+      await c.moveFolders([c.folders[1]], -1);
+      expect(c.folders.map((f) => f.path)).toEqual(['/b', '/a', '/c']);
+
+      await c.moveFolders([c.folders[2]], 1);
+      expect(c.folders.map((f) => f.path)).toEqual(['/b', '/a', '/c']);
+    });
   });
 
   describe('setOptions / setKeyValue', () => {

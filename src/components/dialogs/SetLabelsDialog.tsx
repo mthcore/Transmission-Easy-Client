@@ -26,11 +26,17 @@ const SetLabelsDialog = observer(({ dialogStore }: SetLabelsDialogProps) => {
       const form = e.currentTarget;
       const labelsInput = form.elements.namedItem('labels') as HTMLInputElement;
       const labelsStr = labelsInput.value.trim();
+      // Deduplicate: Transmission rejects the WHOLE torrent-set request with
+      // "labels cannot be duplicated", so one repeated label dropped them all
       const labels = labelsStr
-        ? labelsStr
-            .split(',')
-            .map((l) => l.trim())
-            .filter(Boolean)
+        ? Array.from(
+            new Set(
+              labelsStr
+                .split(',')
+                .map((l) => l.trim())
+                .filter(Boolean)
+            )
+          )
         : [];
 
       client?.setLabels(dialogStore.torrentIds, labels).catch((err: Error) => {

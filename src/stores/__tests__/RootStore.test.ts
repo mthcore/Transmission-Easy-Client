@@ -264,6 +264,24 @@ describe('RootStore', () => {
     });
   });
 
+  describe('torrentList views with missing config/client', () => {
+    it('renders empty lists instead of crashing when client never attached', () => {
+      // Production hits this when the initial getBgStoreDelta fails: syncClient
+      // swallows the error, state becomes 'done', client stays undefined and
+      // the torrent list views used to TypeError during render (blank page)
+      root = RootStore.create({ config: {} });
+      expect(root.torrentList.filteredTorrents).toEqual([]);
+      expect(root.torrentList.sortedTorrents).toEqual([]);
+      expect(root.torrentList.filters.length).toBeGreaterThan(0);
+    });
+
+    it('tolerates a completely bare root', () => {
+      root = RootStore.create({});
+      expect(root.torrentList.filteredTorrents).toEqual([]);
+      expect(root.torrentList.sortedTorrents).toEqual([]);
+    });
+  });
+
   describe('isPopup', () => {
     afterEach(() => {
       window.location.hash = '';

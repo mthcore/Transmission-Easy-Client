@@ -50,55 +50,64 @@ class ContextMenu {
     url: string,
     tabId: number,
     frameId: number | undefined,
-    directory?: Folder
+    directory?: string
   ): Promise<void> {
+    // Download phase. The torrent service never sees these failures, so this
+    // is the only place that can tell the user a dead link did nothing.
+    let data: { blob?: Blob; url?: string };
     try {
-      let data: { blob?: Blob; url?: string };
       try {
         data = await downloadFileFromTab(url, tabId, frameId);
       } catch (err: unknown) {
         const error = err as { code?: string; message?: string };
-        if (!['FILE_SIZE_EXCEEDED', 'LINK_IS_NOT_SUPPORTED'].includes(error.code ?? '')) {
-          logger.error(
-            'onSendLink: downloadFileFromTab error, fallback to downloadFileFromUrl',
-            error.message || String(err)
-          );
-          data = await downloadFileFromUrl(url);
-        } else {
+        if (['FILE_SIZE_EXCEEDED', 'LINK_IS_NOT_SUPPORTED'].includes(error.code ?? '')) {
           throw err;
         }
+        logger.error(
+          'onSendLink: downloadFileFromTab error, fallback to downloadFileFromUrl',
+          error.message || String(err)
+        );
+        data = await downloadFileFromUrl(url);
       }
-      if (!this.bg.client) throw new Error('Client not initialized');
-      await this.bg.client.putTorrent(data, directory);
-      if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
-        this.bgStore.config.setSelectedLabel('DL', true);
-      }
-      if (!this.bg.client) throw new Error('Client not initialized');
-      await this.bg.client.updateTorrents();
     } catch (err: unknown) {
-      const error = err as { code?: string };
-      if (error.code === 'FILE_SIZE_EXCEEDED') {
-        this.bg.torrentErrorNotify(chrome.i18n.getMessage('fileSizeError'));
-        return;
-      }
+      const error = err as { code?: string; message?: string };
       if (error.code === 'LINK_IS_NOT_SUPPORTED') {
-        // Fallback to URL
-        try {
-          if (!this.bg.client) throw new Error('Client not initialized');
-          await this.bg.client.putTorrent({ url }, directory);
-          if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
-            this.bgStore.config.setSelectedLabel('DL', true);
-          }
-          if (!this.bg.client) throw new Error('Client not initialized');
-          await this.bg.client.updateTorrents();
-        } catch (fallbackErr) {
-          const error = fallbackErr as { message?: string };
-          logger.error('onSendLink error:', error.message || String(fallbackErr));
-          this.bg.torrentErrorNotify(error.message || 'Failed to add torrent');
-        }
+        // Magnet or other non-downloadable scheme: hand the URI to the daemon
+        data = { url };
+      } else {
+        logger.error('onSendLink: download error', err);
+        this.bg.torrentErrorNotify(
+          error.code === 'FILE_SIZE_EXCEEDED'
+            ? chrome.i18n.getMessage('fileSizeError')
+            : error.message || chrome.i18n.getMessage('unexpectedError')
+        );
         return;
       }
-      logger.error('onSendLink error', err);
+    }
+
+    // Add phase: putTorrent's own catch already notifies on failure, so
+    // notifying here too would report every failed add twice.
+    if (!this.bg.client) {
+      this.bg.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
+      return;
+    }
+    try {
+      await this.bg.client.putTorrent(data, directory);
+    } catch (err) {
+      logger.error('onSendLink: putTorrent error', err);
+      return;
+    }
+
+    if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
+      this.bgStore.config.setSelectedLabel('DL', true);
+    }
+
+    // Refresh only — the torrent is already added, so a failure here must not
+    // be reported as if the add had failed.
+    try {
+      await this.bg.client?.updateTorrents();
+    } catch (err) {
+      logger.error('onSendLink: updateTorrents error', err);
     }
   }
 
@@ -136,7 +145,14 @@ class ContextMenu {
           await this.bg.whenReady();
           if (!linkUrl || !tab?.id || itemInfo.index === undefined) return;
           const folder = this.bgStore.config.folders[itemInfo.index];
-          await this.onSendLink(linkUrl, tab.id, frameId, folder);
+          if (!folder) {
+            // The folder list changed after this menu was built: sending the
+            // torrent to the daemon's default directory would be silent and
+            // wrong, so report it instead
+            this.bg.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
+            return;
+          }
+          await this.onSendLink(linkUrl, tab.id, frameId, folder.path);
           break;
         }
       }
@@ -267,6 +283,7 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
     sep = '/';
   }
 
+  // Maps a full path prefix to the display segment used for its menu node
   const lowKeyMap: Record<string, string> = {};
   const tree: Record<string, unknown> = {};
   places.forEach((place) => {
@@ -277,13 +294,14 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
 
     let parentThree: Record<string, unknown> = tree;
     parts.forEach((part, index) => {
-      const lowPart = parts
-        .slice(0, index + 1)
-        .join('/')
-        .toLowerCase();
-      let caseKey = lowKeyMap[lowPart];
+      // Case-SENSITIVE key: Transmission daemons are overwhelmingly POSIX, so
+      // '/data/Movies' and '/data/movies' are two different directories.
+      // Folding them collapsed both into one menu entry pointing at whichever
+      // came last, silently downloading into the wrong folder.
+      const pathKey = parts.slice(0, index + 1).join('/');
+      let caseKey = lowKeyMap[pathKey];
       if (!caseKey) {
-        caseKey = lowKeyMap[lowPart] = part;
+        caseKey = lowKeyMap[pathKey] = part;
       }
       let subTree = parentThree[caseKey] as Record<string, unknown> | undefined;
       if (!subTree) {
@@ -350,8 +368,17 @@ function transformFoldersToTree(folders: Folder[]): MenuItem[] {
   return menus;
 }
 
-const contextMenusRemoveAll = async (): Promise<void> => {
-  await chrome.contextMenus.removeAll();
+const contextMenusRemoveAll = (): Promise<void> => {
+  // Callback form: on Firefox the chrome.* namespace returns undefined, so
+  // `await removeAll()` resolved immediately and the recreated items raced the
+  // still-pending removal (leaving the user with no menu at all)
+  return new Promise((resolve) => {
+    chrome.contextMenus.removeAll(() => {
+      // A failed removal is not fatal: create() reports its own errors
+      void chrome.runtime.lastError;
+      resolve();
+    });
+  });
 };
 
 const contextMenusCreate = async (details: chrome.contextMenus.CreateProperties): Promise<void> => {

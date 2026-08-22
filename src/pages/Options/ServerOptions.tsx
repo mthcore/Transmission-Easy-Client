@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 
@@ -23,20 +23,34 @@ const ServerOptions = observer(() => {
   const client = rootStore.client;
   const settings = client?.settings ?? null;
   const [url, setUrl] = useState('');
-  const [urlLoaded, setUrlLoaded] = useState(false);
+  const [urlLoaded, setUrlLoaded] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [incompleteDir, setIncompleteDirInput] = useState('');
-  const [incompleteDirLoaded, setIncompleteDirLoaded] = useState(false);
+  const [incompleteDirLoaded, setIncompleteDirLoaded] = useState<string | null>(null);
   const [scriptFilename, setScriptFilenameInput] = useState('');
-  const [scriptFilenameLoaded, setScriptFilenameLoaded] = useState(false);
+  const [scriptFilenameLoaded, setScriptFilenameLoaded] = useState<string | null>(null);
   const [scriptAddedFilename, setScriptAddedFilenameInput] = useState('');
-  const [scriptAddedFilenameLoaded, setScriptAddedFilenameLoaded] = useState(false);
+  const [scriptAddedFilenameLoaded, setScriptAddedFilenameLoaded] = useState<string | null>(null);
   const [scriptDoneSeedingFilename, setScriptDoneSeedingFilenameInput] = useState('');
-  const [scriptDoneSeedingFilenameLoaded, setScriptDoneSeedingFilenameLoaded] = useState(false);
+  const [scriptDoneSeedingFilenameLoaded, setScriptDoneSeedingFilenameLoaded] = useState<
+    string | null
+  >(null);
   const [portTestResult, setPortTestResult] = useState<boolean | null>(null);
   const [portTesting, setPortTesting] = useState(false);
+
+  const [actionError, setActionError] = useState('');
+  const pendingToggles = useRef(new Map<unknown, boolean>());
+
+  // Every daemon mutation on this page used to fail silently: the error only
+  // went to ClientStore.lastErrorMessage, which no options component renders.
+  const runAction = useCallback((promise: Promise<unknown> | undefined) => {
+    setActionError('');
+    Promise.resolve(promise).catch((err: Error) => {
+      setActionError(`${err.name}: ${err.message || 'Unknown error'}`);
+    });
+  }, []);
 
   const fetchSettings = useCallback(() => {
     if (!client) return;
@@ -51,11 +65,13 @@ const ServerOptions = observer(() => {
     );
   }, [client]);
 
+  // Always refresh on mount: the background mirror can hold settings fetched
+  // long ago (or changed since from another client), and this page has no
+  // polling loop, so it used to display frozen values whenever the service
+  // worker happened to be warm.
   useEffect(() => {
-    if (!settings) {
-      fetchSettings();
-    }
-  }, [fetchSettings, settings]);
+    fetchSettings();
+  }, [fetchSettings]);
 
   // All hooks below must run unconditionally on every render — the actual
   // "not ready yet" branching happens only in the JSX at the very end, so the
@@ -67,23 +83,20 @@ const ServerOptions = observer(() => {
   }, []);
 
   const handleApplyUrl = useCallback(() => {
-    client?.setBlocklistUrl(url);
-  }, [client, url]);
+    runAction(client?.setBlocklistUrl(url));
+  }, [client, url, runAction]);
 
   const handleUpdate = useCallback(() => {
     if (!client) return;
     setUpdating(true);
-    client.blocklistUpdate().then(
-      () => setUpdating(false),
-      () => setUpdating(false)
-    );
-  }, [client]);
+    runAction(client.blocklistUpdate().finally(() => setUpdating(false)));
+  }, [client, runAction]);
 
   const handleEncryptionChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      client?.setEncryption(e.target.value);
+      runAction(client?.setEncryption(e.target.value));
     },
-    [client]
+    [client, runAction]
   );
 
   const handleIncompleteDirChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,24 +104,24 @@ const ServerOptions = observer(() => {
   }, []);
 
   const handleApplyIncompleteDir = useCallback(() => {
-    client?.setIncompleteDir(incompleteDir);
-  }, [client, incompleteDir]);
+    runAction(client?.setIncompleteDir(incompleteDir));
+  }, [client, incompleteDir, runAction]);
 
   const handleScriptFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setScriptFilenameInput(e.target.value);
   }, []);
 
   const handleApplyScriptFilename = useCallback(() => {
-    client?.setScriptTorrentDoneFilename(scriptFilename);
-  }, [client, scriptFilename]);
+    runAction(client?.setScriptTorrentDoneFilename(scriptFilename));
+  }, [client, scriptFilename, runAction]);
 
   const handleScriptAddedFilenameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setScriptAddedFilenameInput(e.target.value);
   }, []);
 
   const handleApplyScriptAddedFilename = useCallback(() => {
-    client?.setScriptTorrentAddedFilename(scriptAddedFilename);
-  }, [client, scriptAddedFilename]);
+    runAction(client?.setScriptTorrentAddedFilename(scriptAddedFilename));
+  }, [client, scriptAddedFilename, runAction]);
 
   const handleScriptDoneSeedingFilenameChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,29 +131,56 @@ const ServerOptions = observer(() => {
   );
 
   const handleApplyScriptDoneSeedingFilename = useCallback(() => {
-    client?.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename);
-  }, [client, scriptDoneSeedingFilename]);
+    runAction(client?.setScriptTorrentDoneSeedingFilename(scriptDoneSeedingFilename));
+  }, [client, scriptDoneSeedingFilename, runAction]);
 
   const handlePortTest = useCallback(() => {
     if (!client) return;
     setPortTesting(true);
     setPortTestResult(null);
+    setActionError('');
     client.portTest().then(
       (isOpen) => {
         setPortTestResult(isOpen);
         setPortTesting(false);
       },
-      () => {
-        setPortTestResult(false);
+      (err: Error) => {
+        // A failed check is NOT a closed port: reporting it as one sent users
+        // debugging their router for a request that never ran
+        setPortTestResult(null);
+        setActionError(`${err.name}: ${err.message}`);
         setPortTesting(false);
       }
     );
   }, [client]);
 
+  // The daemon's bitfield only reaches us after a full session-set/get round
+  // trip, so XOR-ing against the mirror lost days when several were clicked in
+  // a row. Track the pending value locally and apply successive toggles to it.
+  const pendingDayRef = useRef<number | null>(null);
+  useEffect(() => {
+    // Only clear once the daemon actually reports the pending value, or a
+    // toggle still in flight would be recomputed from the stale mirror
+    if (pendingDayRef.current === settings?.altSpeedTimeDay) {
+      pendingDayRef.current = null;
+    }
+  }, [settings?.altSpeedTimeDay]);
+
   const handleDayToggle = useCallback(
     (dayBit: number) => () => {
-      if (!settings) return;
-      client?.setAltSpeedTimeDay(settings.altSpeedTimeDay ^ dayBit);
+      if (!settings || !client) return;
+      const base = pendingDayRef.current ?? settings.altSpeedTimeDay;
+      const next = base ^ dayBit;
+      pendingDayRef.current = next;
+      Promise.resolve(client.setAltSpeedTimeDay(next)).catch((err: Error) => {
+        // A failed toggle must not stay latched, or it would silently ride
+        // along with the next successful one
+        if (pendingDayRef.current === next) {
+          pendingDayRef.current = null;
+        }
+        setActionError(`${err.name}: ${err.message || 'Unknown error'}`);
+      });
+      setActionError('');
     },
     [client, settings]
   );
@@ -162,48 +202,81 @@ const ServerOptions = observer(() => {
     );
   }
 
-  if (!urlLoaded) {
+  // Re-seed each text field whenever its STORE value moves (daemon echo, the
+  // mount-time refresh, an external client's change) — not merely once. The
+  // old one-shot latches froze these fields on whatever the pre-refresh mirror
+  // held for the rest of the session. In-progress typing is preserved: local
+  // state only resets when the store value itself changes.
+  if (urlLoaded !== settings.blocklistUrl) {
     setUrl(settings.blocklistUrl);
-    setUrlLoaded(true);
+    setUrlLoaded(settings.blocklistUrl);
   }
 
-  if (!incompleteDirLoaded) {
+  if (incompleteDirLoaded !== settings.incompleteDir) {
     setIncompleteDirInput(settings.incompleteDir);
-    setIncompleteDirLoaded(true);
+    setIncompleteDirLoaded(settings.incompleteDir);
   }
 
-  if (!scriptFilenameLoaded) {
+  if (scriptFilenameLoaded !== settings.scriptTorrentDoneFilename) {
     setScriptFilenameInput(settings.scriptTorrentDoneFilename);
-    setScriptFilenameLoaded(true);
+    setScriptFilenameLoaded(settings.scriptTorrentDoneFilename);
   }
 
-  if (!scriptAddedFilenameLoaded) {
+  if (scriptAddedFilenameLoaded !== (settings.scriptTorrentAddedFilename || '')) {
     setScriptAddedFilenameInput(settings.scriptTorrentAddedFilename || '');
-    setScriptAddedFilenameLoaded(true);
+    setScriptAddedFilenameLoaded(settings.scriptTorrentAddedFilename || '');
   }
 
-  if (!scriptDoneSeedingFilenameLoaded) {
+  if (scriptDoneSeedingFilenameLoaded !== (settings.scriptTorrentDoneSeedingFilename || '')) {
     setScriptDoneSeedingFilenameInput(settings.scriptTorrentDoneSeedingFilename || '');
-    setScriptDoneSeedingFilenameLoaded(true);
+    setScriptDoneSeedingFilenameLoaded(settings.scriptTorrentDoneSeedingFilename || '');
   }
 
   const handleToggle = (setter: (enabled: boolean) => Promise<unknown>, current: boolean) => () => {
-    setter(!current);
+    // Latch on the setter: a quick off-then-on double click read the SAME
+    // stale render-time value twice and sent the same state twice, so the
+    // second click didn't undo the first
+    const pending = pendingToggles.current.get(setter);
+    const next = !(pending ?? current);
+    pendingToggles.current.set(setter, next);
+    runAction(
+      setter(next).finally(() => {
+        pendingToggles.current.delete(setter);
+      })
+    );
+  };
+
+  /** Clamp to the input's own min/max — typed values bypass those attributes */
+  const clampToInput = (value: number, input: HTMLInputElement): number => {
+    const min = parseFloat(input.min);
+    const max = parseFloat(input.max);
+    let result = value;
+    if (Number.isFinite(min) && result < min) result = min;
+    if (Number.isFinite(max) && result > max) result = max;
+    return result;
   };
 
   const handleNumberBlur =
     (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseFloat(e.target.value);
-      if (Number.isFinite(val) && val > 0) {
-        setter(val);
+      // 0 is a legitimate value (e.g. "stop seeding immediately"); requiring
+      // > 0 silently dropped it
+      if (Number.isFinite(val)) {
+        const clamped = clampToInput(val, e.target);
+        // Show what was actually sent: the field kept displaying the raw
+        // typed value while the daemon received the clamped one
+        e.target.value = String(clamped);
+        runAction(setter(clamped));
       }
     };
 
   const handleIntBlur =
     (setter: (value: number) => Promise<unknown>) => (e: React.FocusEvent<HTMLInputElement>) => {
       const val = parseInt(e.target.value, 10);
-      if (Number.isFinite(val) && val > 0) {
-        setter(val);
+      if (Number.isFinite(val)) {
+        const clamped = clampToInput(val, e.target);
+        e.target.value = String(clamped);
+        runAction(setter(clamped));
       }
     };
 
@@ -211,7 +284,7 @@ const ServerOptions = observer(() => {
     (setter: (minutes: number) => Promise<unknown>) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const [h, m] = e.target.value.split(':').map(Number);
       if (Number.isFinite(h) && Number.isFinite(m)) {
-        setter(h * 60 + m);
+        runAction(setter(h * 60 + m));
       }
     };
 
@@ -220,6 +293,20 @@ const ServerOptions = observer(() => {
       <h2>{chrome.i18n.getMessage('optServer')}</h2>
 
       {settings.daemonVersionStr && <p className="daemon-version">{settings.daemonVersionStr}</p>}
+
+      {actionError && <p className="red">{actionError}</p>}
+
+      {/* The mount-time refresh failed but the mirror held cached settings:
+          without this banner the form rendered stale data with nothing saying
+          the daemon was never reached */}
+      {error && !loading && (
+        <p className="red">
+          {chrome.i18n.getMessage('checkSettings')}{' '}
+          <button type="button" onClick={fetchSettings}>
+            {chrome.i18n.getMessage('errorRetry')}
+          </button>
+        </p>
+      )}
 
       <h3>{chrome.i18n.getMessage('generalSettings')}</h3>
 
@@ -257,6 +344,7 @@ const ServerOptions = observer(() => {
         <input
           type="number"
           min="1"
+          key={`peerLimitGlobal-${settings.peerLimitGlobal}`}
           defaultValue={settings.peerLimitGlobal}
           onBlur={handleIntBlur(client.setPeerLimitGlobal)}
         />
@@ -267,6 +355,7 @@ const ServerOptions = observer(() => {
         <input
           type="number"
           min="1"
+          key={`peerLimitPerTorrent-${settings.peerLimitPerTorrent}`}
           defaultValue={settings.peerLimitPerTorrent}
           onBlur={handleIntBlur(client.setPeerLimitPerTorrent)}
         />
@@ -293,6 +382,7 @@ const ServerOptions = observer(() => {
             type="number"
             min="0"
             step="0.1"
+            key={`seedRatioLimit-${settings.seedRatioLimit}`}
             defaultValue={settings.seedRatioLimit}
             onBlur={handleNumberBlur(client.setSeedRatioLimit)}
           />
@@ -320,6 +410,7 @@ const ServerOptions = observer(() => {
           <input
             type="number"
             min="1"
+            key={`idleSeedingLimit-${settings.idleSeedingLimit}`}
             defaultValue={settings.idleSeedingLimit}
             onBlur={handleIntBlur(client.setIdleSeedingLimit)}
           />{' '}
@@ -347,6 +438,7 @@ const ServerOptions = observer(() => {
           <input
             type="number"
             min="1"
+            key={`downloadQueueSize-${settings.downloadQueueSize}`}
             defaultValue={settings.downloadQueueSize}
             onBlur={handleIntBlur(client.setDownloadQueueSize)}
           />
@@ -371,6 +463,7 @@ const ServerOptions = observer(() => {
           <input
             type="number"
             min="1"
+            key={`seedQueueSize-${settings.seedQueueSize}`}
             defaultValue={settings.seedQueueSize}
             onBlur={handleIntBlur(client.setSeedQueueSize)}
           />
@@ -395,6 +488,7 @@ const ServerOptions = observer(() => {
           <input
             type="number"
             min="1"
+            key={`queueStalledMinutes-${settings.queueStalledMinutes}`}
             defaultValue={settings.queueStalledMinutes}
             onBlur={handleIntBlur(client.setQueueStalledMinutes)}
           />{' '}
@@ -448,6 +542,7 @@ const ServerOptions = observer(() => {
           type="number"
           min="1"
           max="65535"
+          key={`peerPort-${settings.peerPort}`}
           defaultValue={settings.peerPort}
           onBlur={handleIntBlur(client.setPeerPort)}
         />
@@ -464,6 +559,8 @@ const ServerOptions = observer(() => {
           {portTestResult !== null && (
             <span className={portTestResult ? 'port-open' : 'port-closed'}>
               {' '}
+              {/* Colour alone is not a status indicator */}
+              <span aria-hidden="true">{portTestResult ? '✓' : '✗'}</span>{' '}
               {portTestResult
                 ? chrome.i18n.getMessage('portOpen')
                 : chrome.i18n.getMessage('portClosed')}

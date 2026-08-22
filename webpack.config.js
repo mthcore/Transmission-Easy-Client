@@ -26,6 +26,12 @@ const config = {
     chunkFilename: '[name].chunk.js',
     path: path.join(outputPath, 'src'),
     clean: false,
+    environment: {
+      // Every browser this ships to has globalThis, so webpack can stop
+      // emitting its `new Function("return this")` fallback — which AMO's
+      // linter flags as DANGEROUS_EVAL in every bundle
+      globalThis: true,
+    },
   },
   mode: mode,
   devtool: devtool,
@@ -107,10 +113,25 @@ const config = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-react',
               ['@babel/preset-env', babelEnvOptions],
-              ['@babel/preset-typescript', {isTSX: true, allExtensions: true}]
-            ]
+              // Babel 8 removed isTSX/allExtensions: TSX now follows the file
+              // extension — which also means preset-react must be scoped to
+              // .tsx/.jsx, or its JSX plugin makes `<T>` generics in plain .ts
+              // files parse as JSX
+              '@babel/preset-typescript'
+            ],
+            overrides: [
+              {
+                test: /\.(jsx|tsx)$/,
+                // development must follow the webpack mode EXPLICITLY: left to
+                // its default, Babel 8 emitted jsxDEV calls in the production
+                // bundle, which crashed every page at runtime while the whole
+                // test suite still passed
+                presets: [
+                  ['@babel/preset-react', {runtime: 'automatic', development: mode !== 'production'}],
+                ],
+              },
+            ],
           }
         }
       },
@@ -136,7 +157,9 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     fallback: {
-      "url": require.resolve("url/"),
+      // No 'url' polyfill: it dragged qs and punycode into both bundles, whose
+      // Function-constructor calls made AMO flag the add-on for eval usage.
+      // URLs are built with template strings / the native URL API instead.
       "process": require.resolve("process/browser.js"),
     },
     alias: {
@@ -159,11 +182,41 @@ const config = {
             if (browser === 'firefox') {
               // Firefox V3: add gecko settings, remove Chrome-specific
               delete manifest.minimum_chrome_version;
+              // Firefox has no extension service workers: an MV3 add-on
+              // declaring only background.service_worker is REJECTED at install
+              // ("background.service_worker is currently disabled"). The bundle
+              // is a classic script, so an event page runs it as-is.
+              manifest.background = {
+                scripts: [manifest.background.service_worker],
+              };
+              // addons-linter makes a missing id a hard ERROR on MV3
+              // (ADDON_ID_REQUIRED), so AMO rejects the upload at validation.
+              // It MUST equal the GUID of the existing AMO listing, which the
+              // release workflow also passes as FIREFOX_ADDON_GUID — set that
+              // same value in FIREFOX_ADDON_ID for release builds; the default
+              // below only keeps local builds lintable.
+              const addonId = process.env.FIREFOX_ADDON_ID || 'transmission-easy-client@mthcore';
               manifest.browser_specific_settings = {
                 gecko: {
-                  strict_min_version: '113.0'
-                }
+                  id: addonId,
+                  // 140 is the first release where BOTH pieces work: host
+                  // permissions granted at install (127+) and the data
+                  // collection metadata below (140+). Declaring 127 made
+                  // addons-linter warn that the consent data is ignored.
+                  strict_min_version: '140.0',
+                  // Required by AMO since 2025-11: declare that nothing is collected
+                  data_collection_permissions: {
+                    required: ['none'],
+                  },
+                },
+                // Android got data_collection_permissions two releases later
+                gecko_android: {
+                  strict_min_version: '142.0',
+                },
               };
+              // navigator.clipboard.writeText outside a user gesture needs this
+              // on Firefox (Chrome grants it implicitly to extension pages)
+              manifest.permissions = [...manifest.permissions, 'clipboardWrite'];
             }
             return JSON.stringify(manifest, null, 4);
           }

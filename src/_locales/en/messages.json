@@ -911,5 +911,11 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "This folder is already in the list"
+    },
+    "restoreSkippedKeys": {
+        "message": "Ignored invalid values"
     }
 }

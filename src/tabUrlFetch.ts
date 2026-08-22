@@ -1,8 +1,10 @@
 import { arrayBufferToBase64 } from './tools/binaryConversion';
 import getLogger from './tools/getLogger';
 import ErrorWithCode from './tools/ErrorWithCode';
+import fetchWithTimeout from './tools/fetchWithTimeout';
+import readBoundedBlob from './tools/readBoundedBlob';
 import { serializeError } from 'serialize-error';
-import { MAX_FETCH_SIZE } from './constants';
+import { DOWNLOAD_TIMEOUT, MAX_FETCH_SIZE } from './constants';
 
 const logger = getLogger('tabUrlFetch');
 
@@ -76,7 +78,9 @@ declare global {
     );
 
     function fetchUrl(url: string): Promise<FetchResult> {
-      return fetch(url).then((response) => {
+      // Timeout spans the body read too — a stalled server must not keep the
+      // closeLockWrap beforeunload handler engaged forever
+      return fetchWithTimeout(url, undefined, DOWNLOAD_TIMEOUT, (response) => {
         if (!response.ok) {
           throw new ErrorWithCode(
             `${response.status}: ${response.statusText}`,
@@ -99,9 +103,14 @@ declare global {
           headers: Array.from(response.headers.entries()) as [string, string][],
         };
 
-        return response.arrayBuffer().then((arrayBuffer) => {
-          return { response: safeResponse, base64: arrayBufferToBase64(arrayBuffer) };
-        });
+        // Streamed with a running total: Content-Length is absent on chunked
+        // responses, and buffering first would let a hostile server spend the
+        // whole timeout filling the visitor's tab before the cap applied
+        return readBoundedBlob(response)
+          .then((blob) => blob.arrayBuffer())
+          .then((arrayBuffer) => {
+            return { response: safeResponse, base64: arrayBufferToBase64(arrayBuffer) };
+          });
       });
     }
 

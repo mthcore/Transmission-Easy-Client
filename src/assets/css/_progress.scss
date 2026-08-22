@@ -41,25 +41,27 @@ table {
       .progress_b_i {
         position: absolute;
         top: 0;
-        left: 0;
+        // Logical: an RTL layout fills its bars from the right
+        inset-inline-start: 0;
         height: 100%;
         border-radius: 2px;
         z-index: 2;
         overflow: hidden;
         transition: width 0.3s ease, background-color 0.3s ease;
 
-        // White text overlay - appears on top of colored bar
+        // Text overlay on top of the filled bar. White on the seeding green
+        // was 2.28:1 — a near-black label reads on every bar colour used here.
         // Width is set via inline style to match parent .progress_b width
         .val-light {
           position: absolute;
           top: 0;
-          left: 0;
+          inset-inline-start: 0;
           height: 100%;
           text-align: center;
           font-size: $font-size-xs;
           font-weight: 600;
           line-height: 16px;
-          color: #fff;
+          color: #111214;
           white-space: nowrap;
         }
 

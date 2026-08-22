@@ -1,4 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+/**
+ * Number input that tolerates being emptied. A plain controlled number input
+ * snapped back to '0' the moment the field was cleared (Number('') === 0),
+ * which reads as "stop seeding immediately" once applied.
+ */
+const NumberField = ({
+  value,
+  min,
+  step,
+  onChange,
+}: {
+  value: number;
+  min: string;
+  step: string;
+  onChange: (value: number) => void;
+}) => {
+  const [text, setText] = useState(String(value));
+
+  useEffect(() => {
+    setText((current) => (Number(current) === value ? current : String(value)));
+  }, [value]);
+
+  return (
+    <input
+      type="number"
+      min={min}
+      step={step}
+      value={text}
+      onChange={(e) => {
+        setText(e.target.value);
+        if (e.target.value !== '') {
+          const parsed = Number(e.target.value);
+          // The min attribute is validation-only: a typed negative value still
+          // reaches .value and would be sent to the daemon
+          const floor = Number(min);
+          if (Number.isFinite(parsed)) {
+            onChange(Number.isFinite(floor) ? Math.max(floor, parsed) : parsed);
+          }
+        }
+      }}
+      onBlur={(e) => {
+        if (e.target.value === '') {
+          setText(String(value));
+        }
+      }}
+    />
+  );
+};
 
 interface TorrentDetailsSeedLimitsTabProps {
   detailsLoading: boolean;
@@ -47,12 +96,11 @@ const TorrentDetailsSeedLimitsTab = ({
         {seedRatioMode === 1 && (
           <div className="seed-limit-row">
             <label>{chrome.i18n.getMessage('DT_SEED_RATIO_LIMIT')}</label>
-            <input
-              type="number"
+            <NumberField
               min="0"
               step="0.1"
               value={seedRatioLimit}
-              onChange={(e) => onSeedRatioLimitChange(Number(e.target.value))}
+              onChange={onSeedRatioLimitChange}
             />
           </div>
         )}
@@ -72,13 +120,7 @@ const TorrentDetailsSeedLimitsTab = ({
         {seedIdleMode === 1 && (
           <div className="seed-limit-row">
             <label>{chrome.i18n.getMessage('DT_SEED_IDLE_LIMIT')}</label>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              value={seedIdleLimit}
-              onChange={(e) => onSeedIdleLimitChange(Number(e.target.value))}
-            />
+            <NumberField min="0" step="1" value={seedIdleLimit} onChange={onSeedIdleLimitChange} />
           </div>
         )}
 

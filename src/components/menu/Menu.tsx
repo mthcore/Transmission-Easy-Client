@@ -23,17 +23,21 @@ const Menu = observer(() => {
 
       const dialog = rootStore.createDialog({
         type: 'putFiles',
-      });
+      }) as unknown as { setFiles: (files: File[]) => void; setReady: (ready: boolean) => void };
 
-      (dialog as unknown as { files: File[]; setReady: (ready: boolean) => void }).files =
-        Array.from(files);
-      (dialog as unknown as { setReady: (ready: boolean) => void }).setReady(true);
+      dialog.setFiles(Array.from(files));
+      dialog.setReady(true);
     },
     [rootStore]
   );
 
   const handleDropOver = useCallback((e: DragEvent<HTMLBodyElement> | globalThis.DragEvent) => {
-    if (e.dataTransfer?.types.length === 2) return;
+    // Accept only real OS file drags. The old guard ("exactly 2 types" meant a
+    // column-header drag) broke Firefox — its file drags carry
+    // ['application/x-moz-file','Files'], length 2 — so drops navigated the
+    // page to the file; and a text-selection drag (no 'Files') flashed the
+    // full-screen drop layer for nothing.
+    if (!e.dataTransfer?.types.includes('Files')) return;
     e.preventDefault();
 
     setShowDropLayer(true);
@@ -95,6 +99,25 @@ const Menu = observer(() => {
   const handleAddFile = useCallback(() => {
     refFileInput.current?.dispatchEvent(new MouseEvent('click'));
   }, []);
+
+  // Ctrl+O lives here, next to the hidden file input: creating a bare
+  // 'putFiles' dialog from the page shortcut handler produced an invisible
+  // never-ready dialog (the renderer waits for isReady) instead of a picker
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+      // Same guard as the page-level shortcuts: opening a file picker on top of
+      // a modal (and stacking a second dialog behind it) is never wanted
+      if (rootStore?.dialogs.size) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+        e.preventDefault();
+        handleAddFile();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleAddFile, rootStore]);
 
   const handleAddUrl = useCallback(() => {
     rootStore?.createDialog({
@@ -191,11 +214,14 @@ const Menu = observer(() => {
             aria-label={chrome.i18n.getMessage('Open_file')}
             type="button"
           />
+          {/* The .torrent fallback in accept matters: without a desktop
+              torrent client, Windows has no MIME registration for .torrent
+              and a MIME-only filter hid every torrent file in the picker */}
           <input
             ref={refFileInput}
             onChange={handleFileChange}
             type="file"
-            accept="application/x-bittorrent"
+            accept=".torrent,application/x-bittorrent"
             multiple
             style={{ display: 'none' }}
           />

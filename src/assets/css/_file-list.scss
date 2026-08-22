@@ -148,10 +148,13 @@ div.fl-layer button.folder {
   }
 }
 
-// Folder color variants
+// Folder color variants. The palette is a set of light pastels, so the label
+// colour must be pinned dark here — inheriting --text-color made the chips
+// light-on-light (1.5:1) and unreadable in dark mode, including the "back" entry.
 @each $index, $color in $folder-colors {
   div.fl-layer a.folder.c#{$index},
   div.fl-layer button.folder.c#{$index} {
     background-color: $color;
+    color: #111214;
   }
 }

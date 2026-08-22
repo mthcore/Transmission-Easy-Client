@@ -3,6 +3,17 @@ import * as ContextMenu from '@radix-ui/react-context-menu';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 import { useContextMenuSelection } from '../../hooks/useContextMenuSelection';
+import showError from '../../tools/showError';
+
+/**
+ * Every menu action is fire-and-forget; without this, a daemon failure was an
+ * unhandled promise rejection and the user saw the action silently not happen.
+ */
+function report(action: Promise<unknown>): void {
+  action.catch((err) => {
+    showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Action failed', err as Error);
+  });
+}
 
 interface TorrentContextMenuProps {
   children: ReactNode;
@@ -66,19 +77,19 @@ const TorrentMenuContent = observer(() => {
   });
 
   const handleStart = () => {
-    client.torrentsStart(selectedIds);
+    report(client.torrentsStart(selectedIds));
   };
 
   const handleForceStart = () => {
-    client.torrentsForceStart(selectedIds);
+    report(client.torrentsForceStart(selectedIds));
   };
 
   const handleStop = () => {
-    client.torrentsStop(selectedIds);
+    report(client.torrentsStop(selectedIds));
   };
 
   const handleRecheck = () => {
-    client.torrentsRecheck(selectedIds);
+    report(client.torrentsRecheck(selectedIds));
   };
 
   const handleRemove = () => {
@@ -115,9 +126,16 @@ const TorrentMenuContent = observer(() => {
 
   const handleCopyMagnetUrl = () => {
     if (!firstTorrent) return;
+    // magnetLink is optional on old daemons; the store field is required, so
+    // passing undefined threw an MST typecheck error inside the menu handler.
+    // The hash is enough to rebuild a usable magnet URI.
+    const magnetLink =
+      firstTorrent.magnetLink ||
+      (firstTorrent.hash ? `magnet:?xt=urn:btih:${firstTorrent.hash}` : '');
+    if (!magnetLink) return;
     rootStore.createDialog({
       type: 'copyMagnetUrl',
-      magnetLink: firstTorrent.magnetLink,
+      magnetLink,
       torrentIds: selectedIds.slice(0),
     });
   };
@@ -136,7 +154,8 @@ const TorrentMenuContent = observer(() => {
     if (!firstTorrent) return;
     rootStore.createDialog({
       type: 'move',
-      directory: firstTorrent.directory,
+      // Required string in the store: `directory` is optional on the torrent
+      directory: firstTorrent.directory ?? '',
       torrentIds: selectedIds.slice(0),
     });
   };
@@ -151,23 +170,23 @@ const TorrentMenuContent = observer(() => {
   };
 
   const handleReannounce = () => {
-    client.reannounce(selectedIds);
+    report(client.reannounce(selectedIds));
   };
 
   const handleQueueTop = () => {
-    client.torrentsQueueTop(selectedIds);
+    report(client.torrentsQueueTop(selectedIds));
   };
 
   const handleQueueUp = () => {
-    client.torrentsQueueUp(selectedIds);
+    report(client.torrentsQueueUp(selectedIds));
   };
 
   const handleQueueDown = () => {
-    client.torrentsQueueDown(selectedIds);
+    report(client.torrentsQueueDown(selectedIds));
   };
 
   const handleQueueBottom = () => {
-    client.torrentsQueueBottom(selectedIds);
+    report(client.torrentsQueueBottom(selectedIds));
   };
 
   const handleShowFiles = () => {
@@ -262,9 +281,13 @@ const TorrentMenuContent = observer(() => {
             <ContextMenu.Item className="context-menu-item" onSelect={handleMove}>
               {chrome.i18n.getMessage('move')}
             </ContextMenu.Item>
-            <ContextMenu.Item className="context-menu-item" onSelect={handleSetLabels}>
-              {chrome.i18n.getMessage('OV_COL_LABEL')}
-            </ContextMenu.Item>
+            {/* Labels need Transmission 3.0+: on older daemons the dialog
+                could open but every Apply was rejected by the bg backstop */}
+            {client.settings?.features.labels && (
+              <ContextMenu.Item className="context-menu-item" onSelect={handleSetLabels}>
+                {chrome.i18n.getMessage('OV_COL_LABEL')}
+              </ContextMenu.Item>
+            )}
             <ContextMenu.Item className="context-menu-item" onSelect={handleReannounce}>
               {chrome.i18n.getMessage('reannounce')}
             </ContextMenu.Item>
@@ -272,7 +295,9 @@ const TorrentMenuContent = observer(() => {
               <ContextMenu.Item
                 className="context-menu-item"
                 onSelect={() =>
-                  client.setSequentialDownload(selectedIds, !firstTorrent?.sequentialDownload)
+                  report(
+                    client.setSequentialDownload(selectedIds, !firstTorrent?.sequentialDownload)
+                  )
                 }
               >
                 {(firstTorrent?.sequentialDownload ? '✓ ' : '') +
@@ -315,19 +340,19 @@ const TorrentMenuContent = observer(() => {
           <ContextMenu.SubContent className="context-menu">
             <ContextMenu.Item
               className="context-menu-item"
-              onSelect={() => client.setBandwidthPriority(selectedIds, 1)}
+              onSelect={() => report(client.setBandwidthPriority(selectedIds, 1))}
             >
               {chrome.i18n.getMessage('MF_HIGH')}
             </ContextMenu.Item>
             <ContextMenu.Item
               className="context-menu-item"
-              onSelect={() => client.setBandwidthPriority(selectedIds, 0)}
+              onSelect={() => report(client.setBandwidthPriority(selectedIds, 0))}
             >
               {chrome.i18n.getMessage('MF_NORMAL')}
             </ContextMenu.Item>
             <ContextMenu.Item
               className="context-menu-item"
-              onSelect={() => client.setBandwidthPriority(selectedIds, -1)}
+              onSelect={() => report(client.setBandwidthPriority(selectedIds, -1))}
             >
               {chrome.i18n.getMessage('MF_LOW')}
             </ContextMenu.Item>

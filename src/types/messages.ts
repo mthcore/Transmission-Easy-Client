@@ -6,7 +6,6 @@
  */
 
 import type { TorrentId } from './index';
-import type { Folder } from './bg';
 
 // Discriminated union of all message types
 export type BgMessage =
@@ -174,7 +173,9 @@ export interface UpdateSettingsMessage {
 export interface SendFilesMessage {
   action: 'sendFiles';
   urls: string[];
-  directory?: Folder;
+  // A plain path string — this is what the dialogs actually send; typing it
+  // as Folder once hid a bug where the service read `.path` off a string
+  directory?: string;
 }
 
 export interface GetFreeSpaceMessage {

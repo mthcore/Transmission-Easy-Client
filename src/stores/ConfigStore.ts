@@ -7,8 +7,26 @@ import {
   cast,
 } from 'mobx-state-tree';
 import { storageSet } from '../tools/chromeStorage';
-import url from 'url';
+import getLogger from '../tools/getLogger';
 import { BG_UPDATE_INTERVAL, UI_UPDATE_INTERVAL } from '../constants';
+
+const logger = getLogger('ConfigStore');
+
+/**
+ * Builds the daemon URL without Node's `url` module: importing it pulled qs and
+ * punycode into both shipped bundles, whose Function-constructor calls make
+ * every AMO review flag the add-on for eval usage.
+ */
+function buildServerUrl(ssl: boolean, hostname: string, port: number, pathname: string): string {
+  const protocol = ssl ? 'https' : 'http';
+  // IPv6 literals are stored unbracketed (the RPC transport brackets them)
+  const host = hostname.includes(':') && !hostname.startsWith('[') ? `[${hostname}]` : hostname;
+  let path = pathname || '';
+  if (path && !path.startsWith('/')) {
+    path = `/${path}`;
+  }
+  return `${protocol}://${host}:${port}${path}`;
+}
 
 interface ColumnDef {
   column: string;
@@ -195,7 +213,17 @@ const ConfigStore = types
   .actions((self) => {
     return {
       setKeyValue(keyValue: Record<string, unknown>) {
-        Object.assign(self, keyValue);
+        // Per key, not one Object.assign: a single wrongly-typed value (a
+        // hand-edited backup, a version skew) threw mid-assignment and silently
+        // dropped every remaining key of the batch, in the background AND in
+        // every open page
+        Object.entries(keyValue).forEach(([key, value]) => {
+          try {
+            (self as unknown as Record<string, unknown>)[key] = value;
+          } catch (err) {
+            logger.error(`setKeyValue: ignoring bad value for ${key}`, err);
+          }
+        });
       },
       setPopupMode(isPopup: boolean) {
         self.isPopupMode = isPopup;
@@ -300,13 +328,17 @@ const ConfigStore = types
         return storageSet(obj);
       },
       removeFolders(selectedFolders: Instance<typeof FolderStore>[]) {
-        self.folders = cast(removeItems(self.folders.slice(0), selectedFolders));
+        // Compute with live nodes (identity matching), assign snapshots: the
+        // same live-node-vs-snapshot pitfall as moveTorrentsColumn above
+        const remaining = removeItems(self.folders.slice(0), selectedFolders);
+        self.folders = cast(remaining.map((folder) => getSnapshot(folder)));
         return storageSet({
           folders: self.folders.toJSON(),
         });
       },
       moveFolders(selectedFolders: Instance<typeof FolderStore>[], index: number) {
-        self.folders = cast(moveItems(self.folders.slice(0), selectedFolders, index));
+        const reordered = moveItems(self.folders.slice(0), selectedFolders, index);
+        self.folders = cast(reordered.map((folder) => getSnapshot(folder)));
         return storageSet({
           folders: self.folders.toJSON(),
         });
@@ -331,25 +363,14 @@ const ConfigStore = types
   .views((self) => {
     return {
       get url(): string {
-        return url.format({
-          protocol: self.ssl ? 'https' : 'http',
-          port: self.port,
-          hostname: self.hostname,
-          pathname: self.pathname,
-        });
+        return buildServerUrl(self.ssl, self.hostname, self.port, self.pathname);
       },
       get webUiUrl(): string {
         // Credentials are deliberately NOT embedded in the URL: browsers leak
         // them into DOM/history and don't apply them to the page's background
         // RPC requests. Authentication is injected as an Authorization header
         // by the background declarativeNetRequest rule (src/bg/webUiAuthRule.ts).
-        const urlObject: url.UrlObject = {
-          protocol: self.ssl ? 'https' : 'http',
-          port: self.port,
-          hostname: self.hostname,
-          pathname: self.webPathname,
-        };
-        return url.format(urlObject);
+        return buildServerUrl(self.ssl, self.hostname, self.port, self.webPathname);
       },
       get activeTorrentColumns() {
         return self.isPopupMode ? self.torrentColumnsPopup : self.torrentColumns;
@@ -359,6 +380,20 @@ const ConfigStore = types
       },
       get visibleFileColumns() {
         return self.filesColumns.filter((column) => column.display);
+      },
+      /**
+       * trackerStats is the heaviest field of the poll (~25 subfields per
+       * tracker, per torrent) and only feeds the swarm-wide 'seeds'/'peers'
+       * columns, both hidden by default. The 'seeds_peers' column shows
+       * CONNECTED peers instead, which come from cheap scalar fields, so it
+       * does not count here. The details dialog fetches trackerStats on its own.
+       */
+      get needsTrackerStats(): boolean {
+        const trackerColumns = ['seeds', 'peers'];
+        return (
+          self.torrentColumns.some((c) => c.display && trackerColumns.includes(c.column)) ||
+          self.torrentColumnsPopup.some((c) => c.display && trackerColumns.includes(c.column))
+        );
       },
     };
   })
@@ -414,24 +449,27 @@ function removeItems<T>(array: T[], items: T[]): T[] {
   return array;
 }
 
+/**
+ * Move the selected entries one step up (index < 0) or down. Each selected
+ * entry moves by one position, so a non-contiguous selection keeps its
+ * relative order — collapsing everything to a single insertion point used to
+ * teleport later entries past unrelated ones.
+ */
 function moveItems<T>(array: T[], items: T[], index: number): T[] {
-  let startPos: number | null = null;
-  items.forEach((folder) => {
-    const pos = array.indexOf(folder);
-    if (pos !== -1) {
-      if (startPos === null) {
-        startPos = pos;
-      }
-      array.splice(pos, 1);
-    }
-  });
+  const selected = new Set(items);
+  const up = index < 0;
+  // Walk from the edge the items move toward, so an already-moved neighbour
+  // blocks the next one instead of being leapfrogged
+  const positions = array
+    .map((item, pos) => (selected.has(item) ? pos : -1))
+    .filter((pos) => pos !== -1);
+  if (!up) positions.reverse();
 
-  if (startPos !== null) {
-    if (index < 0) {
-      array.splice(startPos - 1, 0, ...items);
-    } else {
-      array.splice(startPos + 1, 0, ...items);
-    }
+  for (const pos of positions) {
+    const target = up ? pos - 1 : pos + 1;
+    if (target < 0 || target >= array.length) continue;
+    if (selected.has(array[target])) continue;
+    [array[pos], array[target]] = [array[target], array[pos]];
   }
 
   return array;

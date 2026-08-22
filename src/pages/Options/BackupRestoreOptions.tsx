@@ -60,9 +60,13 @@ const BackupRestoreOptions = () => {
     try {
       const raw: StorageData = await storageGet(null);
       if (!refPage.current) return;
-      // Filter out transient local-only keys from backup
-      for (const key of BACKUP_EXCLUDE_KEYS) {
-        delete raw[key];
+      // Filter out transient local-only keys from the backup (background
+      // bookkeeping is '_'-prefixed and can be large: the completion-notify
+      // record holds every torrent hash on the server)
+      for (const key of Object.keys(raw)) {
+        if (BACKUP_EXCLUDE_KEYS.includes(key) || key.startsWith('_')) {
+          delete raw[key];
+        }
       }
       setLoadState('done');
       setStorage(JSON.stringify(raw, null, 2));
@@ -99,16 +103,36 @@ const BackupRestoreOptions = () => {
     }
   }, []);
 
+  // These used to report failures only through logger.error, which is a no-op
+  // in production builds: a rejected sync read/remove looked like the button
+  // did nothing at all.
   const handleLoadFromCloud = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setRestoreError('');
     try {
       const backup = await loadCloudBackup();
       if (!refPage.current) return;
-      if (backup && refData.current) {
-        refData.current.value = backup;
+      if (!refData.current) {
+        // The textarea only exists once the local config loaded
+        setRestoreState('error');
+        setRestoreError(chrome.i18n.getMessage('clickLoadConfig'));
+        return;
       }
+      if (!backup) {
+        setRestoreState('error');
+        setRestoreError(chrome.i18n.getMessage('OV_FL_ERROR'));
+        setHasCloudData(false);
+        return;
+      }
+      refData.current.value = backup;
+      // A successful load must clear a leftover restore error, or the old red
+      // ERROR line kept sitting under the freshly loaded backup
+      setRestoreState('idle');
     } catch (err) {
       logger.error('handleLoadFromCloud error', err);
+      if (!refPage.current) return;
+      setRestoreState('error');
+      setRestoreError(errorMessage(err));
     }
   }, []);
 
@@ -124,6 +148,9 @@ const BackupRestoreOptions = () => {
       setHasCloudData(false);
     } catch (err) {
       logger.error('handleClearCloud error', err);
+      if (!refPage.current) return;
+      setRestoreState('error');
+      setRestoreError(errorMessage(err));
     }
   }, []);
 
@@ -165,6 +192,9 @@ const BackupRestoreOptions = () => {
         port: 9091,
         ssl: true,
         pathname: '/transmission/rpc',
+        webPathname: '',
+        login: '',
+        authenticationRequired: true,
       });
       const connectionChanges = getConnectionChanges(cleanConfig, current);
       if (connectionChanges.length) {
@@ -179,6 +209,16 @@ const BackupRestoreOptions = () => {
       await storageSet(cleanConfig);
       if (!refPage.current) return;
       setRestoreState('done');
+      // Values dropped for a wrong type (a hand-edited or version-skewed
+      // backup) must be visible: the restore used to show an unqualified green
+      // check while silently keeping the old values for those keys
+      if (droppedKeys.length) {
+        setRestoreError(
+          (chrome.i18n.getMessage('restoreSkippedKeys') || 'Ignored invalid values') +
+            ': ' +
+            droppedKeys.join(', ')
+        );
+      }
       setTimeout(() => {
         if (!refPage.current) return;
         setRestoreState('idle');
@@ -264,6 +304,10 @@ const BackupRestoreOptions = () => {
             {restoreError ? `: ${restoreError}` : ''}
           </p>
         )}
+        {/* Partial success: the restore applied, but some values were dropped
+            (wrong type in a hand-edited backup) — say so instead of showing an
+            unqualified green check */}
+        {restoreState !== 'error' && restoreError && <p className="red">{restoreError}</p>}
       </div>
     </div>
   );

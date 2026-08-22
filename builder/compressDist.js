@@ -13,4 +13,9 @@ const compressDist = () => {
   }, path.join(outputPath, `${BUILD_ENV.distName}.${ext}`));
 };
 
-compressDist();
+// Fail the build on a packaging error instead of leaving a truncated archive
+// behind and letting `npm run release` continue to the next browser
+compressDist().catch((err) => {
+  console.error('compressDist failed:', err);
+  process.exit(1);
+});

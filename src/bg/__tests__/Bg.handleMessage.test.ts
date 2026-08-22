@@ -82,13 +82,16 @@ function createClientStub(): ClientStub {
   return client as ClientStub;
 }
 
-function dispatch(message: BgMessage) {
+/** A message from one of the extension's own pages (popup/options) */
+const ownPageSender = { id: chrome.runtime.id } as chrome.runtime.MessageSender;
+
+function dispatch(message: BgMessage, sender: chrome.runtime.MessageSender = ownPageSender) {
   const calls: ResponseBody[] = [];
   let settle!: (value: ResponseBody) => void;
   const responded = new Promise<ResponseBody>((resolve) => {
     settle = resolve;
   });
-  const returned = bg.handleMessage(message, {} as chrome.runtime.MessageSender, (value) => {
+  const returned = bg.handleMessage(message, sender, (value) => {
     calls.push(value as ResponseBody);
     settle(value as ResponseBody);
   });
@@ -114,8 +117,50 @@ beforeEach(() => {
   client = createClientStub();
   bg.client = client;
   bg.initPromise = Promise.resolve();
-  bg.bgStore = { config: undefined };
+  // updateSettings re-reads the config before validating (connection-change race)
+  bg.bgStore = { config: undefined, fetchConfig: vi.fn().mockResolvedValue(undefined) };
   bg.bgStorePathLine = { getDelta: vi.fn().mockReturnValue({ type: 'patch', result: [] }) };
+});
+
+describe('Bg.handleMessage — sender trust boundary', () => {
+  it('ignores a message coming from a web page (content-script context)', () => {
+    // The content script runs in arbitrary pages; the dispatcher serves the
+    // daemon password and every destructive action, so a web-page URL is refused
+    const { returned, calls } = dispatch({ action: 'getConfigStore' }, {
+      id: chrome.runtime.id,
+      url: 'https://evil.example/page',
+      tab: { id: 4 },
+    } as chrome.runtime.MessageSender);
+
+    expect(returned).toBeUndefined();
+    expect(calls).toHaveLength(0);
+  });
+
+  it('serves the options page, which legitimately runs in a tab', async () => {
+    const { returned, responded } = dispatch({ action: 'updateSettings' }, {
+      id: chrome.runtime.id,
+      url: `${chrome.runtime.getURL('')}options.html#/server`,
+      tab: { id: 9 },
+    } as chrome.runtime.MessageSender);
+
+    expect(returned).toBe(true);
+    await expect(responded).resolves.toEqual({ result: { from: 'updateSettings' } });
+  });
+
+  it('ignores a message from another extension', () => {
+    const { returned, calls } = dispatch({ action: 'getConfigStore' }, {
+      id: 'some-other-extension',
+    } as chrome.runtime.MessageSender);
+
+    expect(returned).toBeUndefined();
+    expect(calls).toHaveLength(0);
+  });
+
+  it('serves the extension’s own pages', async () => {
+    const { returned, responded } = dispatch({ action: 'updateSettings' });
+    expect(returned).toBe(true);
+    await expect(responded).resolves.toEqual({ result: { from: 'updateSettings' } });
+  });
 });
 
 describe('Bg.handleMessage — id actions', () => {

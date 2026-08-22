@@ -5,13 +5,55 @@
 @use "variables" as *;
 @use "mixins" as *;
 
+// Shown when the initial background sync failed and startup could not finish
+.startup-error {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-color);
+
+  p {
+    margin: 0 0 12px;
+    color: var(--error-color);
+  }
+}
+
+// Fallback rendered when a dialog fails to load or throws while rendering.
+// It replaces the whole dialog (including its portal), so it has to look like
+// a modal on its own — it is the only way for the user to dismiss the entry.
+.dialog-error {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  margin: auto;
+  z-index: 2000;
+  width: 400px;
+  max-width: 90%;
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 $radius $radius;
+  border-top-width: 0;
+  padding: 16px;
+  text-align: center;
+
+  p {
+    margin: 0 0 12px;
+    color: var(--error-color);
+  }
+}
+
+// Modals must sit above context menus and dropdowns (both z-index 1000),
+// otherwise a right-click opens a menu straight over an open dialog.
+$z-dialog: 2000;
+
 .nf-notifi {
   position: fixed;
   right: 0;
   left: 0;
   top: 0;
   margin: auto;
-  z-index: 10;
+  z-index: $z-dialog;
   width: 400px;
   max-width: 90%;
   background-color: var(--card-bg);
@@ -445,9 +487,10 @@ div.loading {
       display: block;
       height: 100%;
       width: 6px;
-      margin-right: -3px;
+      // Logical: see _tables.scss — RTL put the handle on the wrong edge
+      margin-inline-end: -3px;
       cursor: col-resize;
-      right: 0;
+      inset-inline-end: 0;
       top: 0;
       position: absolute !important;
       opacity: 0;
@@ -456,7 +499,7 @@ div.loading {
 
     th:last-child .resize-el {
       width: 3px;
-      margin-right: 0;
+      margin-inline-end: 0;
     }
   }
 }
@@ -553,5 +596,15 @@ div.loading {
     &:hover {
       background-color: var(--primary-hover);
     }
+  }
+}
+
+// Inline error row inside the details dialog when the extended fetch failed
+.dialog-error-inline {
+  padding: 8px 12px;
+  color: var(--error-color);
+
+  button {
+    margin-inline-start: 8px;
   }
 }

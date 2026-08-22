@@ -8,8 +8,22 @@ const _zipDirectory = ({files = [], dirs = []}, zipFilePath, callback) => {
     zlib: { level: 9 }
   });
 
-  output.on('close', function() {
-    callback();
+  let settled = false;
+  const done = (err) => {
+    if (settled) return;
+    settled = true;
+    callback(err);
+  };
+
+  output.on('close', () => done());
+  // archiver reports missing files and permission problems as an 'error' EVENT,
+  // not through finalize()'s promise: with no listener Node rethrows it as an
+  // uncaught exception and a half-written archive is left on disk.
+  output.on('error', done);
+  zipArchive.on('error', done);
+  zipArchive.on('warning', (err) => {
+    // ENOENT on an entry means the archive would be incomplete
+    if (err && err.code === 'ENOENT') done(err);
   });
 
   zipArchive.pipe(output);
@@ -30,7 +44,7 @@ const _zipDirectory = ({files = [], dirs = []}, zipFilePath, callback) => {
     }
   });
 
-  Promise.resolve(zipArchive.finalize()).catch(callback);
+  Promise.resolve(zipArchive.finalize()).catch(done);
 };
 
 const zipDirectory = ({files, dirs}, zipFilePath) => {

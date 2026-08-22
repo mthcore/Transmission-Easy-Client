@@ -1,4 +1,6 @@
 import React, { ChangeEvent } from 'react';
+import stripBidiControls from '../../tools/stripBidiControls';
+import { observer } from 'mobx-react';
 import ProgressBar from '../ProgressBar';
 import type { FileEntry } from '../../types/stores';
 
@@ -67,7 +69,10 @@ interface FileNameProps {
   fileListStore: FileListStore;
 }
 
-const FileName = React.memo(({ fileStore, fileListStore }: FileNameProps) => {
+// observer, not a plain memo: this reads the observable fileListStore.filterLevel
+// while its props never change, so a memo alone left the breadcrumb frozen and
+// the folder drill-down (and its "←" back entry) never rendered
+const FileName = observer(({ fileStore, fileListStore }: FileNameProps) => {
   const handleSetFilter = React.useCallback(
     (level: number) => {
       let targetLevel = level;
@@ -88,25 +93,29 @@ const FileName = React.memo(({ fileStore, fileListStore }: FileNameProps) => {
     parts.push(nameParts[i]);
   }
 
-  const filename = parts.pop();
+  // File names are attacker-controlled: strip bidi overrides so a U+202E
+  // cannot spoof the displayed extension in the file list
+  const filename = stripBidiControls(parts.pop() ?? '');
   const links = parts.map((name, index) => (
+    // Key by depth: a path repeating a directory name ('Season 1/Season 1')
+    // produced duplicate sibling keys
     <FileNamePart
-      key={name}
+      key={`${filterLevel + index + 1}:${name}`}
       onSetFilter={handleSetFilter}
       level={filterLevel + index + 1}
-      name={name}
+      name={stripBidiControls(name)}
     />
   ));
 
   if (filterLevel > 0) {
     const name = '\u2190';
     links.unshift(
-      <FileNamePart key={name} onSetFilter={handleSetFilter} level={filterLevel} name={name} />
+      <FileNamePart key="__back__" onSetFilter={handleSetFilter} level={filterLevel} name={name} />
     );
   }
 
   return (
-    <div title={fileStore.shortName}>
+    <div title={stripBidiControls(fileStore.shortName)}>
       <span>
         {links}
         {filename}

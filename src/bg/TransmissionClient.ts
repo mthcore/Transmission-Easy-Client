@@ -1,4 +1,5 @@
 import TransmissionTransport from './TransmissionTransport';
+import type { TorrentId } from '../types';
 import type { TransmissionResponse } from './TransmissionTransport';
 import TorrentService, {
   type NormalizedTorrent,
@@ -12,7 +13,6 @@ import SettingsService, {
   type NormalizedSessionStats,
   type NormalizedBandwidthGroup,
 } from './SettingsService';
-import type { Folder } from '../types/bg';
 
 interface BgStore {
   config: {
@@ -21,16 +21,25 @@ interface BgStore {
     login: string;
     password: string;
     showDownloadCompleteNotifications: boolean;
+    needsTrackerStats: boolean;
   };
   client: {
-    activeTorrentIds: number[];
+    incompleteTorrentIds: number[];
+    downloadingCount: number;
     torrentIds: number[];
-    removeTorrentByIds: (ids: number[]) => void;
+    removeTorrentByIds: (ids: TorrentId[]) => void;
     syncChanges: (torrents: NormalizedTorrent[]) => void;
     sync: (torrents: NormalizedTorrent[]) => void;
-    torrents: Map<number, { stateText: string }>;
+    torrents: Map<
+      number,
+      { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
+    >;
     currentSpeed: { downloadSpeed: number; uploadSpeed: number };
-    speedRoll: { add: (download: number, upload: number) => void };
+    speedRoll: {
+      add: (download: number, upload: number) => void;
+      setData: (data: { download: number; upload: number; time: number }[]) => void;
+      data: { download: number; upload: number; time: number }[];
+    };
     setSettings: (settings: NormalizedSettings) => void;
   };
   flushClient: () => void;
@@ -72,6 +81,8 @@ class TransmissionClient {
       clientStore: bgStore.client,
       notifier: bg,
       getShowNotifications: () => bgStore.config.showDownloadCompleteNotifications,
+      // Only pay for trackerStats when a column that displays it is visible
+      getNeedsTrackerStats: () => bgStore.config.needsTrackerStats,
     });
 
     this.fileService = new FileService(this.transport);
@@ -103,75 +114,75 @@ class TransmissionClient {
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
     return this.ensureVersion().then(() => this.torrentService.updateTorrents(force));
   }
-  start(ids: number[]): Promise<TransmissionResponse> {
+  start(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.start(ids);
   }
-  forcestart(ids: number[]): Promise<TransmissionResponse> {
+  forcestart(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.forcestart(ids);
   }
-  stop(ids: number[]): Promise<TransmissionResponse> {
+  stop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.stop(ids);
   }
-  recheck(ids: number[]): Promise<TransmissionResponse> {
+  recheck(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.recheck(ids);
   }
-  removetorrent(ids: number[]): Promise<TransmissionResponse> {
+  removetorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.removetorrent(ids);
   }
-  removedatatorrent(ids: number[]): Promise<TransmissionResponse> {
+  removedatatorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.removedatatorrent(ids);
   }
-  rename(ids: number[], path: string, name: string): Promise<TransmissionResponse> {
+  rename(ids: TorrentId[], path: string, name: string): Promise<TransmissionResponse> {
     return this.torrentService.rename(ids, path, name);
   }
-  torrentSetLocation(ids: number[], location: string): Promise<TransmissionResponse> {
+  torrentSetLocation(ids: TorrentId[], location: string): Promise<TransmissionResponse> {
     return this.torrentService.torrentSetLocation(ids, location);
   }
-  setLabels(ids: number[], labels: string[]): Promise<TransmissionResponse> {
+  setLabels(ids: TorrentId[], labels: string[]): Promise<TransmissionResponse> {
     return this.torrentService.setLabels(ids, labels);
   }
-  setBandwidthPriority(ids: number[], priority: number): Promise<TransmissionResponse> {
+  setBandwidthPriority(ids: TorrentId[], priority: number): Promise<TransmissionResponse> {
     return this.torrentService.setBandwidthPriority(ids, priority);
   }
-  setSequentialDownload(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setSequentialDownload(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return this.torrentService.setSequentialDownload(ids, enabled);
   }
-  reannounce(ids: number[]): Promise<TransmissionResponse> {
+  reannounce(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.reannounce(ids);
   }
-  queueTop(ids: number[]): Promise<TransmissionResponse> {
+  queueTop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.queueTop(ids);
   }
-  queueUp(ids: number[]): Promise<TransmissionResponse> {
+  queueUp(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.queueUp(ids);
   }
-  queueDown(ids: number[]): Promise<TransmissionResponse> {
+  queueDown(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.queueDown(ids);
   }
-  queueBottom(ids: number[]): Promise<TransmissionResponse> {
+  queueBottom(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.torrentService.queueBottom(ids);
   }
-  sendFiles(urls: string[], directory?: Folder): Promise<TransmissionResponse> {
+  sendFiles(urls: string[], directory?: string): Promise<TransmissionResponse> {
     return this.torrentService.sendFiles(urls, directory);
   }
   putTorrent(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<void> {
     return this.torrentService.putTorrent(data, directory, options);
   }
-  getPeers(id: number): Promise<PeerData[]> {
+  getPeers(id: TorrentId): Promise<PeerData[]> {
     return this.torrentService.getPeers(id);
   }
-  getTorrentDetails(id: number): Promise<TorrentDetailData> {
+  getTorrentDetails(id: TorrentId): Promise<TorrentDetailData> {
     return this.torrentService.getTorrentDetails(id);
   }
-  setTrackerList(ids: number[], trackerList: string): Promise<TransmissionResponse> {
+  setTrackerList(ids: TorrentId[], trackerList: string): Promise<TransmissionResponse> {
     return this.torrentService.setTrackerList(ids, trackerList);
   }
   setSeedLimits(
-    ids: number[],
+    ids: TorrentId[],
     seedRatioMode: number,
     seedRatioLimit: number,
     seedIdleMode: number,
@@ -188,37 +199,37 @@ class TransmissionClient {
 
   // Per-torrent limits (torrent-set)
   setTorrentDownloadLimit(
-    ids: number[],
+    ids: TorrentId[],
     limit: number,
     enabled: boolean
   ): Promise<TransmissionResponse> {
     return this.torrentService.setDownloadLimit(ids, limit, enabled);
   }
   setTorrentUploadLimit(
-    ids: number[],
+    ids: TorrentId[],
     limit: number,
     enabled: boolean
   ): Promise<TransmissionResponse> {
     return this.torrentService.setUploadLimit(ids, limit, enabled);
   }
-  setTorrentHonorsSessionLimits(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setTorrentHonorsSessionLimits(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return this.torrentService.setHonorsSessionLimits(ids, enabled);
   }
-  setTorrentPeerLimit(ids: number[], limit: number): Promise<TransmissionResponse> {
+  setTorrentPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
     return this.torrentService.setPeerLimit(ids, limit);
   }
-  setTorrentQueuePosition(ids: number[], position: number): Promise<TransmissionResponse> {
+  setTorrentQueuePosition(ids: TorrentId[], position: number): Promise<TransmissionResponse> {
     return this.torrentService.setQueuePosition(ids, position);
   }
-  setTorrentGroup(ids: number[], group: string): Promise<TransmissionResponse> {
+  setTorrentGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return this.torrentService.setGroup(ids, group);
   }
 
   // File operations
-  getFileList(id: number): Promise<NormalizedFile[]> {
+  getFileList(id: TorrentId): Promise<NormalizedFile[]> {
     return this.fileService.getFileList(id);
   }
-  setPriority(id: number, level: number, idxs: number[]): Promise<unknown[]> {
+  setPriority(id: TorrentId, level: number, idxs: number[]): Promise<unknown[]> {
     return this.fileService.setPriority(id, level, idxs);
   }
 

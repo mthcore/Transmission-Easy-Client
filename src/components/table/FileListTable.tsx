@@ -5,6 +5,7 @@ import FileListTableItem from './FileListTableItem';
 import ColumnContextMenu from './ColumnContextMenu';
 import TableHeadColumnRenderer from './TableHeadColumnRenderer';
 import Interval from '../Interval';
+import VisiblePage from '../VisiblePage';
 import getLogger from '../../tools/getLogger';
 import useRootStore from '../../hooks/useRootStore';
 import { useScrollSync } from '../../hooks/useScrollSync';
@@ -53,11 +54,20 @@ const FileListTable = observer(() => {
     [fileListStore]
   );
 
-  const onIntervalFire = useCallback(() => {
-    fileListStore?.fetchFiles().catch((err) => {
-      logger.error('onIntervalFire fetchFiles error', err);
-    });
-  }, [fileListStore]);
+  const onIntervalFire = useCallback(
+    (isInit: boolean) => {
+      // Nothing about the file list can change while the torrent is stopped or
+      // finished, and refetching it costs the FULL path of every file each
+      // second — hundreds of KB/s on a large torrent, forever. The Refresh
+      // button stays available as the manual escape hatch.
+      const torrent = fileListStore?.torrent;
+      if (!isInit && torrent && (torrent.isStopped || torrent.isCompleted)) return;
+      fileListStore?.fetchFiles().catch((err) => {
+        logger.error('onIntervalFire fetchFiles error', err);
+      });
+    },
+    [fileListStore]
+  );
 
   if (!fileListStore || !config) return null;
 
@@ -90,7 +100,11 @@ const FileListTable = observer(() => {
     <>
       <div className="file-list-warpper">
         <div className="file-list">
-          <Interval interval={uiUpdateInterval} onFire={onIntervalFire} />
+          {/* Gated on visibility: a hidden tab kept refetching every file path
+              once a second for as long as the tab existed */}
+          <VisiblePage>
+            <Interval interval={uiUpdateInterval} onFire={onIntervalFire} />
+          </VisiblePage>
           <div onScroll={handleScroll} className="fl-layer" style={columnVars}>
             {spinner}
             <ColumnContextMenu

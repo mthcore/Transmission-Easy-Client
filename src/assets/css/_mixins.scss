@@ -5,6 +5,16 @@
 @use "sass:color";
 @use "variables" as *;
 
+// Keyboard focus ring. Every control that removes the UA outline MUST include
+// this, or keyboard users cannot tell what is focused — which on a destructive
+// confirm dialog means not knowing whether Enter says Yes or No.
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring, #2563eb);
+    outline-offset: 2px;
+  }
+}
+
 // Button base
 @mixin button-base {
   display: inline-flex;
@@ -14,6 +24,8 @@
   border: none;
   transition: all $transition-base;
   outline: none;
+
+  @include focus-ring;
 }
 
 // Icon button
@@ -42,6 +54,13 @@
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.15);
+
+  // The subtle halo above is invisible on both card backgrounds, so keyboard
+  // focus still needs a real ring (pointer clicks don't trigger :focus-visible)
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring, #2563eb);
+    outline-offset: 2px;
+  }
 }
 
 // Text ellipsis

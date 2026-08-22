@@ -12,7 +12,7 @@ function createClientStore() {
     sync: vi.fn(),
     torrents: new Map<number, { stateText: string }>(),
     currentSpeed: { downloadSpeed: 0, uploadSpeed: 0 },
-    speedRoll: { add: vi.fn() },
+    speedRoll: { add: vi.fn(), setData: vi.fn(), data: [] },
   };
 }
 
@@ -33,7 +33,9 @@ describe('TorrentService.sendFiles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Constructor reads the persisted notified-ids set from storage.
-    (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (chrome.storage.local.get as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (_query: unknown, cb?: (items: Record<string, unknown>) => void) => cb?.({})
+    );
 
     transport = {
       sendAction: vi.fn((query: { method: string }) => {
@@ -80,5 +82,33 @@ describe('TorrentService.sendFiles', () => {
     );
     expect(addCall).toBeUndefined();
     expect(notifier.torrentErrorNotify).toHaveBeenCalled();
+  });
+
+  it('sends the selected directory as download-dir (dialogs pass a plain path string)', async () => {
+    const magnet = 'magnet:?xt=urn:btih:ABCDEF1234567890ABCDEF1234567890ABCDEF12&dn=Test';
+
+    await service.sendFiles([magnet], '/mnt/media/films');
+
+    const addCall = transport.sendAction.mock.calls.find(
+      ([query]) => (query as { method: string }).method === 'torrent-add'
+    );
+    const addArgs = addCall?.[0] as { arguments: Record<string, unknown> } | undefined;
+    expect(addArgs?.arguments['download-dir']).toBe('/mnt/media/films');
+  });
+
+  it('notifies exactly once when the add fails', async () => {
+    transport.sendAction.mockImplementation((query: { method: string }) => {
+      if (query.method === 'torrent-add') {
+        const err = new Error('invalid or corrupt torrent file') as Error & { code: string };
+        err.code = 'TRANSMISSION_ERROR';
+        return Promise.reject(err);
+      }
+      return Promise.resolve({ result: 'success', arguments: { torrents: [] } });
+    });
+    const magnet = 'magnet:?xt=urn:btih:ABCDEF1234567890ABCDEF1234567890ABCDEF12&dn=Test';
+
+    await service.sendFiles([magnet]);
+
+    expect(notifier.torrentErrorNotify).toHaveBeenCalledTimes(1);
   });
 });

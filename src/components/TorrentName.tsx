@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { ANIMATION_TIME_MULTIPLIER } from '../constants';
+import stripBidiControls from '../tools/stripBidiControls';
 
 interface StyleCacheEntry {
   style: HTMLStyleElement;
@@ -45,12 +46,16 @@ interface TorrentNameProps {
   title?: string;
 }
 
-const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
+const TorrentName = React.memo<TorrentNameProps>(({ name: rawName, width, title }) => {
+  // Torrent names are attacker-controlled: a U+202E override in the name
+  // spoofs the displayed file extension (.exe rendered as .png)
+  const name = stripBidiControls(rawName);
   const [movebleClassName, setMovebleClassName] = useState<string | null>(null);
   const [shouldUpdateCalc, setShouldUpdateCalc] = useState(true);
   const refSpan = useRef<HTMLSpanElement>(null);
   const prevNameRef = useRef(name);
   const prevWidthRef = useRef(width);
+  const acquiredClassRef = useRef<string | null>(null);
 
   // Reset calculation flag when name or width changes
   useEffect(() => {
@@ -61,17 +66,21 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
     }
   }, [name, width]);
 
-  // Cleanup on unmount
+  // Releases the previous class when it changes, and on unmount. This is the
+  // ONLY release path: releasing in the handler too double-decremented the
+  // shared refcount and deleted a <style> other rows were still using.
   useEffect(() => {
     return () => releaseStyle(movebleClassName);
   }, [movebleClassName]);
 
   const handleMouseEnter = useCallback(() => {
     setShouldUpdateCalc(false);
-    releaseStyle(movebleClassName);
 
     const spanWidth = refSpan.current?.offsetWidth || 0;
     if (spanWidth < width) {
+      // Clear the guard too: the effect cleanup is about to release this class,
+      // so leaving the ref set would block ever re-acquiring it
+      acquiredClassRef.current = null;
       setMovebleClassName(null);
       return;
     }
@@ -81,9 +90,13 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
     if (elWidth < 100) elWidth = 100;
 
     const moveName = `mv_${width}_${elWidth}`;
+    // Acquire once per distinct class: re-hovering the same bucket would
+    // otherwise bump the refcount with no matching release
+    if (moveName === acquiredClassRef.current) return;
     getOrCreateStyle(moveName, width, elWidth);
+    acquiredClassRef.current = moveName;
     setMovebleClassName(moveName);
-  }, [width, movebleClassName]);
+  }, [width]);
 
   const classList = ['title'];
   if (!shouldUpdateCalc && movebleClassName) {
@@ -95,7 +108,7 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
       <span
         ref={refSpan}
         onMouseEnter={shouldUpdateCalc ? handleMouseEnter : undefined}
-        title={title ?? name}
+        title={title ? stripBidiControls(title) : name}
       >
         {name}
       </span>

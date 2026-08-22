@@ -1,22 +1,28 @@
 import getLogger from '../tools/getLogger';
+import type { TorrentId } from '../types';
 import readBlobAsArrayBuffer from '../tools/readBlobAsArrayBuffer';
 import { arrayBufferToBase64 } from '../tools/binaryConversion';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
 import { parseTransmissionResponse } from '../tools/safeJsonParse';
-import { assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
+import { storageGet, storageSet, storageRemove } from '../tools/chromeStorage';
+import {
+  assertRpcVersion,
+  RPC_VERSION_3,
+  RPC_VERSION_4,
+  RPC_VERSION_4_1,
+} from '../tools/rpcCompat';
 import { RECENTLY_ACTIVE_THRESHOLD } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 import type { TransmissionResponse } from './TransmissionTransport';
-import type { Folder } from '../types/bg';
 import type { BandwidthPriority } from '../types/transmission';
 
 const logger = getLogger('TorrentService');
 
-/** Order-insensitive comparison of the completed-torrent id sets */
-function sameIdSet(a: number[] | null, b: number[]): boolean {
+/** Order-insensitive set comparison, used to skip redundant storage writes */
+function sameIdSet<T>(a: T[] | null, b: T[]): boolean {
   if (a === null || a.length !== b.length) return false;
   const set = new Set(a);
-  return b.every((id) => set.has(id));
+  return b.every((item) => set.has(item));
 }
 
 export interface PeerData {
@@ -134,15 +140,52 @@ export interface NormalizedTorrent {
 }
 
 interface TorrentStore {
-  activeTorrentIds: number[];
+  incompleteTorrentIds: number[];
   torrentIds: number[];
-  removeTorrentByIds: (ids: number[]) => void;
+  removeTorrentByIds: (ids: TorrentId[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
-  torrents: Map<number, { stateText: string }>;
+  torrents: Map<
+    number,
+    { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
+  >;
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
-  speedRoll: { add: (download: number, upload: number) => void };
+  speedRoll: {
+    add: (download: number, upload: number) => void;
+    setData: (data: { download: number; upload: number; time: number }[]) => void;
+    data: { download: number; upload: number; time: number }[];
+  };
 }
+
+/**
+ * Completion-notification bookkeeping, persisted across service-worker
+ * restarts. Keyed by hashString (Transmission's numeric ids are unique only
+ * within one daemon session) and scoped to one server, so switching servers or
+ * restarting the daemon can't produce a burst of bogus "complete" toasts.
+ */
+interface NotifiedState {
+  url: string;
+  /** Hashes already notified as complete */
+  completed: string[];
+  /** Every hash present on the previous poll, to spot first sightings */
+  known: string[];
+}
+
+const NOTIFIED_STORAGE_KEY = '_notifiedState';
+
+/**
+ * How recently a torrent must have finished for a first-sighting completion to
+ * be announced (seconds). Wide enough to cover a background poll gap and a
+ * service-worker restart, short enough that a browser reopened the next day
+ * doesn't replay every completion that happened meanwhile.
+ */
+const COMPLETION_NOTIFY_WINDOW = 15 * 60;
+
+/** Session-scoped, so the recently-active window survives an SW restart */
+const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
+
+/** Session-scoped speed-graph history, restored after an SW restart */
+const SPEED_ROLL_STORAGE_KEY = '_speedRoll';
 
 interface TorrentNotifier {
   torrentCompleteNotify: (torrent: { stateText: string }) => void;
@@ -156,6 +199,8 @@ interface TorrentServiceOptions {
   clientStore: TorrentStore;
   notifier: TorrentNotifier;
   getShowNotifications: () => boolean;
+  /** Whether any visible column needs the (very heavy) trackerStats field */
+  getNeedsTrackerStats?: () => boolean;
 }
 
 class TorrentService {
@@ -163,35 +208,125 @@ class TorrentService {
   private clientStore: TorrentStore;
   private notifier: TorrentNotifier;
   private getShowNotifications: () => boolean;
+  private getNeedsTrackerStats: () => boolean;
   private torrentsResponseTime: number;
-  private _notifiedIdsPromise: Promise<number[] | null>;
+  private _notifiedStatePromise: Promise<NotifiedState | null>;
+  private _inFlightUpdate: Promise<TransmissionResponse> | null = null;
+  /** Monotonic request counter, so out-of-order responses can be dropped */
+  private _requestSeq = 0;
+  private _lastAppliedSeq = 0;
+  /** Detects a change in the requested field set (Seeds/Peers column toggle) */
+  private _lastNeedsTrackerStats = false;
 
   constructor(options: TorrentServiceOptions) {
     this.transport = options.transport;
     this.clientStore = options.clientStore;
     this.notifier = options.notifier;
     this.getShowNotifications = options.getShowNotifications;
+    this.getNeedsTrackerStats = options.getNeedsTrackerStats ?? (() => false);
     this.torrentsResponseTime = 0;
 
-    this._notifiedIdsPromise = chrome.storage.local
-      .get('_notifiedIds')
-      .then((data) => (data._notifiedIds as number[] | undefined) ?? null);
-    chrome.storage.local.remove('_activeIds');
+    // Restore the recently-active window across service-worker restarts. The
+    // MV3 worker is killed after ~30s idle, so an instance-only value meant the
+    // 2-minute background poll ALWAYS refetched the full list.
+    storageGet<Record<string, number | undefined>>(RESPONSE_TIME_STORAGE_KEY, 'session')
+      .then((data) => {
+        const stored = data[RESPONSE_TIME_STORAGE_KEY];
+        if (typeof stored === 'number' && stored > this.torrentsResponseTime) {
+          this.torrentsResponseTime = stored;
+        }
+      })
+      .catch(() => {});
+
+    // Restore the speed-graph history the previous worker generation collected
+    storageGet<Record<string, { download: number; upload: number; time: number }[] | undefined>>(
+      SPEED_ROLL_STORAGE_KEY,
+      'session'
+    )
+      .then((data) => {
+        const stored = data[SPEED_ROLL_STORAGE_KEY];
+        // Only seed an empty roll: live samples beat a stale snapshot
+        if (Array.isArray(stored) && stored.length && !this.clientStore.speedRoll.data.length) {
+          this.clientStore.speedRoll.setData(stored);
+        }
+      })
+      .catch(() => {});
+
+    // A failed read must not poison every later poll — null just skips
+    // completion notifications for the first cycle. Callback-based helper:
+    // chrome.* returns no promise on Firefox.
+    this._notifiedStatePromise = storageGet<Record<string, NotifiedState | undefined>>(
+      NOTIFIED_STORAGE_KEY
+    )
+      .then((data) => data[NOTIFIED_STORAGE_KEY] ?? null)
+      .catch(() => null);
+    // Drop the pre-3.5 id-keyed sets: ids are session-scoped, so they could
+    // only ever produce wrong notifications
+    storageRemove(['_activeIds', '_notifiedIds']).catch(() => {});
   }
 
   resetResponseTime(): void {
     this.torrentsResponseTime = 0;
+    storageRemove(RESPONSE_TIME_STORAGE_KEY, 'session').catch(() => {});
   }
 
+  /**
+   * Refresh chained after a mutating action. It needs a request issued AFTER
+   * the action (a shared in-flight poll could predate it), but not a full list:
+   * 'recently-active' returns every torrent the action touched plus a `removed`
+   * list, which is what makes a full fetch per action unnecessary — that costs
+   * megabytes on a large library and they stack when several actions run.
+   */
   private thenUpdateTorrents = <T>(result: T): Promise<T> => {
-    return this.updateTorrents().then(() => result);
+    return this.requestTorrents({ full: false, reuseInFlight: false }).then(() => result);
   };
 
+  /**
+   * `force` means the user explicitly asked for a refresh: a fresh request AND
+   * a full list, so a drifted list can always be repaired.
+   *
+   * Periodic polls (1s UI Interval, background alarm) coalesce, since they are
+   * interchangeable and pile up on a slow daemon.
+   */
   updateTorrents(force?: boolean): Promise<TransmissionResponse> {
+    return this.requestTorrents({ full: !!force, reuseInFlight: !force });
+  }
+
+  private requestTorrents(options: {
+    full: boolean;
+    reuseInFlight: boolean;
+  }): Promise<TransmissionResponse> {
+    if (options.reuseInFlight && this._inFlightUpdate) {
+      return this._inFlightUpdate;
+    }
+    const promise = this.doUpdateTorrents(options.full).finally(() => {
+      if (this._inFlightUpdate === promise) {
+        this._inFlightUpdate = null;
+      }
+    });
+    if (options.reuseInFlight) {
+      this._inFlightUpdate = promise;
+    }
+    return promise;
+  }
+
+  private doUpdateTorrents(full?: boolean): Promise<TransmissionResponse> {
     const now = Math.trunc(Date.now() / 1000);
+    // Requests can overlap and answer out of order; an older response must
+    // never be applied on top of a newer one, or it resurrects torrents the
+    // user just removed.
+    const requestSeq = ++this._requestSeq;
+
+    // Toggling the Seeds/Peers column changes WHICH fields we ask for, and a
+    // recently-active delta only refreshes active torrents: without one full
+    // fetch, every idle torrent showed 0 seeds forever after enabling the
+    // column (the earlier polls wrote 0 because the field wasn't requested)
+    const needsTrackerStats = this.getNeedsTrackerStats();
+    const fieldsChanged = needsTrackerStats !== this._lastNeedsTrackerStats;
+    this._lastNeedsTrackerStats = needsTrackerStats;
 
     let isRecently = false;
-    if (!force && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
+    if (!full && !fieldsChanged && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
       isRecently = true;
     }
 
@@ -220,8 +355,6 @@ class TorrentService {
       'status',
       'error',
       'errorString',
-      'trackerStats',
-      'magnetLink',
       'uploadRatio',
       'hashString',
       'isStalled',
@@ -232,6 +365,14 @@ class TorrentService {
       'labels',
       'bandwidthPriority',
     ];
+    // trackerStats is by far the heaviest field (Transmission returns ~25
+    // subfields per tracker) and only feeds the seeds/peers columns, which are
+    // hidden by default. magnetLink is another ~0.5-2KB per torrent and is read
+    // once per session at most — the copy-magnet action rebuilds it from the
+    // hash. Fetching both on every poll cost a multi-GB/day idle transfer.
+    if (needsTrackerStats) {
+      listFields.push('trackerStats');
+    }
     if (this.transport.rpcVersion >= RPC_VERSION_4_1) {
       listFields.push('sequential_download');
     }
@@ -247,9 +388,21 @@ class TorrentService {
       parseTransmissionResponse
     );
 
-    return Promise.all([requestPromise, this._notifiedIdsPromise]).then(
-      ([response, previousNotifiedIds]) => {
-        this.torrentsResponseTime = now;
+    // The notified state is read when the RESPONSE lands, not when the request
+    // is issued: two overlapping polls would otherwise compute completions from
+    // the same stale baseline and both notify.
+    return requestPromise.then((response) =>
+      this._notifiedStatePromise.then((previousState) => {
+        // A response older than one already applied carries a pre-action view
+        // of the list: applying it would undo what the user just did
+        if (requestSeq < this._lastAppliedSeq) {
+          return response;
+        }
+        this._lastAppliedSeq = requestSeq;
+        if (now > this.torrentsResponseTime) {
+          this.torrentsResponseTime = now;
+          storageSet({ [RESPONSE_TIME_STORAGE_KEY]: now }, 'session').catch(() => {});
+        }
 
         if (isRecently) {
           const { removed, torrents } = response.arguments as {
@@ -264,120 +417,196 @@ class TorrentService {
           this.clientStore.sync(torrents.map(this.normalizeTorrent));
         }
 
-        // Completion detection via persisted notified set
-        const activeSet = new Set(this.clientStore.activeTorrentIds);
-        const completedIds = this.clientStore.torrentIds.filter((id) => !activeSet.has(id));
+        // Completion detection, keyed by hashString and scoped to this server.
+        // Skipped entirely when notifications are off: the census walks every
+        // torrent and allocates a hash list the size of the whole library.
+        if (!this.getShowNotifications()) {
+          const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
+          this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
+          this.persistSpeedRoll();
+          return response;
+        }
+        const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
+        const knownHashes: string[] = [];
+        const completedHashes: string[] = [];
+        const completedTorrents: {
+          hash: string;
+          torrent: { stateText: string; downloaded?: number; completedTime?: number };
+        }[] = [];
+        for (const id of this.clientStore.torrentIds) {
+          const torrent = this.clientStore.torrents.get(id);
+          const hash = torrent?.hashString;
+          if (!torrent || !hash) continue;
+          knownHashes.push(hash);
+          if (!incompleteIds.has(id)) {
+            completedHashes.push(hash);
+            completedTorrents.push({ hash, torrent });
+          }
+        }
 
-        if (this.getShowNotifications() && previousNotifiedIds !== null) {
-          const notifiedSet = new Set(previousNotifiedIds);
-          for (const id of completedIds) {
-            if (!notifiedSet.has(id)) {
-              const torrent = this.clientStore.torrents.get(id);
-              if (torrent) {
-                this.notifier.torrentCompleteNotify(torrent);
-              }
+        // A different server (or no state yet) means nothing here was ever
+        // "just completed" — stay silent for one cycle instead of announcing
+        // every finished torrent the other daemon holds
+        const sameServer = previousState !== null && previousState.url === this.transport.url;
+        if (sameServer) {
+          const alreadyNotified = new Set(previousState.completed);
+          const seenBefore = new Set(previousState.known);
+          for (const { hash, torrent } of completedTorrents) {
+            if (alreadyNotified.has(hash)) continue;
+            if (seenBefore.has(hash)) {
+              // Watched it finish: always worth announcing
+              this.notifier.torrentCompleteNotify(torrent);
+              continue;
+            }
+            // Never seen before, yet already complete. That is either a torrent
+            // added and finished between two polls (worth announcing) or one
+            // that finished long ago — while the browser was closed, or added
+            // for data already on disk. downloadedEver rules out the latter,
+            // completedTime rules out the former; without both we stay silent.
+            const downloadedSomething = (torrent.downloaded ?? 0) > 0;
+            const completedRecently =
+              typeof torrent.completedTime === 'number' &&
+              torrent.completedTime > 0 &&
+              now - torrent.completedTime < COMPLETION_NOTIFY_WINDOW;
+            if (downloadedSomething && completedRecently) {
+              this.notifier.torrentCompleteNotify(torrent);
             }
           }
         }
 
-        // Only persist when the completed set actually changed: this runs on
-        // every poll cycle
-        if (!sameIdSet(previousNotifiedIds, completedIds)) {
-          chrome.storage.local.set({ _notifiedIds: completedIds });
+        // Keep hashes already notified while their torrent is still listed, so
+        // a re-check that dips below 100% doesn't re-notify on the way back up
+        const presentHashes = new Set(knownHashes);
+        const persistedCompleted = sameServer
+          ? Array.from(
+              new Set([
+                ...previousState.completed.filter((hash) => presentHashes.has(hash)),
+                ...completedHashes,
+              ])
+            )
+          : completedHashes;
+        const nextState: NotifiedState = {
+          url: this.transport.url,
+          completed: persistedCompleted,
+          known: knownHashes,
+        };
+
+        if (
+          !sameServer ||
+          !sameIdSet(previousState.completed, persistedCompleted) ||
+          !sameIdSet(previousState.known, knownHashes)
+        ) {
+          storageSet({ [NOTIFIED_STORAGE_KEY]: nextState }).catch(() => {});
         }
-        this._notifiedIdsPromise = Promise.resolve(completedIds);
+        this._notifiedStatePromise = Promise.resolve(nextState);
 
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
+        this.persistSpeedRoll();
 
         return response;
-      }
+      })
     );
   }
 
-  start(ids: number[]): Promise<TransmissionResponse> {
+  /**
+   * The speed graph's history lived only in service-worker memory, which MV3
+   * discards after ~30s idle — so the graph restarted empty on every popup
+   * open. Session storage matches its lifetime (gone on browser restart).
+   */
+  private persistSpeedRoll(): void {
+    const data = this.clientStore.speedRoll.data;
+    storageSet({ [SPEED_ROLL_STORAGE_KEY]: data.map((p) => ({ ...p })) }, 'session').catch(
+      () => {}
+    );
+  }
+
+  start(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-start', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  forcestart(ids: number[]): Promise<TransmissionResponse> {
+  forcestart(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-start-now', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  stop(ids: number[]): Promise<TransmissionResponse> {
+  stop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-stop', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  recheck(ids: number[]): Promise<TransmissionResponse> {
+  recheck(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-verify', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  removetorrent(ids: number[]): Promise<TransmissionResponse> {
+  removetorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-remove', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  removedatatorrent(ids: number[]): Promise<TransmissionResponse> {
+  removedatatorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-remove', arguments: { ids, 'delete-local-data': true } })
       .then(this.thenUpdateTorrents);
   }
 
-  rename(ids: number[], path: string, name: string): Promise<TransmissionResponse> {
+  rename(ids: TorrentId[], path: string, name: string): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-rename-path', arguments: { ids, path, name } })
       .then(this.thenUpdateTorrents);
   }
 
-  torrentSetLocation(ids: number[], location: string): Promise<TransmissionResponse> {
+  torrentSetLocation(ids: TorrentId[], location: string): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-set-location', arguments: { ids, location, move: true } })
       .then(this.thenUpdateTorrents);
   }
 
-  setLabels(ids: number[], labels: string[]): Promise<TransmissionResponse> {
+  setLabels(ids: TorrentId[], labels: string[]): Promise<TransmissionResponse> {
+    // Labels landed in RPC 16 (Transmission 3.00); older daemons answer
+    // 'success' while silently ignoring the argument
+    assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_3, 'Labels');
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, labels } })
       .then(this.thenUpdateTorrents);
   }
 
-  setBandwidthPriority(ids: number[], priority: number): Promise<TransmissionResponse> {
+  setBandwidthPriority(ids: TorrentId[], priority: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, bandwidthPriority: priority } })
       .then(this.thenUpdateTorrents);
   }
 
-  reannounce(ids: number[]): Promise<TransmissionResponse> {
+  reannounce(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport.sendAction({ method: 'torrent-reannounce', arguments: { ids } });
   }
 
-  queueTop(ids: number[]): Promise<TransmissionResponse> {
+  queueTop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-top', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueUp(ids: number[]): Promise<TransmissionResponse> {
+  queueUp(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-up', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueDown(ids: number[]): Promise<TransmissionResponse> {
+  queueDown(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-down', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueBottom(ids: number[]): Promise<TransmissionResponse> {
+  queueBottom(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-bottom', arguments: { ids } })
       .then(this.thenUpdateTorrents);
@@ -385,7 +614,7 @@ class TorrentService {
 
   sendFile(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<TransmissionResponse> {
     const transport = this.transport;
@@ -396,7 +625,8 @@ class TorrentService {
             applyOptions({
               method: 'torrent-add',
               arguments: { filename: data.url },
-            })
+            }),
+            parseTransmissionResponse
           );
         } else if (data.blob) {
           return readBlobAsArrayBuffer(data.blob)
@@ -406,7 +636,8 @@ class TorrentService {
                 applyOptions({
                   method: 'torrent-add',
                   arguments: { metainfo: base64 },
-                })
+                }),
+                parseTransmissionResponse
               );
             });
         } else {
@@ -427,7 +658,7 @@ class TorrentService {
       arguments: Record<string, unknown>;
     } {
       if (directory) {
-        query.arguments['download-dir'] = directory.path;
+        query.arguments['download-dir'] = directory;
       }
       if (options) {
         if (options.paused !== undefined) query.arguments['paused'] = options.paused;
@@ -453,33 +684,25 @@ class TorrentService {
 
   putTorrent(
     data: { blob?: Blob; url?: string },
-    directory?: Folder,
+    directory?: string,
     options?: TorrentAddOptions
   ): Promise<void> {
-    return this.sendFile(data, directory, options).then(
-      (response) => {
-        const args = response.arguments as Record<string, { id: number; name: string } | undefined>;
-        const torrentAdded = args['torrent_added'] ?? args['torrent-added'];
-        const torrentDuplicate = args['torrent_duplicate'] ?? args['torrent-duplicate'];
-        if (torrentAdded) {
-          this.notifier.torrentAddedNotify(torrentAdded);
-        }
-        if (torrentDuplicate) {
-          this.notifier.torrentIsExistsNotify(torrentDuplicate);
-        }
-      },
-      (err) => {
-        if (err.code === 'TRANSMISSION_ERROR') {
-          this.notifier.torrentErrorNotify(err.message);
-        } else {
-          this.notifier.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
-        }
-        throw err;
+    // Failure notification is owned by sendFile's catch — no handler here,
+    // or every failed add would notify twice
+    return this.sendFile(data, directory, options).then((response) => {
+      const args = response.arguments as Record<string, { id: number; name: string } | undefined>;
+      const torrentAdded = args['torrent_added'] ?? args['torrent-added'];
+      const torrentDuplicate = args['torrent_duplicate'] ?? args['torrent-duplicate'];
+      if (torrentAdded) {
+        this.notifier.torrentAddedNotify(torrentAdded);
       }
-    );
+      if (torrentDuplicate) {
+        this.notifier.torrentIsExistsNotify(torrentDuplicate);
+      }
+    });
   }
 
-  sendFiles(urls: string[], directory?: Folder): Promise<TransmissionResponse> {
+  sendFiles(urls: string[], directory?: string): Promise<TransmissionResponse> {
     return Promise.all(
       urls.map((url) => {
         return downloadFileFromUrl(url)
@@ -515,15 +738,18 @@ class TorrentService {
     ).then(() => this.thenUpdateTorrents({} as TransmissionResponse));
   }
 
-  getPeers(id: number): Promise<PeerData[]> {
+  getPeers(id: TorrentId): Promise<PeerData[]> {
     return this.transport
-      .sendAction({
-        method: 'torrent-get',
-        arguments: {
-          fields: ['id', 'peers'],
-          ids: [id],
+      .sendAction(
+        {
+          method: 'torrent-get',
+          arguments: {
+            fields: ['id', 'peers'],
+            ids: [id],
+          },
         },
-      })
+        parseTransmissionResponse
+      )
       .then((response) => {
         type RawPeer = {
           address: string;
@@ -554,7 +780,7 @@ class TorrentService {
       });
   }
 
-  getTorrentDetails(id: number): Promise<TorrentDetailData> {
+  getTorrentDetails(id: TorrentId): Promise<TorrentDetailData> {
     const detailFields = [
       'id',
       'comment',
@@ -680,7 +906,11 @@ class TorrentService {
       });
   }
 
-  setDownloadLimit(ids: number[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
+  setDownloadLimit(
+    ids: TorrentId[],
+    limit: number,
+    enabled: boolean
+  ): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -689,7 +919,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setUploadLimit(ids: number[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
+  setUploadLimit(ids: TorrentId[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -698,7 +928,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setHonorsSessionLimits(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setHonorsSessionLimits(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -707,7 +937,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setPeerLimit(ids: number[], limit: number): Promise<TransmissionResponse> {
+  setPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -716,7 +946,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setQueuePosition(ids: number[], position: number): Promise<TransmissionResponse> {
+  setQueuePosition(ids: TorrentId[], position: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -725,7 +955,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setGroup(ids: number[], group: string): Promise<TransmissionResponse> {
+  setGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return Promise.resolve()
       .then(() => assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'torrent-set group'))
       .then(() =>
@@ -737,7 +967,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setSequentialDownload(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setSequentialDownload(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return Promise.resolve()
       .then(() =>
         assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4_1, 'sequential download')
@@ -751,14 +981,17 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setTrackerList(ids: number[], trackerList: string): Promise<TransmissionResponse> {
+  setTrackerList(ids: TorrentId[], trackerList: string): Promise<TransmissionResponse> {
+    // trackerList replaced trackerAdd/Remove/Replace in RPC 17; older daemons
+    // ignore it silently, so fail loudly like every other 4.x-only path
+    assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'Editing the tracker list');
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, trackerList } })
       .then(this.thenUpdateTorrents);
   }
 
   setSeedLimits(
-    ids: number[],
+    ids: TorrentId[],
     seedRatioMode: number,
     seedRatioLimit: number,
     seedIdleMode: number,
@@ -785,7 +1018,10 @@ class TorrentService {
     const downloaded = torrent.downloadedEver as number;
     const uploaded = torrent.uploadedEver as number;
     const uploadRatio = torrent.uploadRatio as number;
-    const shared = uploadRatio >= 0 ? Math.round(uploadRatio * 1000) : 0;
+    // Transmission sentinels: -1 = not applicable, -2 = infinite (seeded
+    // without downloading). Mapping -2 to 0 showed the best seeders as the
+    // worst ratio; keep it as a sentinel the UI can render as ∞.
+    const shared = uploadRatio >= 0 ? Math.round(uploadRatio * 1000) : uploadRatio === -2 ? -2 : 0;
     const uploadSpeed = torrent.rateUpload as number;
     const downloadSpeed = torrent.rateDownload as number;
     // Preserve sentinels: -1 = not available/infinite, -2 = unknown
@@ -799,12 +1035,14 @@ class TorrentService {
     const trackerStats = torrent.trackerStats as
       Array<{ leecherCount: number; seederCount: number }> | undefined;
     if (Array.isArray(trackerStats)) {
+      // Every tracker scrapes the SAME swarm, so summing multiplied the counts
+      // by the number of working trackers — the best estimate is the max
       trackerStats.forEach((tracker) => {
-        if (tracker.leecherCount > 0) {
-          _peers += tracker.leecherCount;
+        if (tracker.leecherCount > _peers) {
+          _peers = tracker.leecherCount;
         }
-        if (tracker.seederCount > 0) {
-          _seeds += tracker.seederCount;
+        if (tracker.seederCount > _seeds) {
+          _seeds = tracker.seederCount;
         }
       });
     }

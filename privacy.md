@@ -1,6 +1,6 @@
 # Privacy Policy - Transmission Extension
 
-**Last updated: January 2026**
+**Last updated: August 2026**
 
 ## Data Collection
 This extension does NOT collect, store, or transmit any personal data.
@@ -15,8 +15,22 @@ login and password — are stored in your browser account's sync storage
 the same page.
 
 ## Network Requests
-The extension only communicates with YOUR Transmission server at the address you configure. 
-No data is sent to third parties.
+The extension talks to YOUR Transmission server at the address you configure. Your
+credentials are only ever sent there.
+
+It also makes requests to other sites in exactly two cases, both started by you:
+
+- **Adding a torrent from a link.** When you use "Add in torrent client" from the
+  right-click menu, or paste a URL in the add dialog, the extension downloads that
+  `.torrent` file from the site it points to and forwards it to your server. To read
+  links on pages that require your session (private trackers), it runs a small script
+  in the current tab to perform that download; the script only fetches the URL you
+  clicked and returns the file. This is why the extension requests access to websites.
+- **No analytics, telemetry or third-party services.** Nothing is sent anywhere else,
+  and no browsing data is collected, stored or shared.
+
+Requests are not followed onto private/local network addresses (for example
+`127.0.0.1` or `192.168.x.x`) via redirects, and downloads are size-limited.
 
 ## Contact
 For questions, open an issue on GitHub.

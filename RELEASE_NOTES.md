@@ -1,5 +1,68 @@
 # Release Notes - Transmission Easy Client
 
+## Version 3.4.0 (August 2026)
+
+**Deep audit: three review passes, ~150 verified bug fixes.** Every finding was
+traced end to end before being fixed, and covered by a test that fails without
+the fix.
+
+- **Firefox works again** - the Firefox build declared a background type Firefox
+  has never supported, so the add-on could not even be installed; several
+  internal calls also used a browser API form that Firefox does not provide,
+  which left the extension inert. The published packages were malformed on all
+  three stores as well
+- **Add-torrent fix** - the folder selected in the add-by-URL and drop-files
+  dialogs was silently ignored; torrents landed in the daemon's default
+  directory. The chosen folder is now honored on every add path
+- **Deleting a torrent is safe** - the confirmation dialog put keyboard focus on
+  "Yes" instead of "No", so a reflex Enter could delete a torrent and its data
+- **Security** - the Basic-auth header could be injected into every request on
+  the server's origin (leaking Transmission credentials to other applications
+  behind the same reverse proxy); rules are now scoped to the Transmission
+  paths only. Requests are no longer followed onto private/local addresses via
+  redirects, downloads are size-limited while they stream, and the background
+  only answers this extension's own pages
+- **Correct torrent after a daemon restart** - Transmission reuses torrent ids
+  between sessions; the selection and open dialogs could end up pointing at a
+  different torrent than the one displayed
+- **Notifications** - completion notices are no longer missed for torrents that
+  finish between two checks, no burst of bogus notices after switching servers
+  or restarting the daemon, no repeat after a data verification, and clicking a
+  notification opens the extension
+- **Speed limits** - the speed menu no longer offers a "0" entry that froze all
+  transfers, and every limit is displayed with Transmission's own unit (a
+  512 KB/s limit showed as 524.29 kB/s)
+- **Values shown correctly** - remaining bytes, infinite share ratio, seeds and
+  peers (they were multiplied by the number of trackers), per-file progress,
+  session totals, and the active/paused counts
+- **Tables** - the file-list folder navigation works again, six columns can be
+  resized, the seeds/peers column actually sorts, names sort case-insensitively
+  and missing values always sort last
+- **Cloud backup** - saves no longer destroy the existing copy, two machines
+  syncing at once can't mix their backups, and failures are shown instead of
+  passing silently
+- **Options** - a seed ratio of 0 can be saved, alt-speed days no longer
+  un-check each other, the Server tab refreshes instead of showing stale values,
+  failed changes are reported, typing an interval no longer hammers the daemon,
+  and opening the badge colour picker no longer changes the badge
+- **Network reliability** - timeouts now cover the whole response, operations
+  that could be applied twice are never retried, slow .torrent downloads are no
+  longer cut off, and the interface no longer reports failure for operations
+  that actually succeed
+- **Recovery** - a failed startup offers a retry instead of a blank screen, and
+  the free-space indicator no longer sticks on "Loading…"
+- **Appearance and accessibility** - keyboard focus is visible everywhere,
+  dialogs stay above menus, dark mode is readable (no more white flash on
+  refresh, unreadable folder chips or progress labels), Hebrew is laid out
+  right-to-left, and the "reduce motion" system setting is respected
+- **Upgrades from very old versions** restore two settings that were silently
+  dropped ("notify on completion" and "hide finished")
+- **490 tests** (up from 418)
+
+## Version 3.3.1 (August 2026)
+
+- Fix backup on Cloud.
+
 ## Version 3.3.0 (August 2026)
 
 **Transmission 4.x support & security hardening.** A full audit pass covering

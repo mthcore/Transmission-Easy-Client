@@ -37,14 +37,25 @@ function createTorrent(overrides: Partial<Record<string, unknown>> = {}) {
 
 describe('TorrentStore computed views', () => {
   describe('remaining / remainingStr', () => {
-    it('calculates remaining bytes', () => {
-      const t = createTorrent({ size: 1000, downloaded: 700 });
+    it('derives remaining bytes from percentDone', () => {
+      const t = createTorrent({ size: 1000, sizeWhenDone: 1000, percentDone: 0.7 });
       expect(t.remaining).toBe(300);
     });
 
-    it('returns 0 when downloaded exceeds size', () => {
-      const t = createTorrent({ size: 1000, downloaded: 1200 });
+    it('returns 0 for a complete torrent seeded from existing data', () => {
+      // downloadedEver is 0 here: deriving from it reported the whole size
+      const t = createTorrent({ size: 1000, sizeWhenDone: 1000, percentDone: 1, downloaded: 0 });
       expect(t.remaining).toBe(0);
+    });
+
+    it('ignores lifetime downloadedEver overshoot on a re-download', () => {
+      const t = createTorrent({
+        size: 1000,
+        sizeWhenDone: 1000,
+        percentDone: 0.5,
+        downloaded: 1800,
+      });
+      expect(t.remaining).toBe(500);
     });
   });
 
@@ -66,9 +77,19 @@ describe('TorrentStore computed views', () => {
       expect(t.progress).toBe(500);
     });
 
-    it('uses recheckProgress when set', () => {
-      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3 });
+    it('uses recheckProgress while the torrent is checking', () => {
+      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3, statusCode: 2 });
       expect(t.progress).toBe(300);
+    });
+
+    it('shows recheckProgress even at exactly 0 while checking', () => {
+      const t = createTorrent({ percentDone: 1, recheckProgress: 0, statusCode: 2 });
+      expect(t.progress).toBe(0);
+    });
+
+    it('ignores a stale recheckProgress when not checking', () => {
+      const t = createTorrent({ percentDone: 0.5, recheckProgress: 0.3, statusCode: 4 });
+      expect(t.progress).toBe(500);
     });
 
     it('formats progress below 100% with one decimal', () => {
@@ -207,13 +228,22 @@ describe('TorrentStore computed views', () => {
     });
 
     it('returns error message with prefix stripped', () => {
-      const t = createTorrent({ errorCode: 1, errorString: 'Error: tracker timeout' });
+      const t = createTorrent({ errorCode: 2, errorString: 'Error: tracker timeout' });
       expect(t.errorMessage).toBe('OV_FL_ERROR: tracker timeout');
+      expect(t.hasError).toBe(true);
     });
 
     it('returns generic error for empty errorString', () => {
-      const t = createTorrent({ errorCode: 1, errorString: '' });
+      const t = createTorrent({ errorCode: 2, errorString: '' });
       expect(t.errorMessage).toBe('OV_FL_ERROR');
+    });
+
+    it('treats errorCode 1 as a tracker warning, not an error', () => {
+      // TR_STAT_TRACKER_WARNING: the torrent is healthy — the text shows
+      // without the Error prefix and without the red icon
+      const t = createTorrent({ errorCode: 1, errorString: 'rate limited' });
+      expect(t.errorMessage).toBe('rate limited');
+      expect(t.hasError).toBe(false);
     });
   });
 

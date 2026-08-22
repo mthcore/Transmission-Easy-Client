@@ -246,27 +246,28 @@ describe('ContextMenu tree view (transformFoldersToTree)', () => {
   });
 
   describe('case handling', () => {
-    it('folds path components that differ only by case onto the first casing seen', async () => {
+    // Transmission daemons are overwhelmingly POSIX, where paths are
+    // case-SENSITIVE: folding them made distinct directories share one menu
+    // entry that silently targeted the wrong folder.
+    it('keeps components that differ only by case apart', async () => {
       expect(await buildTree(['/Data/Movies', '/data/music'])).toEqual([
-        branch('/Data', null),
-        leaf('Movies', 0, '/Data'),
-        leaf('music', 1, '/Data'),
+        leaf('/Data/Movies', 0, null),
+        leaf('/data/music', 1, null),
       ]);
     });
 
-    it('keeps the folding case-insensitive on deep components too', async () => {
+    it('keeps deep components that differ only by case apart', async () => {
       expect(await buildTree(['/srv/Media/TV', '/SRV/media/movies'])).toEqual([
-        branch('/srv/Media', null),
-        leaf('TV', 0, '/srv/Media'),
-        leaf('movies', 1, '/srv/Media'),
+        leaf('/srv/Media/TV', 0, null),
+        leaf('/SRV/media/movies', 1, null),
       ]);
     });
 
-    it('collapses two folders whose paths differ only by case into a single entry', async () => {
-      // Known consequence of the case folding: the first folder becomes unreachable,
-      // the surviving entry keeps the first casing but targets the LAST matching folder.
+    it('gives two folders differing only by case their own reachable entries', async () => {
       expect(await buildTree(['/data/Movies', '/data/movies'])).toEqual([
-        leaf('/data/Movies', 1, null),
+        branch('/data', null),
+        leaf('Movies', 0, '/data'),
+        leaf('movies', 1, '/data'),
       ]);
     });
   });

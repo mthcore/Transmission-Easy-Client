@@ -1,10 +1,31 @@
-import { configKeys } from '../stores/ConfigStore';
+import ConfigStore, { configKeys } from '../stores/ConfigStore';
+import { getSnapshot } from 'mobx-state-tree';
 
-/** Transient/local-only keys that never belong in a backup blob */
-export const BACKUP_EXCLUDE_KEYS = ['_notifiedIds', '_activeIds'];
+/**
+ * Transient/local-only keys that never belong in a backup blob.
+ * Everything the background writes for its own bookkeeping starts with '_',
+ * and the prefix is matched too so renaming one of these can't silently leak
+ * it into every backup (which happened when _notifiedIds became _notifiedState:
+ * that record holds every torrent hash on the server and blew the sync quota).
+ */
+export const BACKUP_EXCLUDE_KEYS = ['_notifiedIds', '_activeIds', '_notifiedState'];
 
-/** Keys that change which server the extension talks to */
-export const CONNECTION_KEYS = ['hostname', 'port', 'ssl', 'pathname'] as const;
+const isTransientKey = (key: string) => key.startsWith('_');
+
+/**
+ * Keys whose change repoints the extension at another server or changes where
+ * credentials are sent. webPathname decides the path the Basic-auth header is
+ * injected on, so a backup widening it must be confirmed like a host change.
+ */
+export const CONNECTION_KEYS = [
+  'hostname',
+  'port',
+  'ssl',
+  'pathname',
+  'webPathname',
+  'login',
+  'authenticationRequired',
+] as const;
 
 // Note: the 'backup' key (the cloud copy, sync area only) is deliberately NOT
 // allowed — letting it into local storage would nest stale blobs into every
@@ -15,18 +36,49 @@ const RESTORE_ALLOWED_KEYS = new Set<string>([...configKeys, 'configVersion']);
  * Allowlist-filter a parsed restore blob against the known config keys, so a
  * crafted or corrupted backup can't seed arbitrary storage entries.
  */
+// Built lazily from the store's own defaults, so a restored value whose TYPE
+// is wrong ("port": "9091" in a hand-edited backup) is dropped and REPORTED —
+// storageSet used to accept it, the per-key loader then silently discarded it,
+// and the restore still showed a green check.
+let defaultTypes: Map<string, string> | null = null;
+function getDefaultTypes(): Map<string, string> {
+  if (!defaultTypes) {
+    defaultTypes = new Map();
+    try {
+      const defaults = getSnapshot(ConfigStore.create({})) as Record<string, unknown>;
+      for (const [key, value] of Object.entries(defaults)) {
+        defaultTypes.set(key, Array.isArray(value) ? 'array' : typeof value);
+      }
+    } catch {
+      // No defaults, no type checking — same behaviour as before
+    }
+  }
+  return defaultTypes;
+}
+
 export function sanitizeRestoreConfig(config: Record<string, unknown>): {
   config: Record<string, unknown>;
   droppedKeys: string[];
 } {
   const result: Record<string, unknown> = {};
   const droppedKeys: string[] = [];
+  const types = getDefaultTypes();
   for (const [key, value] of Object.entries(config)) {
-    if (RESTORE_ALLOWED_KEYS.has(key) && !BACKUP_EXCLUDE_KEYS.includes(key)) {
-      result[key] = value;
-    } else {
+    if (
+      !RESTORE_ALLOWED_KEYS.has(key) ||
+      BACKUP_EXCLUDE_KEYS.includes(key) ||
+      isTransientKey(key)
+    ) {
       droppedKeys.push(key);
+      continue;
     }
+    const expected = types.get(key);
+    const actual = Array.isArray(value) ? 'array' : typeof value;
+    if (expected !== undefined && actual !== expected) {
+      droppedKeys.push(key);
+      continue;
+    }
+    result[key] = value;
   }
   return { config: result, droppedKeys };
 }

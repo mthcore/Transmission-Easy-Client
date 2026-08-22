@@ -19,11 +19,31 @@ export function useOptionsPage<T = IConfigStore>() {
   const handleSetInt = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const input = e.currentTarget;
-      const value = parseInt(input.value, 10);
-      if (Number.isFinite(value)) {
-        configStore?.setOptions({
-          [input.name]: value,
-        });
+      let value = parseInt(input.value, 10);
+      if (!Number.isFinite(value)) return;
+      // The HTML min/max attributes don't block typed input, and this fires
+      // on every keystroke — without clamping, a half-typed '1' persists and
+      // drives the polling intervals at millisecond rates
+      const min = parseInt(input.min, 10);
+      const max = parseInt(input.max, 10);
+      if (Number.isFinite(min) && value < min) value = min;
+      if (Number.isFinite(max) && value > max) value = max;
+      configStore?.setOptions({
+        [input.name]: value,
+      });
+    },
+    [configStore]
+  );
+
+  // On blur, show what was actually persisted: the store gets the clamped
+  // value on every keystroke, but the input kept displaying the raw typed one
+  // (type 500 with min 1000 → store holds 1000, field said 500 all session)
+  const handleIntBlur = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const input = e.currentTarget;
+      const stored = (configStore as unknown as Record<string, unknown> | undefined)?.[input.name];
+      if (typeof stored === 'number' && input.value !== String(stored)) {
+        input.value = String(stored);
       }
     },
     [configStore]
@@ -44,6 +64,7 @@ export function useOptionsPage<T = IConfigStore>() {
     configStore: configStore as unknown as T,
     handleChange,
     handleSetInt,
+    handleIntBlur,
     handleRadioChange,
   };
 }

@@ -25,10 +25,22 @@ const mobxApplyPatchLine = (target: Record<string, unknown>, session: Session, d
   switch (type) {
     case 'snapshot': {
       const snapshot = result as Record<string, unknown>;
-      if (branches) {
-        mobxApplySnapshotBranches(target, snapshot, branches);
-      } else {
-        applySnapshot(target as never, snapshot);
+      try {
+        if (branches) {
+          mobxApplySnapshotBranches(target, snapshot, branches);
+        } else {
+          applySnapshot(target as never, snapshot);
+        }
+      } catch (_err) {
+        // MST actions are not transactional: a typecheck failure part-way
+        // through leaves the tree half-written. Invalidating the cursor (like
+        // the patch branch does) forces a fresh snapshot next time instead of
+        // stacking incremental patches onto corrupt state.
+        session.id = null;
+        session.patchId = null;
+        const err: ExtendedError = new ErrorWithCode('Apply path error', 'APPLY_PATH_ERROR');
+        err.original = _err as Error;
+        throw err;
       }
       session.id = id;
       session.patchId = patchId;

@@ -83,12 +83,25 @@ const executeScriptPromise = (tabId: number, options: ScriptOptions): Promise<un
   if (options.frameId !== undefined) {
     (target as { frameIds?: number[] }).frameIds = [options.frameId];
   }
-  return chrome.scripting
-    .executeScript({
-      target: target,
-      files: [options.file],
-    })
-    .then((results) => results.map((r) => r.result as unknown));
+  // Callback form: chrome.* has no promise support on Firefox, where
+  // `.executeScript(...).then(...)` throws on undefined and silently pushes
+  // every context-menu add onto the cookie-less background fallback
+  return new Promise((resolve, reject) => {
+    chrome.scripting.executeScript(
+      {
+        target: target,
+        files: [options.file],
+      },
+      (results) => {
+        const err = chrome.runtime.lastError;
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve((results ?? []).map((r) => r.result as unknown));
+      }
+    );
+  });
 };
 
 const tabsSendMessage = <T>(

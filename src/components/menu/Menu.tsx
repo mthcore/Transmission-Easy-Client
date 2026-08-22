@@ -23,11 +23,10 @@ const Menu = observer(() => {
 
       const dialog = rootStore.createDialog({
         type: 'putFiles',
-      });
+      }) as unknown as { setFiles: (files: File[]) => void; setReady: (ready: boolean) => void };
 
-      (dialog as unknown as { files: File[]; setReady: (ready: boolean) => void }).files =
-        Array.from(files);
-      (dialog as unknown as { setReady: (ready: boolean) => void }).setReady(true);
+      dialog.setFiles(Array.from(files));
+      dialog.setReady(true);
     },
     [rootStore]
   );

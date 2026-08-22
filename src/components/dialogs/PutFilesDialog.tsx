@@ -11,6 +11,7 @@ import type { Folder } from '../../types/bg';
 interface PutFilesDialogStore {
   close: () => void;
   files: File[];
+  setFiles: (files: File[]) => void;
   setReady: (ready: boolean) => void;
 }
 

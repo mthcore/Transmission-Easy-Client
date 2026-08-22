@@ -143,7 +143,8 @@ const TorrentMenuContent = observer(() => {
     if (!firstTorrent) return;
     rootStore.createDialog({
       type: 'move',
-      directory: firstTorrent.directory,
+      // Required string in the store: `directory` is optional on the torrent
+      directory: firstTorrent.directory ?? '',
       torrentIds: selectedIds.slice(0),
     });
   };

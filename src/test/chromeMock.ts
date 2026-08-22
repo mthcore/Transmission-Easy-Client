@@ -1,4 +1,9 @@
 import { vi } from 'vitest';
+import enMessagesJson from '../_locales/en/messages.json';
+
+// The real locale table, so a getMessage() for a key that does not exist
+// behaves like production (empty string) instead of echoing the key back
+const enMessages = enMessagesJson as Record<string, { message: string }>;
 
 const i18nOverrides: Record<string, string> = {
   sizeList: '["B", "kB", "MB", "GB", "TB", "PB", "EB"]',
@@ -8,7 +13,11 @@ const i18nOverrides: Record<string, string> = {
 
 const chromeMock = {
   i18n: {
-    getMessage: (key: string) => i18nOverrides[key] ?? key,
+    // Mirrors the real API: an unknown key returns '' (NOT the key), so code
+    // written as `getMessage(a) || getMessage(b)` takes the same branch under
+    // test as in production and a deleted locale key shows up as a failure.
+    getMessage: (key: string) => i18nOverrides[key] ?? (enMessages[key] ? key : ''),
+    getUILanguage: () => 'en',
   },
   runtime: {
     id: 'test-extension-id',

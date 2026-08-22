@@ -38,6 +38,10 @@ jobs:
         run: npm run build
 
       - name: Build Firefox
+        # The manifest id must equal the GUID of the AMO listing, or the upload
+        # fails validation with ADDON_ID_REQUIRED
+        env:
+          FIREFOX_ADDON_ID: ${{ secrets.FIREFOX_ADDON_GUID }}
         run: npm run build:firefox
 
       - name: Build Opera
@@ -73,6 +77,17 @@ jobs:
               exit 1
             fi
           done
+
+      # The stores read the version from the manifest, not from the tag: a tag
+      # that runs ahead of the manifest publishes an already-existing version
+      # and is rejected after the release has been tagged and announced.
+      - name: Verify the tag matches the manifest version
+        run: |
+          manifest_version=$(node -p "require('./src/manifest.json').version")
+          if [ "$manifest_version" != "${{ steps.get_version.outputs.version }}" ]; then
+            echo "::error::tag ${{ github.ref_name }} does not match manifest version $manifest_version"
+            exit 1
+          fi
 
       - name: Upload Chrome artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -134,11 +149,21 @@ jobs:
         with:
           name: firefox-extension
 
+      - name: Download Firefox source archive
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: firefox-source
+          path: source
+
       - name: Upload to Firefox Add-ons
         uses: wdzeng/firefox-addon@3184ee491b500e080885e046051366a4228c6e5d # v1
         with:
           addon-guid: ${{ secrets.FIREFOX_ADDON_GUID }}
           xpi-path: transmission-firefox-${{ github.ref_name }}.zip
+          # AMO requires the sources for a bundled/minified add-on: the archive
+          # was being built and uploaded as a CI artifact but never submitted,
+          # so every review was held waiting for a source request
+          source-file-path: source/transmissionEasyClient-firefox-${{ needs.build.outputs.version }}-source.zip
           jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
           jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
 

@@ -70,11 +70,19 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     const dialog = refDialog.current;
     if (!dialog) return;
 
-    const focusableElements = dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    // Re-read on every Tab: dialogs add and remove controls after mount (the
+    // Move dialog shows its custom-path input only for one option), and a
+    // snapshot taken at mount traps against detached nodes, letting Shift+Tab
+    // escape the modal onto the page behind it.
+    const getFocusable = () =>
+      Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => !el.hasAttribute('disabled')
+      );
+
+    const focusableElements = getFocusable();
     if (focusableElements.length === 0) return;
 
     const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
 
     // Respect an explicit focus target: this effect runs after the child's
     // commit, so blindly focusing the first element steals focus from the safe
@@ -89,12 +97,17 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
 
-      if (e.shiftKey && document.activeElement === firstElement) {
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
-        lastElement?.focus();
-      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
         e.preventDefault();
-        firstElement?.focus();
+        first.focus();
       }
     };
 

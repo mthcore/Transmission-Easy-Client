@@ -178,11 +178,13 @@ div.torrent-list-layer table td.actions div.btns > .stop {
   background-image: url('../img/stop.svg');
 }
 
-// Sticky actions column (fixed to right edge)
+// Sticky actions column, pinned to the END edge (logical: in the Hebrew RTL
+// layout the column sits leftmost, and a physical right: 0 detached it from
+// its slot and floated it over the name column while scrolling)
 div.torrent-list-layer table th.actions,
 div.torrent-list-layer table td.actions {
   position: sticky;
-  right: 0;
+  inset-inline-end: 0;
   z-index: 1;
   background-color: var(--card-bg);
 }

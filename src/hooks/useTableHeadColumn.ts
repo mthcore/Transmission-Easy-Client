@@ -85,7 +85,10 @@ export function useTableHeadColumn({
         endResizeRef.current?.();
         return;
       }
-      const delta = e.clientX - resizeStartClientX.current;
+      // In RTL a column grows leftward, so the raw delta is inverted —
+      // without the flip, pulling the handle outward SHRANK the column
+      const rtl = document.documentElement.dir === 'rtl' ? -1 : 1;
+      const delta = (e.clientX - resizeStartClientX.current) * rtl;
       let newSize = resizeStartSize.current + delta;
       if (newSize < MIN_COLUMN_WIDTH) {
         newSize = MIN_COLUMN_WIDTH;

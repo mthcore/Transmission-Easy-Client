@@ -31,7 +31,7 @@ function rgbToStorageString(color: RgbColor, alpha: number): string {
 }
 
 const NotifyOptions = observer(() => {
-  const { configStore, handleChange, handleSetInt } = useOptionsPage<ConfigStore>();
+  const { configStore, handleChange, handleSetInt, handleIntBlur } = useOptionsPage<ConfigStore>();
   const [colorPickerOpened, setColorPickerOpened] = useState(false);
   const [pickerColor, setPickerColor] = useState<RgbColor>(() =>
     parseBadgeColor(configStore.badgeColor)
@@ -108,12 +108,17 @@ const NotifyOptions = observer(() => {
       </label>
       <label>
         <span>{chrome.i18n.getMessage('backgroundUpdateInterval')}</span>
+        {/* MV3 alarms floor at one minute: offering 1000ms promised a
+            granularity the platform cannot deliver — every value from 1000 to
+            59999 silently behaved as 60000 */}
         <input
           defaultValue={configStore.backgroundUpdateInterval}
           onChange={handleSetInt}
+          onBlur={handleIntBlur}
           type="number"
           name="backgroundUpdateInterval"
-          min="1000"
+          min="60000"
+          step="60000"
         />{' '}
         <span>{chrome.i18n.getMessage('ms')}</span>
       </label>

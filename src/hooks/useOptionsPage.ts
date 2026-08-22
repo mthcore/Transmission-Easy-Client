@@ -35,6 +35,20 @@ export function useOptionsPage<T = IConfigStore>() {
     [configStore]
   );
 
+  // On blur, show what was actually persisted: the store gets the clamped
+  // value on every keystroke, but the input kept displaying the raw typed one
+  // (type 500 with min 1000 → store holds 1000, field said 500 all session)
+  const handleIntBlur = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const input = e.currentTarget;
+      const stored = (configStore as unknown as Record<string, unknown> | undefined)?.[input.name];
+      if (typeof stored === 'number' && input.value !== String(stored)) {
+        input.value = String(stored);
+      }
+    },
+    [configStore]
+  );
+
   const handleRadioChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const radio = e.currentTarget;
@@ -50,6 +64,7 @@ export function useOptionsPage<T = IConfigStore>() {
     configStore: configStore as unknown as T,
     handleChange,
     handleSetInt,
+    handleIntBlur,
     handleRadioChange,
   };
 }

@@ -30,7 +30,7 @@ function createClientStore() {
       for (const t of incoming) torrents.set(t.id, t);
     }),
     currentSpeed: { downloadSpeed: 0, uploadSpeed: 0 },
-    speedRoll: { add: vi.fn() },
+    speedRoll: { add: vi.fn(), setData: vi.fn(), data: [] },
   };
 }
 

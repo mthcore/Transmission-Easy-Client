@@ -5,6 +5,7 @@ import FileListTableItem from './FileListTableItem';
 import ColumnContextMenu from './ColumnContextMenu';
 import TableHeadColumnRenderer from './TableHeadColumnRenderer';
 import Interval from '../Interval';
+import VisiblePage from '../VisiblePage';
 import getLogger from '../../tools/getLogger';
 import useRootStore from '../../hooks/useRootStore';
 import { useScrollSync } from '../../hooks/useScrollSync';
@@ -99,7 +100,11 @@ const FileListTable = observer(() => {
     <>
       <div className="file-list-warpper">
         <div className="file-list">
-          <Interval interval={uiUpdateInterval} onFire={onIntervalFire} />
+          {/* Gated on visibility: a hidden tab kept refetching every file path
+              once a second for as long as the tab existed */}
+          <VisiblePage>
+            <Interval interval={uiUpdateInterval} onFire={onIntervalFire} />
+          </VisiblePage>
           <div onScroll={handleScroll} className="fl-layer" style={columnVars}>
             {spinner}
             <ColumnContextMenu

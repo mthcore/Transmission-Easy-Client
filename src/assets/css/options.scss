@@ -674,3 +674,16 @@ ol.help li {
     font-size: 12px;
   }
 }
+
+// Shown when the initial background sync failed and startup could not finish.
+// (Duplicated from _dialogs.scss, which this page does not import.)
+.startup-error {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-color);
+
+  p {
+    margin: 0 0 12px;
+    color: var(--error-color);
+  }
+}

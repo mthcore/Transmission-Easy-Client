@@ -55,7 +55,9 @@ export function useResizableColumns({
         up();
         return;
       }
-      const delta = e.clientX - resizeRef.current.startX;
+      // RTL: columns grow leftward, so the raw delta is inverted
+      const rtl = document.documentElement.dir === 'rtl' ? -1 : 1;
+      const delta = (e.clientX - resizeRef.current.startX) * rtl;
       const newWidth = Math.max(MIN_WIDTH, resizeRef.current.startWidth + delta);
       setWidths((prev) => ({ ...prev, [resizeRef.current.key]: newWidth }));
     };

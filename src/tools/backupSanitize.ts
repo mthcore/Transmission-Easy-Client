@@ -1,4 +1,5 @@
-import { configKeys } from '../stores/ConfigStore';
+import ConfigStore, { configKeys } from '../stores/ConfigStore';
+import { getSnapshot } from 'mobx-state-tree';
 
 /**
  * Transient/local-only keys that never belong in a backup blob.
@@ -35,22 +36,49 @@ const RESTORE_ALLOWED_KEYS = new Set<string>([...configKeys, 'configVersion']);
  * Allowlist-filter a parsed restore blob against the known config keys, so a
  * crafted or corrupted backup can't seed arbitrary storage entries.
  */
+// Built lazily from the store's own defaults, so a restored value whose TYPE
+// is wrong ("port": "9091" in a hand-edited backup) is dropped and REPORTED —
+// storageSet used to accept it, the per-key loader then silently discarded it,
+// and the restore still showed a green check.
+let defaultTypes: Map<string, string> | null = null;
+function getDefaultTypes(): Map<string, string> {
+  if (!defaultTypes) {
+    defaultTypes = new Map();
+    try {
+      const defaults = getSnapshot(ConfigStore.create({})) as Record<string, unknown>;
+      for (const [key, value] of Object.entries(defaults)) {
+        defaultTypes.set(key, Array.isArray(value) ? 'array' : typeof value);
+      }
+    } catch {
+      // No defaults, no type checking — same behaviour as before
+    }
+  }
+  return defaultTypes;
+}
+
 export function sanitizeRestoreConfig(config: Record<string, unknown>): {
   config: Record<string, unknown>;
   droppedKeys: string[];
 } {
   const result: Record<string, unknown> = {};
   const droppedKeys: string[] = [];
+  const types = getDefaultTypes();
   for (const [key, value] of Object.entries(config)) {
     if (
-      RESTORE_ALLOWED_KEYS.has(key) &&
-      !BACKUP_EXCLUDE_KEYS.includes(key) &&
-      !isTransientKey(key)
+      !RESTORE_ALLOWED_KEYS.has(key) ||
+      BACKUP_EXCLUDE_KEYS.includes(key) ||
+      isTransientKey(key)
     ) {
-      result[key] = value;
-    } else {
       droppedKeys.push(key);
+      continue;
     }
+    const expected = types.get(key);
+    const actual = Array.isArray(value) ? 'array' : typeof value;
+    if (expected !== undefined && actual !== expected) {
+      droppedKeys.push(key);
+      continue;
+    }
+    result[key] = value;
   }
   return { config: result, droppedKeys };
 }

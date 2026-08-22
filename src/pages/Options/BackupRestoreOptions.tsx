@@ -125,6 +125,9 @@ const BackupRestoreOptions = () => {
         return;
       }
       refData.current.value = backup;
+      // A successful load must clear a leftover restore error, or the old red
+      // ERROR line kept sitting under the freshly loaded backup
+      setRestoreState('idle');
     } catch (err) {
       logger.error('handleLoadFromCloud error', err);
       if (!refPage.current) return;
@@ -206,6 +209,16 @@ const BackupRestoreOptions = () => {
       await storageSet(cleanConfig);
       if (!refPage.current) return;
       setRestoreState('done');
+      // Values dropped for a wrong type (a hand-edited or version-skewed
+      // backup) must be visible: the restore used to show an unqualified green
+      // check while silently keeping the old values for those keys
+      if (droppedKeys.length) {
+        setRestoreError(
+          (chrome.i18n.getMessage('restoreSkippedKeys') || 'Ignored invalid values') +
+            ': ' +
+            droppedKeys.join(', ')
+        );
+      }
       setTimeout(() => {
         if (!refPage.current) return;
         setRestoreState('idle');
@@ -291,6 +304,10 @@ const BackupRestoreOptions = () => {
             {restoreError ? `: ${restoreError}` : ''}
           </p>
         )}
+        {/* Partial success: the restore applied, but some values were dropped
+            (wrong type in a hand-edited backup) — say so instead of showing an
+            unqualified green check */}
+        {restoreState !== 'error' && restoreError && <p className="red">{restoreError}</p>}
       </div>
     </div>
   );

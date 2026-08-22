@@ -10,7 +10,7 @@ function createClientStore() {
     sync: vi.fn(),
     torrents: new Map<number, { stateText: string }>(),
     currentSpeed: { downloadSpeed: 0, uploadSpeed: 0 },
-    speedRoll: { add: vi.fn() },
+    speedRoll: { add: vi.fn(), setData: vi.fn(), data: [] },
   };
 }
 

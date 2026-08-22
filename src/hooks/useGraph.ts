@@ -141,7 +141,10 @@ export function useGraph(
         minTime = speedRoll.minTime;
       }
 
-      const data = speedRoll.getDataFromTime(minTime);
+      // Never fetch points older than the x-domain start: they map to
+      // negative coordinates and drew a spurious lead-in segment entering the
+      // plot from outside after a speed spike aged out of the window
+      const data = speedRoll.getDataFromTime(Math.max(minTime, speedRoll.minTime));
 
       const uploadD = generatePath(data, xScale, yScale, 'upload');
       const downloadD = generatePath(data, xScale, yScale, 'download');

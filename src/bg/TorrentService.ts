@@ -149,7 +149,11 @@ interface TorrentStore {
     { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
   >;
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
-  speedRoll: { add: (download: number, upload: number) => void };
+  speedRoll: {
+    add: (download: number, upload: number) => void;
+    setData: (data: { download: number; upload: number; time: number }[]) => void;
+    data: { download: number; upload: number; time: number }[];
+  };
 }
 
 /**
@@ -179,6 +183,9 @@ const COMPLETION_NOTIFY_WINDOW = 15 * 60;
 /** Session-scoped, so the recently-active window survives an SW restart */
 const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
 
+/** Session-scoped speed-graph history, restored after an SW restart */
+const SPEED_ROLL_STORAGE_KEY = '_speedRoll';
+
 interface TorrentNotifier {
   torrentCompleteNotify: (torrent: { stateText: string }) => void;
   torrentAddedNotify: (torrent: { id: number; name?: string }) => void;
@@ -207,6 +214,8 @@ class TorrentService {
   /** Monotonic request counter, so out-of-order responses can be dropped */
   private _requestSeq = 0;
   private _lastAppliedSeq = 0;
+  /** Detects a change in the requested field set (Seeds/Peers column toggle) */
+  private _lastNeedsTrackerStats = false;
 
   constructor(options: TorrentServiceOptions) {
     this.transport = options.transport;
@@ -224,6 +233,20 @@ class TorrentService {
         const stored = data[RESPONSE_TIME_STORAGE_KEY];
         if (typeof stored === 'number' && stored > this.torrentsResponseTime) {
           this.torrentsResponseTime = stored;
+        }
+      })
+      .catch(() => {});
+
+    // Restore the speed-graph history the previous worker generation collected
+    storageGet<Record<string, { download: number; upload: number; time: number }[] | undefined>>(
+      SPEED_ROLL_STORAGE_KEY,
+      'session'
+    )
+      .then((data) => {
+        const stored = data[SPEED_ROLL_STORAGE_KEY];
+        // Only seed an empty roll: live samples beat a stale snapshot
+        if (Array.isArray(stored) && stored.length && !this.clientStore.speedRoll.data.length) {
+          this.clientStore.speedRoll.setData(stored);
         }
       })
       .catch(() => {});
@@ -293,8 +316,16 @@ class TorrentService {
     // user just removed.
     const requestSeq = ++this._requestSeq;
 
+    // Toggling the Seeds/Peers column changes WHICH fields we ask for, and a
+    // recently-active delta only refreshes active torrents: without one full
+    // fetch, every idle torrent showed 0 seeds forever after enabling the
+    // column (the earlier polls wrote 0 because the field wasn't requested)
+    const needsTrackerStats = this.getNeedsTrackerStats();
+    const fieldsChanged = needsTrackerStats !== this._lastNeedsTrackerStats;
+    this._lastNeedsTrackerStats = needsTrackerStats;
+
     let isRecently = false;
-    if (!full && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
+    if (!full && !fieldsChanged && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
       isRecently = true;
     }
 
@@ -338,7 +369,7 @@ class TorrentService {
     // hidden by default. magnetLink is another ~0.5-2KB per torrent and is read
     // once per session at most — the copy-magnet action rebuilds it from the
     // hash. Fetching both on every poll cost a multi-GB/day idle transfer.
-    if (this.getNeedsTrackerStats()) {
+    if (needsTrackerStats) {
       listFields.push('trackerStats');
     }
     if (this.transport.rpcVersion >= RPC_VERSION_4_1) {
@@ -391,6 +422,7 @@ class TorrentService {
         if (!this.getShowNotifications()) {
           const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
           this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
+          this.persistSpeedRoll();
           return response;
         }
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
@@ -469,9 +501,22 @@ class TorrentService {
 
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
+        this.persistSpeedRoll();
 
         return response;
       })
+    );
+  }
+
+  /**
+   * The speed graph's history lived only in service-worker memory, which MV3
+   * discards after ~30s idle — so the graph restarted empty on every popup
+   * open. Session storage matches its lifetime (gone on browser restart).
+   */
+  private persistSpeedRoll(): void {
+    const data = this.clientStore.speedRoll.data;
+    storageSet({ [SPEED_ROLL_STORAGE_KEY]: data.map((p) => ({ ...p })) }, 'session').catch(
+      () => {}
     );
   }
 

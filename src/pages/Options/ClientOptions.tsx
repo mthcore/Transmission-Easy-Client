@@ -39,16 +39,43 @@ const ClientOptions = observer(() => {
       const form = e.currentTarget as ClientFormElement;
       const login = form.elements.login.value;
       const password = form.elements.password.value;
-      const hostname = form.elements.hostname.value.trim();
-      const port = parseInt(form.elements.port.value, 10);
-      const ssl = form.elements.ssl.checked;
+      let hostname = form.elements.hostname.value.trim();
+      // valueAsNumber, not parseInt: '1e3' is legal in a number input and
+      // parseInt read it as 1 — the config was then saved with port 1 before
+      // any check could complain
+      const rawPort = form.elements.port.valueAsNumber;
+      let port = Number.isFinite(rawPort) ? Math.trunc(rawPort) : NaN;
+      let ssl = form.elements.ssl.checked;
       const pathname = form.elements.pathname.value.trim();
       const webPathname = form.elements.webPathname.value.trim();
       const authenticationRequired = form.elements.authenticationRequired.checked;
 
+      // A pasted 'http://nas.local:9091' used to be bracketed like an IPv6
+      // literal into https://[http://nas.local]:9091/… — normalize instead of
+      // saving a hostname that can never work
+      if (/^[a-z][a-z0-9+.-]*:\/\//i.test(hostname)) {
+        try {
+          const parsed = new URL(hostname);
+          hostname = parsed.hostname.replace(/^\[|\]$/g, '');
+          if (parsed.port) port = parseInt(parsed.port, 10);
+          if (parsed.protocol === 'https:') ssl = true;
+          else if (parsed.protocol === 'http:') ssl = false;
+        } catch {
+          // Fall through: the range check below reports it
+        }
+      } else {
+        // 'nas.local:9091' (exactly one colon, numeric suffix — an unbracketed
+        // IPv6 literal has several colons)
+        const hostPort = hostname.match(/^([^:]+):(\d{1,5})$/);
+        if (hostPort) {
+          hostname = hostPort[1];
+          port = parseInt(hostPort[2], 10);
+        }
+      }
+
       setClientStatus('pending');
       try {
-        if (!Number.isFinite(port)) {
+        if (!Number.isFinite(port) || port < 1 || port > 65535) {
           throw new Error(chrome.i18n.getMessage('portIncorrect'));
         }
         await configStore.setOptions({

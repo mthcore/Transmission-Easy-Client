@@ -31,12 +31,23 @@ const Options = observer(() => {
     }
   }, [rootStore]);
 
-  if (rootStore.state === 'pending') {
+  // 'idle' is the pre-init first paint — showing the raw state string flashed
+  // the untranslated text "Loading: idle" on every open
+  if (rootStore.state === 'pending' || rootStore.state === 'idle') {
     return <div className="loading" />;
   }
 
+  // Retry parity with the main page: this is the page a user with a broken
+  // setup needs most, and it used to dead-end on the literal 'Loading: error'
   if (rootStore.state !== 'done') {
-    return <>{`Loading: ${rootStore.state}`}</>;
+    return (
+      <div className="startup-error" role="alert">
+        <p>{chrome.i18n.getMessage('OV_FL_ERROR')}</p>
+        <button type="button" onClick={() => rootStore.retryInit()}>
+          {chrome.i18n.getMessage('errorRetry')}
+        </button>
+      </div>
+    );
   }
 
   return (

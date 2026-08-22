@@ -34,7 +34,11 @@ interface BgStore {
       { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
     >;
     currentSpeed: { downloadSpeed: number; uploadSpeed: number };
-    speedRoll: { add: (download: number, upload: number) => void };
+    speedRoll: {
+      add: (download: number, upload: number) => void;
+      setData: (data: { download: number; upload: number; time: number }[]) => void;
+      data: { download: number; upload: number; time: number }[];
+    };
     setSettings: (settings: NormalizedSettings) => void;
   };
   flushClient: () => void;

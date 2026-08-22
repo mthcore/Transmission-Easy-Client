@@ -13,7 +13,7 @@ interface ConfigStore {
 }
 
 const UiOptions = observer(() => {
-  const { configStore, handleChange, handleSetInt } = useOptionsPage<ConfigStore>();
+  const { configStore, handleChange, handleSetInt, handleIntBlur } = useOptionsPage<ConfigStore>();
 
   const handleThemeChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
@@ -85,6 +85,7 @@ const UiOptions = observer(() => {
         <span>{chrome.i18n.getMessage('popupUpdateInterval')}</span>
         <input
           onChange={handleSetInt}
+          onBlur={handleIntBlur}
           name="uiUpdateInterval"
           type="number"
           min="100"

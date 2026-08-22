@@ -113,10 +113,25 @@ const config = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-react',
               ['@babel/preset-env', babelEnvOptions],
-              ['@babel/preset-typescript', {isTSX: true, allExtensions: true}]
-            ]
+              // Babel 8 removed isTSX/allExtensions: TSX now follows the file
+              // extension — which also means preset-react must be scoped to
+              // .tsx/.jsx, or its JSX plugin makes `<T>` generics in plain .ts
+              // files parse as JSX
+              '@babel/preset-typescript'
+            ],
+            overrides: [
+              {
+                test: /\.(jsx|tsx)$/,
+                // development must follow the webpack mode EXPLICITLY: left to
+                // its default, Babel 8 emitted jsxDEV calls in the production
+                // bundle, which crashed every page at runtime while the whole
+                // test suite still passed
+                presets: [
+                  ['@babel/preset-react', {runtime: 'automatic', development: mode !== 'production'}],
+                ],
+              },
+            ],
           }
         }
       },

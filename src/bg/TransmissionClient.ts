@@ -12,7 +12,6 @@ import SettingsService, {
   type NormalizedSessionStats,
   type NormalizedBandwidthGroup,
 } from './SettingsService';
-import type { Folder } from '../types/bg';
 
 interface BgStore {
   config: {

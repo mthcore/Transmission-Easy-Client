@@ -88,4 +88,23 @@ describe('RemoveConfirmDialog', () => {
     expect(torrentsRemoveTorrentFiles).not.toHaveBeenCalled();
     expect(dialogStore.close).toHaveBeenCalled();
   });
+
+  it('addresses torrents by hash captured at open, surviving a daemon restart', () => {
+    // Numeric ids are session-scoped: if the daemon restarts while the
+    // confirmation is open, id 7 can suddenly be a DIFFERENT torrent — and
+    // delete-with-data would destroy its files. The dialog must capture the
+    // hashes when it OPENS and send those.
+    rootStore.client.torrents.set(7, { hashString: 'aaa111' } as never);
+    rootStore.client.torrents.set(9, { hashString: 'bbb222' } as never);
+    renderDialog(true);
+
+    // Daemon restart: the same ids now point at other torrents
+    rootStore.client.torrents.set(7, { hashString: 'EVIL77' } as never);
+    rootStore.client.torrents.set(9, { hashString: 'EVIL99' } as never);
+
+    fireEvent.submit(screen.getByDisplayValue('DLG_BTN_YES').closest('form')!);
+    expect(torrentsRemoveTorrentFiles).toHaveBeenCalledWith(['aaa111', 'bbb222']);
+
+    rootStore.client.torrents.clear();
+  });
 });

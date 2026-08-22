@@ -6,6 +6,7 @@ import {
   torrentSpecialHandlers,
 } from '../tools/sortByColumn';
 import type { ITorrentStore } from './TorrentStore';
+import searchNormalize from '../tools/searchNormalize';
 
 const customLabels = ['ALL', 'DL', 'SEEDING', 'COMPL', 'ACTIVE', 'INACTIVE'] as const;
 
@@ -142,8 +143,10 @@ const TorrentListStore = types
         }
 
         if (searchQuery) {
-          const query = searchQuery.toLowerCase();
-          filtered = filtered.filter((torrent) => torrent.name.toLowerCase().includes(query));
+          // Diacritic-insensitive, like the name sort: a plain toLowerCase
+          // match meant 'amelie' could not find 'Amélie'
+          const query = searchNormalize(searchQuery);
+          filtered = filtered.filter((torrent) => searchNormalize(torrent.name).includes(query));
         }
 
         return filtered;

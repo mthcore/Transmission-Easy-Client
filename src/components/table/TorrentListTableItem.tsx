@@ -8,6 +8,8 @@ import type { Torrent } from '../../types/stores';
 
 interface TorrentListTableItemProps {
   torrent: Torrent;
+  /** Absolute-index striping: virtualization breaks :nth-child parity */
+  even?: boolean;
 }
 
 interface TorrentListStore {
@@ -16,7 +18,7 @@ interface TorrentListStore {
   removeSelectedId: (id: number) => void;
 }
 
-const TorrentListTableItem = observer(({ torrent }: TorrentListTableItemProps) => {
+const TorrentListTableItem = observer(({ torrent, even }: TorrentListTableItemProps) => {
   const rootStore = useRootStore();
   const torrentListStore = rootStore?.torrentList as TorrentListStore | undefined;
   const config = rootStore?.config;
@@ -85,6 +87,9 @@ const TorrentListTableItem = observer(({ torrent }: TorrentListTableItemProps) =
   const classList: string[] = [];
   if (torrent.selected) {
     classList.push('selected');
+  }
+  if (even) {
+    classList.push('even');
   }
 
   // Double-clicks bubbling from interactive cells must not open the file

@@ -309,9 +309,11 @@ const ClientStore = types
       return (self as IClientStoreViews).syncClient().then(() => result);
     };
 
+    // ids accept hashes too: destructive dialogs send hashStrings, which stay
+    // valid across a daemon restart while numeric ids get reassigned
     const createTorrentAction =
       (action: string, sync = true) =>
-      (ids: number[]): Promise<unknown> => {
+      (ids: (number | string)[]): Promise<unknown> => {
         const promise = callApi({ action, ids }).then(...exceptionLog());
         return sync ? promise.then(thenSyncClient) : promise;
       };

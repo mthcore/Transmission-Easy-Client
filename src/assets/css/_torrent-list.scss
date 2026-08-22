@@ -17,6 +17,22 @@ $torrent-columns: checkbox, name, order, size, sizeWhenDone, remaining, done, st
   position: relative;
   overflow-x: auto;
   overflow-y: auto;
+  // The virtualized body resizes its spacer rows as the window moves; scroll
+  // anchoring treats that as content shift and rewrites scrollTop, leaving the
+  // rendered window stranded far from the real scroll position
+  overflow-anchor: none;
+
+  // Fixed-height windowing needs genuinely uniform rows: a color-emoji glyph
+  // in a torrent name inflates its line box (~48px instead of 33px), which
+  // poisoned the measured row height and stranded the window. Clamp every
+  // body cell's direct wrapper to the tallest standard content (the 20px
+  // action buttons) and clip the glyph overflow.
+  table.torrent-table-body tbody td > div,
+  table.torrent-table-body tbody td > span {
+    max-height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+  }
   flex-grow: 1;
   min-height: 20px;
   background: var(--card-bg);
@@ -113,7 +129,10 @@ div.torrent-list-layer table {
   }
 }
 
-div.torrent-list-layer tr:nth-child(even) {
+// Striping by explicit class, not :nth-child: the virtualized body inserts a
+// spacer row and renders a moving window, so DOM position no longer matches
+// list position — nth-child stripes swapped on every scroll step
+div.torrent-list-layer tr.even {
   background-color: var(--bg-color);
 }
 
@@ -189,7 +208,7 @@ div.torrent-list-layer table td.actions {
   background-color: var(--card-bg);
 }
 
-div.torrent-list-layer table tr:nth-child(even) td.actions {
+div.torrent-list-layer table tr.even td.actions {
   background-color: var(--bg-color);
 }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, FormEvent } from 'react';
+import React, { useCallback, useState, FormEvent } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
@@ -21,6 +21,19 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   const client = rootStore?.client;
   const handleClose = useDialogClose(dialogStore);
 
+  // Hashes captured the moment the dialog opens: numeric ids are session
+  // scoped, so a daemon restart while this confirmation sits open can hand
+  // the same id to a DIFFERENT torrent — and "delete with data" would then
+  // destroy that torrent's files. The hash addresses the torrent immutably;
+  // the RPC accepts both forms in `ids`.
+  const [removalIds] = useState<(number | string)[]>(() =>
+    dialogStore.torrentIds.map((id) => {
+      const hash = (rootStore?.client?.torrents.get(id) as { hashString?: string } | undefined)
+        ?.hashString;
+      return hash ?? id;
+    })
+  );
+
   const handleSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -31,13 +44,13 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
         ? client.torrentsRemoveTorrentFiles
         : client.torrentsRemoveTorrent;
 
-      removeMethod(dialogStore.torrentIds).catch((err) => {
+      removeMethod(removalIds).catch((err) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to remove torrent', err);
       });
 
       dialogStore.close();
     },
-    [client, dialogStore]
+    [client, dialogStore, removalIds]
   );
 
   let label: React.ReactNode = null;

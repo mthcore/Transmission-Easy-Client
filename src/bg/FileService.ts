@@ -1,4 +1,5 @@
 import ErrorWithCode from '../tools/ErrorWithCode';
+import type { TorrentId } from '../types';
 import splitByPart from '../tools/splitByPart';
 import { parseTransmissionResponse } from '../tools/safeJsonParse';
 import { FILE_PRIORITY_CHUNK_SIZE } from '../constants';
@@ -19,7 +20,7 @@ class FileService {
     this.transport = transport;
   }
 
-  getFileList(id: number): Promise<NormalizedFile[]> {
+  getFileList(id: TorrentId): Promise<NormalizedFile[]> {
     return this.transport
       .sendAction(
         {
@@ -55,7 +56,7 @@ class FileService {
       });
   }
 
-  setPriority(id: number, level: number, idxs: number[]): Promise<unknown[]> {
+  setPriority(id: TorrentId, level: number, idxs: number[]): Promise<unknown[]> {
     return Promise.all(
       splitByPart(idxs, FILE_PRIORITY_CHUNK_SIZE).map((partIdxs) => {
         const args: Record<string, unknown> = {

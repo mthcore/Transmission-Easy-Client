@@ -1,4 +1,5 @@
 import getLogger from '../tools/getLogger';
+import type { TorrentId } from '../types';
 import readBlobAsArrayBuffer from '../tools/readBlobAsArrayBuffer';
 import { arrayBufferToBase64 } from '../tools/binaryConversion';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
@@ -141,7 +142,7 @@ export interface NormalizedTorrent {
 interface TorrentStore {
   incompleteTorrentIds: number[];
   torrentIds: number[];
-  removeTorrentByIds: (ids: number[]) => void;
+  removeTorrentByIds: (ids: TorrentId[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
   torrents: Map<
@@ -520,55 +521,55 @@ class TorrentService {
     );
   }
 
-  start(ids: number[]): Promise<TransmissionResponse> {
+  start(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-start', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  forcestart(ids: number[]): Promise<TransmissionResponse> {
+  forcestart(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-start-now', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  stop(ids: number[]): Promise<TransmissionResponse> {
+  stop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-stop', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  recheck(ids: number[]): Promise<TransmissionResponse> {
+  recheck(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-verify', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  removetorrent(ids: number[]): Promise<TransmissionResponse> {
+  removetorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-remove', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  removedatatorrent(ids: number[]): Promise<TransmissionResponse> {
+  removedatatorrent(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-remove', arguments: { ids, 'delete-local-data': true } })
       .then(this.thenUpdateTorrents);
   }
 
-  rename(ids: number[], path: string, name: string): Promise<TransmissionResponse> {
+  rename(ids: TorrentId[], path: string, name: string): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-rename-path', arguments: { ids, path, name } })
       .then(this.thenUpdateTorrents);
   }
 
-  torrentSetLocation(ids: number[], location: string): Promise<TransmissionResponse> {
+  torrentSetLocation(ids: TorrentId[], location: string): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-set-location', arguments: { ids, location, move: true } })
       .then(this.thenUpdateTorrents);
   }
 
-  setLabels(ids: number[], labels: string[]): Promise<TransmissionResponse> {
+  setLabels(ids: TorrentId[], labels: string[]): Promise<TransmissionResponse> {
     // Labels landed in RPC 16 (Transmission 3.00); older daemons answer
     // 'success' while silently ignoring the argument
     assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_3, 'Labels');
@@ -577,35 +578,35 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setBandwidthPriority(ids: number[], priority: number): Promise<TransmissionResponse> {
+  setBandwidthPriority(ids: TorrentId[], priority: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'torrent-set', arguments: { ids, bandwidthPriority: priority } })
       .then(this.thenUpdateTorrents);
   }
 
-  reannounce(ids: number[]): Promise<TransmissionResponse> {
+  reannounce(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport.sendAction({ method: 'torrent-reannounce', arguments: { ids } });
   }
 
-  queueTop(ids: number[]): Promise<TransmissionResponse> {
+  queueTop(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-top', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueUp(ids: number[]): Promise<TransmissionResponse> {
+  queueUp(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-up', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueDown(ids: number[]): Promise<TransmissionResponse> {
+  queueDown(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-down', arguments: { ids } })
       .then(this.thenUpdateTorrents);
   }
 
-  queueBottom(ids: number[]): Promise<TransmissionResponse> {
+  queueBottom(ids: TorrentId[]): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({ method: 'queue-move-bottom', arguments: { ids } })
       .then(this.thenUpdateTorrents);
@@ -737,7 +738,7 @@ class TorrentService {
     ).then(() => this.thenUpdateTorrents({} as TransmissionResponse));
   }
 
-  getPeers(id: number): Promise<PeerData[]> {
+  getPeers(id: TorrentId): Promise<PeerData[]> {
     return this.transport
       .sendAction(
         {
@@ -779,7 +780,7 @@ class TorrentService {
       });
   }
 
-  getTorrentDetails(id: number): Promise<TorrentDetailData> {
+  getTorrentDetails(id: TorrentId): Promise<TorrentDetailData> {
     const detailFields = [
       'id',
       'comment',
@@ -905,7 +906,11 @@ class TorrentService {
       });
   }
 
-  setDownloadLimit(ids: number[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
+  setDownloadLimit(
+    ids: TorrentId[],
+    limit: number,
+    enabled: boolean
+  ): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -914,7 +919,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setUploadLimit(ids: number[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
+  setUploadLimit(ids: TorrentId[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -923,7 +928,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setHonorsSessionLimits(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setHonorsSessionLimits(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -932,7 +937,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setPeerLimit(ids: number[], limit: number): Promise<TransmissionResponse> {
+  setPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -941,7 +946,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setQueuePosition(ids: number[], position: number): Promise<TransmissionResponse> {
+  setQueuePosition(ids: TorrentId[], position: number): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
@@ -950,7 +955,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setGroup(ids: number[], group: string): Promise<TransmissionResponse> {
+  setGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return Promise.resolve()
       .then(() => assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'torrent-set group'))
       .then(() =>
@@ -962,7 +967,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setSequentialDownload(ids: number[], enabled: boolean): Promise<TransmissionResponse> {
+  setSequentialDownload(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
     return Promise.resolve()
       .then(() =>
         assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4_1, 'sequential download')
@@ -976,7 +981,7 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setTrackerList(ids: number[], trackerList: string): Promise<TransmissionResponse> {
+  setTrackerList(ids: TorrentId[], trackerList: string): Promise<TransmissionResponse> {
     // trackerList replaced trackerAdd/Remove/Replace in RPC 17; older daemons
     // ignore it silently, so fail loudly like every other 4.x-only path
     assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'Editing the tracker list');
@@ -986,7 +991,7 @@ class TorrentService {
   }
 
   setSeedLimits(
-    ids: number[],
+    ids: TorrentId[],
     seedRatioMode: number,
     seedRatioLimit: number,
     seedIdleMode: number,

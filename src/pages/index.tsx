@@ -10,6 +10,7 @@ import TorrentListTable from '../components/table/TorrentListTable';
 import FileListTable from '../components/table/FileListTable';
 import Footer from '../components/Footer';
 import Interval from '../components/Interval';
+import VisiblePage from '../components/VisiblePage';
 import getLogger from '../tools/getLogger';
 import RootStoreCtx from '../tools/rootStoreCtx';
 import useRootStore from '../hooks/useRootStore';
@@ -150,9 +151,12 @@ const Index = observer(() => {
         if (rootStore.torrentList.selectedIds.length) {
           const id = rootStore.torrentList.selectedIds[0];
           const torrent = rootStore.client.torrents.get(id);
+          // MoveDialogStore.directory is a required string: passing undefined
+          // (torrent removed elsewhere between the last sync and this keypress)
+          // throws an MST typecheck error out of the keydown handler
           rootStore.createDialog({
             type: 'move',
-            directory: torrent?.directory,
+            directory: torrent?.directory ?? '',
             torrentIds: rootStore.torrentList.selectedIds.slice(0),
           });
         }
@@ -245,7 +249,11 @@ const Index = observer(() => {
 
   return (
     <>
-      <Interval onFire={onIntervalFire} interval={uiUpdateInterval} />
+      {/* Unmounted while the tab is hidden, so a backgrounded full-page view
+          stops polling the daemon; remounting fires an immediate refresh. */}
+      <VisiblePage>
+        <Interval onFire={onIntervalFire} interval={uiUpdateInterval} />
+      </VisiblePage>
       <Menu />
       <TorrentListTable />
       <Footer />

@@ -26,6 +26,12 @@ const config = {
     chunkFilename: '[name].chunk.js',
     path: path.join(outputPath, 'src'),
     clean: false,
+    environment: {
+      // Every browser this ships to has globalThis, so webpack can stop
+      // emitting its `new Function("return this")` fallback — which AMO's
+      // linter flags as DANGEROUS_EVAL in every bundle
+      globalThis: true,
+    },
   },
   mode: mode,
   devtool: devtool,
@@ -136,7 +142,9 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     fallback: {
-      "url": require.resolve("url/"),
+      // No 'url' polyfill: it dragged qs and punycode into both bundles, whose
+      // Function-constructor calls made AMO flag the add-on for eval usage.
+      // URLs are built with template strings / the native URL API instead.
       "process": require.resolve("process/browser.js"),
     },
     alias: {
@@ -166,20 +174,30 @@ const config = {
               manifest.background = {
                 scripts: [manifest.background.service_worker],
               };
-              // No `id` here on purpose: the AMO listing already owns the GUID
-              // (the release workflow passes it as FIREFOX_ADDON_GUID), and
-              // hardcoding a different one would orphan existing installs.
+              // addons-linter makes a missing id a hard ERROR on MV3
+              // (ADDON_ID_REQUIRED), so AMO rejects the upload at validation.
+              // It MUST equal the GUID of the existing AMO listing, which the
+              // release workflow also passes as FIREFOX_ADDON_GUID — set that
+              // same value in FIREFOX_ADDON_ID for release builds; the default
+              // below only keeps local builds lintable.
+              const addonId = process.env.FIREFOX_ADDON_ID || 'transmission-easy-client@mthcore';
               manifest.browser_specific_settings = {
                 gecko: {
-                  // Host permissions are only granted at install from 127; on
-                  // older versions the extension installs with no host access
-                  // and every RPC fails with no way to grant it in-product.
-                  strict_min_version: '127.0',
+                  id: addonId,
+                  // 140 is the first release where BOTH pieces work: host
+                  // permissions granted at install (127+) and the data
+                  // collection metadata below (140+). Declaring 127 made
+                  // addons-linter warn that the consent data is ignored.
+                  strict_min_version: '140.0',
+                  // Required by AMO since 2025-11: declare that nothing is collected
+                  data_collection_permissions: {
+                    required: ['none'],
+                  },
                 },
-              };
-              // Required by AMO since 2025-11: declare that nothing is collected
-              manifest.browser_specific_settings.gecko.data_collection_permissions = {
-                required: ['none'],
+                // Android got data_collection_permissions two releases later
+                gecko_android: {
+                  strict_min_version: '142.0',
+                },
               };
               // navigator.clipboard.writeText outside a user gesture needs this
               // on Firefox (Chrome grants it implicitly to extension pages)

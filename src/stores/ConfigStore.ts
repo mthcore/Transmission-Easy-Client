@@ -8,10 +8,25 @@ import {
 } from 'mobx-state-tree';
 import { storageSet } from '../tools/chromeStorage';
 import getLogger from '../tools/getLogger';
-import url from 'url';
 import { BG_UPDATE_INTERVAL, UI_UPDATE_INTERVAL } from '../constants';
 
 const logger = getLogger('ConfigStore');
+
+/**
+ * Builds the daemon URL without Node's `url` module: importing it pulled qs and
+ * punycode into both shipped bundles, whose Function-constructor calls make
+ * every AMO review flag the add-on for eval usage.
+ */
+function buildServerUrl(ssl: boolean, hostname: string, port: number, pathname: string): string {
+  const protocol = ssl ? 'https' : 'http';
+  // IPv6 literals are stored unbracketed (the RPC transport brackets them)
+  const host = hostname.includes(':') && !hostname.startsWith('[') ? `[${hostname}]` : hostname;
+  let path = pathname || '';
+  if (path && !path.startsWith('/')) {
+    path = `/${path}`;
+  }
+  return `${protocol}://${host}:${port}${path}`;
+}
 
 interface ColumnDef {
   column: string;
@@ -348,25 +363,14 @@ const ConfigStore = types
   .views((self) => {
     return {
       get url(): string {
-        return url.format({
-          protocol: self.ssl ? 'https' : 'http',
-          port: self.port,
-          hostname: self.hostname,
-          pathname: self.pathname,
-        });
+        return buildServerUrl(self.ssl, self.hostname, self.port, self.pathname);
       },
       get webUiUrl(): string {
         // Credentials are deliberately NOT embedded in the URL: browsers leak
         // them into DOM/history and don't apply them to the page's background
         // RPC requests. Authentication is injected as an Authorization header
         // by the background declarativeNetRequest rule (src/bg/webUiAuthRule.ts).
-        const urlObject: url.UrlObject = {
-          protocol: self.ssl ? 'https' : 'http',
-          port: self.port,
-          hostname: self.hostname,
-          pathname: self.webPathname,
-        };
-        return url.format(urlObject);
+        return buildServerUrl(self.ssl, self.hostname, self.port, self.webPathname);
       },
       get activeTorrentColumns() {
         return self.isPopupMode ? self.torrentColumnsPopup : self.torrentColumns;
@@ -376,6 +380,20 @@ const ConfigStore = types
       },
       get visibleFileColumns() {
         return self.filesColumns.filter((column) => column.display);
+      },
+      /**
+       * trackerStats is the heaviest field of the poll (~25 subfields per
+       * tracker, per torrent) and only feeds the swarm-wide 'seeds'/'peers'
+       * columns, both hidden by default. The 'seeds_peers' column shows
+       * CONNECTED peers instead, which come from cheap scalar fields, so it
+       * does not count here. The details dialog fetches trackerStats on its own.
+       */
+      get needsTrackerStats(): boolean {
+        const trackerColumns = ['seeds', 'peers'];
+        return (
+          self.torrentColumns.some((c) => c.display && trackerColumns.includes(c.column)) ||
+          self.torrentColumnsPopup.some((c) => c.display && trackerColumns.includes(c.column))
+        );
       },
     };
   })

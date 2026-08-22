@@ -70,9 +70,16 @@ const TorrentListTableItem = observer(({ torrent }: TorrentListTableItemProps) =
     isStopping,
   };
 
-  const columns = visibleTorrentColumns.map(({ column: name, width }) => {
+  const columns = visibleTorrentColumns.map((column) => {
+    const name = column.column;
     const renderer = torrentColumnRenderers[name];
-    return renderer ? renderer(ctx, width) : null;
+    if (!renderer) return null;
+    // `column.width` is only READ for the name renderer, the only one that uses
+    // it: destructuring it for every column subscribed each row to all ~14
+    // width atoms, so one setWidth during a header drag re-rendered the whole
+    // list (~60 times a second). The other columns are sized by the
+    // --col-*-w CSS variables the table already publishes.
+    return renderer(ctx, name === 'name' ? column.width : 0);
   });
 
   const classList: string[] = [];

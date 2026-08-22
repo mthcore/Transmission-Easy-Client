@@ -49,16 +49,18 @@ class MobxPatchLine {
   }
 
   get patchId(): number {
+    // The counter is strictly increasing, so a collision is impossible until it
+    // wraps — the old `idLine.includes()` guard always scanned the whole
+    // retained line (tens of thousands of entries at a busy 1Hz poll) only to
+    // return false. On wrap, the line is dropped so the reused ids are unique
+    // again; consumers holding an old cursor fall back to a snapshot.
     if (this.index > INDEX_LIMIT) {
       this.index = 0;
+      this.patchLine.length = 0;
+      this.timeLine.length = 0;
+      this.idLine.length = 0;
     }
-
-    let id = -1;
-    while (id === -1 || this.idLine.includes(id)) {
-      id = ++this.index;
-    }
-
-    return id;
+    return ++this.index;
   }
 
   get lastPatchId(): number | null {

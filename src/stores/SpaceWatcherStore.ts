@@ -45,7 +45,10 @@ const SpaceWatcherStore = types
             };
           }>(self);
 
-          if (!rootStore.client.settings || rootStore.client.settings.hasDownloadDirFreeSpace) {
+          // Only fetch settings when we have none: refreshing them costs a
+          // session-get + session-stats + a config re-read every minute, for a
+          // single byte count the free-space RPC below returns on its own.
+          if (!rootStore.client.settings) {
             yield rootStore.client.updateSettings();
           }
           if (isAlive(self)) {
@@ -57,19 +60,15 @@ const SpaceWatcherStore = types
               self.state = 'idle';
               return;
             }
-            const { downloadDir, downloadDirFreeSpace } = settings;
-            if (typeof downloadDirFreeSpace === 'number') {
-              result.push({
-                path: downloadDir,
-                available: downloadDirFreeSpace,
-              });
-            } else {
-              const { path, sizeBytes } = yield rootStore.client.getFreeSpace(downloadDir);
-              result.push({
-                path: path,
-                available: sizeBytes,
-              });
-            }
+            // Always ask the daemon for the CURRENT value: the cached
+            // session-get copy only refreshes when settings are refetched, so
+            // reusing it showed a figure that never moved
+            const { downloadDir } = settings;
+            const { path, sizeBytes } = yield rootStore.client.getFreeSpace(downloadDir);
+            result.push({
+              path: path,
+              available: sizeBytes,
+            });
           }
           if (isAlive(self)) {
             self.downloadDirs = cast(result);

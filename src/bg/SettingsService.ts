@@ -99,11 +99,20 @@ class SettingsService {
     this.applySettings = applySettings;
   }
 
-  updateSettings(): Promise<void> {
+  /**
+   * @param withStats also fetch session-stats (the footer's session counters).
+   * Off for the echo after a session-set: nothing a setting change does moves
+   * those counters, and paying two RPCs per options toggle is pure waste.
+   */
+  updateSettings(withStats = true): Promise<void> {
     return this.transport.sendAction({ method: 'session-get' }).then((response) => {
       const settings = response.arguments as Record<string, unknown>;
       this.transport.rpcVersion = readKey<number>(settings, 'rpc-version', 0);
       const normalized = this.normalizeSettings(settings);
+      if (!withStats) {
+        this.applySettings({ ...normalized, ...this._lastSessionStats });
+        return;
+      }
       // The daemon owns the session counters; summing per-torrent lifetime
       // totals in the UI reports all-time bytes and can even go down when a
       // torrent is removed. Best-effort: a failure here must not fail settings.
@@ -234,8 +243,9 @@ class SettingsService {
       .then(() => {});
   }
 
+  /** Echo after a session-set: re-read the settings, but not the stats */
   private thenUpdateSettings = (): Promise<void> => {
-    return this.updateSettings();
+    return this.updateSettings(false);
   };
 
   private setSessionSetting(args: Record<string, unknown>): Promise<void> {

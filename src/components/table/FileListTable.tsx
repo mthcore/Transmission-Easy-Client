@@ -53,11 +53,20 @@ const FileListTable = observer(() => {
     [fileListStore]
   );
 
-  const onIntervalFire = useCallback(() => {
-    fileListStore?.fetchFiles().catch((err) => {
-      logger.error('onIntervalFire fetchFiles error', err);
-    });
-  }, [fileListStore]);
+  const onIntervalFire = useCallback(
+    (isInit: boolean) => {
+      // Nothing about the file list can change while the torrent is stopped or
+      // finished, and refetching it costs the FULL path of every file each
+      // second — hundreds of KB/s on a large torrent, forever. The Refresh
+      // button stays available as the manual escape hatch.
+      const torrent = fileListStore?.torrent;
+      if (!isInit && torrent && (torrent.isStopped || torrent.isCompleted)) return;
+      fileListStore?.fetchFiles().catch((err) => {
+        logger.error('onIntervalFire fetchFiles error', err);
+      });
+    },
+    [fileListStore]
+  );
 
   if (!fileListStore || !config) return null;
 

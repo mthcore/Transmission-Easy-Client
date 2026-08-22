@@ -18,7 +18,14 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
 
   useEffect(() => {
     const token = tokenRef.current as symbol;
+    // Cascade offset: stacked dialogs rendered at IDENTICAL coordinates with
+    // no backdrop, so the lower one was completely invisible behind the upper
+    // and the user had no cue that another dialog was queued underneath
+    const depth = dialogStack.length;
     dialogStack.push(token);
+    if (depth > 0 && refDialog.current) {
+      refDialog.current.style.transform = `translate(${depth * 24}px, ${depth * 24}px)`;
+    }
     return () => {
       const pos = dialogStack.indexOf(token);
       if (pos !== -1) dialogStack.splice(pos, 1);
@@ -57,6 +64,11 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
   // Close on ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // isComposing/229: Escape during IME composition cancels the
+      // composition, not the dialog — closing here lost everything typed.
+      // defaultPrevented: a layered menu (radix context menu) that consumed
+      // this Escape already closed itself; one press must not pop both.
+      if (e.isComposing || e.keyCode === 229 || e.defaultPrevented) return;
       if (e.key === 'Escape' && isTopmost()) {
         onClose();
       }
@@ -92,6 +104,11 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     // it only calls .focus() at mount — so a data attribute is the only
     // selector that actually matches here.
     const explicit = dialog.querySelector<HTMLElement>('[data-autofocus]');
+    // Remembered so closing can put focus back: without it, focus fell to
+    // <body> — a keyboard user lost their place, and with a dialog still open
+    // underneath, <body>'s Tab walked the page BEHIND the remaining modal
+    // (its trap listens on its own element only)
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     (explicit ?? firstElement)?.focus();
 
     const handleTab = (e: KeyboardEvent) => {
@@ -112,7 +129,12 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     };
 
     dialog.addEventListener('keydown', handleTab);
-    return () => dialog.removeEventListener('keydown', handleTab);
+    return () => {
+      dialog.removeEventListener('keydown', handleTab);
+      if (previouslyFocused && previouslyFocused.isConnected) {
+        previouslyFocused.focus();
+      }
+    };
   }, []);
 
   return refDialog;

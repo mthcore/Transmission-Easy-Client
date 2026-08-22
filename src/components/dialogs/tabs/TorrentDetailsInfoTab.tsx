@@ -393,8 +393,10 @@ const TorrentDetailsInfoTab = ({
                 </tr>
               </thead>
               <tbody>
-                {peers.map((peer) => (
-                  <tr key={peer.address}>
+                {/* address alone collides for two peers behind one NAT (the
+                    RPC's address field is the bare IP), mixing their rows up */}
+                {peers.map((peer, index) => (
+                  <tr key={`${peer.address}-${index}`}>
                     <td title={peer.address}>{peer.address}</td>
                     <td title={peer.client}>{peer.client}</td>
                     <td>{(peer.progress * 100).toFixed(0)}%</td>

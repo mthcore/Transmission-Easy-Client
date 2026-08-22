@@ -15,15 +15,23 @@ const SearchBox = observer(() => {
   const [expanded, setExpanded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleToggle = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setExpanded((prev) => {
-      if (!prev) {
-        setTimeout(() => inputRef.current?.focus(), 0);
-      }
-      return !prev;
-    });
-  }, []);
+  const handleToggle = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      setExpanded((prev) => {
+        if (!prev) {
+          setTimeout(() => inputRef.current?.focus(), 0);
+        } else {
+          // Collapsing must clear the filter, exactly like Escape: a hidden
+          // input kept filtering the list with no visible indicator, and
+          // torrents just seemed to be missing
+          config?.setSearchQuery('');
+        }
+        return !prev;
+      });
+    },
+    [config]
+  );
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

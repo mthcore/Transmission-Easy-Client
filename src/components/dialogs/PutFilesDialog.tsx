@@ -125,10 +125,14 @@ const PutFilesDialog = observer(({ dialogStore }: PutFilesDialogProps) => {
               disabled={sending}
               autoFocus
             />
+            {/* Cancel stays enabled during send: disabling every control
+                dropped focus to <body> (the Tab trap then walked the page
+                behind the modal) and Escape closed the dialog anyway — the
+                transfer itself completes either way, the blobs belong to the
+                document, not the dialog */}
             <input
               onClick={handleClose}
               type="button"
-              disabled={sending}
               value={chrome.i18n.getMessage('DLG_BTN_CANCEL')}
             />
           </div>

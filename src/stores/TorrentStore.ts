@@ -212,7 +212,14 @@ const TorrentStore = types
         }
       },
       get errorMessage(): string {
-        if (self.errorCode > 0) {
+        // Code 1 is TR_STAT_TRACKER_WARNING: the torrent is healthy and a
+        // tracker merely said something. Painting it with the red error icon
+        // and an "Error:" prefix made it indistinguishable from a real
+        // tracker/local error (codes 2/3).
+        if (self.errorCode === 1) {
+          return self.errorString;
+        }
+        if (self.errorCode > 1) {
           let errorString = self.errorString;
           if (/^Error: /.test(errorString)) {
             errorString = errorString.substring(7);
@@ -223,6 +230,10 @@ const TorrentStore = types
           return chrome.i18n.getMessage('OV_FL_ERROR');
         }
         return '';
+      },
+      /** True only for real errors (2/3), not for a tracker warning (1) */
+      get hasError(): boolean {
+        return self.errorCode > 1;
       },
       get selected(): boolean {
         const rootStore = getRoot<{

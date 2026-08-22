@@ -228,13 +228,22 @@ describe('TorrentStore computed views', () => {
     });
 
     it('returns error message with prefix stripped', () => {
-      const t = createTorrent({ errorCode: 1, errorString: 'Error: tracker timeout' });
+      const t = createTorrent({ errorCode: 2, errorString: 'Error: tracker timeout' });
       expect(t.errorMessage).toBe('OV_FL_ERROR: tracker timeout');
+      expect(t.hasError).toBe(true);
     });
 
     it('returns generic error for empty errorString', () => {
-      const t = createTorrent({ errorCode: 1, errorString: '' });
+      const t = createTorrent({ errorCode: 2, errorString: '' });
       expect(t.errorMessage).toBe('OV_FL_ERROR');
+    });
+
+    it('treats errorCode 1 as a tracker warning, not an error', () => {
+      // TR_STAT_TRACKER_WARNING: the torrent is healthy — the text shows
+      // without the Error prefix and without the red icon
+      const t = createTorrent({ errorCode: 1, errorString: 'rate limited' });
+      expect(t.errorMessage).toBe('rate limited');
+      expect(t.hasError).toBe(false);
     });
   });
 

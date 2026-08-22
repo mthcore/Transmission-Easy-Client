@@ -4,6 +4,7 @@ import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import stripBidiControls from '../../tools/stripBidiControls';
 
 interface RemoveConfirmDialogStore {
   close: () => void;
@@ -49,7 +50,9 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
     const id = dialogStore.torrentIds[0];
     const torrent = client?.torrents.get(id);
     if (torrent) {
-      filename = <span className="fileName">{torrent.name}</span>;
+      // Strip bidi overrides: the delete confirmation is exactly where a
+      // spoofed extension must not mislead the user
+      filename = <span className="fileName">{stripBidiControls(torrent.name)}</span>;
     }
 
     const messageKey = deleteData ? 'OV_CONFIRM_DELETE_DATA_ONE' : 'OV_CONFIRM_DELETE_ONE';
@@ -62,7 +65,7 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   }
 
   return (
-    <Dialog onClose={handleClose}>
+    <Dialog onClose={handleClose} isAlert>
       <div className="nf-notifi">
         <form onSubmit={handleSubmit}>
           <div className="nf-subItem">

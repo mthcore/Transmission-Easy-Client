@@ -19,8 +19,22 @@ const LabelSelect = observer(() => {
 
   const selectedLabel = config.selectedLabel;
 
+  // The filters list is rebuilt from labels present on CURRENT torrents, but
+  // selectedLabel is persisted: with the last matching torrent gone, the list
+  // filtered down to nothing while the dropdown rendered blank. Keep the ghost
+  // label visible as an entry so the user can see — and leave — the filter.
+  // (`custom: false` is a user label; `custom: true` are the built-in
+  // categories, which are always present.)
+  const filters = rootStore.torrentList.filters.slice();
+  if (
+    !selectedLabel.custom &&
+    !filters.some((f) => f.custom === selectedLabel.custom && f.label === selectedLabel.label)
+  ) {
+    filters.push({ label: selectedLabel.label, custom: false });
+  }
+
   let selectedValue: string | null = null;
-  const options = rootStore.torrentList.filters.map(({ label, custom: isCustom }) => {
+  const options = filters.map(({ label, custom: isCustom }) => {
     const id = JSON.stringify({ label, custom: isCustom });
 
     let text: string | null = null;

@@ -7,6 +7,7 @@ import TransmissionClient from './TransmissionClient';
 import updateWebUiAuthRule from './webUiAuthRule';
 import MobxPatchLine from '../tools/MobxPatchLine';
 import { serializeError } from 'serialize-error';
+import stripBidiControls from '../tools/stripBidiControls';
 import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
 import { getSnapshot } from 'mobx-state-tree';
 
@@ -474,7 +475,9 @@ class Bg {
   torrentCompleteNotify(torrent: TorrentInfo): void {
     const icon = notificationIcons.complete;
     const statusText = chrome.i18n.getMessage('OV_COL_STATUS') + ': ' + torrent.stateText;
-    showNotification('complete-' + torrent.id, icon, torrent.name, statusText);
+    // OS notifications render the raw title: a bidi override in the torrent
+    // name spoofs the displayed extension right on the user's desktop
+    showNotification('complete-' + torrent.id, icon, stripBidiControls(torrent.name), statusText);
   }
 
   torrentErrorNotify(message: string): void {

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { ANIMATION_TIME_MULTIPLIER } from '../constants';
+import stripBidiControls from '../tools/stripBidiControls';
 
 interface StyleCacheEntry {
   style: HTMLStyleElement;
@@ -45,7 +46,10 @@ interface TorrentNameProps {
   title?: string;
 }
 
-const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
+const TorrentName = React.memo<TorrentNameProps>(({ name: rawName, width, title }) => {
+  // Torrent names are attacker-controlled: a U+202E override in the name
+  // spoofs the displayed file extension (.exe rendered as .png)
+  const name = stripBidiControls(rawName);
   const [movebleClassName, setMovebleClassName] = useState<string | null>(null);
   const [shouldUpdateCalc, setShouldUpdateCalc] = useState(true);
   const refSpan = useRef<HTMLSpanElement>(null);
@@ -104,7 +108,7 @@ const TorrentName = React.memo<TorrentNameProps>(({ name, width, title }) => {
       <span
         ref={refSpan}
         onMouseEnter={shouldUpdateCalc ? handleMouseEnter : undefined}
-        title={title ?? name}
+        title={title ? stripBidiControls(title) : name}
       >
         {name}
       </span>

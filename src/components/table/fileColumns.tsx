@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import stripBidiControls from '../../tools/stripBidiControls';
 import { observer } from 'mobx-react';
 import ProgressBar from '../ProgressBar';
 import type { FileEntry } from '../../types/stores';
@@ -92,7 +93,9 @@ const FileName = observer(({ fileStore, fileListStore }: FileNameProps) => {
     parts.push(nameParts[i]);
   }
 
-  const filename = parts.pop();
+  // File names are attacker-controlled: strip bidi overrides so a U+202E
+  // cannot spoof the displayed extension in the file list
+  const filename = stripBidiControls(parts.pop() ?? '');
   const links = parts.map((name, index) => (
     // Key by depth: a path repeating a directory name ('Season 1/Season 1')
     // produced duplicate sibling keys
@@ -100,7 +103,7 @@ const FileName = observer(({ fileStore, fileListStore }: FileNameProps) => {
       key={`${filterLevel + index + 1}:${name}`}
       onSetFilter={handleSetFilter}
       level={filterLevel + index + 1}
-      name={name}
+      name={stripBidiControls(name)}
     />
   ));
 
@@ -112,7 +115,7 @@ const FileName = observer(({ fileStore, fileListStore }: FileNameProps) => {
   }
 
   return (
-    <div title={fileStore.shortName}>
+    <div title={stripBidiControls(fileStore.shortName)}>
       <span>
         {links}
         {filename}

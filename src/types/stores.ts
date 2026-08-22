@@ -70,6 +70,8 @@ export interface TorrentViews {
   readonly editDateStr: string;
   readonly stateText: string;
   readonly errorMessage: string;
+  /** True only for real errors (codes 2/3), not a tracker warning (1) */
+  readonly hasError: boolean;
   readonly selected: boolean;
   readonly isStopped: boolean;
   readonly isQueuedToCheckFiles: boolean;

@@ -487,9 +487,10 @@ div.loading {
       display: block;
       height: 100%;
       width: 6px;
-      margin-right: -3px;
+      // Logical: see _tables.scss — RTL put the handle on the wrong edge
+      margin-inline-end: -3px;
       cursor: col-resize;
-      right: 0;
+      inset-inline-end: 0;
       top: 0;
       position: absolute !important;
       opacity: 0;
@@ -498,7 +499,7 @@ div.loading {
 
     th:last-child .resize-el {
       width: 3px;
-      margin-right: 0;
+      margin-inline-end: 0;
     }
   }
 }
@@ -595,5 +596,15 @@ div.loading {
     &:hover {
       background-color: var(--primary-hover);
     }
+  }
+}
+
+// Inline error row inside the details dialog when the extended fetch failed
+.dialog-error-inline {
+  padding: 8px 12px;
+  color: var(--error-color);
+
+  button {
+    margin-inline-start: 8px;
   }
 }

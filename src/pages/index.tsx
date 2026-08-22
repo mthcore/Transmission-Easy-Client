@@ -53,9 +53,28 @@ const Index = observer(() => {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Skip if focus in input/textarea
+      // Skip while TYPING — but only there. A focused checkbox (clicking a row
+      // checkbox leaves focus on it) must not kill the list shortcuts, or the
+      // most natural flow of all, select-then-Delete, goes dead.
       const target = e.target as HTMLElement;
-      if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+      const isTextEntry =
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        (target.tagName === 'INPUT' &&
+          !['checkbox', 'radio', 'button', 'submit'].includes((target as HTMLInputElement).type));
+      if (isTextEntry) return;
+      // Enter on a focused button/link activates that control; firing the
+      // start/stop shortcut at the same time acted on the whole selection
+      // behind the user's back. (A focused checkbox is fine: Enter is inert
+      // on checkboxes, so the shortcut may run.)
+      if (
+        e.key === 'Enter' &&
+        (target.closest('button, a, [role="button"]') !== null ||
+          (target.tagName === 'INPUT' &&
+            ['button', 'submit'].includes((target as HTMLInputElement).type)))
+      ) {
+        return;
+      }
 
       // Escape - close the file list. Open dialogs handle Escape themselves,
       // topmost first (useDialog); closing them here too would pop two per press
@@ -113,7 +132,7 @@ const Index = observer(() => {
       }
 
       // Enter - Start/Stop selected
-      if (e.key === 'Enter' && rootStore.torrentList.selectedIds.length) {
+      if (e.key === 'Enter' && !e.repeat && rootStore.torrentList.selectedIds.length) {
         const ids = rootStore.torrentList.selectedIds;
         // Decide on the run state, not on instantaneous speed: isActive is
         // speed-based, so a started-but-idle torrent could never be paused
@@ -175,15 +194,16 @@ const Index = observer(() => {
         return;
       }
 
-      // Ctrl+Shift+S - Stop all
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+      // Ctrl+Shift+S - Stop all. e.repeat guarded like 'r': holding the chord
+      // auto-repeats, and each repeat costs an RPC plus a chained refetch.
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S' && !e.repeat) {
         e.preventDefault();
         rootStore.client.torrentsStop(rootStore.client.torrentIds);
         return;
       }
 
       // Ctrl+Shift+R - Start all
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R' && !e.repeat) {
         e.preventDefault();
         rootStore.client.torrentsStart(rootStore.client.torrentIds);
         return;
@@ -197,10 +217,17 @@ const Index = observer(() => {
   // Theme application
   useTheme(rootStore.config);
 
+  const settingsTickRef = React.useRef(0);
   const onIntervalFire = useCallback(
     (isInit: boolean) => {
       if (!rootStore.client) return;
-      if (isInit) {
+      // Session settings were fetched once at init and then never again, so
+      // the footer's session totals froze and the turtle button could show
+      // OFF for hours while a scheduled alt-speed window was actually ON.
+      // One session-get every ~30 ticks keeps them honest for a trivial cost.
+      settingsTickRef.current += 1;
+      if (isInit || settingsTickRef.current >= 30) {
+        settingsTickRef.current = 0;
         rootStore.client.updateSettings().catch((err) => {
           logger.error('onIntervalFire updateSettings error', err);
         });

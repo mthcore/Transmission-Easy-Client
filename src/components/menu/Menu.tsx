@@ -32,7 +32,12 @@ const Menu = observer(() => {
   );
 
   const handleDropOver = useCallback((e: DragEvent<HTMLBodyElement> | globalThis.DragEvent) => {
-    if (e.dataTransfer?.types.length === 2) return;
+    // Accept only real OS file drags. The old guard ("exactly 2 types" meant a
+    // column-header drag) broke Firefox — its file drags carry
+    // ['application/x-moz-file','Files'], length 2 — so drops navigated the
+    // page to the file; and a text-selection drag (no 'Files') flashed the
+    // full-screen drop layer for nothing.
+    if (!e.dataTransfer?.types.includes('Files')) return;
     e.preventDefault();
 
     setShowDropLayer(true);
@@ -209,11 +214,14 @@ const Menu = observer(() => {
             aria-label={chrome.i18n.getMessage('Open_file')}
             type="button"
           />
+          {/* The .torrent fallback in accept matters: without a desktop
+              torrent client, Windows has no MIME registration for .torrent
+              and a MIME-only filter hid every torrent file in the picker */}
           <input
             ref={refFileInput}
             onChange={handleFileChange}
             type="file"
-            accept="application/x-bittorrent"
+            accept=".torrent,application/x-bittorrent"
             multiple
             style={{ display: 'none' }}
           />

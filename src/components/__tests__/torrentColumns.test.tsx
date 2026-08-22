@@ -85,6 +85,7 @@ function createTorrent(overrides: Partial<Torrent> = {}): Torrent {
     editDateStr: '-',
     stateText: 'OV_FL_DOWNLOADING',
     errorMessage: '',
+    hasError: snapshot.errorCode > 1,
     selected: false,
     isStopped: snapshot.statusCode === 0,
     isQueuedToCheckFiles: snapshot.statusCode === 1,

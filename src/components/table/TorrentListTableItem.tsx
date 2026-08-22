@@ -87,9 +87,18 @@ const TorrentListTableItem = observer(({ torrent }: TorrentListTableItemProps) =
     classList.push('selected');
   }
 
+  // Double-clicks bubbling from interactive cells must not open the file
+  // list: double-clicking a row checkbox (or a start/stop button that
+  // re-enabled between clicks) unexpectedly popped the file panel
+  const handleRowDblClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('input, button, a, select, label')) return;
+    handleDblClick(e);
+  };
+
   return (
     <TorrentContextMenu torrentId={torrent.id}>
-      <tr className={classList.join(' ')} id={String(torrent.id)} onDoubleClick={handleDblClick}>
+      <tr className={classList.join(' ')} id={String(torrent.id)} onDoubleClick={handleRowDblClick}>
         {columns}
       </tr>
     </TorrentContextMenu>

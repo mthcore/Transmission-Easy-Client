@@ -917,5 +917,11 @@
     },
     "restoreSkippedKeys": {
         "message": "Ignored invalid values"
+    },
+    "notATorrentFile": {
+        "message": "This link is not a torrent file (the server returned a web page)"
+    },
+    "noTorrentCaptured": {
+        "message": "No torrent file was produced by this element"
     }
 }

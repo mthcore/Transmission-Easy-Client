@@ -1,11 +1,17 @@
 import getLogger from '../tools/getLogger';
 import downloadFileFromTab from '../tools/downloadFileFromTab';
 import downloadFileFromUrl from '../tools/downloadFileFromUrl';
+import captureTorrentFromTab from '../tools/captureTorrentFromTab';
+import { looksLikeTorrentBuffer } from '../tools/isTorrentData';
 import type { IBgForContextMenu, Folder } from '../types';
 
 const promiseLimit = require('promise-limit');
 
 const logger = getLogger('ContextMenu');
+
+// 'page' as well as 'link': modern trackers download through a JavaScript
+// button with no <a href> at all, so a link-only entry never showed up there
+const MENU_CONTEXTS: ['link', 'page'] = ['link', 'page'];
 const oneThread = promiseLimit(1);
 
 interface MenuItemInfo {
@@ -85,6 +91,49 @@ class ContextMenu {
       }
     }
 
+    await this.addData(data, directory);
+  }
+
+  /**
+   * "Add to Transmission" chosen on something that is NOT a link — a tracker's
+   * JavaScript download button. The page's own download is captured and its
+   * bytes added; an ancestor link falls back to the normal URL path.
+   */
+  async onCapture(tabId: number, frameId: number | undefined, directory?: string): Promise<void> {
+    let data: { blob?: Blob; url?: string };
+    try {
+      data = await captureTorrentFromTab(tabId, frameId);
+    } catch (err: unknown) {
+      const error = err as { code?: string; message?: string };
+      logger.error('onCapture: capture error', err);
+      const message =
+        error.code === 'NO_TORRENT_CAPTURED' || error.code === 'NO_TARGET'
+          ? chrome.i18n.getMessage('noTorrentCaptured')
+          : error.code === 'NOT_A_TORRENT'
+            ? chrome.i18n.getMessage('notATorrentFile')
+            : error.message || chrome.i18n.getMessage('unexpectedError');
+      this.bg.torrentErrorNotify(message || chrome.i18n.getMessage('unexpectedError'));
+      return;
+    }
+    if (data.url) {
+      await this.onSendLink(data.url, tabId, frameId, directory);
+      return;
+    }
+    await this.addData(data, directory);
+  }
+
+  private async addData(data: { blob?: Blob; url?: string }, directory?: string): Promise<void> {
+    // What we fetched must actually be a torrent: right-clicking a torrent's
+    // TITLE link (its HTML page) used to post the page to the daemon, which
+    // answered "invalid or corrupt torrent file" with no hint why
+    if (data.blob) {
+      const buffer = await data.blob.arrayBuffer();
+      if (!looksLikeTorrentBuffer(buffer)) {
+        this.bg.torrentErrorNotify(chrome.i18n.getMessage('notATorrentFile'));
+        return;
+      }
+    }
+
     // Add phase: putTorrent's own catch already notifies on failure, so
     // notifying here too would report every failed add twice.
     if (!this.bg.client) {
@@ -97,7 +146,6 @@ class ContextMenu {
       logger.error('onSendLink: putTorrent error', err);
       return;
     }
-
     if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
       this.bgStore.config.setSelectedLabel('DL', true);
     }
@@ -129,8 +177,13 @@ class ContextMenu {
           switch (itemInfo.name) {
             case 'default': {
               await this.bg.whenReady();
-              if (!linkUrl || !tab?.id) return;
-              await this.onSendLink(linkUrl, tab.id, frameId);
+              if (!tab?.id) return;
+              if (linkUrl) {
+                await this.onSendLink(linkUrl, tab.id, frameId);
+              } else {
+                // Page context: the user right-clicked a button, not a link
+                await this.onCapture(tab.id, frameId);
+              }
               break;
             }
             case 'createFolder': {
@@ -143,7 +196,7 @@ class ContextMenu {
         }
         case 'folder': {
           await this.bg.whenReady();
-          if (!linkUrl || !tab?.id || itemInfo.index === undefined) return;
+          if (!tab?.id || itemInfo.index === undefined) return;
           const folder = this.bgStore.config.folders[itemInfo.index];
           if (!folder) {
             // The folder list changed after this menu was built: sending the
@@ -152,7 +205,11 @@ class ContextMenu {
             this.bg.torrentErrorNotify(chrome.i18n.getMessage('unexpectedError'));
             return;
           }
-          await this.onSendLink(linkUrl, tab.id, frameId, folder.path);
+          if (linkUrl) {
+            await this.onSendLink(linkUrl, tab.id, frameId, folder.path);
+          } else {
+            await this.onCapture(tab.id, frameId, folder.path);
+          }
           break;
         }
       }
@@ -168,7 +225,7 @@ class ContextMenu {
       await contextMenusCreate({
         id: menuId,
         title: chrome.i18n.getMessage('addInTorrentClient'),
-        contexts: ['link'],
+        contexts: MENU_CONTEXTS,
       });
       await this.createFolderMenu(menuId);
     });
@@ -187,7 +244,7 @@ class ContextMenu {
             id: menuItem.id,
             parentId: menuItem.parentId || parentId,
             title: name,
-            contexts: ['link'],
+            contexts: MENU_CONTEXTS,
           });
         })
       );
@@ -198,7 +255,7 @@ class ContextMenu {
             id: JSON.stringify({ type: 'folder', index }),
             parentId: parentId,
             title: folder.name || folder.path,
-            contexts: ['link'],
+            contexts: MENU_CONTEXTS,
           });
         })
       );
@@ -210,7 +267,7 @@ class ContextMenu {
           id: JSON.stringify({ type: 'action', name: 'default', source: 'folder' }),
           parentId: parentId,
           title: chrome.i18n.getMessage('defaultPath'),
-          contexts: ['link'],
+          contexts: MENU_CONTEXTS,
         });
       }
 
@@ -218,7 +275,7 @@ class ContextMenu {
         id: JSON.stringify({ type: 'action', name: 'createFolder' }),
         parentId: parentId,
         title: chrome.i18n.getMessage('add') + '...',
-        contexts: ['link'],
+        contexts: MENU_CONTEXTS,
       });
     }
   }

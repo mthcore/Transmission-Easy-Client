@@ -26,7 +26,10 @@
         "alarms",
         "declarativeNetRequestWithHostAccess"
     ],
-    "host_permissions": ["http://*/*", "https://*/*"],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
@@ -34,5 +37,17 @@
         "page": "options.html",
         "open_in_tab": true
     },
-    "version": "3.4.0"
+    "version": "3.4.0",
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "ctxTarget.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ]
 }

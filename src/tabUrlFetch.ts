@@ -55,7 +55,10 @@ declare global {
             break;
           }
           default: {
-            promise = Promise.reject(new Error('Unknown request'));
+            // Not ours: another injected script (tabCapture.js) may own this
+            // action — answering here would win the response race with an
+            // 'Unknown request' error and silently break that script
+            return;
           }
         }
 

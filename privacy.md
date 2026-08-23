@@ -26,6 +26,13 @@ It also makes requests to other sites in exactly two cases, both started by you:
   links on pages that require your session (private trackers), it runs a small script
   in the current tab to perform that download; the script only fetches the URL you
   clicked and returns the file. This is why the extension requests access to websites.
+- **Adding a torrent from a download button.** Some trackers have no link to
+  right-click: their download button builds the `.torrent` in the page with
+  JavaScript. To support them, a tiny script on every page remembers only which
+  element you last right-clicked (nothing is read, stored or sent), and when you
+  choose "Add in torrent client" on such a button the extension re-triggers that
+  button and captures the torrent file the page produces, instead of saving it
+  to disk. This happens only for that one action and only in that tab.
 - **No analytics, telemetry or third-party services.** Nothing is sent anywhere else,
   and no browsing data is collected, stored or shared.
 

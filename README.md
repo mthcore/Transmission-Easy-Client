@@ -7,7 +7,8 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
 ## Features
 
 - Add torrents via URL, magnet links, or torrent files
-- Context menu integration for quick torrent adding
+- Context menu integration for quick torrent adding — works on plain links AND on the
+  JavaScript download buttons of modern trackers
 - Real-time torrent status monitoring
 - Speed graphs and statistics
 - File priority management

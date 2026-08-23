@@ -20,6 +20,10 @@ const config = {
     index: './src/pages/index',
     options: './src/pages/Options',
     tabUrlFetch: './src/tabUrlFetch',
+    // Context-menu capture for JS download buttons (see ContextMenu.onCapture)
+    ctxTarget: './src/ctxTarget',
+    tabCapture: './src/tabCapture',
+    tabCaptureMain: './src/tabCaptureMain',
   },
   output: {
     filename: '[name].js',

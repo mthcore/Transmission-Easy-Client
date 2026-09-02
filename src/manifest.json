@@ -37,7 +37,7 @@
         "page": "options.html",
         "open_in_tab": true
     },
-    "version": "3.4.0",
+    "version": "3.5.0",
     "content_scripts": [
         {
             "matches": [

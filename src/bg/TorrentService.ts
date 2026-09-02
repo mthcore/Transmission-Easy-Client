@@ -15,15 +15,14 @@ import { RECENTLY_ACTIVE_THRESHOLD } from '../constants';
 import type TransmissionTransport from './TransmissionTransport';
 import type { TransmissionResponse } from './TransmissionTransport';
 import type { BandwidthPriority } from '../types/transmission';
+import {
+  decideCompletions,
+  NOTIFIED_STORAGE_KEY,
+  type CompletionCensus,
+  type NotifiedState,
+} from './completionRules';
 
 const logger = getLogger('TorrentService');
-
-/** Order-insensitive set comparison, used to skip redundant storage writes */
-function sameIdSet<T>(a: T[] | null, b: T[]): boolean {
-  if (a === null || a.length !== b.length) return false;
-  const set = new Set(a);
-  return b.every((item) => set.has(item));
-}
 
 export interface PeerData {
   address: string;
@@ -162,30 +161,6 @@ interface TorrentStore {
     data: { download: number; upload: number; time: number }[];
   };
 }
-
-/**
- * Completion-notification bookkeeping, persisted across service-worker
- * restarts. Keyed by hashString (Transmission's numeric ids are unique only
- * within one daemon session) and scoped to one server, so switching servers or
- * restarting the daemon can't produce a burst of bogus "complete" toasts.
- */
-interface NotifiedState {
-  url: string;
-  /** Hashes already notified as complete */
-  completed: string[];
-  /** Every hash present on the previous poll, to spot first sightings */
-  known: string[];
-}
-
-const NOTIFIED_STORAGE_KEY = '_notifiedState';
-
-/**
- * How recently a torrent must have finished for a first-sighting completion to
- * be announced (seconds). Wide enough to cover a background poll gap and a
- * service-worker restart, short enough that a browser reopened the next day
- * doesn't replay every completion that happened meanwhile.
- */
-const COMPLETION_NOTIFY_WINDOW = 15 * 60;
 
 /** Session-scoped, so the recently-active window survives an SW restart */
 const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
@@ -455,82 +430,30 @@ class TorrentService {
           }
           return null;
         }
+        // Census first, decision second: walking the store and applying the
+        // rules were interleaved here, which is what made this the hardest
+        // code in the file to follow.
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
-        const knownHashes: string[] = [];
-        const completedHashes: string[] = [];
-        const completedTorrents: {
-          hash: string;
-          torrent: { stateText: string; downloaded?: number; completedTime?: number };
-        }[] = [];
+        const census: CompletionCensus = { known: [], completed: [] };
         for (const id of this.clientStore.torrentIds) {
           const torrent = this.clientStore.torrents.get(id);
           const hash = torrent?.hashString;
           if (!torrent || !hash) continue;
-          knownHashes.push(hash);
-          if (!incompleteIds.has(id)) {
-            completedHashes.push(hash);
-            completedTorrents.push({ hash, torrent });
-          }
+          census.known.push(hash);
+          if (!incompleteIds.has(id)) census.completed.push({ hash, torrent });
         }
 
-        // A different server (or no state yet) means nothing here was ever
-        // "just completed" — stay silent for one cycle instead of announcing
-        // every finished torrent the other daemon holds
-        const sameServer = previousState !== null && previousState.url === this.transport.url;
-        if (sameServer) {
-          const alreadyNotified = new Set(previousState.completed);
-          const seenBefore = new Set(previousState.known);
-          for (const { hash, torrent } of completedTorrents) {
-            if (alreadyNotified.has(hash)) continue;
-            if (seenBefore.has(hash)) {
-              // Watched it finish: always worth announcing
-              this.notifier.torrentCompleteNotify(torrent);
-              continue;
-            }
-            // Never seen before, yet already complete. That is either a torrent
-            // added and finished between two polls (worth announcing) or one
-            // that finished long ago — while the browser was closed, or added
-            // for data already on disk. downloadedEver rules out the latter,
-            // completedTime rules out the former; without both we stay silent.
-            const downloadedSomething = (torrent.downloaded ?? 0) > 0;
-            // A daemon clock ahead of the browser's makes the age negative,
-            // which would pass a bare "< WINDOW" test for any completion date
-            const age = now - (torrent.completedTime ?? 0);
-            const completedRecently =
-              typeof torrent.completedTime === 'number' &&
-              torrent.completedTime > 0 &&
-              age >= 0 &&
-              age < COMPLETION_NOTIFY_WINDOW;
-            if (downloadedSomething && completedRecently) {
-              this.notifier.torrentCompleteNotify(torrent);
-            }
-          }
-        }
-
-        // Keep hashes already notified while their torrent is still listed, so
-        // a re-check that dips below 100% doesn't re-notify on the way back up
-        const presentHashes = new Set(knownHashes);
-        const persistedCompleted = sameServer
-          ? Array.from(
-              new Set([
-                ...previousState.completed.filter((hash) => presentHashes.has(hash)),
-                ...completedHashes,
-              ])
-            )
-          : completedHashes;
-        const nextState: NotifiedState = {
-          url: this.transport.url,
-          completed: persistedCompleted,
-          known: knownHashes,
-        };
-
-        if (
-          !sameServer ||
-          !sameIdSet(previousState.completed, persistedCompleted) ||
-          !sameIdSet(previousState.known, knownHashes)
-        ) {
+        const { notify, nextState, shouldPersist } = decideCompletions(
+          previousState,
+          census,
+          this.transport.url,
+          now
+        );
+        for (const torrent of notify) this.notifier.torrentCompleteNotify(torrent);
+        if (shouldPersist) {
           storageSet({ [NOTIFIED_STORAGE_KEY]: nextState }).catch(() => {});
         }
+
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
         this.persistSpeedRoll();

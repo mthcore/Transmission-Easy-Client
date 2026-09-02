@@ -40,7 +40,7 @@
     "filesize": "^11.0.13",
     "mobx": "^6.15.0",
     "mobx-react": "^9.2.1",
-    "mobx-state-tree": "^7.0.2",
+    "mobx-state-tree": "^7.4.0",
     "promise-limit": "^2.7.0",
     "rc-select": "^14.16.8",
     "react": "^19.2.4",

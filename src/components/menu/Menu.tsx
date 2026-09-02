@@ -2,6 +2,7 @@ import React, { useCallback, useState, useRef, useEffect, DragEvent, ChangeEvent
 import { observer } from 'mobx-react';
 import ComponentLoader from '../ComponentLoader';
 import showError from '../../tools/showError';
+import report from '../../tools/reportAction';
 import VisiblePage from '../VisiblePage';
 import useRootStore from '../../hooks/useRootStore';
 import isTextEntry from '../../tools/isTextEntry';
@@ -137,23 +138,27 @@ const Menu = observer(() => {
     });
   }, [rootStore]);
 
+  // These three dispatch RPCs nobody awaits. Without report() a daemon failure
+  // was an unhandled rejection and the toolbar simply did nothing — the same
+  // defect the context menus were fixed for, missed here because this file
+  // already imported showError for its refresh handler.
   const handleStartAll = useCallback(() => {
     const ids = client?.torrentIds;
     if (ids && client) {
-      client.torrentsStart(ids);
+      report(client.torrentsStart(ids));
     }
   }, [client]);
 
   const handleStopAll = useCallback(() => {
     const ids = client?.torrentIds;
     if (ids && client) {
-      client.torrentsStop(ids);
+      report(client.torrentsStop(ids));
     }
   }, [client]);
 
   const handleToggleAltSpeed = useCallback(() => {
     if (client?.settings) {
-      client.setAltSpeedEnabled(!client.settings.altSpeedEnabled);
+      report(client.setAltSpeedEnabled(!client.settings.altSpeedEnabled));
     }
   }, [client]);
 

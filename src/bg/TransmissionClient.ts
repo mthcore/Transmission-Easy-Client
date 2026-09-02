@@ -254,88 +254,14 @@ class TransmissionClient {
   ): Promise<void> {
     return this.settingsService.setGroup(name, options);
   }
-  setDownloadSpeedLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setDownloadSpeedLimitEnabled(enabled);
-  setDownloadSpeedLimit = (speed: number): Promise<void> =>
-    this.settingsService.setDownloadSpeedLimit(speed);
-  setUploadSpeedLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setUploadSpeedLimitEnabled(enabled);
-  setUploadSpeedLimit = (speed: number): Promise<void> =>
-    this.settingsService.setUploadSpeedLimit(speed);
-  setAltSpeedEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setAltSpeedEnabled(enabled);
-  setAltDownloadSpeedLimit = (speed: number): Promise<void> =>
-    this.settingsService.setAltDownloadSpeedLimit(speed);
-  setAltUploadSpeedLimit = (speed: number): Promise<void> =>
-    this.settingsService.setAltUploadSpeedLimit(speed);
-  setBlocklistEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setBlocklistEnabled(enabled);
-  setBlocklistUrl = (url: string): Promise<void> => this.settingsService.setBlocklistUrl(url);
+  /** Uniform session settings, dispatched from the descriptor table */
+  applySetting = (name: string, value: boolean | number | string): Promise<void> =>
+    this.settingsService.applySetting(name, value);
+
   blocklistUpdate(): Promise<{ blocklistSize: number }> {
     return this.settingsService.blocklistUpdate();
   }
-  setPeerLimitGlobal = (limit: number): Promise<void> =>
-    this.settingsService.setPeerLimitGlobal(limit);
-  setPeerLimitPerTorrent = (limit: number): Promise<void> =>
-    this.settingsService.setPeerLimitPerTorrent(limit);
-  setSeedRatioLimited = (enabled: boolean): Promise<void> =>
-    this.settingsService.setSeedRatioLimited(enabled);
-  setSeedRatioLimit = (limit: number): Promise<void> =>
-    this.settingsService.setSeedRatioLimit(limit);
-  setIdleSeedingLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setIdleSeedingLimitEnabled(enabled);
-  setIdleSeedingLimit = (limit: number): Promise<void> =>
-    this.settingsService.setIdleSeedingLimit(limit);
-  setPeerPort = (port: number): Promise<void> => this.settingsService.setPeerPort(port);
-  setPortForwardingEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setPortForwardingEnabled(enabled);
-  setEncryption = (mode: string): Promise<void> => this.settingsService.setEncryption(mode);
-  setDhtEnabled = (enabled: boolean): Promise<void> => this.settingsService.setDhtEnabled(enabled);
-  setPexEnabled = (enabled: boolean): Promise<void> => this.settingsService.setPexEnabled(enabled);
-  setLpdEnabled = (enabled: boolean): Promise<void> => this.settingsService.setLpdEnabled(enabled);
-  setUtpEnabled = (enabled: boolean): Promise<void> => this.settingsService.setUtpEnabled(enabled);
-  setIncompleteDirEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setIncompleteDirEnabled(enabled);
-  setIncompleteDir = (dir: string): Promise<void> => this.settingsService.setIncompleteDir(dir);
-  setRenamePartialFiles = (enabled: boolean): Promise<void> =>
-    this.settingsService.setRenamePartialFiles(enabled);
-  setDownloadQueueEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setDownloadQueueEnabled(enabled);
-  setDownloadQueueSize = (size: number): Promise<void> =>
-    this.settingsService.setDownloadQueueSize(size);
-  setSeedQueueEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setSeedQueueEnabled(enabled);
-  setSeedQueueSize = (size: number): Promise<void> => this.settingsService.setSeedQueueSize(size);
-  setQueueStalledEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setQueueStalledEnabled(enabled);
-  setQueueStalledMinutes = (minutes: number): Promise<void> =>
-    this.settingsService.setQueueStalledMinutes(minutes);
-  setStartAddedTorrents = (enabled: boolean): Promise<void> =>
-    this.settingsService.setStartAddedTorrents(enabled);
-  setTrashOriginalTorrentFiles = (enabled: boolean): Promise<void> =>
-    this.settingsService.setTrashOriginalTorrentFiles(enabled);
-  setAltSpeedTimeEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setAltSpeedTimeEnabled(enabled);
-  setAltSpeedTimeBegin = (minutes: number): Promise<void> =>
-    this.settingsService.setAltSpeedTimeBegin(minutes);
-  setAltSpeedTimeEnd = (minutes: number): Promise<void> =>
-    this.settingsService.setAltSpeedTimeEnd(minutes);
-  setAltSpeedTimeDay = (day: number): Promise<void> => this.settingsService.setAltSpeedTimeDay(day);
-  setScriptTorrentDoneEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setScriptTorrentDoneEnabled(enabled);
-  setScriptTorrentDoneFilename = (filename: string): Promise<void> =>
-    this.settingsService.setScriptTorrentDoneFilename(filename);
   // v4.0.0+ session-set methods
-  setScriptTorrentAddedEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setScriptTorrentAddedEnabled(enabled);
-  setScriptTorrentAddedFilename = (filename: string): Promise<void> =>
-    this.settingsService.setScriptTorrentAddedFilename(filename);
-  setScriptTorrentDoneSeedingEnabled = (enabled: boolean): Promise<void> =>
-    this.settingsService.setScriptTorrentDoneSeedingEnabled(enabled);
-  setScriptTorrentDoneSeedingFilename = (filename: string): Promise<void> =>
-    this.settingsService.setScriptTorrentDoneSeedingFilename(filename);
-  setDefaultTrackers = (trackers: string): Promise<void> =>
-    this.settingsService.setDefaultTrackers(trackers);
   portTest(ipProtocol?: 'ipv4' | 'ipv6'): Promise<boolean> {
     return this.settingsService.portTest(ipProtocol);
   }

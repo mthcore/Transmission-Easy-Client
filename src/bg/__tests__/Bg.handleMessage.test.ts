@@ -70,6 +70,7 @@ const CLIENT_METHODS = [
   'getTorrentDetails',
   'setTrackerList',
   'setSeedLimits',
+  'applySetting',
 ] as const;
 
 type ClientStub = Record<(typeof CLIENT_METHODS)[number], Mock>;
@@ -217,27 +218,35 @@ describe('Bg.handleMessage — id actions', () => {
   });
 });
 
+/**
+ * These settings are dispatched from the descriptor table rather than from a
+ * case label, so what is asserted is the pair the table produces: the action
+ * name it forwards, and the message field it read the value from. That is the
+ * same property the per-method assertions pinned before — picking `enabled`
+ * for a boolean setter and `speed` for a speed setter — stated once per field
+ * kind instead of once per setting.
+ */
 describe('Bg.handleMessage — session setters', () => {
   it('unwraps `enabled` for boolean session setters', async () => {
     const { responded } = dispatch({ action: 'setDhtEnabled', enabled: false });
 
-    await expect(responded).resolves.toEqual({ result: { from: 'setDhtEnabled' } });
-    expect(client.setDhtEnabled).toHaveBeenCalledWith(false);
+    await expect(responded).resolves.toEqual({ result: { from: 'applySetting' } });
+    expect(client.applySetting).toHaveBeenCalledWith('setDhtEnabled', false);
   });
 
   it('unwraps `speed` for speed setters', async () => {
     const { responded } = dispatch({ action: 'setAltUploadSpeedLimit', speed: 512 });
 
     await responded;
-    expect(client.setAltUploadSpeedLimit).toHaveBeenCalledWith(512);
-    expect(client.setDownloadSpeedLimit).not.toHaveBeenCalled();
+    expect(client.applySetting).toHaveBeenCalledWith('setAltUploadSpeedLimit', 512);
+    expect(client.applySetting).toHaveBeenCalledTimes(1);
   });
 
   it('unwraps `value` for numeric session setters', async () => {
     const { responded } = dispatch({ action: 'setPeerLimitGlobal', value: 240 });
 
     await responded;
-    expect(client.setPeerLimitGlobal).toHaveBeenCalledWith(240);
+    expect(client.applySetting).toHaveBeenCalledWith('setPeerLimitGlobal', 240);
   });
 
   it('unwraps `filename` for script setters', async () => {
@@ -247,21 +256,36 @@ describe('Bg.handleMessage — session setters', () => {
     });
 
     await responded;
-    expect(client.setScriptTorrentDoneFilename).toHaveBeenCalledWith('/opt/done.sh');
+    expect(client.applySetting).toHaveBeenCalledWith(
+      'setScriptTorrentDoneFilename',
+      '/opt/done.sh'
+    );
   });
 
   it('unwraps `mode` for setEncryption', async () => {
     const { responded } = dispatch({ action: 'setEncryption', mode: 'required' });
 
     await responded;
-    expect(client.setEncryption).toHaveBeenCalledWith('required');
+    expect(client.applySetting).toHaveBeenCalledWith('setEncryption', 'required');
   });
 
   it('passes 0 through instead of dropping it', async () => {
     const { responded } = dispatch({ action: 'setAltSpeedTimeBegin', value: 0 });
 
     await responded;
-    expect(client.setAltSpeedTimeBegin).toHaveBeenCalledWith(0);
+    expect(client.applySetting).toHaveBeenCalledWith('setAltSpeedTimeBegin', 0);
+  });
+
+  it('rejects a setting the message union does not carry', async () => {
+    // setDefaultTrackers is in the table but reaches no page, so the table must
+    // NOT claim it: dispatching it with an undefined value would write an
+    // undefined default-trackers list to the daemon.
+    const { responded } = dispatch({ action: 'setDefaultTrackers' } as unknown as BgMessage);
+
+    await expect(responded).resolves.toMatchObject({
+      error: { message: expect.stringMatching(/Unknown request/) },
+    });
+    expect(client.applySetting).not.toHaveBeenCalled();
   });
 });
 
@@ -445,14 +469,14 @@ describe('Bg.handleMessage — init gating', () => {
     await flush();
     // Still waiting for init: no answer yet, and the client was never touched.
     expect(calls).toHaveLength(0);
-    expect(client.setAltSpeedEnabled).not.toHaveBeenCalled();
+    expect(client.applySetting).not.toHaveBeenCalled();
 
     // init completes and installs the client, exactly as the config autorun does.
     bg.client = client;
     init.resolve();
 
-    await expect(responded).resolves.toEqual({ result: { from: 'setAltSpeedEnabled' } });
-    expect(client.setAltSpeedEnabled).toHaveBeenCalledWith(true);
+    await expect(responded).resolves.toEqual({ result: { from: 'applySetting' } });
+    expect(client.applySetting).toHaveBeenCalledWith('setAltSpeedEnabled', true);
   });
 
   it('reports "Client not initialized" through {error} when init finished without a client', async () => {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import type { BgMessage } from '../../types';
+import { SETTING_DESCRIPTORS, describeSetting } from '../settingDescriptors';
 
 vi.mock('../TransmissionClient');
 import bgSingleton from '../Bg';
@@ -40,11 +41,18 @@ interface BgHandle {
 
 const bg = bgSingleton as unknown as BgHandle;
 
-/** Every `case 'x':` label in the dispatcher, read from the shipped source. */
+/**
+ * Every action the dispatcher serves, over BOTH of its paths: the `case 'x':`
+ * labels read from the shipped source, and the descriptor table it consults
+ * before the switch. Reading only the labels would have quietly stopped
+ * covering the ~40 settings the day they moved onto the table — which is the
+ * migration this file exists to police.
+ */
 function dispatchedActions(): string[] {
   const source = fs.readFileSync(path.join(__dirname, '../Bg.ts'), 'utf8');
-  const actions = [...source.matchAll(/^\s+case '([^']+)':/gm)].map((match) => match[1]);
-  return [...new Set(actions)];
+  const labels = [...source.matchAll(/^\s+case '([^']+)':/gm)].map((match) => match[1]);
+  const tabled = Object.keys(SETTING_DESCRIPTORS).filter((action) => describeSetting(action));
+  return [...new Set([...labels, ...tabled])];
 }
 
 const ACTIONS = dispatchedActions();

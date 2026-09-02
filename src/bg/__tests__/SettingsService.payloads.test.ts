@@ -192,8 +192,18 @@ const RPC4_GATED: Case[] = [
   },
 ];
 
-const invoke = (service: SettingsService, name: string, args: unknown[]): Promise<void> =>
-  (service as unknown as Record<string, (...a: unknown[]) => Promise<void>>)[name](...args);
+/**
+ * Every case below goes through the one generic path, by the action name the
+ * descriptor table is keyed on. The payload assertions are unchanged from when
+ * each setting had its own method: that is what makes them evidence the table
+ * reproduces the hand-written wire contract exactly.
+ */
+const invoke = (service: SettingsService, name: string, args: unknown[]): Promise<void> => {
+  // A setting carries exactly one value; a case that grew a second argument
+  // would otherwise have it silently dropped here.
+  expect(args).toHaveLength(1);
+  return service.applySetting(name, args[0] as boolean | number | string);
+};
 
 describe('SettingsService session-set payloads (wire contract)', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -246,7 +256,7 @@ describe('SettingsService session-set payloads (wire contract)', () => {
   describe('the echo after a mutation', () => {
     it('follows every session-set with session-get, and NOT session-stats', async () => {
       const { service, transport } = createService();
-      await service.setDhtEnabled(true);
+      await service.applySetting('setDhtEnabled', true);
 
       const methods = transport.sendAction.mock.calls.map((call) => call[0].method);
       // Paying two RPCs per options toggle is waste: nothing a setting change
@@ -256,7 +266,7 @@ describe('SettingsService session-set payloads (wire contract)', () => {
 
     it('applies the refreshed settings to the store', async () => {
       const { service, applySettings } = createService();
-      await service.setDhtEnabled(true);
+      await service.applySetting('setDhtEnabled', true);
       expect(applySettings).toHaveBeenCalledTimes(1);
     });
   });

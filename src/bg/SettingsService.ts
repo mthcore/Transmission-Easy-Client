@@ -1,5 +1,7 @@
 import type TransmissionTransport from './TransmissionTransport';
 import { readKey, assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
+import { SETTING_DESCRIPTORS, type SettingDescriptor } from './settingDescriptors';
+import ErrorWithCode from '../tools/ErrorWithCode';
 import { BLOCKLIST_UPDATE_TIMEOUT } from '../constants';
 import type { SessionStatistics, BandwidthGroup } from '../types/transmission';
 
@@ -248,6 +250,28 @@ class SettingsService {
     return this.updateSettings(false);
   };
 
+  /**
+   * Build and send one session-set from the descriptor table.
+   *
+   * The named setters below delegate here, so the payload for every uniform
+   * setting is produced in exactly one place. `enables` is written BEFORE the
+   * value, matching the order the hand-written payloads used.
+   */
+  applySetting(name: string, value: boolean | number | string): Promise<void> {
+    const descriptor = (SETTING_DESCRIPTORS as Record<string, SettingDescriptor>)[name];
+    if (!descriptor) {
+      return Promise.reject(new ErrorWithCode(`Unknown setting: ${name}`, 'UNKNOWN_SETTING'));
+    }
+    const args: Record<string, unknown> = {};
+    if (descriptor.enables) args[descriptor.enables] = true;
+    args[descriptor.rpcKey] = value;
+
+    const send = () => this.setSessionSetting(args);
+    return descriptor.rpcVersionMin
+      ? this.requireRpc(descriptor.rpcVersionMin, descriptor.rpcKey).then(send)
+      : send();
+  }
+
   private setSessionSetting(args: Record<string, unknown>): Promise<void> {
     return this.transport
       .sendAction({
@@ -257,146 +281,7 @@ class SettingsService {
       .then(this.thenUpdateSettings);
   }
 
-  setDownloadSpeedLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'speed-limit-down-enabled': enabled });
-
-  setDownloadSpeedLimit = (speed: number): Promise<void> =>
-    this.setSessionSetting({ 'speed-limit-down-enabled': true, 'speed-limit-down': speed });
-
-  setUploadSpeedLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'speed-limit-up-enabled': enabled });
-
-  setUploadSpeedLimit = (speed: number): Promise<void> =>
-    this.setSessionSetting({ 'speed-limit-up-enabled': true, 'speed-limit-up': speed });
-
-  setAltSpeedEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-enabled': enabled });
-
-  setAltDownloadSpeedLimit = (speed: number): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-enabled': true, 'alt-speed-down': speed });
-
-  setAltUploadSpeedLimit = (speed: number): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-enabled': true, 'alt-speed-up': speed });
-
-  setBlocklistEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'blocklist-enabled': enabled });
-
-  setBlocklistUrl = (url: string): Promise<void> =>
-    this.setSessionSetting({ 'blocklist-url': url });
-
-  setPeerLimitGlobal = (limit: number): Promise<void> =>
-    this.setSessionSetting({ 'peer-limit-global': limit });
-
-  setPeerLimitPerTorrent = (limit: number): Promise<void> =>
-    this.setSessionSetting({ 'peer-limit-per-torrent': limit });
-
-  setSeedRatioLimited = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ seedRatioLimited: enabled });
-
-  setSeedRatioLimit = (limit: number): Promise<void> =>
-    this.setSessionSetting({ seedRatioLimited: true, seedRatioLimit: limit });
-
-  setIdleSeedingLimitEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'idle-seeding-limit-enabled': enabled });
-
-  setIdleSeedingLimit = (limit: number): Promise<void> =>
-    this.setSessionSetting({ 'idle-seeding-limit-enabled': true, 'idle-seeding-limit': limit });
-
-  setPeerPort = (port: number): Promise<void> => this.setSessionSetting({ 'peer-port': port });
-
-  setPortForwardingEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'port-forwarding-enabled': enabled });
-
-  setEncryption = (mode: string): Promise<void> => this.setSessionSetting({ encryption: mode });
-
-  setDhtEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'dht-enabled': enabled });
-
-  setPexEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'pex-enabled': enabled });
-
-  setLpdEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'lpd-enabled': enabled });
-
-  setUtpEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'utp-enabled': enabled });
-
-  setIncompleteDirEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'incomplete-dir-enabled': enabled });
-
-  setIncompleteDir = (dir: string): Promise<void> =>
-    this.setSessionSetting({ 'incomplete-dir': dir });
-
-  setRenamePartialFiles = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'rename-partial-files': enabled });
-
-  setDownloadQueueEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'download-queue-enabled': enabled });
-
-  setDownloadQueueSize = (size: number): Promise<void> =>
-    this.setSessionSetting({ 'download-queue-enabled': true, 'download-queue-size': size });
-
-  setSeedQueueEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'seed-queue-enabled': enabled });
-
-  setSeedQueueSize = (size: number): Promise<void> =>
-    this.setSessionSetting({ 'seed-queue-enabled': true, 'seed-queue-size': size });
-
-  setQueueStalledEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'queue-stalled-enabled': enabled });
-
-  setQueueStalledMinutes = (minutes: number): Promise<void> =>
-    this.setSessionSetting({ 'queue-stalled-enabled': true, 'queue-stalled-minutes': minutes });
-
-  setStartAddedTorrents = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'start-added-torrents': enabled });
-
-  setTrashOriginalTorrentFiles = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'trash-original-torrent-files': enabled });
-
-  setAltSpeedTimeEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-time-enabled': enabled });
-
-  setAltSpeedTimeBegin = (minutes: number): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-time-begin': minutes });
-
-  setAltSpeedTimeEnd = (minutes: number): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-time-end': minutes });
-
-  setAltSpeedTimeDay = (day: number): Promise<void> =>
-    this.setSessionSetting({ 'alt-speed-time-day': day });
-
-  setScriptTorrentDoneEnabled = (enabled: boolean): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-done-enabled': enabled });
-
-  setScriptTorrentDoneFilename = (filename: string): Promise<void> =>
-    this.setSessionSetting({ 'script-torrent-done-filename': filename });
-
   // v4.0.0+ session-set methods
-  setScriptTorrentAddedEnabled = (enabled: boolean): Promise<void> =>
-    this.requireRpc(RPC_VERSION_4, 'script-torrent-added-enabled').then(() =>
-      this.setSessionSetting({ 'script-torrent-added-enabled': enabled })
-    );
-
-  setScriptTorrentAddedFilename = (filename: string): Promise<void> =>
-    this.requireRpc(RPC_VERSION_4, 'script-torrent-added-filename').then(() =>
-      this.setSessionSetting({ 'script-torrent-added-filename': filename })
-    );
-
-  setScriptTorrentDoneSeedingEnabled = (enabled: boolean): Promise<void> =>
-    this.requireRpc(RPC_VERSION_4, 'script-torrent-done-seeding-enabled').then(() =>
-      this.setSessionSetting({ 'script-torrent-done-seeding-enabled': enabled })
-    );
-
-  setScriptTorrentDoneSeedingFilename = (filename: string): Promise<void> =>
-    this.requireRpc(RPC_VERSION_4, 'script-torrent-done-seeding-filename').then(() =>
-      this.setSessionSetting({ 'script-torrent-done-seeding-filename': filename })
-    );
-
-  setDefaultTrackers = (trackers: string): Promise<void> =>
-    this.requireRpc(RPC_VERSION_4, 'default-trackers').then(() =>
-      this.setSessionSetting({ 'default-trackers': trackers })
-    );
 
   portTest(ipProtocol?: 'ipv4' | 'ipv6'): Promise<boolean> {
     const args: Record<string, unknown> = {};

@@ -79,11 +79,11 @@ describe('SettingsService.updateSettings', () => {
 describe('SettingsService version gating', () => {
   it('rejects 4.x-only calls when the daemon is known to be too old', async () => {
     const { service, sendAction } = createService(15);
-    await expect(service.setDefaultTrackers('udp://a')).rejects.toMatchObject({
+    await expect(service.applySetting('setDefaultTrackers', 'udp://a')).rejects.toMatchObject({
       code: 'UNSUPPORTED_RPC_VERSION',
     });
     await expect(service.getGroups()).rejects.toMatchObject({ code: 'UNSUPPORTED_RPC_VERSION' });
-    await expect(service.setScriptTorrentAddedEnabled(true)).rejects.toMatchObject({
+    await expect(service.applySetting('setScriptTorrentAddedEnabled', true)).rejects.toMatchObject({
       code: 'UNSUPPORTED_RPC_VERSION',
     });
     expect(sendAction).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe('SettingsService version gating', () => {
   it('passes through when the version is not known yet (backstop only)', async () => {
     const { service, sendAction } = createService(0);
     sendAction.mockResolvedValue({ result: 'success', arguments: {} });
-    await expect(service.setDefaultTrackers('udp://a')).resolves.toBeUndefined();
+    await expect(service.applySetting('setDefaultTrackers', 'udp://a')).resolves.toBeUndefined();
   });
 });
 

@@ -10,6 +10,11 @@ import { serializeError } from 'serialize-error';
 import stripBidiControls from '../tools/stripBidiControls';
 import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
 import { getSnapshot } from 'mobx-state-tree';
+import {
+  describeSetting,
+  type DispatchableSetting,
+  type SettingAction,
+} from './settingDescriptors';
 
 const logger = getLogger('background');
 
@@ -24,6 +29,11 @@ interface TorrentInfo {
   name: string;
   stateText?: string;
 }
+
+type SettingMessage = Extract<BgMessage, { action: SettingAction }>;
+
+const isSettingMessage = (message: BgMessage): message is SettingMessage =>
+  describeSetting(message.action) !== undefined;
 
 class Bg {
   bgStore: IBgStore;
@@ -197,6 +207,23 @@ class Bg {
       return;
     }
 
+    // Every uniform session setting is served from the descriptor table
+    // instead of a case label of its own. The table's keys are literal types,
+    // so what reaches the switch below is still an exhaustive union minus
+    // these — a new setting that is added to the table but forgotten in the
+    // message types fails to compile, and one added to the message types but
+    // forgotten in the table falls through to the exhaustiveness check.
+    if (isSettingMessage(message)) {
+      const action = message.action;
+      // Defined: the guard above is exactly `describeSetting(action) !== undefined`
+      const setting = describeSetting(action) as DispatchableSetting;
+      const value = (message as unknown as Record<string, boolean | number | string>)[setting.arg];
+      return this.respond(
+        this.whenReady().then(() => this.requireClient().applySetting(action, value)),
+        response
+      );
+    }
+
     let promise: Promise<unknown> | null = null;
 
     // Type narrowing happens automatically in each case block
@@ -255,42 +282,6 @@ class Bg {
         promise = this.whenReady().then(() => this.requireClient().getPeers(message.id));
         break;
       }
-      case 'setDownloadSpeedLimitEnabled':
-      case 'setUploadSpeedLimitEnabled':
-      case 'setAltSpeedEnabled':
-      case 'setBlocklistEnabled':
-      case 'setSeedRatioLimited':
-      case 'setIdleSeedingLimitEnabled':
-      case 'setPortForwardingEnabled':
-      case 'setDhtEnabled':
-      case 'setPexEnabled':
-      case 'setLpdEnabled':
-      case 'setUtpEnabled':
-      case 'setIncompleteDirEnabled':
-      case 'setRenamePartialFiles':
-      case 'setDownloadQueueEnabled':
-      case 'setSeedQueueEnabled':
-      case 'setQueueStalledEnabled':
-      case 'setStartAddedTorrents':
-      case 'setTrashOriginalTorrentFiles':
-      case 'setAltSpeedTimeEnabled':
-      case 'setScriptTorrentDoneEnabled':
-      case 'setScriptTorrentAddedEnabled':
-      case 'setScriptTorrentDoneSeedingEnabled': {
-        const action = message.action;
-        const enabled = message.enabled;
-        promise = this.whenReady().then(() => this.requireClient()[action](enabled));
-        break;
-      }
-      case 'setDownloadSpeedLimit':
-      case 'setUploadSpeedLimit':
-      case 'setAltUploadSpeedLimit':
-      case 'setAltDownloadSpeedLimit': {
-        const action = message.action;
-        const speed = message.speed;
-        promise = this.whenReady().then(() => this.requireClient()[action](speed));
-        break;
-      }
       case 'updateSettings': {
         // The options page sends this right after writing new connection
         // settings to validate them; the async storage.onChanged listener may
@@ -337,44 +328,8 @@ class Bg {
         );
         break;
       }
-      case 'setPeerLimitGlobal':
-      case 'setPeerLimitPerTorrent':
-      case 'setSeedRatioLimit':
-      case 'setIdleSeedingLimit':
-      case 'setPeerPort':
-      case 'setDownloadQueueSize':
-      case 'setSeedQueueSize':
-      case 'setQueueStalledMinutes':
-      case 'setAltSpeedTimeBegin':
-      case 'setAltSpeedTimeEnd':
-      case 'setAltSpeedTimeDay': {
-        const action = message.action;
-        const value = message.value;
-        promise = this.whenReady().then(() => this.requireClient()[action](value));
-        break;
-      }
-      case 'setEncryption': {
-        promise = this.whenReady().then(() => this.requireClient().setEncryption(message.mode));
-        break;
-      }
-      case 'setBlocklistUrl': {
-        promise = this.whenReady().then(() => this.requireClient().setBlocklistUrl(message.url));
-        break;
-      }
       case 'blocklistUpdate': {
         promise = this.whenReady().then(() => this.requireClient().blocklistUpdate());
-        break;
-      }
-      case 'setIncompleteDir': {
-        promise = this.whenReady().then(() => this.requireClient().setIncompleteDir(message.dir));
-        break;
-      }
-      case 'setScriptTorrentDoneFilename':
-      case 'setScriptTorrentAddedFilename':
-      case 'setScriptTorrentDoneSeedingFilename': {
-        const action = message.action;
-        const filename = message.filename;
-        promise = this.whenReady().then(() => this.requireClient()[action](filename));
         break;
       }
       case 'portTest': {
@@ -434,22 +389,25 @@ class Bg {
       }
     }
 
-    if (promise) {
-      promise
-        .then(
-          (result) => {
-            response({ result });
-          },
-          (err) => {
-            response({ error: serializeError(err) });
-          }
-        )
-        .catch((err) => {
-          logger.error('Send response error', err);
-        });
-      return true;
-    }
+    if (promise) return this.respond(promise, response);
   };
+
+  /** Answer one message once the promise settles, and keep the port open */
+  private respond(promise: Promise<unknown>, response: (result: unknown) => void): boolean {
+    promise
+      .then(
+        (result) => {
+          response({ result });
+        },
+        (err) => {
+          response({ error: serializeError(err) });
+        }
+      )
+      .catch((err) => {
+        logger.error('Send response error', err);
+      });
+    return true;
+  }
 
   handleNotificationClick = (notificationId: string) => {
     chrome.notifications.clear(notificationId);

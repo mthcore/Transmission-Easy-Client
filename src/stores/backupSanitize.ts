@@ -1,4 +1,4 @@
-import ConfigStore, { configKeys } from '../stores/ConfigStore';
+import ConfigStore, { configKeys } from './ConfigStore';
 import { getSnapshot } from 'mobx-state-tree';
 
 /**

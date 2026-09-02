@@ -79,6 +79,88 @@ export default [
     },
   },
   {
+    // Firefox's chrome.* namespace returns undefined instead of a promise, so
+    // `await chrome.storage.local.get(...)` resolves INSTANTLY and the call
+    // silently does nothing — no error, and Chrome-only CI stays green. That
+    // has shipped at least four times: context menus racing to empty, header
+    // rules never applied, the client left unbuilt, and every context-menu add
+    // falling back to the cookie-less path.
+    //
+    // Always use the callback form wrapped in a Promise; tools/chromeStorage.ts
+    // is the model.
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        // The callee is a member chain of unknown depth (chrome.tabs.create,
+        // chrome.storage.local.get, ...), so each depth is matched explicitly.
+        ...[1, 2, 3, 4].map((depth) => ({
+          selector: `AwaitExpression > CallExpression > MemberExpression[${'object.'.repeat(depth)}name='chrome']`,
+          message:
+            'chrome.* returns undefined on Firefox, so await resolves immediately and the call does nothing. Use the callback form wrapped in a Promise (see tools/chromeStorage.ts).',
+        })),
+        ...[1, 2, 3, 4].map((depth) => ({
+          selector: `MemberExpression[property.name='then'] > CallExpression > MemberExpression[${'object.'.repeat(depth)}name='chrome']`,
+          message:
+            'chrome.* returns undefined on Firefox, so .then() throws. Use the callback form wrapped in a Promise (see tools/chromeStorage.ts).',
+        })),
+      ],
+    },
+  },
+  {
+    // The layering is real and holds today, but nothing enforced it: tools/ is
+    // a leaf, and the UI reaches the background only through the message
+    // dispatcher. A single careless import would erode that invisibly.
+    files: ['src/tools/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/bg/*', '**/stores/*', '**/components/*', '**/pages/*', '**/hooks/*'],
+              // A type carries no runtime dependency, and two helpers
+              // legitimately describe shapes that upper layers own:
+              // safeJsonParse returns a TransmissionResponse, rootStoreCtx
+              // types a React context.
+              allowTypeImports: true,
+              message:
+                'tools/ is a leaf layer: it must not depend at runtime on bg/, stores/, components/, pages/ or hooks/. Type-only imports are allowed.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/components/**/*.{ts,tsx}', 'src/hooks/**/*.{ts,tsx}', 'src/pages/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/bg/*'],
+              // Types are fine — ClientStore already imports PeerData and
+              // TorrentDetailData from the service that defines them.
+              allowTypeImports: true,
+              message:
+                'The UI reaches the background through callApi and the message contract, never by importing bg/ directly. Type-only imports are allowed.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Assertions are how a test says "this is set up correctly"; the rule is
+    // aimed at production code, where it hides a real nullability decision.
+    files: ['src/**/__tests__/**/*.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
+    },
+  },
+  {
     // The build scripts are plain CommonJS run by Node during the build. They
     // were excluded from linting entirely, which is how the manifest transform
     // and the packaging code ended up as the only production-affecting code in

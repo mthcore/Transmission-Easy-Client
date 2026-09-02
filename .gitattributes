@@ -1,0 +1,11 @@
+# Prettier writes LF and CI runs on Linux, so LF is the project's line ending.
+# Without this, a Windows checkout with core.autocrlf=true produces CRLF files
+# that prettier immediately rewrites, turning every `prettier --write` into a
+# whole-tree diff.
+* text=auto eol=lf
+
+# Binary assets must never be touched
+*.png binary
+*.gif binary
+*.ico binary
+*.zip binary

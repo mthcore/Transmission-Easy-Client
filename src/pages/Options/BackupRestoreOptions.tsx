@@ -6,7 +6,7 @@ import {
   BACKUP_EXCLUDE_KEYS,
   getConnectionChanges,
   sanitizeRestoreConfig,
-} from '../../tools/backupSanitize';
+} from '../../stores/backupSanitize';
 import {
   saveCloudBackup,
   loadCloudBackup,

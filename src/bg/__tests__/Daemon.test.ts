@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Daemon, { ALARM_NAME } from '../../bg/Daemon';
+import Daemon, { ALARM_NAME } from '../Daemon';
 import type { IBgForDaemon } from '../../types';
 
 function createMockBg(overrides?: Partial<IBgForDaemon>): IBgForDaemon {

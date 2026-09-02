@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import TransmissionTransport from '../../bg/TransmissionTransport';
+import TransmissionTransport from '../TransmissionTransport';
 
 describe('TransmissionTransport', () => {
   let transport: TransmissionTransport;

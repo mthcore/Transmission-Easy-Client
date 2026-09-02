@@ -40,10 +40,16 @@ export function useTableHeadColumn({
     [column.column, type]
   );
 
+  // Only a header cell, or something inside one, is a drop target. The parent
+  // is checked because the pointer reports whichever child it is over — a
+  // label or the resize handle. A target with no parent at all is not a header
+  // cell either; the previous form let it through, because `&& el.parentNode`
+  // made the whole guard false rather than the cell acceptable.
+  const isHeaderCell = (el: HTMLElement | null): boolean =>
+    !!el && (el.tagName === 'TH' || (el.parentNode as HTMLElement | null)?.tagName === 'TH');
+
   const handleDragOver = useCallback((e: DragEvent<HTMLTableCellElement>) => {
-    const el = e.target as HTMLElement;
-    if (el.tagName !== 'TH' && el.parentNode && (el.parentNode as HTMLElement).tagName !== 'TH')
-      return;
+    if (!isHeaderCell(e.target as HTMLElement)) return;
     e.preventDefault();
     e.stopPropagation();
   }, []);
@@ -52,11 +58,13 @@ export function useTableHeadColumn({
     (e: DragEvent<HTMLTableCellElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      let el = e.target as HTMLElement;
-      if (el.tagName !== 'TH') {
-        el = el.parentNode as HTMLElement;
+      let el = e.target as HTMLElement | null;
+      if (el && el.tagName !== 'TH') {
+        el = el.parentNode as HTMLElement | null;
       }
-      if (el.tagName !== 'TH') {
+      // Null-safe: reading tagName off a missing parent threw here, before the
+      // guard that was meant to reject exactly this could run.
+      if (el?.tagName !== 'TH') {
         return;
       }
 

@@ -990,15 +990,6 @@ class TorrentService {
       .then(this.thenUpdateTorrents);
   }
 
-  setQueuePosition(ids: TorrentId[], position: number): Promise<TransmissionResponse> {
-    return this.transport
-      .sendAction({
-        method: 'torrent-set',
-        arguments: { ids, queuePosition: position },
-      })
-      .then(this.thenUpdateTorrents);
-  }
-
   setGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return Promise.resolve()
       .then(() => assertRpcVersion(this.transport.rpcVersion, RPC_VERSION_4, 'torrent-set group'))

@@ -10,7 +10,6 @@ import TorrentService, {
 import FileService, { type NormalizedFile } from './FileService';
 import SettingsService, {
   type NormalizedSettings,
-  type NormalizedSessionStats,
   type NormalizedBandwidthGroup,
 } from './SettingsService';
 
@@ -218,9 +217,6 @@ class TransmissionClient {
   setTorrentPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
     return this.torrentService.setPeerLimit(ids, limit);
   }
-  setTorrentQueuePosition(ids: TorrentId[], position: number): Promise<TransmissionResponse> {
-    return this.torrentService.setQueuePosition(ids, position);
-  }
   setTorrentGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return this.torrentService.setGroup(ids, group);
   }
@@ -239,9 +235,6 @@ class TransmissionClient {
   // Settings operations
   updateSettings(): Promise<void> {
     return this.settingsService.updateSettings();
-  }
-  getSessionStats(): Promise<NormalizedSessionStats> {
-    return this.settingsService.getSessionStats();
   }
   getFreeSpace(path: string): Promise<{ path: string; sizeBytes: number; totalSize?: number }> {
     return this.settingsService.getFreeSpace(path);

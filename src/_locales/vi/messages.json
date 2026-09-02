@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Tất cả tệp đang hiển thị"
+    },
+    "defaultTrackers": {
+        "message": "Tracker mặc định"
     }
 }

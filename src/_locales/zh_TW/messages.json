@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "所有顯示的檔案"
+    },
+    "defaultTrackers": {
+        "message": "預設 Tracker"
     }
 }

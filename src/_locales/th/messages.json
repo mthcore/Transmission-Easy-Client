@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "ไฟล์ทั้งหมดที่แสดง"
+    },
+    "defaultTrackers": {
+        "message": "ตัวติดตามเริ่มต้น"
     }
 }

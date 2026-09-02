@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Gösterilen tüm dosyalar"
+    },
+    "defaultTrackers": {
+        "message": "Varsayılan izleyiciler"
     }
 }

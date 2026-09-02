@@ -25,6 +25,8 @@ const ServerOptions = observer(() => {
   const settings = client?.settings ?? null;
   const [url, setUrl] = useState('');
   const [urlLoaded, setUrlLoaded] = useState<string | null>(null);
+  const [trackers, setTrackers] = useState('');
+  const [trackersLoaded, setTrackersLoaded] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -86,6 +88,14 @@ const ServerOptions = observer(() => {
   const handleApplyUrl = useCallback(() => {
     runAction(client?.setBlocklistUrl(url));
   }, [client, url, runAction]);
+
+  const handleTrackersChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTrackers(e.target.value);
+  }, []);
+
+  const handleApplyTrackers = useCallback(() => {
+    runAction(client?.setDefaultTrackers(trackers));
+  }, [client, trackers, runAction]);
 
   const handleUpdate = useCallback(() => {
     if (!client) return;
@@ -211,6 +221,14 @@ const ServerOptions = observer(() => {
   if (urlLoaded !== settings.blocklistUrl) {
     setUrl(settings.blocklistUrl);
     setUrlLoaded(settings.blocklistUrl);
+  }
+
+  // maybe(string): a daemon older than 4.0 never reports the field at all, and
+  // the textarea must still be a controlled component
+  const defaultTrackers = settings.defaultTrackers ?? '';
+  if (trackersLoaded !== defaultTrackers) {
+    setTrackers(defaultTrackers);
+    setTrackersLoaded(defaultTrackers);
   }
 
   if (incompleteDirLoaded !== settings.incompleteDir) {
@@ -721,6 +739,25 @@ const ServerOptions = observer(() => {
           <div className="blocklist-url-row">
             <input type="text" value={scriptFilename} onChange={handleScriptFilenameChange} />
             <button type="button" onClick={handleApplyScriptFilename}>
+              {chrome.i18n.getMessage('DLG_BTN_APPLY')}
+            </button>
+          </div>
+        </label>
+      )}
+
+      {/* default-trackers needs Transmission 4.0+ (rpc 17) */}
+      {settings.features.defaultTrackers && (
+        <label>
+          <span>{chrome.i18n.getMessage('defaultTrackers')}</span>
+          <div className="default-trackers-row">
+            <textarea
+              value={trackers}
+              onChange={handleTrackersChange}
+              rows={4}
+              spellCheck={false}
+              placeholder={chrome.i18n.getMessage('DT_TRACKER_LIST_HELP')}
+            />
+            <button type="button" onClick={handleApplyTrackers}>
               {chrome.i18n.getMessage('DLG_BTN_APPLY')}
             </button>
           </div>

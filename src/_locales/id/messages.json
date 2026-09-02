@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Semua berkas yang ditampilkan"
+    },
+    "defaultTrackers": {
+        "message": "Pelacak bawaan"
     }
 }

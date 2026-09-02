@@ -275,18 +275,6 @@ describe('Bg.handleMessage — session setters', () => {
     await responded;
     expect(client.applySetting).toHaveBeenCalledWith('setAltSpeedTimeBegin', 0);
   });
-
-  it('rejects a setting the message union does not carry', async () => {
-    // setDefaultTrackers is in the table but reaches no page, so the table must
-    // NOT claim it: dispatching it with an undefined value would write an
-    // undefined default-trackers list to the daemon.
-    const { responded } = dispatch({ action: 'setDefaultTrackers' } as unknown as BgMessage);
-
-    await expect(responded).resolves.toMatchObject({
-      error: { message: expect.stringMatching(/Unknown request/) },
-    });
-    expect(client.applySetting).not.toHaveBeenCalled();
-  });
 });
 
 describe('Bg.handleMessage — torrent detail / 4.x actions', () => {

@@ -39,7 +39,13 @@ const BandwidthGroups = observer(() => {
     if (!client) return;
     setError('');
     client.getGroups().then(
-      (list) => setGroups(list as Group[]),
+      // Checked rather than cast: the service guarantees an array, but a cast
+      // that turns out to be wrong takes the whole options page down with a
+      // render error instead of failing inside this one section.
+      (list) =>
+        Array.isArray(list)
+          ? setGroups(list as Group[])
+          : setError(chrome.i18n.getMessage('unexpectedError')),
       (err: Error) => setError(`${err.name}: ${err.message}`)
     );
   }, [client]);

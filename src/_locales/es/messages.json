@@ -947,5 +947,8 @@
     },
     "applyToShownFiles": {
         "message": "Todos los archivos mostrados"
+    },
+    "defaultTrackers": {
+        "message": "Rastreadores predeterminados"
     }
 }

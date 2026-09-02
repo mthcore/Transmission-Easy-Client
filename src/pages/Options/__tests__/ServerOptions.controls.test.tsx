@@ -342,3 +342,110 @@ describe('ServerOptions — the control table itself', () => {
     expect(TOGGLES.length + NUMBERS.length).toBe(21);
   });
 });
+
+/**
+ * The default tracker list is a Transmission 4.0 setting, so the page must not
+ * offer it to a daemon that would reject it. It is also the first multi-line
+ * setting on this page, which is why it is a textarea with its own Apply
+ * button rather than a row in the tables above.
+ */
+describe('ServerOptions — default trackers (Transmission 4.0+)', () => {
+  const mountWithRpc = async (rpcVersion: number, defaultTrackers?: string) => {
+    // rpc 17 also switches on the bandwidth-groups section, which fetches on
+    // mount; without a shaped answer it fails for a reason unrelated to this
+    // suite.
+    callApi.mockImplementation((message: Record<string, unknown>) =>
+      Promise.resolve(message.action === 'getGroups' ? [] : ({} as unknown))
+    );
+    const rootStore = RootStore.create({});
+    render(
+      <RootStoreCtx.Provider value={rootStore}>
+        <ServerOptions />
+      </RootStoreCtx.Provider>
+    );
+    act(() => {
+      applyPatch(rootStore as never, { op: 'replace', path: '/client', value: { torrents: {} } });
+    });
+    await act(async () => {
+      applyPatch(rootStore as never, {
+        op: 'replace',
+        path: '/client/settings',
+        value: { ...SETTINGS, rpcVersion, defaultTrackers },
+      });
+    });
+    callApi.mockClear();
+    return rootStore;
+  };
+
+  const textarea = () => {
+    const row = screen.getByText('defaultTrackers').closest('label');
+    const found = row?.querySelector('textarea');
+    if (!found) throw new Error('No textarea in the defaultTrackers label');
+    return found;
+  };
+
+  it('is hidden on a daemon older than 4.0', async () => {
+    await mountWithRpc(16);
+
+    expect(screen.queryByText('defaultTrackers')).not.toBeInTheDocument();
+  });
+
+  it('shows the list the daemon reported', async () => {
+    await mountWithRpc(17, 'udp://a:1337\n\nudp://b:1337');
+
+    expect(textarea().value).toBe('udp://a:1337\n\nudp://b:1337');
+  });
+
+  it('is empty, not undefined, when the daemon reports no list', async () => {
+    // maybe(string): an uncontrolled textarea would warn and lose the edit.
+    await mountWithRpc(17, undefined);
+
+    expect(textarea().value).toBe('');
+  });
+
+  it('sends the whole list on Apply, not on every keystroke', async () => {
+    await mountWithRpc(17, '');
+    const field = textarea();
+
+    fireEvent.change(field, { target: { value: 'udp://tr:1337\n\nudp://tr2:80' } });
+    expect(sent('setDefaultTrackers')).toEqual([]);
+
+    const row = screen.getByText('defaultTrackers').closest('label');
+    fireEvent.click(row!.querySelector('button')!);
+
+    expect(sent('setDefaultTrackers')).toEqual([
+      { action: 'setDefaultTrackers', trackers: 'udp://tr:1337\n\nudp://tr2:80' },
+    ]);
+  });
+
+  it('keeps what is being typed when an unrelated setting changes', async () => {
+    // The page re-syncs from the store on every settings refresh; a naive
+    // reset would discard a half-typed list on the next poll.
+    const rootStore = await mountWithRpc(17, 'udp://a:1337');
+    fireEvent.change(textarea(), { target: { value: 'udp://half' } });
+
+    await act(async () => {
+      applyPatch(rootStore as never, {
+        op: 'replace',
+        path: '/client/settings/peerLimitGlobal',
+        value: 321,
+      });
+    });
+
+    expect(textarea().value).toBe('udp://half');
+  });
+
+  it('adopts a list changed by another client', async () => {
+    const rootStore = await mountWithRpc(17, 'udp://a:1337');
+
+    await act(async () => {
+      applyPatch(rootStore as never, {
+        op: 'replace',
+        path: '/client/settings/defaultTrackers',
+        value: 'udp://elsewhere:1337',
+      });
+    });
+
+    expect(textarea().value).toBe('udp://elsewhere:1337');
+  });
+});

@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Minden megjelenített fájl"
+    },
+    "defaultTrackers": {
+        "message": "Alapértelmezett követők"
     }
 }

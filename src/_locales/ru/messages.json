@@ -960,5 +960,8 @@
     },
     "applyToShownFiles": {
         "message": "Все показанные файлы"
+    },
+    "defaultTrackers": {
+        "message": "Трекеры по умолчанию"
     }
 }

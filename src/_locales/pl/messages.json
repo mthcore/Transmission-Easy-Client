@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Wszystkie wyświetlone pliki"
+    },
+    "defaultTrackers": {
+        "message": "Domyślne trackery"
     }
 }

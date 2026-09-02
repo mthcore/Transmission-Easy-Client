@@ -947,5 +947,8 @@
     },
     "applyToShownFiles": {
         "message": "Tous les fichiers affichés"
+    },
+    "defaultTrackers": {
+        "message": "Trackers par défaut"
     }
 }

@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Όλα τα εμφανιζόμενα αρχεία"
+    },
+    "defaultTrackers": {
+        "message": "Προεπιλεγμένοι ιχνηλάτες"
     }
 }

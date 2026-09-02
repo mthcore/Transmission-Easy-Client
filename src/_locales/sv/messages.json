@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "Alla visade filer"
+    },
+    "defaultTrackers": {
+        "message": "Standardspårare"
     }
 }

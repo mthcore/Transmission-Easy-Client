@@ -39,6 +39,7 @@ export type BgMessage =
   | SessionNumberMessage
   | EncryptionMessage
   | IncompleteDirMessage
+  | DefaultTrackersMessage
   | ScriptTorrentDoneFilenameMessage
   | ScriptTorrentAddedFilenameMessage
   | ScriptTorrentDoneSeedingFilenameMessage
@@ -235,6 +236,16 @@ export interface BlocklistUpdateMessage {
 export interface IncompleteDirMessage {
   action: 'setIncompleteDir';
   dir: string;
+}
+
+/**
+ * The daemon's default tracker list: one announce URL per line, blank lines
+ * separating tiers. Sent whole rather than as a list, because that is the
+ * shape Transmission stores and echoes back.
+ */
+export interface DefaultTrackersMessage {
+  action: 'setDefaultTrackers';
+  trackers: string;
 }
 
 // Script on completion

@@ -29,7 +29,7 @@ export interface SettingDescriptor {
   rpcKey: string;
   type: 'boolean' | 'number' | 'string';
   /** Field of the message that carries the value; absent when not dispatched */
-  arg?: 'enabled' | 'speed' | 'value' | 'mode' | 'dir' | 'url' | 'filename';
+  arg?: 'enabled' | 'speed' | 'value' | 'mode' | 'dir' | 'url' | 'filename' | 'trackers';
   /** Companion flag forced true alongside the value. Deliberately not uniform */
   enables?: string;
   /** Daemon rpc-version below which the daemon rejects the key */
@@ -56,7 +56,12 @@ export const SETTING_DESCRIPTORS = {
   },
   setBlocklistEnabled: { rpcKey: 'blocklist-enabled', type: 'boolean', arg: 'enabled' },
   setBlocklistUrl: { rpcKey: 'blocklist-url', type: 'string', arg: 'url' },
-  setDefaultTrackers: { rpcKey: 'default-trackers', type: 'string', rpcVersionMin: RPC_VERSION_4 },
+  setDefaultTrackers: {
+    rpcKey: 'default-trackers',
+    type: 'string',
+    arg: 'trackers',
+    rpcVersionMin: RPC_VERSION_4,
+  },
   setDhtEnabled: { rpcKey: 'dht-enabled', type: 'boolean', arg: 'enabled' },
   setDownloadQueueEnabled: { rpcKey: 'download-queue-enabled', type: 'boolean', arg: 'enabled' },
   setDownloadQueueSize: {
@@ -183,8 +188,9 @@ export interface DispatchableSetting extends SettingDescriptor {
 /**
  * Undefined for an action no message carries, so such a setting falls through
  * to the dispatcher's exhaustiveness check instead of being sent to the daemon
- * with an undefined value. setDefaultTrackers is the one entry in that state:
- * implemented on the service, not yet reachable from any page.
+ * with an undefined value. Every entry currently carries one; the guard stays
+ * because a setting implemented on the service before it has a page is the
+ * normal order of work here.
  */
 export function describeSetting(action: string): DispatchableSetting | undefined {
   const descriptor = (SETTING_DESCRIPTORS as Record<string, SettingDescriptor>)[action];

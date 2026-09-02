@@ -947,5 +947,8 @@
     },
     "applyToShownFiles": {
         "message": "所有显示的文件"
+    },
+    "defaultTrackers": {
+        "message": "默认 Tracker"
     }
 }

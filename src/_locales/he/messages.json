@@ -920,5 +920,8 @@
     },
     "applyToShownFiles": {
         "message": "כל הקבצים המוצגים"
+    },
+    "defaultTrackers": {
+        "message": "טראקרים כברירת מחדל"
     }
 }

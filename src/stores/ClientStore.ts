@@ -379,6 +379,11 @@ const ClientStore = types
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
+      setDefaultTrackers(trackers: string): Promise<unknown> {
+        return callApi({ action: 'setDefaultTrackers', trackers })
+          .then(...exceptionLog())
+          .then(thenSyncClient);
+      },
       setBlocklistUrl(url: string): Promise<unknown> {
         return callApi({ action: 'setBlocklistUrl', url })
           .then(...exceptionLog())

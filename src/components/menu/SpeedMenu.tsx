@@ -149,6 +149,11 @@ function getSpeedArray(currentLimit: number, count: number): number[] {
   }
   // Never offer 0: picking it would ENABLE a zero-byte limit and stall every
   // transfer. "Unlimited" is the menu's first entry for turning limits off.
+  //
+  // Belt and braces rather than a live guard: the seed is at least `middle`, so
+  // the first entry is already >= 1 at SPEED_ARRAY_COUNT = 10 and this filter
+  // removes nothing today. It stays because it is the formula, not the filter,
+  // that would have to change for a 0 to appear.
   return arr.filter((speed) => speed > 0);
 }
 

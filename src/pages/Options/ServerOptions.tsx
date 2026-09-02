@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
+import BandwidthGroups from './BandwidthGroups';
 
 const ALT_SPEED_DAYS = [
   { bit: 1, key: 'daySunday' },
@@ -828,6 +829,12 @@ const ServerOptions = observer(() => {
           {updating ? '...' : chrome.i18n.getMessage('blocklistUpdateNow')}
         </button>
       </label>
+
+      {/* Its own component: this file is long enough that a hook on the wrong
+          side of an early return already shipped a hooks-count crash once, and
+          the group list has its own loading and error states. It renders
+          nothing below Transmission 4.0. */}
+      <BandwidthGroups />
     </div>
   );
 });

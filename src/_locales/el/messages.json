@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Φόρτωση…"
+    },
+    "bandwidthGroups": {
+        "message": "Ομάδες εύρους ζώνης"
+    },
+    "honorsSessionLimits": {
+        "message": "Τήρηση ορίων συνεδρίας"
+    },
+    "noGroupsYet": {
+        "message": "Δεν υπάρχουν ακόμη ομάδες εύρους ζώνης"
     }
 }

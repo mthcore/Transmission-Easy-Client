@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Завантаження…"
+    },
+    "bandwidthGroups": {
+        "message": "Групи пропускної здатності"
+    },
+    "honorsSessionLimits": {
+        "message": "Дотримуватися обмежень сеансу"
+    },
+    "noGroupsYet": {
+        "message": "Груп пропускної здатності ще немає"
     }
 }

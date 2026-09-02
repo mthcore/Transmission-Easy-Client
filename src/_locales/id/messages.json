@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Memuat…"
+    },
+    "bandwidthGroups": {
+        "message": "Grup bandwidth"
+    },
+    "honorsSessionLimits": {
+        "message": "Patuhi batas sesi"
+    },
+    "noGroupsYet": {
+        "message": "Belum ada grup bandwidth"
     }
 }

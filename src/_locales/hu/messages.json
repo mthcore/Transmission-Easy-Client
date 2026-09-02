@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Betöltés…"
+    },
+    "bandwidthGroups": {
+        "message": "Sávszélesség-csoportok"
+    },
+    "honorsSessionLimits": {
+        "message": "Munkamenet-korlátok betartása"
+    },
+    "noGroupsYet": {
+        "message": "Még nincsenek sávszélesség-csoportok"
     }
 }

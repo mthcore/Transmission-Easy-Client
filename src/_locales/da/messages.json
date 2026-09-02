@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Indlæser…"
+    },
+    "bandwidthGroups": {
+        "message": "Båndbreddegrupper"
+    },
+    "honorsSessionLimits": {
+        "message": "Overhold sessionsgrænser"
+    },
+    "noGroupsYet": {
+        "message": "Ingen båndbreddegrupper endnu"
     }
 }

@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Wczytywanie…"
+    },
+    "bandwidthGroups": {
+        "message": "Grupy przepustowości"
+    },
+    "honorsSessionLimits": {
+        "message": "Przestrzegaj limitów sesji"
+    },
+    "noGroupsYet": {
+        "message": "Brak grup przepustowości"
     }
 }

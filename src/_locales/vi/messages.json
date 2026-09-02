@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Đang tải…"
+    },
+    "bandwidthGroups": {
+        "message": "Nhóm băng thông"
+    },
+    "honorsSessionLimits": {
+        "message": "Tuân theo giới hạn phiên"
+    },
+    "noGroupsYet": {
+        "message": "Chưa có nhóm băng thông nào"
     }
 }

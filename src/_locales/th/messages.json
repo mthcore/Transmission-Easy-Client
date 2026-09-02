@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "กำลังโหลด…"
+    },
+    "bandwidthGroups": {
+        "message": "กลุ่มแบนด์วิดท์"
+    },
+    "honorsSessionLimits": {
+        "message": "ปฏิบัติตามขีดจำกัดของเซสชัน"
+    },
+    "noGroupsYet": {
+        "message": "ยังไม่มีกลุ่มแบนด์วิดท์"
     }
 }

@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "載入中…"
+    },
+    "bandwidthGroups": {
+        "message": "頻寬群組"
+    },
+    "honorsSessionLimits": {
+        "message": "遵循工作階段限制"
+    },
+    "noGroupsYet": {
+        "message": "尚無頻寬群組"
     }
 }

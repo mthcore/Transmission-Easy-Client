@@ -932,5 +932,14 @@
     },
     "loading": {
         "message": "Chargement…"
+    },
+    "bandwidthGroups": {
+        "message": "Groupes de bande passante"
+    },
+    "honorsSessionLimits": {
+        "message": "Respecter les limites de session"
+    },
+    "noGroupsYet": {
+        "message": "Aucun groupe de bande passante"
     }
 }

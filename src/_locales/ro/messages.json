@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Se încarcă…"
+    },
+    "bandwidthGroups": {
+        "message": "Grupuri de lățime de bandă"
+    },
+    "honorsSessionLimits": {
+        "message": "Respectă limitele sesiunii"
+    },
+    "noGroupsYet": {
+        "message": "Încă niciun grup de lățime de bandă"
     }
 }

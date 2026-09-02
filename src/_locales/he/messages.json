@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "טוען…"
+    },
+    "bandwidthGroups": {
+        "message": "קבוצות רוחב פס"
+    },
+    "honorsSessionLimits": {
+        "message": "כבד את מגבלות ההפעלה"
+    },
+    "noGroupsYet": {
+        "message": "אין עדיין קבוצות רוחב פס"
     }
 }

@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Caricamento…"
+    },
+    "bandwidthGroups": {
+        "message": "Gruppi di banda"
+    },
+    "honorsSessionLimits": {
+        "message": "Rispetta i limiti di sessione"
+    },
+    "noGroupsYet": {
+        "message": "Nessun gruppo di banda"
     }
 }

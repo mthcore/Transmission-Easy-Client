@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Načítání…"
+    },
+    "bandwidthGroups": {
+        "message": "Skupiny šířky pásma"
+    },
+    "honorsSessionLimits": {
+        "message": "Respektovat limity relace"
+    },
+    "noGroupsYet": {
+        "message": "Zatím žádné skupiny šířky pásma"
     }
 }

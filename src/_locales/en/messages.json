@@ -932,5 +932,14 @@
     },
     "loading": {
         "message": "Loading…"
+    },
+    "bandwidthGroups": {
+        "message": "Bandwidth groups"
+    },
+    "honorsSessionLimits": {
+        "message": "Honour session limits"
+    },
+    "noGroupsYet": {
+        "message": "No bandwidth groups yet"
     }
 }

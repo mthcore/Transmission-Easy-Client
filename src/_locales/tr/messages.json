@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Yükleniyor…"
+    },
+    "bandwidthGroups": {
+        "message": "Bant genişliği grupları"
+    },
+    "honorsSessionLimits": {
+        "message": "Oturum sınırlarına uy"
+    },
+    "noGroupsYet": {
+        "message": "Henüz bant genişliği grubu yok"
     }
 }

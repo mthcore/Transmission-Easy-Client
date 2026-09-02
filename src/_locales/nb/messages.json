@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Laster…"
+    },
+    "bandwidthGroups": {
+        "message": "Båndbreddegrupper"
+    },
+    "honorsSessionLimits": {
+        "message": "Følg øktgrenser"
+    },
+    "noGroupsYet": {
+        "message": "Ingen båndbreddegrupper ennå"
     }
 }

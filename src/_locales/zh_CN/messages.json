@@ -932,5 +932,14 @@
     },
     "loading": {
         "message": "加载中…"
+    },
+    "bandwidthGroups": {
+        "message": "带宽组"
+    },
+    "honorsSessionLimits": {
+        "message": "遵循会话限制"
+    },
+    "noGroupsYet": {
+        "message": "尚无带宽组"
     }
 }

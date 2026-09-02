@@ -905,5 +905,14 @@
     },
     "loading": {
         "message": "Wird geladen…"
+    },
+    "bandwidthGroups": {
+        "message": "Bandbreitengruppen"
+    },
+    "honorsSessionLimits": {
+        "message": "Sitzungslimits beachten"
+    },
+    "noGroupsYet": {
+        "message": "Noch keine Bandbreitengruppen"
     }
 }

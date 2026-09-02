@@ -932,5 +932,14 @@
     },
     "loading": {
         "message": "Cargando…"
+    },
+    "bandwidthGroups": {
+        "message": "Grupos de ancho de banda"
+    },
+    "honorsSessionLimits": {
+        "message": "Respetar los límites de sesión"
+    },
+    "noGroupsYet": {
+        "message": "Aún no hay grupos de ancho de banda"
     }
 }

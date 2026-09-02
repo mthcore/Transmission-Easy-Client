@@ -945,5 +945,14 @@
     },
     "loading": {
         "message": "Загрузка…"
+    },
+    "bandwidthGroups": {
+        "message": "Группы пропускной способности"
+    },
+    "honorsSessionLimits": {
+        "message": "Соблюдать ограничения сеанса"
+    },
+    "noGroupsYet": {
+        "message": "Групп пропускной способности пока нет"
     }
 }

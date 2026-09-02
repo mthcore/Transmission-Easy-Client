@@ -39,11 +39,12 @@ const LabelSelect = observer(() => {
 
     let text: string | null = null;
     if (isCustom) {
-      if (label === 'SEEDING') {
-        text = chrome.i18n.getMessage('OV_FL_' + label);
-      } else {
-        text = chrome.i18n.getMessage('OV_CAT_' + label);
-      }
+      // Falling back to the raw label matters for the ghost entry above: a
+      // built-in persisted by another build has no translation here, and an
+      // untranslated entry rendered as an empty line — the very blankness this
+      // whole mechanism exists to prevent.
+      const key = label === 'SEEDING' ? 'OV_FL_' + label : 'OV_CAT_' + label;
+      text = chrome.i18n.getMessage(key) || label;
     } else {
       text = label;
     }

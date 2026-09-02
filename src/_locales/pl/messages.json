@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Ten element nie utworzył pliku torrent"
+    },
+    "bandwidthGroup": {
+        "message": "Grupa przepustowości"
+    },
+    "noBandwidthGroup": {
+        "message": "Brak grupy"
+    },
+    "loading": {
+        "message": "Wczytywanie…"
     }
 }

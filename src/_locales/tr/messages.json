@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Bu öğe herhangi bir torrent dosyası üretmedi"
+    },
+    "bandwidthGroup": {
+        "message": "Bant genişliği grubu"
+    },
+    "noBandwidthGroup": {
+        "message": "Grup yok"
+    },
+    "loading": {
+        "message": "Yükleniyor…"
     }
 }

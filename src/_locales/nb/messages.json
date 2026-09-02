@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Dette elementet produserte ingen torrent-fil"
+    },
+    "bandwidthGroup": {
+        "message": "Båndbreddegruppe"
+    },
+    "noBandwidthGroup": {
+        "message": "Ingen gruppe"
+    },
+    "loading": {
+        "message": "Laster…"
     }
 }

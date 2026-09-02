@@ -44,6 +44,10 @@ export type BgMessage =
   | PortTestMessage
   | GetTorrentDetailsMessage
   | SetTrackerListMessage
+  // Bandwidth groups
+  | GetGroupsMessage
+  | SetSessionGroupMessage
+  | SetTorrentGroupMessage
   | SetSeedLimitsMessage
   | SetSequentialDownloadMessage;
 
@@ -260,6 +264,34 @@ export interface SetTrackerListMessage {
   action: 'setTrackerList';
   ids: TorrentId[];
   trackerList: string;
+}
+
+// Bandwidth groups (v4.0.0+, rpc 17). Unlike the session settings these are
+// their own RPC methods (group-get / group-set) with a list-shaped result, so
+// they carry their own message types rather than joining the generic setters.
+export interface GetGroupsMessage {
+  action: 'getGroups';
+  /** Omitted means every group the daemon knows */
+  names?: string[];
+}
+
+export interface SetSessionGroupMessage {
+  action: 'setSessionGroup';
+  name: string;
+  options: {
+    honorsSessionLimits?: boolean;
+    speedLimitDown?: number;
+    speedLimitDownEnabled?: boolean;
+    speedLimitUp?: number;
+    speedLimitUpEnabled?: boolean;
+  };
+}
+
+export interface SetTorrentGroupMessage {
+  action: 'setTorrentGroup';
+  ids: TorrentId[];
+  /** The empty string removes the torrent from its group */
+  group: string;
 }
 
 // Sequential download (v4.1.0+, rpc 18)

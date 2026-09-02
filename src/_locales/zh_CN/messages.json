@@ -923,5 +923,14 @@
     },
     "noTorrentCaptured": {
         "message": "此元素未生成任何种子文件"
+    },
+    "bandwidthGroup": {
+        "message": "带宽组"
+    },
+    "noBandwidthGroup": {
+        "message": "无分组"
+    },
+    "loading": {
+        "message": "加载中…"
     }
 }

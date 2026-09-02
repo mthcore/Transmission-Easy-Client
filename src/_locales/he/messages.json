@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "רכיב זה לא יצר קובץ טורנט"
+    },
+    "bandwidthGroup": {
+        "message": "קבוצת רוחב פס"
+    },
+    "noBandwidthGroup": {
+        "message": "ללא קבוצה"
+    },
+    "loading": {
+        "message": "טוען…"
     }
 }

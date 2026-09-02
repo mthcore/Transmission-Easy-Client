@@ -6,6 +6,7 @@ import callApi from '../tools/callApi';
 import getLogger from '../tools/getLogger';
 import { getRpcFeatures, type RpcFeatures } from '../tools/rpcCompat';
 import type { PeerData, TorrentDetailData } from '../bg/TorrentService';
+import type { NormalizedBandwidthGroup } from '../bg/SettingsService';
 
 const logger = getLogger('ClientStore');
 
@@ -572,6 +573,30 @@ const ClientStore = types
         return callApi<TorrentDetailData>({ action: 'getTorrentDetails', id }).then(
           ...exceptionLog()
         ) as Promise<TorrentDetailData>;
+      },
+      getGroups(names?: string[]): Promise<NormalizedBandwidthGroup[]> {
+        return callApi<NormalizedBandwidthGroup[]>({ action: 'getGroups', names }).then(
+          ...exceptionLog()
+        ) as Promise<NormalizedBandwidthGroup[]>;
+      },
+      setSessionGroup(
+        name: string,
+        options: {
+          honorsSessionLimits?: boolean;
+          speedLimitDown?: number;
+          speedLimitDownEnabled?: boolean;
+          speedLimitUp?: number;
+          speedLimitUpEnabled?: boolean;
+        }
+      ): Promise<unknown> {
+        // No syncClient: group-set changes no torrent and no session setting the
+        // mirror holds, so the caller re-reads the groups instead.
+        return callApi({ action: 'setSessionGroup', name, options }).then(...exceptionLog());
+      },
+      setTorrentGroup(ids: number[], group: string): Promise<unknown> {
+        return callApi({ action: 'setTorrentGroup', ids, group })
+          .then(...exceptionLog())
+          .then(thenSyncClient);
       },
       setTrackerList(ids: number[], trackerList: string): Promise<unknown> {
         return callApi({ action: 'setTrackerList', ids, trackerList })

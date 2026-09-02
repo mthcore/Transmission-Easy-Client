@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "องค์ประกอบนี้ไม่ได้สร้างไฟล์ทอร์เรนต์"
+    },
+    "bandwidthGroup": {
+        "message": "กลุ่มแบนด์วิดท์"
+    },
+    "noBandwidthGroup": {
+        "message": "ไม่มีกลุ่ม"
+    },
+    "loading": {
+        "message": "กำลังโหลด…"
     }
 }

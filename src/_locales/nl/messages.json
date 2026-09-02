@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Dit element heeft geen torrentbestand opgeleverd"
+    },
+    "bandwidthGroup": {
+        "message": "Bandbreedtegroep"
+    },
+    "noBandwidthGroup": {
+        "message": "Geen groep"
+    },
+    "loading": {
+        "message": "Laden…"
     }
 }

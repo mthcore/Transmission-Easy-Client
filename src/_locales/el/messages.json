@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Αυτό το στοιχείο δεν παρήγαγε κανένα αρχείο torrent"
+    },
+    "bandwidthGroup": {
+        "message": "Ομάδα εύρους ζώνης"
+    },
+    "noBandwidthGroup": {
+        "message": "Καμία ομάδα"
+    },
+    "loading": {
+        "message": "Φόρτωση…"
     }
 }

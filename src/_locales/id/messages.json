@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Elemen ini tidak menghasilkan berkas torrent"
+    },
+    "bandwidthGroup": {
+        "message": "Grup bandwidth"
+    },
+    "noBandwidthGroup": {
+        "message": "Tanpa grup"
+    },
+    "loading": {
+        "message": "Memuat…"
     }
 }

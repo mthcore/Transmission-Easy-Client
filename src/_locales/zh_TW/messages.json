@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "此元素未產生任何種子檔案"
+    },
+    "bandwidthGroup": {
+        "message": "頻寬群組"
+    },
+    "noBandwidthGroup": {
+        "message": "無群組"
+    },
+    "loading": {
+        "message": "載入中…"
     }
 }

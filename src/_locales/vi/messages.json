@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Phần tử này không tạo ra tệp torrent nào"
+    },
+    "bandwidthGroup": {
+        "message": "Nhóm băng thông"
+    },
+    "noBandwidthGroup": {
+        "message": "Không có nhóm"
+    },
+    "loading": {
+        "message": "Đang tải…"
     }
 }

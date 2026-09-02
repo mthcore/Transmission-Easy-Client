@@ -352,3 +352,77 @@ describe('ClientStore — sessionTotals', () => {
     expect(r.client.sessionTotals).toEqual({ downloaded: 500, uploaded: 250 });
   });
 });
+
+describe('ClientStore — bandwidth groups', () => {
+  const GROUPS = [
+    {
+      name: 'night',
+      honorsSessionLimits: false,
+      speedLimitDown: 500,
+      speedLimitDownEnabled: true,
+      speedLimitUp: 100,
+      speedLimitUpEnabled: false,
+    },
+  ];
+
+  const sentMessage = () =>
+    (chrome.runtime.sendMessage as ReturnType<typeof vi.fn>).mock.calls[0][0];
+
+  it('getGroups asks for every group and returns the list unchanged', async () => {
+    stubApiResult(GROUPS);
+    const r = createRoot();
+
+    await expect(r.client.getGroups()).resolves.toEqual(GROUPS);
+    expect(sentMessage()).toEqual({ action: 'getGroups', names: undefined });
+  });
+
+  it('getGroups forwards a name filter', async () => {
+    stubApiResult([]);
+    const r = createRoot();
+
+    await r.client.getGroups(['night']);
+    expect(sentMessage()).toEqual({ action: 'getGroups', names: ['night'] });
+  });
+
+  it('setSessionGroup sends the name and options, and does NOT resync', async () => {
+    // group-set changes no torrent and no session setting the mirror holds, so
+    // a resync would be a wasted round trip; the caller re-reads the groups.
+    stubApiResult();
+    const r = createRoot();
+
+    await r.client.setSessionGroup('night', { speedLimitDown: 500, speedLimitDownEnabled: true });
+
+    expect(sentMessage()).toEqual({
+      action: 'setSessionGroup',
+      name: 'night',
+      options: { speedLimitDown: 500, speedLimitDownEnabled: true },
+    });
+    expect(syncClientMock).not.toHaveBeenCalled();
+  });
+
+  it('setTorrentGroup sends the ids and resyncs, since the torrent changed', async () => {
+    stubApiResult();
+    const r = createRoot();
+
+    await r.client.setTorrentGroup([1, 2], 'night');
+
+    expect(sentMessage()).toEqual({ action: 'setTorrentGroup', ids: [1, 2], group: 'night' });
+    expect(syncClientMock).toHaveBeenCalled();
+  });
+
+  it('an empty group name detaches the torrent from its group', async () => {
+    stubApiResult();
+    const r = createRoot();
+
+    await r.client.setTorrentGroup([1], '');
+    expect(sentMessage()).toEqual({ action: 'setTorrentGroup', ids: [1], group: '' });
+  });
+
+  it('records a rejection in lastErrorMessage like every other action', async () => {
+    stubApiError('group-get requires Transmission RPC 17+', 'UNSUPPORTED_RPC_VERSION');
+    const r = createRoot();
+
+    await expect(r.client.getGroups()).rejects.toThrow(/RPC 17/);
+    expect(r.client.lastErrorMessage).toMatch(/RPC 17/);
+  });
+});

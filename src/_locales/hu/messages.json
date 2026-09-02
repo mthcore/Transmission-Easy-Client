@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Ez az elem nem hozott létre torrentfájlt"
+    },
+    "bandwidthGroup": {
+        "message": "Sávszélesség-csoport"
+    },
+    "noBandwidthGroup": {
+        "message": "Nincs csoport"
+    },
+    "loading": {
+        "message": "Betöltés…"
     }
 }

@@ -391,6 +391,22 @@ class Bg {
         );
         break;
       }
+      case 'getGroups': {
+        promise = this.whenReady().then(() => this.requireClient().getGroups(message.names));
+        break;
+      }
+      case 'setSessionGroup': {
+        promise = this.whenReady().then(() =>
+          this.requireClient().setSessionGroup(message.name, message.options)
+        );
+        break;
+      }
+      case 'setTorrentGroup': {
+        promise = this.whenReady().then(() =>
+          this.requireClient().setTorrentGroup(message.ids, message.group)
+        );
+        break;
+      }
       case 'setSeedLimits': {
         promise = this.whenReady().then(() =>
           this.requireClient().setSeedLimits(

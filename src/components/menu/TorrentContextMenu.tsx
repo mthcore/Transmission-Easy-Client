@@ -10,6 +10,66 @@ interface TorrentContextMenuProps {
   torrentId: number;
 }
 
+interface GroupSubMenuProps {
+  loadGroups: () => Promise<{ name: string }[]>;
+  onPick: (group: string) => void;
+}
+
+/**
+ * The daemon's bandwidth groups, fetched when the submenu is opened rather than
+ * on every poll: group-get is a separate RPC and the list is only needed when
+ * the user goes looking for it.
+ */
+const GroupSubMenu = ({ loadGroups, onPick }: GroupSubMenuProps) => {
+  const [groups, setGroups] = React.useState<{ name: string }[] | null>(null);
+  const [failed, setFailed] = React.useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open || groups) return;
+    loadGroups().then(
+      (list) => setGroups(list),
+      () => setFailed(true)
+    );
+  };
+
+  return (
+    <ContextMenu.Sub onOpenChange={handleOpenChange}>
+      <ContextMenu.SubTrigger className="context-menu-item context-menu-subtrigger">
+        {chrome.i18n.getMessage('bandwidthGroup')}
+        <span className="context-menu-arrow">›</span>
+      </ContextMenu.SubTrigger>
+      <ContextMenu.Portal>
+        <ContextMenu.SubContent className="context-menu">
+          {/* Always offered: an empty group name is how the daemon detaches a
+              torrent from whichever group it is in */}
+          <ContextMenu.Item className="context-menu-item" onSelect={() => onPick('')}>
+            {chrome.i18n.getMessage('noBandwidthGroup')}
+          </ContextMenu.Item>
+          {groups?.map((group) => (
+            <ContextMenu.Item
+              key={group.name}
+              className="context-menu-item"
+              onSelect={() => onPick(group.name)}
+            >
+              {group.name}
+            </ContextMenu.Item>
+          ))}
+          {groups === null && !failed && (
+            <div className="context-menu-item context-menu-hint">
+              {chrome.i18n.getMessage('loading')}
+            </div>
+          )}
+          {failed && (
+            <div className="context-menu-item context-menu-hint">
+              {chrome.i18n.getMessage('unexpectedError')}
+            </div>
+          )}
+        </ContextMenu.SubContent>
+      </ContextMenu.Portal>
+    </ContextMenu.Sub>
+  );
+};
+
 const TorrentContextMenu = observer(({ children, torrentId }: TorrentContextMenuProps) => {
   const rootStore = useRootStore();
   const torrentListStore = rootStore?.torrentList;
@@ -281,6 +341,15 @@ const TorrentMenuContent = observer(() => {
             <ContextMenu.Item className="context-menu-item" onSelect={handleReannounce}>
               {chrome.i18n.getMessage('reannounce')}
             </ContextMenu.Item>
+            {/* Bandwidth groups need Transmission 4.0+ (rpc 17); the service
+                rejects group-set below that, so the entry is hidden rather
+                than left to fail */}
+            {client.settings?.features.groups && (
+              <GroupSubMenu
+                onPick={(group) => report(client.setTorrentGroup(selectedIds, group))}
+                loadGroups={() => client.getGroups()}
+              />
+            )}
             {client.settings?.features.sequentialDownload && (
               <ContextMenu.Item
                 className="context-menu-item"

@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Acest element nu a produs niciun fișier torrent"
+    },
+    "bandwidthGroup": {
+        "message": "Grup de lățime de bandă"
+    },
+    "noBandwidthGroup": {
+        "message": "Fără grup"
+    },
+    "loading": {
+        "message": "Se încarcă…"
     }
 }

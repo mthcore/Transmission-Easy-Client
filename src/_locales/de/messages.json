@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Dieses Element hat keine Torrent-Datei erzeugt"
+    },
+    "bandwidthGroup": {
+        "message": "Bandbreitengruppe"
+    },
+    "noBandwidthGroup": {
+        "message": "Keine Gruppe"
+    },
+    "loading": {
+        "message": "Wird geladen…"
     }
 }

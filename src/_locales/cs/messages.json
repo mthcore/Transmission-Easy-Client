@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Tento prvek nevytvořil žádný soubor torrent"
+    },
+    "bandwidthGroup": {
+        "message": "Skupina šířky pásma"
+    },
+    "noBandwidthGroup": {
+        "message": "Žádná skupina"
+    },
+    "loading": {
+        "message": "Načítání…"
     }
 }

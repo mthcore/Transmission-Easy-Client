@@ -896,5 +896,14 @@
     },
     "noTorrentCaptured": {
         "message": "Цей елемент не створив торент-файл"
+    },
+    "bandwidthGroup": {
+        "message": "Група пропускної здатності"
+    },
+    "noBandwidthGroup": {
+        "message": "Без групи"
+    },
+    "loading": {
+        "message": "Завантаження…"
     }
 }

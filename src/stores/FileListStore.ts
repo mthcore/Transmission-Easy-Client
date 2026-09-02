@@ -4,6 +4,7 @@ import ListSelectStore from './ListSelectStore';
 import FileStore, { IFileStore } from './FileStore';
 import TorrentStore, { ITorrentStore } from './TorrentStore';
 import { createColumnSorter, fileColumnMap } from '../tools/sortByColumn';
+import searchNormalize from '../tools/searchNormalize';
 
 const logger = getLogger('FileListStore');
 
@@ -29,6 +30,8 @@ const FileListStore = types
       directory: types.optional(types.string, ''),
       isLoading: types.optional(types.boolean, true),
       filter: types.optional(types.string, ''),
+      /** Free-text filter on the file name, independent of the folder filter */
+      nameQuery: types.optional(types.string, ''),
       selectedIds: types.array(types.string),
     })
   )
@@ -61,6 +64,9 @@ const FileListStore = types
       setFilter(value: string) {
         self.filter = value;
       },
+      setNameQuery(value: string) {
+        self.nameQuery = value;
+      },
       setRemoveSelectOnHide(value: boolean) {
         self.removeSelectOnHide = value;
       },
@@ -82,15 +88,27 @@ const FileListStore = types
         return resolveIdentifier(TorrentStore, self, self.id);
       },
       get filteredFiles(): IFileStore[] {
+        let files: IFileStore[];
         if (self.filter) {
           const filter = self.filter + '/';
           const filterLen = filter.length;
-          return self.files.filter((file) => {
+          files = self.files.filter((file) => {
             return file.normalizedName.substring(0, filterLen) === filter;
           });
         } else {
-          return self.files.slice();
+          files = self.files.slice();
         }
+
+        // Composed with the folder filter rather than replacing it: searching
+        // inside the folder you are looking at is the useful behaviour.
+        // Diacritic-insensitive like the torrent search, so 'reglement' finds
+        // 'règlement'.
+        if (self.nameQuery) {
+          const query = searchNormalize(self.nameQuery);
+          files = files.filter((file) => searchNormalize(file.name).includes(query));
+        }
+
+        return files;
       },
       get sortedFiles(): IFileStore[] {
         const rootStore = getRoot<{

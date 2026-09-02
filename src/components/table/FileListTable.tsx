@@ -9,6 +9,7 @@ import VisiblePage from '../VisiblePage';
 import getLogger from '../../tools/getLogger';
 import useRootStore from '../../hooks/useRootStore';
 import { useScrollSync } from '../../hooks/useScrollSync';
+import { useVirtualRows, type VirtualRows } from '../../hooks/useVirtualRows';
 import type { FileEntry } from '../../types/stores';
 
 const logger = getLogger('FileListTable');
@@ -24,10 +25,26 @@ const FileListTable = observer(() => {
   const config = rootStore.config;
   const fileListStore = rootStore.fileList;
   const refFixedHead = useRef<HTMLTableElement>(null);
+  const refLayer = useRef<HTMLDivElement>(null);
   const scrollSyncOptions = useMemo(() => ({ withWidthCheck: true }), []);
-  const handleScroll = useScrollSync(
+  const handleScrollSync = useScrollSync(
     refFixedHead as React.RefObject<HTMLElement>,
     scrollSyncOptions
+  );
+
+  // Windowing, as the torrent list already does: a season pack or a distro set
+  // runs to thousands of files, and rendering them all made every sort and
+  // select-all walk the whole list.
+  const rowCount = fileListStore?.sortedFiles.length ?? 0;
+  const virtual = useVirtualRows(refLayer, rowCount);
+
+  const { onScroll: onVirtualScroll } = virtual;
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      handleScrollSync(e);
+      onVirtualScroll();
+    },
+    [handleScrollSync, onVirtualScroll]
   );
 
   useEffect(() => {
@@ -105,7 +122,7 @@ const FileListTable = observer(() => {
           <VisiblePage>
             <Interval interval={uiUpdateInterval} onFire={onIntervalFire} />
           </VisiblePage>
-          <div onScroll={handleScroll} className="fl-layer" style={columnVars}>
+          <div ref={refLayer} onScroll={handleScroll} className="fl-layer" style={columnVars}>
             {spinner}
             <ColumnContextMenu
               columns={asColumns(config.filesColumns)}
@@ -123,10 +140,18 @@ const FileListTable = observer(() => {
             </ColumnContextMenu>
             <table className="fl-table-body" border={0} cellSpacing={0} cellPadding={0}>
               <FileListTableHead />
-              <FileListTableFiles />
+              <FileListTableFiles virtual={virtual} />
             </table>
           </div>
           <div className="bottom-menu">
+            <input
+              type="search"
+              className="fl-search"
+              value={fileListStore.nameQuery}
+              onChange={(e) => fileListStore.setNameQuery(e.target.value)}
+              placeholder={chrome.i18n.getMessage('search')}
+              aria-label={chrome.i18n.getMessage('search')}
+            />
             {directory}
             <div className="space" />
             <a
@@ -219,17 +244,32 @@ const FileListTableHead = observer(() => {
   );
 });
 
-const FileListTableFiles = observer(() => {
+const FileListTableFiles = observer(({ virtual }: { virtual: VirtualRows }) => {
   const rootStore = useRootStore();
   const fileListStore = rootStore.fileList;
+  const columnCount = rootStore.config?.visibleFileColumns.length ?? 1;
+
+  const { start, end, padTop, padBottom, bodyRef } = virtual;
 
   if (!fileListStore) return null;
 
+  const slice = fileListStore.sortedFiles.slice(start, end);
+
   return (
-    <tbody>
-      {fileListStore.sortedFiles.map((file) => (
+    <tbody ref={bodyRef}>
+      {padTop > 0 && (
+        <tr data-virtual-spacer aria-hidden="true" style={{ height: padTop }}>
+          <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+        </tr>
+      )}
+      {slice.map((file) => (
         <FileListTableItem key={file.name} file={file as unknown as FileEntry} />
       ))}
+      {padBottom > 0 && (
+        <tr data-virtual-spacer aria-hidden="true" style={{ height: padBottom }}>
+          <td colSpan={columnCount} style={{ padding: 0, border: 0 }} />
+        </tr>
+      )}
     </tbody>
   );
 });

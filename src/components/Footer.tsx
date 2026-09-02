@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import SpeedContextMenu from './menu/SpeedMenu';
 import SpaceWatcher from './SpaceWatcher';
 import useRootStore from '../hooks/useRootStore';
+import report from '../tools/reportAction';
 
 const Footer = observer(() => {
   const rootStore = useRootStore();
@@ -12,10 +13,12 @@ const Footer = observer(() => {
       e.preventDefault();
       const client = rootStore?.client;
       if (!client) return;
+      // Fire and forget: without report() a refusal left the limit in place,
+      // the badge in place, and nothing to say the click had not worked.
       if (client.settings?.altSpeedEnabled) {
-        client.setAltSpeedEnabled(false);
+        report(client.setAltSpeedEnabled(false));
       } else {
-        client.setDownloadSpeedLimitEnabled(false);
+        report(client.setDownloadSpeedLimitEnabled(false));
       }
     },
     [rootStore]
@@ -27,9 +30,9 @@ const Footer = observer(() => {
       const client = rootStore?.client;
       if (!client) return;
       if (client.settings?.altSpeedEnabled) {
-        client.setAltSpeedEnabled(false);
+        report(client.setAltSpeedEnabled(false));
       } else {
-        client.setUploadSpeedLimitEnabled(false);
+        report(client.setUploadSpeedLimitEnabled(false));
       }
     },
     [rootStore]

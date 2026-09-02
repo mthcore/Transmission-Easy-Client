@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Tato složka už je v seznamu"
+    },
+    "restoreSkippedKeys": {
+        "message": "Neplatné hodnoty byly ignorovány"
+    },
+    "notATorrentFile": {
+        "message": "Tento odkaz není souborem torrent (server vrátil webovou stránku)"
+    },
+    "noTorrentCaptured": {
+        "message": "Tento prvek nevytvořil žádný soubor torrent"
     }
 }

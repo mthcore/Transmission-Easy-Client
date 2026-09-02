@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Dieser Ordner ist bereits in der Liste"
+    },
+    "restoreSkippedKeys": {
+        "message": "Ungültige Werte wurden ignoriert"
+    },
+    "notATorrentFile": {
+        "message": "Dieser Link ist keine Torrent-Datei (der Server hat eine Webseite zurückgegeben)"
+    },
+    "noTorrentCaptured": {
+        "message": "Dieses Element hat keine Torrent-Datei erzeugt"
     }
 }

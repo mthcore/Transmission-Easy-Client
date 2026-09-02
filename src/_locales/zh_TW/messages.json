@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "此資料夾已在清單中"
+    },
+    "restoreSkippedKeys": {
+        "message": "已忽略無效的值"
+    },
+    "notATorrentFile": {
+        "message": "此連結不是種子檔案（伺服器傳回了一個網頁）"
+    },
+    "noTorrentCaptured": {
+        "message": "此元素未產生任何種子檔案"
     }
 }

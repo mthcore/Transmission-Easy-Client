@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Ця тека вже є у списку"
+    },
+    "restoreSkippedKeys": {
+        "message": "Недопустимі значення проігноровано"
+    },
+    "notATorrentFile": {
+        "message": "Це посилання не є торент-файлом (сервер повернув вебсторінку)"
+    },
+    "noTorrentCaptured": {
+        "message": "Цей елемент не створив торент-файл"
     }
 }

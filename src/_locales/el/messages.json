@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Αυτός ο φάκελος υπάρχει ήδη στη λίστα"
+    },
+    "restoreSkippedKeys": {
+        "message": "Οι μη έγκυρες τιμές αγνοήθηκαν"
+    },
+    "notATorrentFile": {
+        "message": "Αυτός ο σύνδεσμος δεν είναι αρχείο torrent (ο διακομιστής επέστρεψε ιστοσελίδα)"
+    },
+    "noTorrentCaptured": {
+        "message": "Αυτό το στοιχείο δεν παρήγαγε κανένα αρχείο torrent"
     }
 }

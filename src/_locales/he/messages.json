@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "תיקייה זו כבר נמצאת ברשימה"
+    },
+    "restoreSkippedKeys": {
+        "message": "ערכים לא תקינים לא יובאו"
+    },
+    "notATorrentFile": {
+        "message": "קישור זה אינו קובץ טורנט (השרת החזיר דף אינטרנט)"
+    },
+    "noTorrentCaptured": {
+        "message": "רכיב זה לא יצר קובץ טורנט"
     }
 }

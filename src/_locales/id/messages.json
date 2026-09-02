@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Folder ini sudah ada dalam daftar"
+    },
+    "restoreSkippedKeys": {
+        "message": "Nilai tidak valid diabaikan"
+    },
+    "notATorrentFile": {
+        "message": "Tautan ini bukan berkas torrent (server mengembalikan halaman web)"
+    },
+    "noTorrentCaptured": {
+        "message": "Elemen ini tidak menghasilkan berkas torrent"
     }
 }

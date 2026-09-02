@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Acest dosar este deja în listă"
+    },
+    "restoreSkippedKeys": {
+        "message": "Valorile nevalide au fost ignorate"
+    },
+    "notATorrentFile": {
+        "message": "Acest link nu este un fișier torrent (serverul a returnat o pagină web)"
+    },
+    "noTorrentCaptured": {
+        "message": "Acest element nu a produs niciun fișier torrent"
     }
 }

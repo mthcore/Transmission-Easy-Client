@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Deze map staat al in de lijst"
+    },
+    "restoreSkippedKeys": {
+        "message": "Ongeldige waarden genegeerd"
+    },
+    "notATorrentFile": {
+        "message": "Deze link is geen torrentbestand (de server gaf een webpagina terug)"
+    },
+    "noTorrentCaptured": {
+        "message": "Dit element heeft geen torrentbestand opgeleverd"
     }
 }

@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Thư mục này đã có trong danh sách"
+    },
+    "restoreSkippedKeys": {
+        "message": "Đã bỏ qua các giá trị không hợp lệ"
+    },
+    "notATorrentFile": {
+        "message": "Liên kết này không phải là tệp torrent (máy chủ đã trả về một trang web)"
+    },
+    "noTorrentCaptured": {
+        "message": "Phần tử này không tạo ra tệp torrent nào"
     }
 }

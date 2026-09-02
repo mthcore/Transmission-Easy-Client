@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Ez a mappa már szerepel a listában"
+    },
+    "restoreSkippedKeys": {
+        "message": "Az érvénytelen értékek figyelmen kívül hagyva"
+    },
+    "notATorrentFile": {
+        "message": "Ez a hivatkozás nem torrentfájl (a kiszolgáló weboldalt adott vissza)"
+    },
+    "noTorrentCaptured": {
+        "message": "Ez az elem nem hozott létre torrentfájlt"
     }
 }

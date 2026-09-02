@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Den här mappen finns redan i listan"
+    },
+    "restoreSkippedKeys": {
+        "message": "Ogiltiga värden ignorerades"
+    },
+    "notATorrentFile": {
+        "message": "Den här länken är inte en torrent-fil (servern returnerade en webbsida)"
+    },
+    "noTorrentCaptured": {
+        "message": "Det här elementet skapade ingen torrent-fil"
     }
 }

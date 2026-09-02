@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Bu klasör zaten listede"
+    },
+    "restoreSkippedKeys": {
+        "message": "Geçersiz değerler yok sayıldı"
+    },
+    "notATorrentFile": {
+        "message": "Bu bağlantı bir torrent dosyası değil (sunucu bir web sayfası döndürdü)"
+    },
+    "noTorrentCaptured": {
+        "message": "Bu öğe herhangi bir torrent dosyası üretmedi"
     }
 }

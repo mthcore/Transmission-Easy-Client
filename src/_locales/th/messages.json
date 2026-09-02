@@ -884,5 +884,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "โฟลเดอร์นี้อยู่ในรายการแล้ว"
+    },
+    "restoreSkippedKeys": {
+        "message": "ค่าที่ไม่ถูกต้องถูกละเว้น"
+    },
+    "notATorrentFile": {
+        "message": "ลิงก์นี้ไม่ใช่ไฟล์ทอร์เรนต์ (เซิร์ฟเวอร์ส่งกลับหน้าเว็บ)"
+    },
+    "noTorrentCaptured": {
+        "message": "องค์ประกอบนี้ไม่ได้สร้างไฟล์ทอร์เรนต์"
     }
 }

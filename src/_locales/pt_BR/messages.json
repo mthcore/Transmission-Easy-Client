@@ -911,5 +911,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "Esta pasta já está na lista"
+    },
+    "restoreSkippedKeys": {
+        "message": "Valores inválidos ignorados"
+    },
+    "notATorrentFile": {
+        "message": "Este link não é um arquivo torrent (o servidor retornou uma página web)"
+    },
+    "noTorrentCaptured": {
+        "message": "Este elemento não produziu nenhum arquivo torrent"
     }
 }

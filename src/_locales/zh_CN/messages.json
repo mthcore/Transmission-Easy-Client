@@ -911,5 +911,17 @@
                 "content": "$1"
             }
         }
+    },
+    "folderAlreadyExists": {
+        "message": "该文件夹已在列表中"
+    },
+    "restoreSkippedKeys": {
+        "message": "已忽略无效的值"
+    },
+    "notATorrentFile": {
+        "message": "此链接不是种子文件（服务器返回了一个网页）"
+    },
+    "noTorrentCaptured": {
+        "message": "此元素未生成任何种子文件"
     }
 }

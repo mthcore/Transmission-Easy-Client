@@ -924,5 +924,17 @@
     "OV_COL_SHARED_SHORT": {
         "message": "Коэфф.",
         "originalKey": "OV_COL_SHARED"
+    },
+    "folderAlreadyExists": {
+        "message": "Эта папка уже есть в списке"
+    },
+    "restoreSkippedKeys": {
+        "message": "Недопустимые значения проигнорированы"
+    },
+    "notATorrentFile": {
+        "message": "Эта ссылка не является торрент-файлом (сервер вернул веб-страницу)"
+    },
+    "noTorrentCaptured": {
+        "message": "Этот элемент не создал торрент-файл"
     }
 }

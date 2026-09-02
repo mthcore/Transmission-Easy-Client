@@ -34,8 +34,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # This job publishes to three stores. It used to do so without running a
+      # single check: ci.yml has the full gate but does not trigger on tags, so
+      # a tag pushed at a commit CI never saw shipped unverified. The suite now
+      # carries regression tests for real vulnerabilities (the IPv4-mapped IPv6
+      # SSRF bypass, the sender.url trust-boundary hole) — security controls CI
+      # does not run before publishing are controls in name only.
+      - name: Check locales
+        run: npm run check:locales
+
+      - name: Check versions and build targets
+        run: npm run check:versions
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Run tests
+        run: npm test
+
       - name: Build Chrome
         run: npm run build
+
+      # Never publish a bundle nobody has executed: the unit suite cannot see a
+      # production bundling defect (it never runs webpack/Babel as configured
+      # for release).
+      - name: Smoke test the Chrome build
+        run: npm run smoke -- --browser chrome
 
       - name: Build Firefox
         # The manifest id must equal the GUID of the AMO listing, or the upload
@@ -43,6 +73,9 @@ jobs:
         env:
           FIREFOX_ADDON_ID: ${{ secrets.FIREFOX_ADDON_GUID }}
         run: npm run build:firefox
+
+      - name: Smoke test the Firefox build
+        run: npm run smoke -- --browser firefox
 
       - name: Build Opera
         run: npm run build:opera

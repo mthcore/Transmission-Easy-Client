@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # Security advisories already open PRs without any config; this adds the
+  # scheduled version updates that were missing.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR per ecosystem area keeps the review load sane on a
+      # single-maintainer project.
+      dev-tooling:
+        patterns:
+          - '@typescript-eslint/*'
+          - 'eslint*'
+          - 'prettier'
+          - 'vitest'
+          - '@vitest/*'
+          - '@testing-library/*'
+          - 'jsdom'
+      build:
+        patterns:
+          - 'webpack*'
+          - '@babel/*'
+          - 'babel-loader'
+          - '*-webpack-plugin'
+          - 'sass*'
+          - 'css-loader'
+    ignore:
+      # Majors of the MobX family are handled deliberately: the 5 -> 7 bump
+      # silently broke column reordering and was only caught once the store had
+      # tests.
+      - dependency-name: mobx
+        update-types: [version-update:semver-major]
+      - dependency-name: mobx-react
+        update-types: [version-update:semver-major]
+      - dependency-name: mobx-state-tree
+        update-types: [version-update:semver-major]
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

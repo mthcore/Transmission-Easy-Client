@@ -20,17 +20,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Pinned to full commit SHAs like release.yml, rather than mutable major
+      # tags. Same SHAs as that workflow, so both move together.
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
+
+      # Cheap invariant checks first: they fail in seconds and their failures
+      # are unambiguous, so a broken locale or a version mismatch is not buried
+      # behind a five-minute build.
+      - name: Check locales
+        run: npm run check:locales
+
+      - name: Check versions and build targets
+        run: npm run check:versions
 
       - name: Type check
         run: npm run type-check
@@ -47,8 +58,21 @@ jobs:
       - name: Build Chrome
         run: npm run build
 
+      # The unit suite runs through Vitest's transform pipeline, never webpack's,
+      # so it cannot see a production bundling defect. Babel 8 once emitted
+      # jsxDEV into the production bundle and every page crashed at runtime
+      # while the whole suite stayed green. This loads the emitted pages and
+      # requires that React actually mount.
+      - name: Smoke test the Chrome build
+        run: npm run smoke -- --browser chrome
+
       - name: Build Firefox
         run: npm run build:firefox
+
+      # Firefox is built with different Babel targets (140 vs Chrome 111), so
+      # its bundle is not the same bytes and deserves its own check.
+      - name: Smoke test the Firefox build
+        run: npm run smoke -- --browser firefox
 
       - name: Build Opera
         run: npm run build:opera

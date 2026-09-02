@@ -189,7 +189,10 @@ class Bg {
     // full-page view legitimately run IN a tab (options_ui.open_in_tab), while
     // a content script reports the web page's own URL.
     const ownOrigin = chrome.runtime.getURL('');
-    if (sender.id !== chrome.runtime.id || (sender.url && !sender.url.startsWith(ownOrigin))) {
+    // sender.url is required, not merely checked when present: a sender that
+    // reports our extension id but no url would otherwise walk straight past
+    // the boundary and read the daemon password.
+    if (sender.id !== chrome.runtime.id || !sender.url?.startsWith(ownOrigin)) {
       logger.warn('Rejected a message from outside the extension', sender.id, sender.url);
       return;
     }
@@ -457,13 +460,15 @@ class Bg {
   torrentAddedNotify(torrent: TorrentInfo): void {
     const icon = notificationIcons.add;
     const statusText = chrome.i18n.getMessage('torrentAdded');
-    showNotification('added-' + torrent.id, icon, torrent.name, statusText);
+    // This is the toast shown at the moment of the add, so it is the one a
+    // spoofed name is aimed at — see torrentCompleteNotify
+    showNotification('added-' + torrent.id, icon, stripBidiControls(torrent.name), statusText);
   }
 
   torrentIsExistsNotify(torrent: TorrentInfo): void {
     const icon = notificationIcons.error;
     const title = chrome.i18n.getMessage('torrentFileIsExists');
-    showNotification('exists-' + torrent.id, icon, torrent.name, title);
+    showNotification('exists-' + torrent.id, icon, stripBidiControls(torrent.name), title);
   }
 
   torrentExistsNotify(): void {

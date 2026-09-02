@@ -26,6 +26,19 @@ type CaptureResult = { url: string } | { base64: string; name: string; mime: str
 
 const CAPTURE_TIMEOUT = 8000;
 
+// What the user right-clicked is almost never the control itself: it is the
+// icon or the label inside it. An <svg>/<path> has no click() at all (that
+// method lives on HTMLElement, not SVGElement), so calling it straight threw
+// a TypeError and the capture just ran out its timeout. Walking up to the
+// nearest real control also stops us re-firing an arbitrary element.
+const CLICKABLE_SELECTOR =
+  'a[href],button,[role="button"],input[type="button"],input[type="submit"],[onclick]';
+
+function resolveClickTarget(element: Element): HTMLElement | null {
+  const control = element.closest(CLICKABLE_SELECTOR) ?? element;
+  return typeof (control as HTMLElement).click === 'function' ? (control as HTMLElement) : null;
+}
+
 !window.tabCapture &&
   (() => {
     window.tabCapture = true;
@@ -58,6 +71,16 @@ const CAPTURE_TIMEOUT = 8000;
         return Promise.resolve({ url: href });
       }
 
+      // Activating the page's own handler is the whole mechanism, so resolve
+      // the control up front: failing here is a clean error instead of an
+      // 8-second wait for a click that never happened.
+      const clickTarget = resolveClickTarget(target);
+      if (!clickTarget) {
+        return Promise.reject(
+          new ErrorWithCode('Right-clicked element cannot be activated', 'NO_TARGET')
+        );
+      }
+
       const nonce = Math.random().toString(36).slice(2) + Date.now().toString(36);
 
       return new Promise<CaptureResult>((resolve, reject) => {
@@ -72,8 +95,10 @@ const CAPTURE_TIMEOUT = 8000;
         };
 
         const onMessage = (event: MessageEvent) => {
-          // Same-window messages only (jsdom reports source as null; the nonce is
-          // the actual guard against unrelated messages)
+          // Same-window messages only (jsdom reports source as null; the nonce
+          // is what actually keeps unrelated messages out). Neither check makes
+          // this payload trustworthy — it crosses the page's own world, so the
+          // page can forge it. ContextMenu.addData re-validates the bytes.
           if (event.source !== window && event.source !== null) return;
           const data = event.data as {
             __tecCapture?: boolean;
@@ -87,8 +112,8 @@ const CAPTURE_TIMEOUT = 8000;
           if (!data || !data.__tecCapture || data.nonce !== nonce) return;
           switch (data.type) {
             case 'armed':
-              // Re-trigger the page's own handler on the element the user chose
-              (target as HTMLElement).click();
+              // Re-trigger the page's own handler on the control the user chose
+              clickTarget.click();
               break;
             case 'captured':
               finish(() =>

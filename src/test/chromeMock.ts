@@ -81,13 +81,18 @@ const chromeMock = {
     updateDynamicRules: vi.fn((_options: unknown, cb?: () => void) => cb?.()),
   },
   contextMenus: {
-    create: vi.fn(),
-    removeAll: vi.fn(),
+    create: vi.fn((_details: unknown, cb?: () => void) => cb?.()),
+    // Must call back: contextMenusRemoveAll() only settles from this callback,
+    // so a bare vi.fn() makes any test of ContextMenu.create() hang forever
+    removeAll: vi.fn((cb?: () => void) => cb?.()),
     onClicked: {
       addListener: vi.fn(),
       removeListener: vi.fn(),
       hasListener: vi.fn(() => false),
     },
+  },
+  scripting: {
+    executeScript: vi.fn((_injection: unknown, cb?: (r: unknown[]) => void) => cb?.([])),
   },
 };
 

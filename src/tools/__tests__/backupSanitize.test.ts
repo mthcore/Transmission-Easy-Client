@@ -77,3 +77,46 @@ describe('getConnectionChanges', () => {
     expect(changes).toEqual(['webPathname: /transmission/web/ → /', 'login: admin → attacker']);
   });
 });
+
+/**
+ * The type gate had no coverage at all: every value in the existing cases
+ * already had the right type, so the check could be removed — or disabled by
+ * its own silent catch in getDefaultTypes — with the file still green.
+ */
+describe('sanitizeRestoreConfig — value types', () => {
+  it('drops a value whose type does not match the store default, and reports it', () => {
+    // storageSet used to accept "9091", the per-key loader then discarded it,
+    // and the restore still showed a green check
+    const { config, droppedKeys } = sanitizeRestoreConfig({ port: '9091', hostname: 'nas.local' });
+
+    expect(config.port).toBeUndefined();
+    expect(droppedKeys).toContain('port');
+    expect(config.hostname).toBe('nas.local');
+  });
+
+  it('drops a scalar where an array is expected', () => {
+    const { config, droppedKeys } = sanitizeRestoreConfig({ folders: 'downloads' });
+
+    expect(config.folders).toBeUndefined();
+    expect(droppedKeys).toContain('folders');
+  });
+
+  it('keeps a correctly typed value of every shape', () => {
+    const { config, droppedKeys } = sanitizeRestoreConfig({
+      port: 9091,
+      ssl: true,
+      hostname: 'nas.local',
+      folders: [],
+    });
+
+    expect(droppedKeys).toEqual([]);
+    expect(config).toEqual({ port: 9091, ssl: true, hostname: 'nas.local', folders: [] });
+  });
+
+  it('drops a transient background key even though it is also off the allowlist', () => {
+    const { config, droppedKeys } = sanitizeRestoreConfig({ _notifiedState: { known: [] } });
+
+    expect(config._notifiedState).toBeUndefined();
+    expect(droppedKeys).toContain('_notifiedState');
+  });
+});

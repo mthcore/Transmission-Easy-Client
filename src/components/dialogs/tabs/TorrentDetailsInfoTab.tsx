@@ -50,8 +50,22 @@ interface TorrentDetailsInfoTabProps {
 }
 
 // Same locale-provided unit suffixes ([w, d, h, m, s]) as getEta, so the
-// durations here match the ETA row instead of hardcoding English units
-const timeUnits: string[] = JSON.parse(chrome.i18n.getMessage('timeOutList'));
+// durations here match the ETA row instead of hardcoding English units.
+// Guarded: this runs at IMPORT time, and getMessage returns '' for a missing
+// key — JSON.parse('') would throw before the module ever rendered. A short
+// array from a translator is filled out rather than indexed past its end.
+const DEFAULT_TIME_UNITS = ['w', 'd', 'h', 'm', 's'];
+const timeUnits: string[] = (() => {
+  try {
+    const parsed: unknown = JSON.parse(chrome.i18n.getMessage('timeOutList'));
+    if (!Array.isArray(parsed)) return DEFAULT_TIME_UNITS;
+    return DEFAULT_TIME_UNITS.map((fallback, index) =>
+      typeof parsed[index] === 'string' ? (parsed[index] as string) : fallback
+    );
+  } catch {
+    return DEFAULT_TIME_UNITS;
+  }
+})();
 
 function formatDuration(seconds: number): string {
   if (seconds <= 0) return '-';
@@ -85,6 +99,21 @@ const TorrentDetailsInfoTab = ({
       : torrent.uploaded > 0
         ? '∞'
         : '0.000';
+
+  // The list only carries seeds/peers while the Seeds/Peers columns are shown
+  // — trackerStats is far too heavy to poll otherwise — so with the default
+  // column set this dialog rendered "N / 0". The details request always asks
+  // for trackerStats, which makes it the reliable source here. Same rule as
+  // normalizeTorrent: every tracker scrapes the SAME swarm, so take the max.
+  const swarm = details?.trackerStats?.length
+    ? details.trackerStats.reduce(
+        (acc, tracker) => ({
+          seeds: Math.max(acc.seeds, tracker.seederCount),
+          peers: Math.max(acc.peers, tracker.leecherCount),
+        }),
+        { seeds: 0, peers: 0 }
+      )
+    : { seeds: torrent.seeds, peers: torrent.peers };
 
   const showEffectiveSize =
     torrent.sizeWhenDone != null &&
@@ -130,14 +159,14 @@ const TorrentDetailsInfoTab = ({
         <div className="nf-subItem">
           <label>{chrome.i18n.getMessage('OV_COL_SEEDS')}</label>
           <span>
-            {torrent.activeSeeds} / {torrent.seeds}
+            {torrent.activeSeeds} / {swarm.seeds}
           </span>
         </div>
 
         <div className="nf-subItem">
           <label>{chrome.i18n.getMessage('OV_COL_PEERS')}</label>
           <span>
-            {torrent.activePeers} / {torrent.peers}
+            {torrent.activePeers} / {swarm.peers}
             {torrent.peersConnected != null && ` (${torrent.peersConnected})`}
           </span>
         </div>

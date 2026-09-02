@@ -199,10 +199,12 @@ async function updateWebUiAuthRule(config: WebUiAuthConfig): Promise<void> {
     },
   });
 
-  if (!hasExplicitWebPath) {
+  if (!hasExplicitWebPath || webPathIsOriginRoot) {
     // Entry point when no Web UI path is set: the extension opens the bare
     // origin and the daemon 301s to its Web UI. Anchored at BOTH ends so it
-    // matches only the root navigation itself.
+    // matches only the root navigation itself. Also the ONLY rule left when
+    // the user set the GUI path to '/' — without it that configuration got no
+    // Web UI credentials at all, which is the opposite of what they asked for.
     addRules.push({
       id: WEB_UI_ROOT_RULE_ID,
       priority: 1,

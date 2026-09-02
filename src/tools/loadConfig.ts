@@ -106,8 +106,24 @@ function migrateConfig(oldConfig: Record<string, unknown>, config: Config): Conf
     selectedLabel: selectedLabelToLabel,
   };
 
-  Object.entries(oldConfig).forEach(([key, value]) => {
+  // Which alias wins must not be decided by the key order chrome.storage
+  // happens to return: walk oldConfigMap in declaration order (historical
+  // spelling first) and let the first alias present own the target, then pass
+  // through anything the map doesn't know — migrateConfig also runs on
+  // user-pasted restore blobs, which carry arbitrary keys.
+  const claimedTargets = new Set<string>();
+  const orderedKeys = [
+    ...Object.keys(oldConfigMap).filter((key) => key in oldConfig),
+    ...Object.keys(oldConfig).filter((key) => !(key in oldConfigMap)),
+  ];
+
+  orderedKeys.forEach((key) => {
+    let value = oldConfig[key];
     const newKey = oldConfigMap[key];
+    if (newKey) {
+      if (claimedTargets.has(newKey)) return;
+      claimedTargets.add(newKey);
+    }
 
     const transform = transformMap[key];
     if (transform) {

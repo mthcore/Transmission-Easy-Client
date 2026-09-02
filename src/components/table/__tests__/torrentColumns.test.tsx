@@ -1,9 +1,9 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import torrentColumnRenderers, { TorrentColumnCtx } from '../table/torrentColumns';
-import getEta from '../../tools/getEta';
-import type { Torrent } from '../../types/stores';
+import torrentColumnRenderers, { TorrentColumnCtx } from '../torrentColumns';
+import getEta from '../../../tools/getEta';
+import type { Torrent } from '../../../types/stores';
 
 /**
  * Plain-object fixture matching the Torrent type (snapshot + computed views).

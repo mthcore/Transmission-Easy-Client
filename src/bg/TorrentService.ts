@@ -127,7 +127,13 @@ export interface NormalizedTorrent {
   startDate: number;
   editDate: number;
   directory: string;
-  magnetLink: string;
+  /**
+   * Absent from both listFields and detailFields — it costs ~0.5-2KB per
+   * torrent per poll and the copy-magnet action rebuilds a URI from the hash.
+   * Optional so consumers have to handle the rebuild rather than trusting a
+   * value that is in practice always undefined.
+   */
+  magnetLink?: string;
   hashString?: string;
   isStalled: boolean;
   isPrivate: boolean;
@@ -187,6 +193,13 @@ const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
 /** Session-scoped speed-graph history, restored after an SW restart */
 const SPEED_ROLL_STORAGE_KEY = '_speedRoll';
 
+/**
+ * How often the speed roll is written. Only an SW restart ever reads it back,
+ * so this trades a few seconds of graph history for not re-serializing five
+ * minutes of samples on every one-second poll.
+ */
+const SPEED_ROLL_PERSIST_INTERVAL = 10_000;
+
 interface TorrentNotifier {
   torrentCompleteNotify: (torrent: { stateText: string }) => void;
   torrentAddedNotify: (torrent: { id: number; name?: string }) => void;
@@ -217,6 +230,8 @@ class TorrentService {
   private _lastAppliedSeq = 0;
   /** Detects a change in the requested field set (Seeds/Peers column toggle) */
   private _lastNeedsTrackerStats = false;
+  /** Last time the speed roll was written to session storage (see persistSpeedRoll) */
+  private _lastSpeedPersist = 0;
 
   constructor(options: TorrentServiceOptions) {
     this.transport = options.transport;
@@ -323,7 +338,9 @@ class TorrentService {
     // column (the earlier polls wrote 0 because the field wasn't requested)
     const needsTrackerStats = this.getNeedsTrackerStats();
     const fieldsChanged = needsTrackerStats !== this._lastNeedsTrackerStats;
-    this._lastNeedsTrackerStats = needsTrackerStats;
+    // NOT committed here: a full refetch discarded by the out-of-order guard
+    // below would still have cleared the flag, so no later poll would ever ask
+    // for the new field set again and idle torrents kept showing 0 seeds.
 
     let isRecently = false;
     if (!full && !fieldsChanged && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
@@ -390,15 +407,18 @@ class TorrentService {
 
     // The notified state is read when the RESPONSE lands, not when the request
     // is issued: two overlapping polls would otherwise compute completions from
-    // the same stale baseline and both notify.
-    return requestPromise.then((response) =>
-      this._notifiedStatePromise.then((previousState) => {
+    // the same stale baseline and both notify. It is also REPLACED inside the
+    // same link, so a second poll waits on this one's result instead of
+    // reading the baseline it is about to invalidate.
+    return requestPromise.then((response) => {
+      const nextStatePromise = this._notifiedStatePromise.then((previousState) => {
         // A response older than one already applied carries a pre-action view
         // of the list: applying it would undo what the user just did
         if (requestSeq < this._lastAppliedSeq) {
-          return response;
+          return previousState;
         }
         this._lastAppliedSeq = requestSeq;
+        this._lastNeedsTrackerStats = needsTrackerStats;
         if (now > this.torrentsResponseTime) {
           this.torrentsResponseTime = now;
           storageSet({ [RESPONSE_TIME_STORAGE_KEY]: now }, 'session').catch(() => {});
@@ -424,7 +444,16 @@ class TorrentService {
           const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
           this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
           this.persistSpeedRoll();
-          return response;
+          // Drop the baseline instead of freezing it. Kept, it stops at the
+          // moment the user turned notifications off, so every torrent that
+          // finished while they were off still looks like one we watched
+          // finish and arrives as a burst on the first poll after re-enabling.
+          // Cleared, that first poll behaves like a new server: silent for one
+          // cycle, accurate from the next.
+          if (previousState !== null) {
+            storageRemove(NOTIFIED_STORAGE_KEY).catch(() => {});
+          }
+          return null;
         }
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
         const knownHashes: string[] = [];
@@ -464,10 +493,14 @@ class TorrentService {
             // for data already on disk. downloadedEver rules out the latter,
             // completedTime rules out the former; without both we stay silent.
             const downloadedSomething = (torrent.downloaded ?? 0) > 0;
+            // A daemon clock ahead of the browser's makes the age negative,
+            // which would pass a bare "< WINDOW" test for any completion date
+            const age = now - (torrent.completedTime ?? 0);
             const completedRecently =
               typeof torrent.completedTime === 'number' &&
               torrent.completedTime > 0 &&
-              now - torrent.completedTime < COMPLETION_NOTIFY_WINDOW;
+              age >= 0 &&
+              age < COMPLETION_NOTIFY_WINDOW;
             if (downloadedSomething && completedRecently) {
               this.notifier.torrentCompleteNotify(torrent);
             }
@@ -498,15 +531,18 @@ class TorrentService {
         ) {
           storageSet({ [NOTIFIED_STORAGE_KEY]: nextState }).catch(() => {});
         }
-        this._notifiedStatePromise = Promise.resolve(nextState);
-
         const { downloadSpeed, uploadSpeed } = this.clientStore.currentSpeed;
         this.clientStore.speedRoll.add(downloadSpeed, uploadSpeed);
         this.persistSpeedRoll();
 
-        return response;
-      })
-    );
+        return nextState;
+      });
+
+      // A rejected link must not strand every later poll on a promise that
+      // never settles, so the chain carries on from a null baseline instead.
+      this._notifiedStatePromise = nextStatePromise.catch(() => null);
+      return nextStatePromise.then(() => response);
+    });
   }
 
   /**
@@ -515,6 +551,14 @@ class TorrentService {
    * open. Session storage matches its lifetime (gone on browser restart).
    */
   private persistSpeedRoll(): void {
+    // Called on every applied poll — once a second while a page is open — and
+    // the roll keeps five minutes of samples, so writing it each time
+    // serialized ~300 objects per second purely to survive an SW restart.
+    // The restart is the only reader, so a coarse cadence loses nothing but
+    // the last few seconds of graph history.
+    const now = Date.now();
+    if (now - this._lastSpeedPersist < SPEED_ROLL_PERSIST_INTERVAL) return;
+    this._lastSpeedPersist = now;
     const data = this.clientStore.speedRoll.data;
     storageSet({ [SPEED_ROLL_STORAGE_KEY]: data.map((p) => ({ ...p })) }, 'session').catch(
       () => {}
@@ -1059,7 +1103,7 @@ class TorrentService {
     const startDate = (torrent.startDate as number) ?? 0;
     const editDate = (torrent.editDate as number) ?? 0;
     const directory = torrent.downloadDir as string;
-    const magnetLink = torrent.magnetLink as string;
+    const magnetLink = torrent.magnetLink as string | undefined;
     const hashString = (torrent.hashString as string) ?? undefined;
     const isStalled = (torrent.isStalled as boolean) ?? false;
     const isPrivate = (torrent.isPrivate as boolean) ?? false;

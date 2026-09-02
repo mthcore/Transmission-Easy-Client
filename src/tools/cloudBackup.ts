@@ -97,7 +97,8 @@ export async function saveCloudBackup(value: string): Promise<void> {
 
   // Chunks first, then the meta that points at them: a reader that sees the new
   // meta is guaranteed to find its chunks. The previous generation is only
-  // dropped afterwards, so a failed write leaves the old backup restorable.
+  // dropped afterwards, so a failed write leaves the old backup restorable —
+  // except on the quota path below, which has to spend it to make room.
   const staleChunks = stale.filter((key) => key !== META_KEY);
   try {
     await storageSet(items, 'sync');
@@ -106,7 +107,15 @@ export async function saveCloudBackup(value: string): Promise<void> {
     // chunks and retry: losing the previous copy beats being unable to save.
     if (!staleChunks.length) throw err;
     await storageRemove(staleChunks, 'sync');
-    await storageSet(items, 'sync');
+    try {
+      await storageSet(items, 'sync');
+    } catch (retryErr) {
+      // The old chunks are spent and the new ones still didn't fit, so the
+      // meta key now points at nothing. Clear it and any partial write rather
+      // than leaving a backup that lists as present and restores as null.
+      await storageRemove([...Object.keys(items), META_KEY], 'sync').catch(() => {});
+      throw retryErr;
+    }
   }
   await storageSet({ [META_KEY]: meta }, 'sync');
   if (stale.length) {

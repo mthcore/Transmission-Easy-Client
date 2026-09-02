@@ -64,11 +64,11 @@ export function sanitizeRestoreConfig(config: Record<string, unknown>): {
   const droppedKeys: string[] = [];
   const types = getDefaultTypes();
   for (const [key, value] of Object.entries(config)) {
-    if (
-      !RESTORE_ALLOWED_KEYS.has(key) ||
-      BACKUP_EXCLUDE_KEYS.includes(key) ||
-      isTransientKey(key)
-    ) {
+    // The prefix rule leads. Behind the allowlist it decided nothing — no '_'
+    // key is a config key, so the allowlist rejected it first — and it also
+    // subsumes every entry in BACKUP_EXCLUDE_KEYS. Ordering it first keeps the
+    // rule live if a '_' key ever becomes a real config key.
+    if (isTransientKey(key) || !RESTORE_ALLOWED_KEYS.has(key)) {
       droppedKeys.push(key);
       continue;
     }

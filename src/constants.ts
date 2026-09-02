@@ -41,12 +41,15 @@ export const DOWNLOAD_TIMEOUT = 120_000; // 2 minutes
 // call is followed by a settings refresh, so the whole exchange must fit.
 export const BLOCKLIST_UPDATE_TIMEOUT = 120_000; // 2 minutes
 // The UI-side message timeout is only a backstop for a hung background
-// handler (a dead service worker rejects sendMessage immediately). It must
-// exceed the transport's worst case: FETCH_TIMEOUT × 4 attempts plus 1+2+4s
-// backoff (~127s), and sendAction can run that whole ladder twice when a 409
-// forces a session-token refresh (~254s). Below that the UI reports failure
-// for operations the background later completes, prompting harmful retries.
-export const MESSAGE_TIMEOUT = 320_000;
+// handler (a dead service worker rejects sendMessage immediately). The
+// transport now bounds a WHOLE exchange — every retry and the 409 token
+// refresh included — at its per-call timeout plus RETRY_BUDGET_MS (15s), so
+// the old "4 attempts plus backoff, twice" worst case no longer exists. What
+// remains is one blocklist-update (120s + 15s) followed by the settings
+// refresh it chains (30s + 15s) = 180s, plus head-room. Below that the UI
+// reports failure for operations the background later completes, prompting
+// harmful retries.
+export const MESSAGE_TIMEOUT = 210_000;
 
 // Daemon
 export const DAEMON_MAX_RETRIES = 3;

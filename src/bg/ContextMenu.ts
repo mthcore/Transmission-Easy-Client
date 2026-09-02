@@ -10,8 +10,18 @@ const promiseLimit = require('promise-limit');
 const logger = getLogger('ContextMenu');
 
 // 'page' as well as 'link': modern trackers download through a JavaScript
-// button with no <a href> at all, so a link-only entry never showed up there
-const MENU_CONTEXTS: ['link', 'page'] = ['link', 'page'];
+// button with no <a href> at all, so a link-only entry never showed up there.
+// Chrome only applies 'page' when NO more specific context matches, so an
+// image-based download button or a right-click over selected text would still
+// get no entry — each of those contexts has to be listed by name.
+const MENU_CONTEXTS: ['link', 'page', 'image', 'video', 'audio', 'selection'] = [
+  'link',
+  'page',
+  'image',
+  'video',
+  'audio',
+  'selection',
+];
 const oneThread = promiseLimit(1);
 
 interface MenuItemInfo {
@@ -77,9 +87,14 @@ class ContextMenu {
       }
     } catch (err: unknown) {
       const error = err as { code?: string; message?: string };
-      if (error.code === 'LINK_IS_NOT_SUPPORTED') {
-        // Magnet or other non-downloadable scheme: hand the URI to the daemon
+      if (error.code === 'LINK_IS_NOT_SUPPORTED' && /^magnet:/i.test(url)) {
+        // Magnet is the one non-downloadable scheme the daemon understands
         data = { url };
+      } else if (error.code === 'LINK_IS_NOT_SUPPORTED') {
+        // Anything else (javascript:, data:, ftp:) would reach the daemon as a
+        // filename and come back as a generic "invalid or corrupt torrent file"
+        this.bg.torrentErrorNotify(chrome.i18n.getMessage('notATorrentFile'));
+        return;
       } else {
         logger.error('onSendLink: download error', err);
         this.bg.torrentErrorNotify(

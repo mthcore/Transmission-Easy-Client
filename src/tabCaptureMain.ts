@@ -22,17 +22,28 @@
   if (w[FLAG]) return;
   w[FLAG] = true;
 
+  // Mirrors MAX_FETCH_SIZE from ../constants; the MAIN world can't import
   const MAX_BYTES = 10 * 1024 * 1024;
   let armedNonce: string | null = null;
   const blobs = new Map<string, Blob>();
 
-  const origCreateObjectURL = URL.createObjectURL.bind(URL);
-  const origRevokeObjectURL = URL.revokeObjectURL.bind(URL);
+  const nativeCreateObjectURL = URL.createObjectURL;
+  const nativeRevokeObjectURL = URL.revokeObjectURL;
+  const origCreateObjectURL = nativeCreateObjectURL.bind(URL);
+  const origRevokeObjectURL = nativeRevokeObjectURL.bind(URL);
   const origAnchorClick = HTMLAnchorElement.prototype.click;
 
+  // Behavioural twin of looksLikeTorrentBuffer in tools/isTorrentData.ts.
+  // It cannot be imported (this file runs in the page's world, so webpack must
+  // not hand it shared chunks), so the two have to be changed together — they
+  // had already drifted apart on which bytes count as leading whitespace.
   const looksLikeTorrent = (bytes: Uint8Array): boolean => {
     let i = 0;
-    while (i < bytes.length && (bytes[i] === 0x20 || bytes[i] === 0x0a || bytes[i] === 0x0d)) i++;
+    while (
+      i < bytes.length &&
+      (bytes[i] === 0x20 || bytes[i] === 0x0a || bytes[i] === 0x0d || bytes[i] === 0x09)
+    )
+      i++;
     if (bytes[i] !== 0x64) return false;
     const needle = [0x34, 0x3a, 0x69, 0x6e, 0x66, 0x6f, 0x64]; // "4:infod"
     outer: for (let p = i; p <= bytes.length - needle.length; p++) {
@@ -51,11 +62,18 @@
     return btoa(binary);
   };
 
+  // Delivered by window.postMessage, so the PAGE sees it too: this script runs
+  // in the page's own world, and there is no channel between the two worlds
+  // the page cannot read or write. The nonce keeps unrelated messages out — it
+  // is not a secret and cannot stop a hostile page forging a 'captured' reply.
+  // That is tolerable because the page was already the source of the bytes,
+  // and the background re-checks them with looksLikeTorrentBuffer before the
+  // daemon is handed anything.
   const post = (payload: Record<string, unknown>) => {
     window.postMessage({ __tecCapture: true, nonce: armedNonce, ...payload }, '*');
   };
 
-  URL.createObjectURL = ((obj: Blob | MediaSource) => {
+  const hookedCreateObjectURL = ((obj: Blob | MediaSource) => {
     const url = origCreateObjectURL(obj);
     if (armedNonce && obj instanceof Blob && obj.size <= MAX_BYTES) {
       blobs.set(url, obj);
@@ -63,7 +81,7 @@
     return url;
   }) as typeof URL.createObjectURL;
 
-  URL.revokeObjectURL = ((url: string) => {
+  const hookedRevokeObjectURL = ((url: string) => {
     // Keep the blob reference while armed: sites revoke right after click(),
     // before our async read finished
     if (!armedNonce) blobs.delete(url);
@@ -105,7 +123,7 @@
     }
   };
 
-  HTMLAnchorElement.prototype.click = function (this: HTMLAnchorElement) {
+  const hookedAnchorClick = function (this: HTMLAnchorElement) {
     if (armedNonce) {
       const blob = isTorrentAnchor(this);
       if (blob) {
@@ -114,6 +132,28 @@
       }
     }
     return origAnchorClick.call(this);
+  };
+
+  const installHooks = () => {
+    URL.createObjectURL = hookedCreateObjectURL;
+    URL.revokeObjectURL = hookedRevokeObjectURL;
+    HTMLAnchorElement.prototype.click = hookedAnchorClick;
+    document.addEventListener('click', onDocumentClick, true);
+  };
+
+  const restoreHooks = () => {
+    // Take back only what is still ours: if the page replaced one of these
+    // while we were armed, overwriting it would break the page
+    if (URL.createObjectURL === hookedCreateObjectURL) {
+      URL.createObjectURL = nativeCreateObjectURL;
+    }
+    if (URL.revokeObjectURL === hookedRevokeObjectURL) {
+      URL.revokeObjectURL = nativeRevokeObjectURL;
+    }
+    if (HTMLAnchorElement.prototype.click === hookedAnchorClick) {
+      HTMLAnchorElement.prototype.click = origAnchorClick;
+    }
+    document.removeEventListener('click', onDocumentClick, true);
   };
 
   // Anchors attached to the DOM and clicked via dispatchEvent / user gesture
@@ -138,12 +178,12 @@
     if (data.__tecCaptureControl === 'arm' && typeof data.nonce === 'string') {
       armedNonce = data.nonce;
       blobs.clear();
-      document.addEventListener('click', onDocumentClick, true);
+      installHooks();
       post({ type: 'armed' });
     } else if (data.__tecCaptureControl === 'disarm' && data.nonce === armedNonce) {
       armedNonce = null;
       blobs.clear();
-      document.removeEventListener('click', onDocumentClick, true);
+      restoreHooks();
     }
   });
 })();

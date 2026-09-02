@@ -82,8 +82,15 @@ function createClientStub(): ClientStub {
   return client as ClientStub;
 }
 
-/** A message from one of the extension's own pages (popup/options) */
-const ownPageSender = { id: chrome.runtime.id } as chrome.runtime.MessageSender;
+/**
+ * A message from one of the extension's own pages (popup/options). The url is
+ * part of the fixture because Chrome always sets it — the boundary requires it
+ * rather than only checking it when present.
+ */
+const ownPageSender = {
+  id: chrome.runtime.id,
+  url: `${chrome.runtime.getURL('')}index.html#popup`,
+} as chrome.runtime.MessageSender;
 
 function dispatch(message: BgMessage, sender: chrome.runtime.MessageSender = ownPageSender) {
   const calls: ResponseBody[] = [];
@@ -145,6 +152,18 @@ describe('Bg.handleMessage — sender trust boundary', () => {
 
     expect(returned).toBe(true);
     await expect(responded).resolves.toEqual({ result: { from: 'updateSettings' } });
+  });
+
+  it('ignores a sender that reports no url at all', () => {
+    // A url-less sender used to pass: the check only ran when sender.url was
+    // truthy, so anything claiming our extension id walked straight through to
+    // the daemon password.
+    const { returned, calls } = dispatch({ action: 'getConfigStore' }, {
+      id: chrome.runtime.id,
+    } as chrome.runtime.MessageSender);
+
+    expect(returned).toBeUndefined();
+    expect(calls).toHaveLength(0);
   });
 
   it('ignores a message from another extension', () => {

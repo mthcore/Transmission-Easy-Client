@@ -1,6 +1,6 @@
 import getLogger from '../tools/getLogger';
 import type { IBgForDaemon } from '../types';
-import { DAEMON_MAX_RETRIES, MIN_BG_UPDATE_INTERVAL } from '../constants';
+import { BG_UPDATE_INTERVAL, DAEMON_MAX_RETRIES, MIN_BG_UPDATE_INTERVAL } from '../constants';
 
 const logger = getLogger('Daemon');
 
@@ -61,9 +61,12 @@ class Daemon {
     // Clamp instead of skipping: a persisted sub-1000 value used to create no
     // alarm at all (and left any stale alarm running), silently killing badge
     // updates and notifications after the next alarm loss
+    // Math.max(n, NaN) is NaN, which chrome.alarms.create rejects outright —
+    // background polling would then never start at all
+    const configured = Number(this.bgStore.config.backgroundUpdateInterval);
     const intervalMs = Math.max(
       MIN_BG_UPDATE_INTERVAL,
-      this.bgStore.config.backgroundUpdateInterval
+      Number.isFinite(configured) ? configured : BG_UPDATE_INTERVAL
     );
     // chrome.alarms survives service worker termination (MV3)
     // Minimum period is 1 minute

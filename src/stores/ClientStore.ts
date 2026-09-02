@@ -611,6 +611,21 @@ const ClientStore = types
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
+      setTorrentLimits(
+        ids: number[],
+        limits: {
+          honorsSessionLimits: boolean;
+          downloadLimited: boolean;
+          downloadLimit: number;
+          uploadLimited: boolean;
+          uploadLimit: number;
+          peerLimit: number;
+        }
+      ): Promise<unknown> {
+        return callApi({ action: 'setTorrentLimits', ids, limits })
+          .then(...exceptionLog())
+          .then(thenSyncClient);
+      },
       setSeedLimits(
         ids: number[],
         seedRatioMode: number,

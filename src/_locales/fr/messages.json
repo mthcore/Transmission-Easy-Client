@@ -950,5 +950,11 @@
     },
     "defaultTrackers": {
         "message": "Trackers par défaut"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Bande passante"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Nombre maximal de pairs"
     }
 }

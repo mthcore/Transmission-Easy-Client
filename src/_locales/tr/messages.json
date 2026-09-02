@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Varsayılan izleyiciler"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Bant genişliği"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "En fazla eş sayısı"
     }
 }

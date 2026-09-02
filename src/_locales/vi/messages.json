@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Tracker mặc định"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Băng thông"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Số peer tối đa"
     }
 }

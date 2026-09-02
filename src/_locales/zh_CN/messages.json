@@ -950,5 +950,11 @@
     },
     "defaultTrackers": {
         "message": "默认 Tracker"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "带宽"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "最大连接数"
     }
 }

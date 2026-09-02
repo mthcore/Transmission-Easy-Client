@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Трекери за замовчуванням"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Пропускна здатність"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Максимум учасників"
     }
 }

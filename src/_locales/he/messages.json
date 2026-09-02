@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "טראקרים כברירת מחדל"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "רוחב פס"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "מספר עמיתים מרבי"
     }
 }

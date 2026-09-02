@@ -368,6 +368,12 @@ class Bg {
         );
         break;
       }
+      case 'setTorrentLimits': {
+        promise = this.whenReady().then(() =>
+          this.requireClient().setTorrentLimits(message.ids, message.limits)
+        );
+        break;
+      }
       case 'setSeedLimits': {
         promise = this.whenReady().then(() =>
           this.requireClient().setSeedLimits(

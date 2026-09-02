@@ -950,5 +950,11 @@
     },
     "defaultTrackers": {
         "message": "Rastreadores padrão"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Largura de banda"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Máximo de pares"
     }
 }

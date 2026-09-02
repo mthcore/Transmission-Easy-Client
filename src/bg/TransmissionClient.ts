@@ -6,6 +6,7 @@ import TorrentService, {
   type PeerData,
   type TorrentDetailData,
   type TorrentAddOptions,
+  type TorrentLimits,
 } from './TorrentService';
 import FileService, { type NormalizedFile } from './FileService';
 import SettingsService, {
@@ -140,6 +141,9 @@ class TransmissionClient {
   setLabels(ids: TorrentId[], labels: string[]): Promise<TransmissionResponse> {
     return this.torrentService.setLabels(ids, labels);
   }
+  setTorrentLimits(ids: TorrentId[], limits: TorrentLimits): Promise<TransmissionResponse> {
+    return this.torrentService.setTorrentLimits(ids, limits);
+  }
   setBandwidthPriority(ids: TorrentId[], priority: number): Promise<TransmissionResponse> {
     return this.torrentService.setBandwidthPriority(ids, priority);
   }
@@ -197,26 +201,6 @@ class TransmissionClient {
   }
 
   // Per-torrent limits (torrent-set)
-  setTorrentDownloadLimit(
-    ids: TorrentId[],
-    limit: number,
-    enabled: boolean
-  ): Promise<TransmissionResponse> {
-    return this.torrentService.setDownloadLimit(ids, limit, enabled);
-  }
-  setTorrentUploadLimit(
-    ids: TorrentId[],
-    limit: number,
-    enabled: boolean
-  ): Promise<TransmissionResponse> {
-    return this.torrentService.setUploadLimit(ids, limit, enabled);
-  }
-  setTorrentHonorsSessionLimits(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
-    return this.torrentService.setHonorsSessionLimits(ids, enabled);
-  }
-  setTorrentPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
-    return this.torrentService.setPeerLimit(ids, limit);
-  }
   setTorrentGroup(ids: TorrentId[], group: string): Promise<TransmissionResponse> {
     return this.torrentService.setGroup(ids, group);
   }

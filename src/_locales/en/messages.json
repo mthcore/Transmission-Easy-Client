@@ -950,5 +950,11 @@
     },
     "defaultTrackers": {
         "message": "Default trackers"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Bandwidth"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Maximum peers"
     }
 }

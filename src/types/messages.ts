@@ -40,6 +40,7 @@ export type BgMessage =
   | EncryptionMessage
   | IncompleteDirMessage
   | DefaultTrackersMessage
+  | TorrentLimitsMessage
   | ScriptTorrentDoneFilenameMessage
   | ScriptTorrentAddedFilenameMessage
   | ScriptTorrentDoneSeedingFilenameMessage
@@ -236,6 +237,23 @@ export interface BlocklistUpdateMessage {
 export interface IncompleteDirMessage {
   action: 'setIncompleteDir';
   dir: string;
+}
+
+/**
+ * Per-torrent bandwidth overrides, applied together rather than one field at a
+ * time: enabling a limit and setting its value are one edit.
+ */
+export interface TorrentLimitsMessage {
+  action: 'setTorrentLimits';
+  ids: TorrentId[];
+  limits: {
+    honorsSessionLimits: boolean;
+    downloadLimited: boolean;
+    downloadLimit: number;
+    uploadLimited: boolean;
+    uploadLimit: number;
+    peerLimit: number;
+  };
 }
 
 /**

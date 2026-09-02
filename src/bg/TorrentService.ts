@@ -24,6 +24,23 @@ import {
 
 const logger = getLogger('TorrentService');
 
+/**
+ * The per-torrent bandwidth overrides. `honorsSessionLimits` decides whether
+ * the session-wide limits apply on top; the two `*Limited` flags are separate
+ * from their values so a limit keeps its number while switched off.
+ */
+export interface TorrentLimits {
+  honorsSessionLimits: boolean;
+  downloadLimited: boolean;
+  /** kB/s */
+  downloadLimit: number;
+  uploadLimited: boolean;
+  /** kB/s */
+  uploadLimit: number;
+  /** Maximum connected peers for this torrent alone */
+  peerLimit: number;
+}
+
 export interface PeerData {
   address: string;
   client: string;
@@ -93,6 +110,7 @@ export interface TorrentDetailData {
   uploadLimit: number;
   uploadLimited: boolean;
   honorsSessionLimits: boolean;
+  peerLimit: number;
   // v4.0.0+ (rpc 17), undefined on older daemons
   fileCount?: number;
   primaryMimeType?: string;
@@ -772,6 +790,7 @@ class TorrentService {
       'uploadLimit',
       'uploadLimited',
       'honorsSessionLimits',
+      'peer-limit',
     ];
     if (this.transport.rpcVersion >= RPC_VERSION_4) {
       detailFields.push('file-count', 'primary-mime-type');
@@ -830,6 +849,7 @@ class TorrentService {
           uploadLimit?: number;
           uploadLimited?: boolean;
           honorsSessionLimits?: boolean;
+          'peer-limit'?: number;
           'file-count'?: number;
           'primary-mime-type'?: string;
         };
@@ -867,48 +887,35 @@ class TorrentService {
           uploadLimit: torrent.uploadLimit ?? 0,
           uploadLimited: torrent.uploadLimited ?? false,
           honorsSessionLimits: torrent.honorsSessionLimits ?? true,
+          peerLimit: torrent['peer-limit'] ?? 0,
           fileCount: torrent['file-count'],
           primaryMimeType: torrent['primary-mime-type'],
         };
       });
   }
 
-  setDownloadLimit(
-    ids: TorrentId[],
-    limit: number,
-    enabled: boolean
-  ): Promise<TransmissionResponse> {
+  /**
+   * The per-torrent bandwidth overrides, applied together.
+   *
+   * These were four separate torrent-set calls, none of which any page could
+   * reach. One call keeps the daemon's view consistent — raising a limit and
+   * enabling it are a single edit, and two round trips could leave the torrent
+   * briefly limited to the old value — and mirrors setSeedLimits, which is the
+   * neighbouring tab doing the same job.
+   */
+  setTorrentLimits(ids: TorrentId[], limits: TorrentLimits): Promise<TransmissionResponse> {
     return this.transport
       .sendAction({
         method: 'torrent-set',
-        arguments: { ids, downloadLimit: limit, downloadLimited: enabled },
-      })
-      .then(this.thenUpdateTorrents);
-  }
-
-  setUploadLimit(ids: TorrentId[], limit: number, enabled: boolean): Promise<TransmissionResponse> {
-    return this.transport
-      .sendAction({
-        method: 'torrent-set',
-        arguments: { ids, uploadLimit: limit, uploadLimited: enabled },
-      })
-      .then(this.thenUpdateTorrents);
-  }
-
-  setHonorsSessionLimits(ids: TorrentId[], enabled: boolean): Promise<TransmissionResponse> {
-    return this.transport
-      .sendAction({
-        method: 'torrent-set',
-        arguments: { ids, honorsSessionLimits: enabled },
-      })
-      .then(this.thenUpdateTorrents);
-  }
-
-  setPeerLimit(ids: TorrentId[], limit: number): Promise<TransmissionResponse> {
-    return this.transport
-      .sendAction({
-        method: 'torrent-set',
-        arguments: { ids, 'peer-limit': limit },
+        arguments: {
+          ids,
+          honorsSessionLimits: limits.honorsSessionLimits,
+          downloadLimited: limits.downloadLimited,
+          downloadLimit: limits.downloadLimit,
+          uploadLimited: limits.uploadLimited,
+          uploadLimit: limits.uploadLimit,
+          'peer-limit': limits.peerLimit,
+        },
       })
       .then(this.thenUpdateTorrents);
   }

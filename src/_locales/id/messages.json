@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Pelacak bawaan"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Lebar pita"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Peer maksimum"
     }
 }

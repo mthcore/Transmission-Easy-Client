@@ -8,6 +8,9 @@ import type { PeerData, TorrentDetailData } from '../../bg/TorrentService';
 import TorrentDetailsInfoTab from './tabs/TorrentDetailsInfoTab';
 import TorrentDetailsTrackersTab from './tabs/TorrentDetailsTrackersTab';
 import TorrentDetailsSeedLimitsTab from './tabs/TorrentDetailsSeedLimitsTab';
+import TorrentDetailsBandwidthTab, {
+  type BandwidthTabValues,
+} from './tabs/TorrentDetailsBandwidthTab';
 import showError from '../../tools/showError';
 
 interface RootStore {
@@ -23,6 +26,7 @@ interface RootStore {
       seedIdleMode: number,
       seedIdleLimit: number
     ) => Promise<void>;
+    setTorrentLimits: (ids: number[], limits: BandwidthTabValues) => Promise<void>;
   };
   config: {
     detailPeerWidths: Record<string, number>;
@@ -73,7 +77,7 @@ interface TorrentDetailsDialogProps {
   dialogStore: TorrentDetailsDialogStore;
 }
 
-type TabId = 'info' | 'trackers' | 'seedLimits';
+type TabId = 'info' | 'trackers' | 'seedLimits' | 'bandwidth';
 
 const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProps) => {
   const torrent = dialogStore.torrent;
@@ -96,6 +100,18 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   const [seedIdleMode, setSeedIdleMode] = useState(0);
   const [seedIdleLimit, setSeedIdleLimit] = useState(0);
   const [seedSaving, setSeedSaving] = useState(false);
+
+  // Per-torrent bandwidth state. One object rather than six useStates, because
+  // they are applied as one request and re-seeded as one unit.
+  const [bandwidth, setBandwidth] = useState<BandwidthTabValues>({
+    honorsSessionLimits: true,
+    downloadLimited: false,
+    downloadLimit: 0,
+    uploadLimited: false,
+    uploadLimit: 0,
+    peerLimit: 0,
+  });
+  const [bandwidthSaving, setBandwidthSaving] = useState(false);
 
   // Resizable columns
   const defaultPeerWidths = useMemo(
@@ -159,6 +175,14 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
             setSeedRatioLimit(data.seedRatioLimit);
             setSeedIdleMode(data.seedIdleMode);
             setSeedIdleLimit(data.seedIdleLimit);
+            setBandwidth({
+              honorsSessionLimits: data.honorsSessionLimits,
+              downloadLimited: data.downloadLimited,
+              downloadLimit: data.downloadLimit,
+              uploadLimited: data.uploadLimited,
+              uploadLimit: data.uploadLimit,
+              peerLimit: data.peerLimit,
+            });
           }
           setDetailsError(false);
           setDetailsLoading(false);
@@ -210,6 +234,22 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
       );
   }, [torrentId, seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit, rootStore.client]);
 
+  const handleBandwidthChange = useCallback((patch: Partial<BandwidthTabValues>) => {
+    setBandwidth((current) => ({ ...current, ...patch }));
+  }, []);
+
+  const handleApplyBandwidth = useCallback(() => {
+    if (torrentId == null) return;
+    setBandwidthSaving(true);
+    rootStore.client?.setTorrentLimits([torrentId], bandwidth).then(
+      () => setBandwidthSaving(false),
+      (err) => {
+        setBandwidthSaving(false);
+        showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
+      }
+    );
+  }, [torrentId, bandwidth, rootStore.client]);
+
   if (!torrent) {
     return null;
   }
@@ -239,6 +279,12 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
             onClick={() => setActiveTab('seedLimits')}
           >
             {chrome.i18n.getMessage('DT_TAB_SEED_LIMITS')}
+          </button>
+          <button
+            className={activeTab === 'bandwidth' ? 'active' : ''}
+            onClick={() => setActiveTab('bandwidth')}
+          >
+            {chrome.i18n.getMessage('DT_TAB_BANDWIDTH')}
           </button>
         </div>
 
@@ -293,6 +339,17 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
               onSeedIdleLimitChange={setSeedIdleLimit}
               onApplySeedLimits={handleApplySeedLimits}
               seedSaving={seedSaving}
+            />
+          )}
+
+          {activeTab === 'bandwidth' && (
+            <TorrentDetailsBandwidthTab
+              detailsLoading={detailsLoading}
+              hasDetails={details !== null}
+              values={bandwidth}
+              onChange={handleBandwidthChange}
+              onApply={handleApplyBandwidth}
+              saving={bandwidthSaving}
             />
           )}
         </div>

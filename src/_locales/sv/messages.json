@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Standardspårare"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Bandbredd"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Högsta antal peers"
     }
 }

@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Προεπιλεγμένοι ιχνηλάτες"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Εύρος ζώνης"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Μέγιστος αριθμός ομότιμων"
     }
 }

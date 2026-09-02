@@ -963,5 +963,11 @@
     },
     "defaultTrackers": {
         "message": "Трекеры по умолчанию"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Пропускная способность"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Максимум участников"
     }
 }

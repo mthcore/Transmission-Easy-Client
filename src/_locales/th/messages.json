@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "ตัวติดตามเริ่มต้น"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "แบนด์วิดท์"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "จำนวนเพียร์สูงสุด"
     }
 }

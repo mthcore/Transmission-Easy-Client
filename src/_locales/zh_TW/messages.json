@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "預設 Tracker"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "頻寬"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "最大連線數"
     }
 }

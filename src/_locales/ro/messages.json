@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Trackere implicite"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Lățime de bandă"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Număr maxim de parteneri"
     }
 }

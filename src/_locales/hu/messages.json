@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Alapértelmezett követők"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Sávszélesség"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Partnerek maximális száma"
     }
 }

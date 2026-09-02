@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Domyślne trackery"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Przepustowość"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Maksymalna liczba peerów"
     }
 }

@@ -923,5 +923,11 @@
     },
     "defaultTrackers": {
         "message": "Výchozí trackery"
+    },
+    "DT_TAB_BANDWIDTH": {
+        "message": "Šířka pásma"
+    },
+    "DT_PEER_LIMIT": {
+        "message": "Maximální počet protějšků"
     }
 }

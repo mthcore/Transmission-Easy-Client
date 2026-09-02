@@ -136,3 +136,31 @@ describe('FileListStore — selection follows the visible rows', () => {
     expect(list.selectedIds).not.toContain('Season 2/ep01.mkv');
   });
 });
+
+describe('FileListStore — folder-wide targets', () => {
+  it('visibleIndexes covers the whole folder, not just the selection', () => {
+    const list = makeList(FILES);
+    list.setFilter('Season 1');
+    // Positions in `files`, which is what torrent-set addresses — not
+    // positions in the filtered view
+    expect(list.visibleIndexes.slice().sort((a, b) => a - b)).toEqual([0, 1, 2]);
+  });
+
+  it('narrows with the search, so an action cannot reach a hidden file', () => {
+    const list = makeList(FILES);
+    list.setFilter('Season 1');
+    list.setNameQuery('ep02');
+    expect(list.visibleIndexes).toEqual([1]);
+  });
+
+  it('is empty when nothing matches, so a folder action sends nothing', () => {
+    const list = makeList(FILES);
+    list.setNameQuery('no-such-file');
+    expect(list.visibleIndexes).toEqual([]);
+  });
+
+  it('covers every file when no filter is set', () => {
+    const list = makeList(FILES);
+    expect(list.visibleIndexes).toHaveLength(FILES.length);
+  });
+});

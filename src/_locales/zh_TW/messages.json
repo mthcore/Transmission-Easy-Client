@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "下載"
+    },
+    "applyToShownFiles": {
+        "message": "所有顯示的檔案"
     }
 }

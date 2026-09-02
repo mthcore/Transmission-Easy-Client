@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Λήψη"
+    },
+    "applyToShownFiles": {
+        "message": "Όλα τα εμφανιζόμενα αρχεία"
     }
 }

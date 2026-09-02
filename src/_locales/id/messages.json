@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Unduh"
+    },
+    "applyToShownFiles": {
+        "message": "Semua berkas yang ditampilkan"
     }
 }

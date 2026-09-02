@@ -944,5 +944,8 @@
     },
     "downloadFile": {
         "message": "下载"
+    },
+    "applyToShownFiles": {
+        "message": "所有显示的文件"
     }
 }

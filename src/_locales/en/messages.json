@@ -944,5 +944,8 @@
     },
     "downloadFile": {
         "message": "Download"
+    },
+    "applyToShownFiles": {
+        "message": "All shown files"
     }
 }

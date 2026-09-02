@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Stáhnout"
+    },
+    "applyToShownFiles": {
+        "message": "Všechny zobrazené soubory"
     }
 }

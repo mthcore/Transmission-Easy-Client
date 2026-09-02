@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Descarcă"
+    },
+    "applyToShownFiles": {
+        "message": "Toate fișierele afișate"
     }
 }

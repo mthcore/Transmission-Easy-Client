@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Scarica"
+    },
+    "applyToShownFiles": {
+        "message": "Tutti i file mostrati"
     }
 }

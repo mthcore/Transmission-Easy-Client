@@ -126,6 +126,20 @@ const FileListStore = types
       get _sortedIds(): string[] {
         return this.sortedFiles.map((file) => file.name);
       },
+      /**
+       * Indexes of every file the current folder + search filter leaves
+       * visible, for actions that apply to the whole folder rather than to the
+       * selection. Indexes are positions in `files`, which is what torrent-set
+       * addresses.
+       */
+      get visibleIndexes(): number[] {
+        const indexes: number[] = [];
+        for (const file of this.sortedFiles) {
+          const index = self.files.indexOf(file);
+          if (index !== -1) indexes.push(index);
+        }
+        return indexes;
+      },
       get selectedIndexes(): (number | null)[] {
         return (self.selectedIds as unknown as string[]).map((name) => this.getFileIndexById(name));
       },

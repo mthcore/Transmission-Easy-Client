@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "İndir"
+    },
+    "applyToShownFiles": {
+        "message": "Gösterilen tüm dosyalar"
     }
 }

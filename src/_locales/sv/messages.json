@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Ladda ner"
+    },
+    "applyToShownFiles": {
+        "message": "Alla visade filer"
     }
 }

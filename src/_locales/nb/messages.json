@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Last ned"
+    },
+    "applyToShownFiles": {
+        "message": "Alle viste filer"
     }
 }

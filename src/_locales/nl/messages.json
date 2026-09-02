@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Downloaden"
+    },
+    "applyToShownFiles": {
+        "message": "Alle getoonde bestanden"
     }
 }

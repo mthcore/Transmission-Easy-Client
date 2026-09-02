@@ -18,6 +18,8 @@ interface FileListStore {
   getFileById: (id: string) => FileEntry | undefined;
   id: number;
   selectedIndexes: number[];
+  visibleIndexes: number[];
+  filter: string;
 }
 
 const FileContextMenu = observer(({ children, fileId }: FileContextMenuProps) => {
@@ -74,6 +76,18 @@ const FileMenuContent = observer(() => {
     report(client.filesSetWanted(fileListStore.id, fileListStore.selectedIndexes, wanted));
   };
 
+  // The list is flat: drilling into a folder sets a filter rather than showing
+  // folder rows, so "this folder" means everything the folder and search
+  // filters currently leave visible. Applying to it without making the user
+  // select several thousand rows first is the whole point.
+  const visible = fileListStore.visibleIndexes;
+  const handleFolderPriority = (priority: number) => {
+    report(client.filesSetPriority(fileListStore.id, visible, priority));
+  };
+  const handleFolderWanted = (wanted: boolean) => {
+    report(client.filesSetWanted(fileListStore.id, visible, wanted));
+  };
+
   const handleRename = () => {
     const id = fileListStore.id;
     if (!firstFile) return;
@@ -111,6 +125,35 @@ const FileMenuContent = observer(() => {
         selected={agreedPriority === 1}
         onSelect={() => handleSetPriority(1)}
       />
+
+      <ContextMenu.Separator className="context-menu-separator" />
+
+      <ContextMenu.Sub>
+        <ContextMenu.SubTrigger className="context-menu-item context-menu-subtrigger">
+          {`${chrome.i18n.getMessage('applyToShownFiles')} (${visible.length})`}
+          <span className="context-menu-arrow">›</span>
+        </ContextMenu.SubTrigger>
+        <ContextMenu.Portal>
+          <ContextMenu.SubContent className="context-menu">
+            <ContextMenu.Item
+              className="context-menu-item"
+              onSelect={() => handleFolderWanted(true)}
+            >
+              {chrome.i18n.getMessage('downloadFile')}
+            </ContextMenu.Item>
+            <ContextMenu.Item
+              className="context-menu-item"
+              onSelect={() => handleFolderWanted(false)}
+            >
+              {chrome.i18n.getMessage('MF_DONT')}
+            </ContextMenu.Item>
+            <ContextMenu.Separator className="context-menu-separator" />
+            <PriorityItem level={3} selected={false} onSelect={() => handleFolderPriority(3)} />
+            <PriorityItem level={2} selected={false} onSelect={() => handleFolderPriority(2)} />
+            <PriorityItem level={1} selected={false} onSelect={() => handleFolderPriority(1)} />
+          </ContextMenu.SubContent>
+        </ContextMenu.Portal>
+      </ContextMenu.Sub>
 
       <ContextMenu.Separator className="context-menu-separator" />
 

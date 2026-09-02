@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Завантажувати"
+    },
+    "applyToShownFiles": {
+        "message": "Усі показані файли"
     }
 }

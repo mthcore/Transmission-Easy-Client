@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Letöltés"
+    },
+    "applyToShownFiles": {
+        "message": "Minden megjelenített fájl"
     }
 }

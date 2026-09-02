@@ -957,5 +957,8 @@
     },
     "downloadFile": {
         "message": "Загружать"
+    },
+    "applyToShownFiles": {
+        "message": "Все показанные файлы"
     }
 }

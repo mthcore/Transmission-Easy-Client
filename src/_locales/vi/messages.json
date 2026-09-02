@@ -917,5 +917,8 @@
     },
     "downloadFile": {
         "message": "Tải xuống"
+    },
+    "applyToShownFiles": {
+        "message": "Tất cả tệp đang hiển thị"
     }
 }

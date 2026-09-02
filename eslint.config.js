@@ -79,6 +79,37 @@ export default [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'webpack.config.js', 'builder/**'],
+    // The build scripts are plain CommonJS run by Node during the build. They
+    // were excluded from linting entirely, which is how the manifest transform
+    // and the packaging code ended up as the only production-affecting code in
+    // the repo with neither lint nor tests.
+    files: ['builder/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'commonjs',
+      globals: {
+        require: 'readonly',
+        module: 'writable',
+        process: 'readonly',
+        console: 'readonly',
+        __dirname: 'readonly',
+        // defaultBuildEnv.js publishes BUILD_ENV on the global object, which is
+        // how webpack.config.js and the compress scripts read it
+        global: 'writable',
+        BUILD_ENV: 'readonly',
+        TextEncoder: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        URL: 'readonly',
+      },
+    },
+    rules: {
+      'no-var': 'error',
+      'prefer-const': 'warn',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    },
+  },
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'webpack.config.js'],
   },
 ];

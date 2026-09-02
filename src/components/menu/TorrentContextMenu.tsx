@@ -73,14 +73,7 @@ const GroupSubMenu = ({ loadGroups, onPick }: GroupSubMenuProps) => {
 const TorrentContextMenu = observer(({ children, torrentId }: TorrentContextMenuProps) => {
   const rootStore = useRootStore();
   const torrentListStore = rootStore?.torrentList;
-  const handleOpenChange = useContextMenuSelection(
-    torrentListStore as unknown as {
-      selectedIds: (string | number)[];
-      resetSelectedIds: () => void;
-      addSelectedId: (id: string | number) => void;
-    },
-    torrentId
-  );
+  const handleOpenChange = useContextMenuSelection(torrentListStore, torrentId);
 
   return (
     <ContextMenu.Root onOpenChange={handleOpenChange}>

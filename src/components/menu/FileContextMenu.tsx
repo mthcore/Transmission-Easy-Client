@@ -25,14 +25,7 @@ interface FileListStore {
 const FileContextMenu = observer(({ children, fileId }: FileContextMenuProps) => {
   const rootStore = useRootStore();
   const fileListStore = rootStore?.fileList as FileListStore | undefined;
-  const handleOpenChange = useContextMenuSelection(
-    fileListStore as {
-      selectedIds: (string | number)[];
-      resetSelectedIds: () => void;
-      addSelectedId: (id: string | number) => void;
-    },
-    fileId
-  );
+  const handleOpenChange = useContextMenuSelection(fileListStore, fileId);
 
   return (
     <ContextMenu.Root onOpenChange={handleOpenChange}>

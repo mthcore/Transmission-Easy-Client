@@ -27,6 +27,17 @@ const CopyMagnetUrlDialog = observer(({ dialogStore }: CopyMagnetUrlDialogProps)
       // reject (Firefox permission, focus lost between click and write), and
       // closing anyway claimed success with nothing on the clipboard. On
       // failure the dialog stays open — the URI is right there to copy by hand.
+      // Property access, not a rejected promise: without a clipboard object at
+      // all this threw synchronously out of the submit handler, so nothing was
+      // reported and the dialog never closed
+      if (!navigator.clipboard) {
+        magnetLinkInput.select();
+        showError(
+          chrome.i18n.getMessage('OV_FL_ERROR') || 'Copy failed',
+          new Error('Clipboard unavailable')
+        );
+        return;
+      }
       navigator.clipboard.writeText(magnetLink).then(
         () => dialogStore.close(),
         (err) => {

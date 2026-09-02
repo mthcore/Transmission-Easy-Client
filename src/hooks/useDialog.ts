@@ -20,11 +20,20 @@ export function useDialog(onClose: () => void): RefObject<HTMLDivElement | null>
     const token = tokenRef.current as symbol;
     // Cascade offset: stacked dialogs rendered at IDENTICAL coordinates with
     // no backdrop, so the lower one was completely invisible behind the upper
-    // and the user had no cue that another dialog was queued underneath
+    // and the user had no cue that another dialog was queued underneath.
+    //
+    // Offset the PANEL, never this wrapper: the wrapper has no styles of its
+    // own and the panel inside it is position:fixed, so a transform here would
+    // make the wrapper the panel's containing block. The wrapper is portalled
+    // after #root, which is height:100%, so the panel's "top: 0" would then
+    // resolve to the BOTTOM of the viewport and the dialog would vanish.
     const depth = dialogStack.length;
     dialogStack.push(token);
-    if (depth > 0 && refDialog.current) {
-      refDialog.current.style.transform = `translate(${depth * 24}px, ${depth * 24}px)`;
+    if (depth > 0) {
+      const panel = refDialog.current?.firstElementChild as HTMLElement | null;
+      if (panel) {
+        panel.style.transform = `translate(${depth * 24}px, ${depth * 24}px)`;
+      }
     }
     return () => {
       const pos = dialogStack.indexOf(token);

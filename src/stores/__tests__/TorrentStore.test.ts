@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import TorrentStore from '../../stores/TorrentStore';
+import TorrentStore from '../TorrentStore';
 
 function createTorrent(overrides: Partial<Record<string, unknown>> = {}) {
   return TorrentStore.create({
@@ -335,5 +335,32 @@ describe('TorrentStore computed views', () => {
       expect(createTorrent({ statusCode: 2 }).actions).not.toContain('recheck');
       expect(createTorrent({ statusCode: 4 }).actions).toContain('recheck');
     });
+  });
+});
+
+/**
+ * Two display rules changed with nothing observing them: the infinite-ratio
+ * sentinel, and the magnet-metadata text that must stand down when the torrent
+ * is stopped. The existing fixtures never reach either branch.
+ */
+describe('TorrentStore — display sentinels', () => {
+  it('renders the infinite-ratio sentinel rather than a negative ratio', () => {
+    // -2 means seeded without ever downloading; mapping it to 0 showed the
+    // best seeders as the worst ratio
+    expect(createTorrent({ shared: -2 }).sharedStr).toBe('∞');
+  });
+
+  it('still formats an ordinary ratio', () => {
+    expect(createTorrent({ shared: 1500 }).sharedStr).toBe('1.50');
+  });
+
+  it('reports metadata progress for a running magnet', () => {
+    const torrent = createTorrent({ metadataPercentComplete: 0.3, statusCode: 4 });
+    expect(torrent.stateText).toContain('30%');
+  });
+
+  it('reports a STOPPED magnet as stopped, not as downloading', () => {
+    const torrent = createTorrent({ metadataPercentComplete: 0.3, statusCode: 0 });
+    expect(torrent.stateText).not.toContain('30%');
   });
 });

@@ -5,6 +5,7 @@ import { speedToStr } from '../../tools/format';
 import useRootStore from '../../hooks/useRootStore';
 import { SPEED_ARRAY_COUNT, DEFAULT_SPEED_LIMIT } from '../../constants';
 import { SPEED_LIMIT_UNIT } from '../../stores/ClientStore';
+import report from '../../tools/reportAction';
 
 type SpeedType = 'download' | 'upload';
 
@@ -67,15 +68,15 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
   const handleUnlimited = () => {
     if (type === 'download') {
       if (isAltSpeed) {
-        client?.setAltSpeedEnabled(false);
+        report(client?.setAltSpeedEnabled(false));
       } else {
-        client?.setDownloadSpeedLimitEnabled(false);
+        report(client?.setDownloadSpeedLimitEnabled(false));
       }
     } else if (type === 'upload') {
       if (isAltSpeed) {
-        client?.setAltSpeedEnabled(false);
+        report(client?.setAltSpeedEnabled(false));
       } else {
-        client?.setUploadSpeedLimitEnabled(false);
+        report(client?.setUploadSpeedLimitEnabled(false));
       }
     }
   };
@@ -83,15 +84,15 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
   const handleSetSpeedLimit = (speed: number) => {
     if (type === 'download') {
       if (isAltSpeed) {
-        client?.setAltDownloadSpeedLimit(speed);
+        report(client?.setAltDownloadSpeedLimit(speed));
       } else {
-        client?.setDownloadSpeedLimit(speed);
+        report(client?.setDownloadSpeedLimit(speed));
       }
     } else if (type === 'upload') {
       if (isAltSpeed) {
-        client?.setAltUploadSpeedLimit(speed);
+        report(client?.setAltUploadSpeedLimit(speed));
       } else {
-        client?.setUploadSpeedLimit(speed);
+        report(client?.setUploadSpeedLimit(speed));
       }
     }
   };
@@ -109,7 +110,7 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
       {settings && (
         <>
           <ContextMenu.Separator className="context-menu-separator" />
-          {getSpeedArray(speedLimit, SPEED_ARRAY_COUNT, false).map((speed) => {
+          {getSpeedArray(speedLimit, SPEED_ARRAY_COUNT).map((speed) => {
             const selected = speedLimitEnabled && speed === speedLimit;
             const isDefault = speed === speedLimit;
             return (
@@ -133,11 +134,10 @@ const SpeedMenuContent = observer(({ type }: SpeedMenuContentProps) => {
   );
 });
 
-function getSpeedArray(currentLimit: number, count: number, maybeZero: boolean): number[] {
-  let limit = currentLimit;
-  if (!maybeZero && !limit) {
-    limit = DEFAULT_SPEED_LIMIT;
-  }
+function getSpeedArray(currentLimit: number, count: number): number[] {
+  // A configured limit of 0 can no longer seed the ladder — the filter below
+  // would drop every entry it produced — so it always falls back
+  const limit = currentLimit || DEFAULT_SPEED_LIMIT;
   const middle = Math.round(count / 2);
   let middleSpeed = limit;
   if (middleSpeed < middle) {

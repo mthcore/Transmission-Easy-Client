@@ -25,6 +25,10 @@ function buildServerUrl(ssl: boolean, hostname: string, port: number, pathname: 
   if (path && !path.startsWith('/')) {
     path = `/${path}`;
   }
+  // '#' or '?' in a configured path would end the path component and turn the
+  // rest into a fragment or a query, so the request went somewhere else
+  // entirely. Node's url.format escaped these; hand-building has to as well.
+  path = path.replace(/#/g, '%23').replace(/\?/g, '%3F');
   return `${protocol}://${host}:${port}${path}`;
 }
 

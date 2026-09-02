@@ -10,6 +10,8 @@ interface TorrentListTableItemProps {
   torrent: Torrent;
   /** Absolute-index striping: virtualization breaks :nth-child parity */
   even?: boolean;
+  /** 1-based position in the FULL list, not in the rendered window */
+  rowIndex?: number;
 }
 
 interface TorrentListStore {
@@ -18,7 +20,7 @@ interface TorrentListStore {
   removeSelectedId: (id: number) => void;
 }
 
-const TorrentListTableItem = observer(({ torrent, even }: TorrentListTableItemProps) => {
+const TorrentListTableItem = observer(({ torrent, even, rowIndex }: TorrentListTableItemProps) => {
   const rootStore = useRootStore();
   const torrentListStore = rootStore?.torrentList as TorrentListStore | undefined;
   const config = rootStore?.config;
@@ -103,7 +105,12 @@ const TorrentListTableItem = observer(({ torrent, even }: TorrentListTableItemPr
 
   return (
     <TorrentContextMenu torrentId={torrent.id}>
-      <tr className={classList.join(' ')} id={String(torrent.id)} onDoubleClick={handleRowDblClick}>
+      <tr
+        className={classList.join(' ')}
+        id={String(torrent.id)}
+        aria-rowindex={rowIndex}
+        onDoubleClick={handleRowDblClick}
+      >
         {columns}
       </tr>
     </TorrentContextMenu>

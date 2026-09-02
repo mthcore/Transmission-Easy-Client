@@ -131,8 +131,13 @@ describe('TorrentService completion notifications', () => {
       Object.assign(storage, items);
       cb();
     }) as never);
-    vi.mocked(chrome.storage.local.remove).mockImplementation(((_keys: unknown, cb: () => void) =>
-      cb()) as never);
+    vi.mocked(chrome.storage.local.remove).mockImplementation(((
+      keys: string | string[],
+      cb: () => void
+    ) => {
+      for (const key of Array.isArray(keys) ? keys : [keys]) delete storage[key];
+      cb();
+    }) as never);
   });
 
   it('stays silent on the very first poll of a server', async () => {
@@ -241,6 +246,43 @@ describe('TorrentService completion notifications', () => {
     const second = makeService(url, [rawTorrent(1, 'aaa', 1)], { showNotifications: false });
     await second.service.updateTorrents(true);
     expect(second.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
+  });
+
+  it('does not replay completions that happened while notifications were off', async () => {
+    // The baseline used to freeze at the moment notifications were turned off,
+    // so everything that finished meanwhile still looked like a torrent we had
+    // watched finish, and arrived as a burst on the first poll after re-enabling
+    const url = 'http://nas:9091/rpc';
+
+    const watching = makeService(url, [rawTorrent(1, 'aaa', 0.5)]);
+    await watching.service.updateTorrents(true);
+
+    const off = makeService(url, [rawTorrent(1, 'aaa', 1)], { showNotifications: false });
+    await off.service.updateTorrents(true);
+    expect(off.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
+
+    const back = makeService(url, [rawTorrent(1, 'aaa', 1)]);
+    await back.service.updateTorrents(true);
+    expect(back.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
+
+    // ...and it does not start announcing it on the poll after that either
+    const later = makeService(url, [rawTorrent(1, 'aaa', 1)]);
+    await later.service.updateTorrents(true);
+    expect(later.notifier.torrentCompleteNotify).not.toHaveBeenCalled();
+  });
+
+  it('still announces a torrent that finishes after notifications come back on', async () => {
+    const url = 'http://nas:9091/rpc';
+
+    const off = makeService(url, [rawTorrent(1, 'aaa', 0.5)], { showNotifications: false });
+    await off.service.updateTorrents(true);
+
+    const back = makeService(url, [rawTorrent(1, 'aaa', 0.5)]);
+    await back.service.updateTorrents(true);
+
+    const done = makeService(url, [rawTorrent(1, 'aaa', 1)]);
+    await done.service.updateTorrents(true);
+    expect(done.notifier.torrentCompleteNotify).toHaveBeenCalledTimes(1);
   });
 
   it('coalesces periodic polls but never downgrades a forced refresh', async () => {

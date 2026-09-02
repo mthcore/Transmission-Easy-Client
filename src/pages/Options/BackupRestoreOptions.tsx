@@ -41,6 +41,8 @@ const BackupRestoreOptions = () => {
   const [restoreState, setRestoreState] = useState<RestoreState>('idle');
   const [saveError, setSaveError] = useState('');
   const [restoreError, setRestoreError] = useState('');
+  /** Keys the sanitizer refused — a partial success, not a failure */
+  const [restoreSkipped, setRestoreSkipped] = useState('');
   const [hasCloudData, setHasCloudData] = useState(false);
   const [storage, setStorage] = useState<string | null>(null);
 
@@ -162,6 +164,7 @@ const BackupRestoreOptions = () => {
     if (!window.confirm(confirmMessage)) return;
     setRestoreState('pending');
     setRestoreError('');
+    setRestoreSkipped('');
     try {
       const parsed = JSON.parse(refData.current?.value || '{}');
       // Strip transient keys that may have been included in older backups
@@ -211,9 +214,12 @@ const BackupRestoreOptions = () => {
       setRestoreState('done');
       // Values dropped for a wrong type (a hand-edited or version-skewed
       // backup) must be visible: the restore used to show an unqualified green
-      // check while silently keeping the old values for those keys
+      // check while silently keeping the old values for those keys. This is a
+      // partial success and is tracked separately from restoreError — reusing
+      // that state left a bare red line on the page once the check faded, with
+      // nothing left to explain it.
       if (droppedKeys.length) {
-        setRestoreError(
+        setRestoreSkipped(
           (chrome.i18n.getMessage('restoreSkippedKeys') || 'Ignored invalid values') +
             ': ' +
             droppedKeys.join(', ')
@@ -222,6 +228,7 @@ const BackupRestoreOptions = () => {
       setTimeout(() => {
         if (!refPage.current) return;
         setRestoreState('idle');
+        setRestoreSkipped('');
       }, 2000);
     } catch (err) {
       logger.error('handleRestore error', err);
@@ -307,7 +314,7 @@ const BackupRestoreOptions = () => {
         {/* Partial success: the restore applied, but some values were dropped
             (wrong type in a hand-edited backup) — say so instead of showing an
             unqualified green check */}
-        {restoreState !== 'error' && restoreError && <p className="red">{restoreError}</p>}
+        {restoreState !== 'error' && restoreSkipped && <p className="red">{restoreSkipped}</p>}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { types, destroy, Instance } from 'mobx-state-tree';
+import { types, destroy, isAlive, Instance } from 'mobx-state-tree';
 import ClientStore from '../ClientStore';
 
 // ClientStore.syncClient() delegates to getRoot(self).syncClient(), so it
@@ -51,12 +51,17 @@ function makeTorrent(overrides: Partial<Record<string, unknown>> = {}) {
 
 let root: ITestRoot | null = null;
 
-function createRoot(torrents: Record<string, unknown>[] = []): ITestRoot {
+function createRoot(
+  torrents: Record<string, unknown>[] = [],
+  clientOverrides: Record<string, unknown> = {}
+): ITestRoot {
   const torrentMap: Record<string, Record<string, unknown>> = {};
   for (const t of torrents) {
     torrentMap[String(t.id)] = t;
   }
-  root = TestRoot.create({ client: { torrents: torrentMap as never } });
+  root = TestRoot.create({
+    client: { torrents: torrentMap as never, ...clientOverrides },
+  });
   return root;
 }
 
@@ -269,5 +274,81 @@ describe('ClientStore', () => {
 
       expect(syncClientMock).not.toHaveBeenCalled();
     });
+  });
+});
+
+/**
+ * The session-scoped-id guard destroys the old NODE. Asserting on field values
+ * cannot see it — a plain map.set on an existing identifier already reconciles
+ * every field — so both delete branches could be removed with the suite green.
+ */
+describe('ClientStore — session-scoped id reuse', () => {
+  it('destroys the old node when sync() sees the id under a new hash', () => {
+    const r = createRoot([makeTorrent({ id: 1, name: 'old', hashString: 'aaa' })]);
+    const oldNode = r.client.torrents.get('1');
+    expect(oldNode).toBeDefined();
+
+    r.client.sync([makeTorrent({ id: 1, name: 'new', hashString: 'bbb' })] as never);
+
+    // isAlive only: comparing the nodes themselves makes vitest's differ read
+    // fields off the dead one, which MST refuses
+    expect(isAlive(oldNode!)).toBe(false);
+    expect(isAlive(r.client.torrents.get('1')!)).toBe(true);
+    expect(r.client.torrents.get('1')?.name).toBe('new');
+  });
+
+  it('destroys the old node on syncChanges too — the path almost every poll takes', () => {
+    const r = createRoot([makeTorrent({ id: 1, name: 'old', hashString: 'aaa' })]);
+    const oldNode = r.client.torrents.get('1');
+
+    r.client.syncChanges([makeTorrent({ id: 1, name: 'new', hashString: 'bbb' })] as never);
+
+    expect(isAlive(oldNode!)).toBe(false);
+    expect(r.client.torrents.get('1')?.hashString).toBe('bbb');
+  });
+
+  it('keeps the node when the hash is unchanged', () => {
+    const r = createRoot([makeTorrent({ id: 1, name: 'old', hashString: 'aaa' })]);
+    const oldNode = r.client.torrents.get('1');
+
+    r.client.syncChanges([makeTorrent({ id: 1, name: 'renamed', hashString: 'aaa' })] as never);
+
+    expect(isAlive(oldNode!)).toBe(true);
+    expect(r.client.torrents.get('1')?.name).toBe('renamed');
+  });
+});
+
+/**
+ * sessionTotals prefers the daemon's own counters; the existing test builds a
+ * root with no settings at all, so it only ever exercised the fallback.
+ */
+describe('ClientStore — sessionTotals', () => {
+  /** Only the fields SettingsStore actually requires, plus the ones under test */
+  const makeSettings = (overrides: Record<string, unknown> = {}) => ({
+    downloadSpeedLimit: 0,
+    downloadSpeedLimitEnabled: false,
+    uploadSpeedLimit: 0,
+    uploadSpeedLimitEnabled: false,
+    altSpeedEnabled: false,
+    altDownloadSpeedLimit: 0,
+    altUploadSpeedLimit: 0,
+    downloadDir: '/downloads',
+    ...overrides,
+  });
+
+  it('prefers the daemon session counters over the per-torrent sum', () => {
+    const r = createRoot([makeTorrent({ id: 1, downloaded: 500, uploaded: 250 })], {
+      settings: makeSettings({ sessionDownloaded: 4242, sessionUploaded: 1717 }) as never,
+    });
+
+    expect(r.client.sessionTotals).toEqual({ downloaded: 4242, uploaded: 1717 });
+  });
+
+  it('falls back to the per-torrent sum when the daemon reports no counters', () => {
+    const r = createRoot([makeTorrent({ id: 1, downloaded: 500, uploaded: 250 })], {
+      settings: makeSettings() as never,
+    });
+
+    expect(r.client.sessionTotals).toEqual({ downloaded: 500, uploaded: 250 });
   });
 });

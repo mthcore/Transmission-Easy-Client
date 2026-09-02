@@ -133,10 +133,13 @@ const ClientStore = types
         torrents.forEach((torrent) => {
           const key = String(torrent.id);
           const existing = self.torrents.get(key);
-          // Transmission ids are unique only within one daemon session: after a
-          // restart the same id can designate a different torrent. Drop the old
-          // node instead of reconciling stale state (and stale selection) onto
-          // it — hashString is the stable identity.
+          // Transmission ids are unique only within one daemon session: after
+          // a restart the same id can designate a different torrent. Replace
+          // the NODE rather than reconciling the new snapshot onto the old one,
+          // so anything holding a reference to it (an open dialog, a pending
+          // action) sees a dead node instead of silently retargeting.
+          // Note this does not clear a stale selection: TorrentListStore keys
+          // selectedIds by numeric id, which deleting the node leaves alone.
           if (
             existing &&
             torrent.hashString &&

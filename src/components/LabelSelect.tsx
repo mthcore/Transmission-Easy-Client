@@ -24,13 +24,13 @@ const LabelSelect = observer(() => {
   // filtered down to nothing while the dropdown rendered blank. Keep the ghost
   // label visible as an entry so the user can see — and leave — the filter.
   // (`custom: false` is a user label; `custom: true` are the built-in
-  // categories, which are always present.)
+  // categories.) The built-ins were assumed always present, but a persisted
+  // selection from another build — or one dropped from customLabels — left
+  // selectedValue null and the Select fell back to uncontrolled and blank,
+  // the exact symptom this exists to prevent. Match on both flags instead.
   const filters = rootStore.torrentList.filters.slice();
-  if (
-    !selectedLabel.custom &&
-    !filters.some((f) => f.custom === selectedLabel.custom && f.label === selectedLabel.label)
-  ) {
-    filters.push({ label: selectedLabel.label, custom: false });
+  if (!filters.some((f) => f.custom === selectedLabel.custom && f.label === selectedLabel.label)) {
+    filters.push({ label: selectedLabel.label, custom: selectedLabel.custom });
   }
 
   let selectedValue: string | null = null;

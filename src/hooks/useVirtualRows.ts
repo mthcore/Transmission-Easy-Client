@@ -40,11 +40,20 @@ export function useVirtualRows(
   const [rowHeight, setRowHeight] = useState(DEFAULT_ROW_HEIGHT);
   const [range, setRange] = useState({ start: 0, end: 0 });
   const frameRef = useRef(0);
+  /**
+   * Distance from the scroll container's top to row 0. The body table keeps a
+   * second <thead> (visibility:hidden, so it still occupies layout) to hold the
+   * column widths, and it scrolls with the rows — without subtracting it, every
+   * computed start was a row too high.
+   */
+  const headerOffsetRef = useRef(0);
+  /** Row count the current height measurement was taken at */
+  const measuredAtRef = useRef(-1);
 
   const computeRange = useCallback(() => {
     const container = scrollRef.current;
     if (!container) return;
-    const viewTop = container.scrollTop;
+    const viewTop = Math.max(0, container.scrollTop - headerOffsetRef.current);
     const viewHeight = container.clientHeight || 600;
     const start = Math.max(0, Math.floor(viewTop / rowHeight) - OVERSCAN);
     const visible = Math.ceil(viewHeight / rowHeight) + OVERSCAN * 2;
@@ -76,19 +85,40 @@ export function useVirtualRows(
     return () => window.removeEventListener('resize', computeRange);
   }, [computeRange]);
 
-  // After every commit: measure the real row height (querySelector skips the
-  // spacer rows), and self-heal drift — a scroll event can slip past the rAF
+  // After every commit, self-heal drift: a scroll event can slip past the rAF
   // throttle during a long render, or the browser can rewrite scrollTop
   // (anchoring, zoom), leaving the window stranded away from the viewport.
   // Deliberately dependency-free: it must observe EVERY commit (polls replace
-  // rows without any dep changing); setRowHeight is gated on a >0.5px delta
-  // and computeRange on an actual range change, so the chain terminates.
+  // rows without any dep changing); computeRange is gated on an actual range
+  // change, so the chain terminates. The layout READS (row height, header
+  // offset) are gated on the row count instead — they force a synchronous
+  // layout, and repeating that once a second cost more than windowing saved.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const rows = bodyRef.current?.querySelectorAll<HTMLTableRowElement>(
-      'tr:not([data-virtual-spacer])'
-    );
+    // Measure only when there is something new to learn. Polls replace rows
+    // once a second without changing any dep, and reading offsetHeight forces
+    // a synchronous layout — doing that on every commit cost more than the
+    // windowing saved.
+    const needsMeasure = measuredAtRef.current !== rowCount;
+    const rows = needsMeasure
+      ? bodyRef.current?.querySelectorAll<HTMLTableRowElement>('tr:not([data-virtual-spacer])')
+      : null;
     if (rows && rows.length) {
+      measuredAtRef.current = rowCount;
+      const container = scrollRef.current;
+      const body = bodyRef.current;
+      if (container && body) {
+        // Offset from the container's scrollable origin, so a wrapped or
+        // restyled header is accounted for without hardcoding its height. The
+        // spacer rows live INSIDE tbody, so its own top is the header's bottom
+        // no matter where the window currently sits.
+        headerOffsetRef.current = Math.max(
+          0,
+          body.getBoundingClientRect().top -
+            container.getBoundingClientRect().top +
+            container.scrollTop
+        );
+      }
       // Minimum over a few rows: a single outlier (a glyph the CSS clamp
       // missed) must not poison the uniform height and strand the window
       let measured = Infinity;

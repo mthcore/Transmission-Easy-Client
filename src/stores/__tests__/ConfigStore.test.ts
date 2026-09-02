@@ -261,3 +261,73 @@ describe('ConfigStore', () => {
     });
   });
 });
+
+/**
+ * buildServerUrl replaced Node's url.format by hand. Only the plain-host case
+ * was pinned, so the three branches the rewrite actually added — IPv6
+ * bracketing, leading-slash normalization, reserved-character escaping — could
+ * all break while the existing assertion passed.
+ */
+describe('ConfigStore — buildServerUrl', () => {
+  it('brackets an IPv6 literal', () => {
+    const c = create({
+      hostname: 'fe80::1',
+      port: 9091,
+      ssl: false,
+      pathname: '/transmission/rpc',
+    });
+    expect(c.url).toBe('http://[fe80::1]:9091/transmission/rpc');
+  });
+
+  it('does not double-bracket a hostname already stored bracketed', () => {
+    const c = create({ hostname: '[::1]', port: 9091, ssl: false, pathname: '/rpc' });
+    expect(c.url).toBe('http://[::1]:9091/rpc');
+  });
+
+  it('adds the leading slash a pathname is missing', () => {
+    const c = create({
+      hostname: 'nas.local',
+      port: 9091,
+      ssl: false,
+      pathname: 'transmission/rpc',
+    });
+    expect(c.url).toBe('http://nas.local:9091/transmission/rpc');
+  });
+
+  it('tolerates an empty pathname', () => {
+    const c = create({ hostname: 'nas.local', port: 9091, ssl: true, pathname: '' });
+    expect(c.url).toBe('https://nas.local:9091');
+  });
+
+  it('escapes characters that would end the path component', () => {
+    // '#' or '?' unescaped turns the rest into a fragment or a query, so the
+    // request lands somewhere other than the configured path
+    const c = create({ hostname: 'nas.local', port: 9091, ssl: false, pathname: '/rpc?x#y' });
+    expect(c.url).toBe('http://nas.local:9091/rpc%3Fx%23y');
+  });
+});
+
+/**
+ * setKeyValue assigns each key inside its own try/catch so one wrongly-typed
+ * value no longer aborts the rest of a cross-context storage batch. Every
+ * existing case passes only valid values, so the isolation was unobserved.
+ */
+describe('ConfigStore — setKeyValue isolation', () => {
+  it('keeps the good keys of a batch when one value has the wrong type', () => {
+    const c = create({ hostname: 'old.local', port: 9091 });
+
+    c.setKeyValue({ port: 'not-a-number' as never, hostname: 'new.local' });
+
+    expect(c.hostname).toBe('new.local');
+    expect(c.port).toBe(9091);
+  });
+
+  it('applies a whole batch when every value is valid', () => {
+    const c = create({ hostname: 'old.local', port: 9091 });
+
+    c.setKeyValue({ port: 8080, hostname: 'new.local' });
+
+    expect(c.hostname).toBe('new.local');
+    expect(c.port).toBe(8080);
+  });
+});

@@ -32,7 +32,13 @@ const RenameDialog = observer(({ dialogStore }: RenameDialogProps) => {
       // An empty name is never valid — the daemon rejects it, and the only
       // trace was a generic error toast after the dialog had already closed.
       // Keep the dialog open, like MoveDialog does for an empty location.
-      if (!name) return;
+      if (!name) {
+        // A bare return gave no feedback at all; the browser's own validation
+        // bubble says why, next to the field
+        nameInput.value = '';
+        form.reportValidity();
+        return;
+      }
       // Unchanged: nothing to send
       if (name === dialogStore.name) {
         dialogStore.close();

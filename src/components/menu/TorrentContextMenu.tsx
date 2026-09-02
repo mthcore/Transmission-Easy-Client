@@ -3,17 +3,7 @@ import * as ContextMenu from '@radix-ui/react-context-menu';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 import { useContextMenuSelection } from '../../hooks/useContextMenuSelection';
-import showError from '../../tools/showError';
-
-/**
- * Every menu action is fire-and-forget; without this, a daemon failure was an
- * unhandled promise rejection and the user saw the action silently not happen.
- */
-function report(action: Promise<unknown>): void {
-  action.catch((err) => {
-    showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Action failed', err as Error);
-  });
-}
+import report from '../../tools/reportAction';
 
 interface TorrentContextMenuProps {
   children: ReactNode;

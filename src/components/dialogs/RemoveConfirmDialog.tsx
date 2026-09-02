@@ -34,6 +34,15 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
     })
   );
 
+  // Frozen for the same reason as removalIds. Read live, the name came from
+  // whatever torrent currently holds that id — so in the exact case the hash
+  // capture exists for, the dialog named one torrent while deleting another.
+  const [removalName] = useState<string | null>(() => {
+    if (dialogStore.torrentIds.length !== 1) return null;
+    const torrent = rootStore?.client?.torrents.get(dialogStore.torrentIds[0]);
+    return torrent ? torrent.name : null;
+  });
+
   const handleSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -60,12 +69,10 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   const deleteData = dialogStore.deleteData;
 
   if (count === 1) {
-    const id = dialogStore.torrentIds[0];
-    const torrent = client?.torrents.get(id);
-    if (torrent) {
+    if (removalName !== null) {
       // Strip bidi overrides: the delete confirmation is exactly where a
       // spoofed extension must not mislead the user
-      filename = <span className="fileName">{stripBidiControls(torrent.name)}</span>;
+      filename = <span className="fileName">{stripBidiControls(removalName)}</span>;
     }
 
     const messageKey = deleteData ? 'OV_CONFIRM_DELETE_DATA_ONE' : 'OV_CONFIRM_DELETE_ONE';

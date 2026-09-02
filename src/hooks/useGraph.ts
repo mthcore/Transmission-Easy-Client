@@ -117,7 +117,6 @@ export function useGraph(
 
     let width: number | null = null;
     const height = 30;
-    let minTime = speedRoll.minTime;
 
     const drawGraph = () => {
       if (!chartRef.current) return;
@@ -137,14 +136,13 @@ export function useGraph(
       yScale.domain([speedRoll.minSpeed, speedRoll.maxSpeed || 1]);
       xScale.domain([speedRoll.minTime, speedRoll.maxTime]);
 
-      if (minTime < Date.now() - 5 * 60 * 1000) {
-        minTime = speedRoll.minTime;
-      }
-
       // Never fetch points older than the x-domain start: they map to
       // negative coordinates and drew a spurious lead-in segment entering the
-      // plot from outside after a speed spike aged out of the window
-      const data = speedRoll.getDataFromTime(Math.max(minTime, speedRoll.minTime));
+      // plot from outside after a speed spike aged out of the window.
+      // speedRoll.minTime only ever advances, so it IS that start — the local
+      // "furthest back we've seen" copy this used to Math.max against could
+      // never win, and its staleness check was unreachable.
+      const data = speedRoll.getDataFromTime(speedRoll.minTime);
 
       const uploadD = generatePath(data, xScale, yScale, 'upload');
       const downloadD = generatePath(data, xScale, yScale, 'download');
@@ -161,10 +159,12 @@ export function useGraph(
     // data changed: the graph kept a stale width after a resize (indefinitely
     // when polling was paused or the daemon was unreachable)
     let resizeObserver: ResizeObserver | null = null;
+    // Just redraw. Disposing the autorun and creating a new one ran on every
+    // frame of a resize drag — and ResizeObserver fires once immediately on
+    // observe(), so it tore down the autorun created two lines earlier.
     const redraw = () => {
       width = null;
-      graphAutorunRef.current?.();
-      graphAutorunRef.current = autorun(drawGraph);
+      drawGraph();
     };
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(redraw);

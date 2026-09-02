@@ -155,6 +155,6 @@ div.fl-layer button.folder {
   div.fl-layer a.folder.c#{$index},
   div.fl-layer button.folder.c#{$index} {
     background-color: $color;
-    color: #111214;
+    color: var(--on-accent-color);
   }
 }

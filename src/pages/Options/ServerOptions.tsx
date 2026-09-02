@@ -267,6 +267,11 @@ const ServerOptions = observer(() => {
         // typed value while the daemon received the clamped one
         e.target.value = String(clamped);
         runAction(setter(clamped));
+      } else {
+        // Cleared or unparsable: no branch ran at all, so the field stayed
+        // blank for the rest of the session (it is uncontrolled, and the key
+        // prop doesn't change, so nothing remounts it)
+        e.target.value = e.target.defaultValue;
       }
     };
 
@@ -277,6 +282,8 @@ const ServerOptions = observer(() => {
         const clamped = clampToInput(val, e.target);
         e.target.value = String(clamped);
         runAction(setter(clamped));
+      } else {
+        e.target.value = e.target.defaultValue;
       }
     };
 

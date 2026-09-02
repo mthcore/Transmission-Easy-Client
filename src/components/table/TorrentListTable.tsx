@@ -69,7 +69,15 @@ const TorrentListTable = observer(() => {
           <TorrentListTableHead />
         </table>
       </ColumnContextMenu>
-      <table className="torrent-table-body" border={0} cellSpacing={0} cellPadding={0}>
+      {/* aria-rowcount is the FULL list: only ~30 rows exist in the DOM, so
+          without it a screen reader announces a 2000-torrent library as 30 */}
+      <table
+        className="torrent-table-body"
+        aria-rowcount={rowCount}
+        border={0}
+        cellSpacing={0}
+        cellPadding={0}
+      >
         <TorrentListTableHead />
         <TorrentListTableTorrents virtual={virtual} />
       </table>
@@ -157,6 +165,8 @@ const TorrentListTableTorrents = observer(({ virtual }: { virtual: VirtualRows }
           // DOM positions as the window moves, :nth-child stripes swapped on
           // every scroll step
           even={(start + index) % 2 === 1}
+          // 1-based, and row 1 is the header
+          rowIndex={start + index + 2}
         />
       ))}
       {padBottom > 0 && (

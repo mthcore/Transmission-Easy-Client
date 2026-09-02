@@ -10,6 +10,11 @@ import TorrentListTable from '../components/table/TorrentListTable';
 import FileListTable from '../components/table/FileListTable';
 import Footer from '../components/Footer';
 import Interval from '../components/Interval';
+import report from '../tools/reportAction';
+import isTextEntry from '../tools/isTextEntry';
+
+/** How often the popup refreshes session settings (totals, alt-speed state) */
+const SETTINGS_REFRESH_INTERVAL = 30_000;
 import VisiblePage from '../components/VisiblePage';
 import getLogger from '../tools/getLogger';
 import RootStoreCtx from '../tools/rootStoreCtx';
@@ -57,12 +62,7 @@ const Index = observer(() => {
       // checkbox leaves focus on it) must not kill the list shortcuts, or the
       // most natural flow of all, select-then-Delete, goes dead.
       const target = e.target as HTMLElement;
-      const isTextEntry =
-        target.tagName === 'TEXTAREA' ||
-        target.tagName === 'SELECT' ||
-        (target.tagName === 'INPUT' &&
-          !['checkbox', 'radio', 'button', 'submit'].includes((target as HTMLInputElement).type));
-      if (isTextEntry) return;
+      if (isTextEntry(target)) return;
       // Enter on a focused button/link activates that control; firing the
       // start/stop shortcut at the same time acted on the whole selection
       // behind the user's back. (A focused checkbox is fine: Enter is inert
@@ -140,9 +140,9 @@ const Index = observer(() => {
           (id) => (rootStore.client?.torrents.get(id)?.statusCode ?? 0) !== 0
         );
         if (anyRunning) {
-          rootStore.client.torrentsStop(ids);
+          report(rootStore.client.torrentsStop(ids));
         } else {
-          rootStore.client.torrentsStart(ids);
+          report(rootStore.client.torrentsStart(ids));
         }
         return;
       }
@@ -198,14 +198,14 @@ const Index = observer(() => {
       // auto-repeats, and each repeat costs an RPC plus a chained refetch.
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S' && !e.repeat) {
         e.preventDefault();
-        rootStore.client.torrentsStop(rootStore.client.torrentIds);
+        report(rootStore.client.torrentsStop(rootStore.client.torrentIds));
         return;
       }
 
       // Ctrl+Shift+R - Start all
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R' && !e.repeat) {
         e.preventDefault();
-        rootStore.client.torrentsStart(rootStore.client.torrentIds);
+        report(rootStore.client.torrentsStart(rootStore.client.torrentIds));
         return;
       }
     };
@@ -217,17 +217,20 @@ const Index = observer(() => {
   // Theme application
   useTheme(rootStore.config);
 
-  const settingsTickRef = React.useRef(0);
+  /** When settings were last refreshed, so the cadence is wall time, not ticks */
+  const lastSettingsAtRef = React.useRef(0);
   const onIntervalFire = useCallback(
     (isInit: boolean) => {
       if (!rootStore.client) return;
       // Session settings were fetched once at init and then never again, so
       // the footer's session totals froze and the turtle button could show
       // OFF for hours while a scheduled alt-speed window was actually ON.
-      // One session-get every ~30 ticks keeps them honest for a trivial cost.
-      settingsTickRef.current += 1;
-      if (isInit || settingsTickRef.current >= 30) {
-        settingsTickRef.current = 0;
+      // One session-get every 30 SECONDS keeps them honest for a trivial cost
+      // — counting ticks instead tied the cadence to uiUpdateInterval, so at
+      // its 100ms floor this fired every three seconds.
+      const now = Date.now();
+      if (isInit || now - lastSettingsAtRef.current >= SETTINGS_REFRESH_INTERVAL) {
+        lastSettingsAtRef.current = now;
         rootStore.client.updateSettings().catch((err) => {
           logger.error('onIntervalFire updateSettings error', err);
         });

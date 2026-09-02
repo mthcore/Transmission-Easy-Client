@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { types, destroy, Instance } from 'mobx-state-tree';
-import TorrentStore from '../../stores/TorrentStore';
-import TorrentListStore from '../../stores/TorrentListStore';
+import TorrentStore from '../TorrentStore';
+import TorrentListStore from '../TorrentListStore';
 
 // Minimal config model matching what TorrentListStore accesses via getRoot
 const TestSelectedLabel = types.model({
@@ -234,6 +234,26 @@ describe('TorrentListStore', () => {
       const r = createRoot(
         { selectedLabel: { label: 'ALL', custom: true }, searchQuery: 'ALPHA' },
         [makeTorrent({ id: 1, name: 'alpha test' })]
+      );
+      expect(r.torrentList.filteredTorrents).toHaveLength(1);
+    });
+
+    // searchNormalize has its own tests, but nothing pinned that the FILTER
+    // calls it: reverting this one line to toLowerCase().includes() made
+    // accented names unsearchable again with every store test still green
+    it('search sees past diacritics', () => {
+      const r = createRoot(
+        { selectedLabel: { label: 'ALL', custom: true }, searchQuery: 'amelie' },
+        [makeTorrent({ id: 1, name: 'Amélie' }), makeTorrent({ id: 2, name: 'Beta File' })]
+      );
+      expect(r.torrentList.filteredTorrents).toHaveLength(1);
+      expect(r.torrentList.filteredTorrents[0].name).toBe('Amélie');
+    });
+
+    it('search matches an accented query against an unaccented name', () => {
+      const r = createRoot(
+        { selectedLabel: { label: 'ALL', custom: true }, searchQuery: 'Amélie' },
+        [makeTorrent({ id: 1, name: 'amelie' })]
       );
       expect(r.torrentList.filteredTorrents).toHaveLength(1);
     });

@@ -64,12 +64,21 @@ const ClientOptions = observer(() => {
           // Fall through: the range check below reports it
         }
       } else {
+        // '[::1]:9091' — a bracketed IPv6 literal with a port. Without this it
+        // fell through whole and was re-bracketed into '[[::1]:9091]:9091'.
+        const bracketed = hostname.match(/^\[(.+)\]:(\d{1,5})$/);
         // 'nas.local:9091' (exactly one colon, numeric suffix — an unbracketed
         // IPv6 literal has several colons)
         const hostPort = hostname.match(/^([^:]+):(\d{1,5})$/);
-        if (hostPort) {
+        if (bracketed) {
+          hostname = bracketed[1];
+          port = parseInt(bracketed[2], 10);
+        } else if (hostPort) {
           hostname = hostPort[1];
           port = parseInt(hostPort[2], 10);
+        } else {
+          // A bare bracketed literal with no port
+          hostname = hostname.replace(/^\[|\]$/g, '');
         }
       }
 
@@ -89,6 +98,13 @@ const ClientOptions = observer(() => {
           authenticationRequired,
         });
         if (!refPage.current) return;
+        // Reflect the normalized values back into the form. The inputs are
+        // uncontrolled and ssl is React state, so after pasting a full URL the
+        // form still showed the pasted string, the old port and the old SSL
+        // toggle while the config held something else entirely.
+        form.elements.hostname.value = hostname;
+        form.elements.port.value = String(port);
+        setSslChecked(ssl);
         // Direct message, not the mirror store: a missing mirror used to skip
         // the check silently and show a green OK for an unverified config
         await callApi({ action: 'updateSettings' });

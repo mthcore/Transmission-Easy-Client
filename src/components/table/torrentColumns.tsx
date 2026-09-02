@@ -114,8 +114,10 @@ const torrentColumnRenderers: Record<string, ColumnRenderer> = {
   status: ({ torrent }) => {
     let errorIcon: React.ReactNode = null;
     const errorMessage = torrent.errorMessage;
-    // A tracker warning (errorCode 1) still shows its text in the tooltip via
-    // errorMessage, but only real errors get the red icon
+    // Only real errors (errorCode > 1) get the red icon; a tracker warning
+    // (errorCode 1) surfaces through the cell tooltip below instead — without
+    // that fallback its text was unreachable anywhere in the list, because
+    // stateText never contains it.
     if (errorMessage && torrent.hasError) {
       errorIcon = (
         <i className="error_icon" title={errorMessage} role="img" aria-label={errorMessage} />
@@ -123,7 +125,7 @@ const torrentColumnRenderers: Record<string, ColumnRenderer> = {
     }
     return (
       <td key="status" className="status">
-        <div title={torrent.stateText}>
+        <div title={errorMessage ? `${torrent.stateText} — ${errorMessage}` : torrent.stateText}>
           {errorIcon}
           {torrent.stateText}
         </div>

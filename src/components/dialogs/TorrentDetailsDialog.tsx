@@ -123,10 +123,14 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   // store entry, or it stays in rootStore.dialogs forever with no handler to
   // close it (and keeps swallowing Escape for the rest of the session)
   useEffect(() => {
-    if (!torrent) {
+    // Only close when the torrent is really gone. dialogStore.torrent is also
+    // undefined while rootStore.client is momentarily unset (a bg resync after
+    // the server config broke), and closing on that blip threw away whatever
+    // the user was editing.
+    if (rootStore?.client && !torrent) {
       handleClose();
     }
-  }, [torrent, handleClose]);
+  }, [torrent, handleClose, rootStore?.client]);
 
   useEffect(() => {
     if (torrentId == null) return;

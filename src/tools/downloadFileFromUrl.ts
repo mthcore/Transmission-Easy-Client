@@ -38,7 +38,11 @@ async function downloadFileFromUrl(url: string): Promise<DownloadResult> {
     }
 
     // response.url is the FINAL url: a redirect chain must not be able to walk
-    // this privileged, CORS-exempt fetch onto the local network
+    // this privileged, CORS-exempt fetch onto the local network. Only the final
+    // hop is visible — fetch follows redirects itself — so a chain that touches
+    // a private address and bounces back out is still REQUESTED, just never
+    // read. Refusing that too would mean redirect: 'manual' and following the
+    // chain by hand.
     if (isRedirectedToPrivateHost(url, response.url)) {
       throw new ErrorWithCode(
         'Refusing to follow a redirect to a private address',

@@ -48,6 +48,12 @@ const PutFilesDialog = observer(({ dialogStore }: PutFilesDialogProps) => {
       // Same size cap as the tab-fetch path: oversized files would be read
       // fully into memory before upload
       const files = dialogStore.files.filter((file: File) => file.size <= MAX_FETCH_SIZE);
+      // Nothing to send: sendFiles([]) reached the daemon, added nothing and
+      // still closed on a success path
+      if (!dialogStore.files.length) {
+        dialogStore.close();
+        return;
+      }
       if (files.length < dialogStore.files.length) {
         showError(
           chrome.i18n.getMessage('OV_FL_ERROR') || 'File too large',

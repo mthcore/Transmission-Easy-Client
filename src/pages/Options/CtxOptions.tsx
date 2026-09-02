@@ -46,6 +46,9 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
   }, [configStore]);
 
   const [addError, setAddError] = useState('');
+  // Editing the path invalidates the duplicate warning: leaving it up left a
+  // red "already in the list" under a path that was no longer in the list
+  const clearAddError = useCallback(() => setAddError(''), []);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
@@ -56,7 +59,11 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
       // '/data/x/' passed the exact-string duplicate check as "different" and
       // then collapsed to one entry in the context-menu folder tree
       let path = form.elements.path.value.trim();
-      if (path.length > 1) {
+      // 'C:' is a different location from 'C:' + separator on Windows (the
+      // former means "the process's current directory on C"), so a drive root
+      // keeps its separator
+      const isDriveRoot = /^[a-zA-Z]:[\\/]$/.test(path);
+      if (path.length > 1 && !isDriveRoot) {
         path = path.replace(/[/\\]+$/, '') || path;
       }
       const name = form.elements.name.value.trim();
@@ -119,7 +126,13 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
       <p className="section-hint">{chrome.i18n.getMessage('dirListHint')}</p>
       <form onSubmit={handleSubmit} autoComplete="off" className="dir-form">
         <div className="dir-form-row">
-          <input name="path" type="text" required placeholder={chrome.i18n.getMessage('subPath')} />
+          <input
+            name="path"
+            type="text"
+            required
+            onChange={clearAddError}
+            placeholder={chrome.i18n.getMessage('subPath')}
+          />
           <input name="name" type="text" placeholder={chrome.i18n.getMessage('shortName')} />
           <button type="submit">{chrome.i18n.getMessage('add')}</button>
         </div>

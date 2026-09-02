@@ -4,6 +4,7 @@ import ComponentLoader from '../ComponentLoader';
 import showError from '../../tools/showError';
 import VisiblePage from '../VisiblePage';
 import useRootStore from '../../hooks/useRootStore';
+import isTextEntry from '../../tools/isTextEntry';
 import SearchBox from '../SearchBox';
 import LabelSelect from '../LabelSelect';
 
@@ -54,6 +55,11 @@ const Menu = observer(() => {
 
   const handleDrop = useCallback(
     (e: DragEvent<HTMLBodyElement> | globalThis.DragEvent) => {
+      // Same guard as handleDropOver. Without it a column-header drag (whose
+      // th calls preventDefault, so a drop really is delivered here) latched
+      // isDropped — and only handleDropOver schedules the timer that clears
+      // it, so the next genuine file drag opened already in its dropped state.
+      if (!e.dataTransfer?.types.includes('Files')) return;
       e.preventDefault();
       setIsDropped(true);
       if (e.dataTransfer?.files) {
@@ -106,7 +112,13 @@ const Menu = observer(() => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+      // Text entry only, same rule as the page-level shortcuts: a focused
+      // checkbox is an INPUT too, and clicking a row checkbox leaves focus on
+      // it — the coarse tagName test killed this shortcut for the rest of the
+      // session
+      if (isTextEntry(target)) return;
+      // Auto-repeat would re-open the file picker once per repeat
+      if (e.repeat) return;
       // Same guard as the page-level shortcuts: opening a file picker on top of
       // a modal (and stacking a second dialog behind it) is never wanted
       if (rootStore?.dialogs.size) return;

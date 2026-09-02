@@ -18,19 +18,20 @@ const SearchBox = observer(() => {
   const handleToggle = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      setExpanded((prev) => {
-        if (!prev) {
-          setTimeout(() => inputRef.current?.focus(), 0);
-        } else {
-          // Collapsing must clear the filter, exactly like Escape: a hidden
-          // input kept filtering the list with no visible indicator, and
-          // torrents just seemed to be missing
-          config?.setSearchQuery('');
-        }
-        return !prev;
-      });
+      // Both branches used to run INSIDE the setExpanded updater. Updaters run
+      // in the render phase and React may invoke them twice, so the MST action
+      // mutated observable state during render and could fire the clear twice.
+      if (expanded) {
+        // Collapsing must clear the filter, exactly like Escape: a hidden
+        // input kept filtering the list with no visible indicator, and
+        // torrents just seemed to be missing
+        config?.setSearchQuery('');
+      } else {
+        setTimeout(() => inputRef.current?.focus(), 0);
+      }
+      setExpanded(!expanded);
     },
-    [config]
+    [config, expanded]
   );
 
   const handleChange = useCallback(

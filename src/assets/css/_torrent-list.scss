@@ -21,6 +21,13 @@ $torrent-columns: checkbox, name, order, size, sizeWhenDone, remaining, done, st
   // anchoring treats that as content shift and rewrites scrollTop, leaving the
   // rendered window stranded far from the real scroll position
   overflow-anchor: none;
+  flex-grow: 1;
+  min-height: 20px;
+  background: var(--card-bg);
+
+  // Every declaration above stays ABOVE the first nested rule: Dart Sass warns
+  // on mixed-decls for the other order and silently re-emits the trailing
+  // declarations in a separate rule, which changes their cascade position.
 
   // Fixed-height windowing needs genuinely uniform rows: a color-emoji glyph
   // in a torrent name inflates its line box (~48px instead of 33px), which
@@ -33,9 +40,6 @@ $torrent-columns: checkbox, name, order, size, sizeWhenDone, remaining, done, st
     line-height: 20px;
     overflow: hidden;
   }
-  flex-grow: 1;
-  min-height: 20px;
-  background: var(--card-bg);
 
   table {
     width: max-content;

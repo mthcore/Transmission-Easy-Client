@@ -41,8 +41,19 @@ const NumberField = ({
         }
       }}
       onBlur={(e) => {
-        if (e.target.value === '') {
+        // onChange clamps what it SENDS but keeps the raw text, so typing -5
+        // left the field reading -5 while 0 was applied. Reconcile on blur —
+        // the same rule ServerOptions.handleNumberBlur follows — and cover
+        // unparsable text ('-', '1e'), not only the empty string.
+        const parsed = Number(e.target.value);
+        if (e.target.value === '' || !Number.isFinite(parsed)) {
           setText(String(value));
+          return;
+        }
+        const floor = Number(min);
+        const clamped = Number.isFinite(floor) ? Math.max(floor, parsed) : parsed;
+        if (clamped !== parsed) {
+          setText(String(clamped));
         }
       }}
     />

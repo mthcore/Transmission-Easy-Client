@@ -213,6 +213,22 @@ describe('ServerOptions — numeric controls', () => {
     expect(sent('setPeerPort')).toEqual([{ action: 'setPeerPort', value: 65535 }]);
     expect(input.value).toBe('65535');
   });
+
+  it('sends nothing and restores the field when the value is not a number', async () => {
+    // The blur handler had no branch for a cleared or unparsable field, so it
+    // stayed blank for the rest of the session: the input is uncontrolled and
+    // nothing remounts it.
+    await mountLoaded();
+    const input = controlIn('peerPort', 'input[type="number"]');
+
+    await act(async () => {
+      fireEvent.change(input, { target: { value: '' } });
+      fireEvent.blur(input);
+    });
+
+    expect(sent('setPeerPort')).toEqual([]);
+    expect(input.value).toBe(String(SETTINGS.peerPort));
+  });
 });
 
 describe('ServerOptions — behaviours a rewrite must not lose', () => {

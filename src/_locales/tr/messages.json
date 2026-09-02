@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Henüz bant genişliği grubu yok"
+    },
+    "downloadFile": {
+        "message": "İndir"
     }
 }

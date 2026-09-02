@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Brak grup przepustowości"
+    },
+    "downloadFile": {
+        "message": "Pobierz"
     }
 }

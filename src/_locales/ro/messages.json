@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Încă niciun grup de lățime de bandă"
+    },
+    "downloadFile": {
+        "message": "Descarcă"
     }
 }

@@ -48,7 +48,7 @@ const fileColumnRenderers: Record<string, ColumnRenderer> = {
   ),
 
   done: ({ file }) => {
-    const isComplete = file.size === file.downloaded && file.priority !== 0;
+    const isComplete = file.size === file.downloaded && file.wanted;
     const progressClass = isComplete ? 'complete' : 'downloading';
     return (
       <td key="done" className="done">

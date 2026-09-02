@@ -336,6 +336,9 @@ const ClientStore = types
       filesSetPriority(id: number, fileIdxs: number[], level: number): Promise<unknown> {
         return callApi({ action: 'setPriority', level, id, fileIdxs }).then(...exceptionLog());
       },
+      filesSetWanted(id: number, fileIdxs: number[], wanted: boolean): Promise<unknown> {
+        return callApi({ action: 'setWanted', id, fileIdxs, wanted }).then(...exceptionLog());
+      },
       setDownloadSpeedLimitEnabled(enabled: boolean): Promise<unknown> {
         return callApi({ action: 'setDownloadSpeedLimitEnabled', enabled })
           .then(...exceptionLog())

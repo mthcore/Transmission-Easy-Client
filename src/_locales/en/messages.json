@@ -941,5 +941,8 @@
     },
     "noGroupsYet": {
         "message": "No bandwidth groups yet"
+    },
+    "downloadFile": {
+        "message": "Download"
     }
 }

@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "尚無頻寬群組"
+    },
+    "downloadFile": {
+        "message": "下載"
     }
 }

@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "ยังไม่มีกลุ่มแบนด์วิดท์"
+    },
+    "downloadFile": {
+        "message": "ดาวน์โหลด"
     }
 }

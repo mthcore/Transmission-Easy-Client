@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import * as ContextMenu from '@radix-ui/react-context-menu';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
+import report from '../../tools/reportAction';
 import { useContextMenuSelection } from '../../hooks/useContextMenuSelection';
 import type { FileEntry } from '../../types/stores';
 
@@ -49,29 +50,28 @@ const FileMenuContent = observer(() => {
 
   if (!selectedIds.length || !fileListStore || !client) return null;
 
-  // Determine current priority
-  let currentPriority: number | null = null;
-  let lastPriority: number | null = null;
-  const isEvery = selectedIds.every((id) => {
-    const file = fileListStore.getFileById(id);
-    if (file) {
-      if (lastPriority === null) {
-        lastPriority = file.priority;
-      }
-      return lastPriority === file.priority;
-    }
-    return false;
-  });
-  if (isEvery) {
-    currentPriority = lastPriority;
-  }
+  // A tick is only shown when the whole selection agrees; a mixed selection
+  // has no single current value to display.
+  const files = selectedIds
+    .map((id) => fileListStore.getFileById(id))
+    .filter((file): file is NonNullable<typeof file> => Boolean(file));
+  const agreedPriority =
+    files.length && files.every((file) => file.priority === files[0].priority)
+      ? files[0].priority
+      : null;
+  const allWanted = files.length > 0 && files.every((file) => file.wanted);
+  const noneWanted = files.length > 0 && files.every((file) => !file.wanted);
 
   const firstFile = selectedIds.length > 0 ? fileListStore.getFileById(selectedIds[0]) : null;
 
   const handleSetPriority = (priority: number) => {
-    const id = fileListStore.id;
-    const selectedIndexes = fileListStore.selectedIndexes;
-    client.filesSetPriority(id, selectedIndexes, priority);
+    report(client.filesSetPriority(fileListStore.id, fileListStore.selectedIndexes, priority));
+  };
+
+  // Independent of priority: excluding a file leaves the priority it will have
+  // if it is included again.
+  const handleSetWanted = (wanted: boolean) => {
+    report(client.filesSetWanted(fileListStore.id, fileListStore.selectedIndexes, wanted));
   };
 
   const handleRename = () => {
@@ -87,29 +87,32 @@ const FileMenuContent = observer(() => {
 
   return (
     <ContextMenu.Content className="context-menu">
-      <PriorityItem
-        level={3}
-        selected={currentPriority === 3}
-        onSelect={() => handleSetPriority(3)}
-      />
-      <PriorityItem
-        level={2}
-        selected={currentPriority === 2}
-        onSelect={() => handleSetPriority(2)}
-      />
-      <PriorityItem
-        level={1}
-        selected={currentPriority === 1}
-        onSelect={() => handleSetPriority(1)}
-      />
+      <ContextMenu.Item className="context-menu-item" onSelect={() => handleSetWanted(true)}>
+        {(allWanted ? '✓ ' : '') + chrome.i18n.getMessage('downloadFile')}
+      </ContextMenu.Item>
+      <ContextMenu.Item className="context-menu-item" onSelect={() => handleSetWanted(false)}>
+        {(noneWanted ? '✓ ' : '') + chrome.i18n.getMessage('MF_DONT')}
+      </ContextMenu.Item>
 
       <ContextMenu.Separator className="context-menu-separator" />
 
       <PriorityItem
-        level={0}
-        selected={currentPriority === 0}
-        onSelect={() => handleSetPriority(0)}
+        level={3}
+        selected={agreedPriority === 3}
+        onSelect={() => handleSetPriority(3)}
       />
+      <PriorityItem
+        level={2}
+        selected={agreedPriority === 2}
+        onSelect={() => handleSetPriority(2)}
+      />
+      <PriorityItem
+        level={1}
+        selected={agreedPriority === 1}
+        onSelect={() => handleSetPriority(1)}
+      />
+
+      <ContextMenu.Separator className="context-menu-separator" />
 
       <ContextMenu.Item className="context-menu-item" onSelect={handleRename}>
         {chrome.i18n.getMessage('rename')}
@@ -135,9 +138,6 @@ const PriorityItem = ({ level, selected, onSelect }: PriorityItemProps) => {
       break;
     case 1:
       name = chrome.i18n.getMessage('MF_LOW');
-      break;
-    case 0:
-      name = chrome.i18n.getMessage('MF_DONT');
       break;
     default:
       name = '';

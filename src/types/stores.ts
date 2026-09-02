@@ -96,7 +96,10 @@ export interface FileSnapshot {
   shortName: string;
   size: number;
   downloaded: number;
+  /** 1..3 (low/normal/high). Independent of `wanted`, as on the daemon. */
   priority: number;
+  /** Whether the daemon downloads this file at all */
+  wanted: boolean;
 }
 
 // File store views

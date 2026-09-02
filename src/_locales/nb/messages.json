@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Ingen båndbreddegrupper ennå"
+    },
+    "downloadFile": {
+        "message": "Last ned"
     }
 }

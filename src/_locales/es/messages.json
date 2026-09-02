@@ -941,5 +941,8 @@
     },
     "noGroupsYet": {
         "message": "Aún no hay grupos de ancho de banda"
+    },
+    "downloadFile": {
+        "message": "Descargar"
     }
 }

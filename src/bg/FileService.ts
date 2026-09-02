@@ -10,7 +10,15 @@ export interface NormalizedFile {
   shortName: string;
   size: number;
   downloaded: number;
+  /**
+   * Transmission's own scale shifted to 1..3 (low/normal/high). It no longer
+   * doubles as "not wanted": the daemon keeps the two independent, and
+   * collapsing them meant excluding a file silently discarded its priority and
+   * re-including it silently returned it to normal.
+   */
   priority: number;
+  /** Whether the daemon will download this file at all */
+  wanted: boolean;
 }
 
 class FileService {
@@ -56,38 +64,36 @@ class FileService {
       });
   }
 
+  /**
+   * Priority only. Setting a priority no longer marks the files wanted: the two
+   * are independent on the daemon, and a file excluded from the download keeps
+   * the priority it will have if it is included again.
+   *
+   * Chunked because a torrent can hold tens of thousands of files and the whole
+   * index list would otherwise go in one request.
+   */
   setPriority(id: TorrentId, level: number, idxs: number[]): Promise<unknown[]> {
+    const key = level === 1 ? 'priority-low' : level === 3 ? 'priority-high' : 'priority-normal';
     return Promise.all(
-      splitByPart(idxs, FILE_PRIORITY_CHUNK_SIZE).map((partIdxs) => {
-        const args: Record<string, unknown> = {
-          ids: [id],
-        };
-
-        if (level === 0) {
-          args['files-unwanted'] = partIdxs;
-        } else {
-          args['files-wanted'] = partIdxs;
-          switch (level) {
-            case 1: {
-              args['priority-low'] = partIdxs;
-              break;
-            }
-            case 2: {
-              args['priority-normal'] = partIdxs;
-              break;
-            }
-            case 3: {
-              args['priority-high'] = partIdxs;
-              break;
-            }
-          }
-        }
-
-        return this.transport.sendAction({
+      splitByPart(idxs, FILE_PRIORITY_CHUNK_SIZE).map((partIdxs) =>
+        this.transport.sendAction({
           method: 'torrent-set',
-          arguments: args,
-        });
-      })
+          arguments: { ids: [id], [key]: partIdxs },
+        })
+      )
+    );
+  }
+
+  /** Whether the daemon downloads these files, independent of their priority. */
+  setWanted(id: TorrentId, wanted: boolean, idxs: number[]): Promise<unknown[]> {
+    const key = wanted ? 'files-wanted' : 'files-unwanted';
+    return Promise.all(
+      splitByPart(idxs, FILE_PRIORITY_CHUNK_SIZE).map((partIdxs) =>
+        this.transport.sendAction({
+          method: 'torrent-set',
+          arguments: { ids: [id], [key]: partIdxs },
+        })
+      )
     );
   }
 
@@ -102,9 +108,10 @@ class FileService {
       const shortName = name;
       const size = file.length;
       const downloaded = file.bytesCompleted;
-      const priority = !state.wanted ? 0 : state.priority + 2;
+      const priority = state.priority + 2;
+      const wanted = state.wanted;
 
-      return { name, shortName, size, downloaded, priority };
+      return { name, shortName, size, downloaded, priority, wanted };
     });
   };
 }

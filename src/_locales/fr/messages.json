@@ -941,5 +941,8 @@
     },
     "noGroupsYet": {
         "message": "Aucun groupe de bande passante"
+    },
+    "downloadFile": {
+        "message": "Télécharger"
     }
 }

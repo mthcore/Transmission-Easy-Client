@@ -426,3 +426,34 @@ describe('ClientStore — bandwidth groups', () => {
     expect(r.client.lastErrorMessage).toMatch(/RPC 17/);
   });
 });
+
+describe('ClientStore — file wanted vs priority', () => {
+  const sentMessage = () =>
+    (chrome.runtime.sendMessage as ReturnType<typeof vi.fn>).mock.calls[0][0];
+
+  it('filesSetPriority carries only the level', async () => {
+    stubApiResult();
+    const r = createRoot();
+
+    await r.client.filesSetPriority(7, [0, 1], 3);
+
+    expect(sentMessage()).toEqual({ action: 'setPriority', id: 7, fileIdxs: [0, 1], level: 3 });
+  });
+
+  it('filesSetWanted is a separate action, so a priority change cannot re-include a file', async () => {
+    stubApiResult();
+    const r = createRoot();
+
+    await r.client.filesSetWanted(7, [2], false);
+
+    expect(sentMessage()).toEqual({ action: 'setWanted', id: 7, fileIdxs: [2], wanted: false });
+  });
+
+  it('records a rejection like every other action', async () => {
+    stubApiError('daemon refused');
+    const r = createRoot();
+
+    await expect(r.client.filesSetWanted(7, [0], true)).rejects.toThrow(/daemon refused/);
+    expect(r.client.lastErrorMessage).toMatch(/daemon refused/);
+  });
+});

@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Δεν υπάρχουν ακόμη ομάδες εύρους ζώνης"
+    },
+    "downloadFile": {
+        "message": "Λήψη"
     }
 }

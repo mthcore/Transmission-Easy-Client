@@ -1,7 +1,8 @@
 import { getRoot, types, Instance } from 'mobx-state-tree';
 import { formatBytes } from '../tools/format';
 
-const priorityLocaleMap = ['MF_DONT', 'MF_LOW', 'MF_NORMAL', 'MF_HIGH'];
+// Index 0 is unused: priority no longer doubles as 'not wanted'.
+const priorityLocaleMap = ['', 'MF_LOW', 'MF_NORMAL', 'MF_HIGH'];
 
 const FileStore = types
   .model('FileStore', {
@@ -10,6 +11,8 @@ const FileStore = types
     size: types.number,
     downloaded: types.number,
     priority: types.number,
+    /** Independent of priority: whether the daemon downloads this file */
+    wanted: types.optional(types.boolean, true),
   })
   .views((self) => {
     let cachedNamePartsName: string | null = null;
@@ -38,7 +41,9 @@ const FileStore = types
         return formatBytes(self.downloaded);
       },
       get priorityStr(): string {
-        return chrome.i18n.getMessage(priorityLocaleMap[self.priority]);
+        // An excluded file has no meaningful priority to show
+        if (!self.wanted) return chrome.i18n.getMessage('MF_DONT');
+        return chrome.i18n.getMessage(priorityLocaleMap[self.priority] ?? 'MF_NORMAL');
       },
       get selected(): boolean {
         const rootStore = getRoot<{

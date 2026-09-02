@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Nessun gruppo di banda"
+    },
+    "downloadFile": {
+        "message": "Scarica"
     }
 }

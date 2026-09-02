@@ -941,5 +941,8 @@
     },
     "noGroupsYet": {
         "message": "尚无带宽组"
+    },
+    "downloadFile": {
+        "message": "下载"
     }
 }

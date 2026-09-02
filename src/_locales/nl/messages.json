@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Nog geen bandbreedtegroepen"
+    },
+    "downloadFile": {
+        "message": "Downloaden"
     }
 }

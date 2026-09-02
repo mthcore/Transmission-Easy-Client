@@ -18,6 +18,7 @@ export type BgMessage =
   | IdActionMessage
   // File operations
   | SetPriorityMessage
+  | SetWantedMessage
   | GetFileListMessage
   | GetPeersMessage
   // Speed settings
@@ -92,6 +93,13 @@ export interface SetPriorityMessage {
   action: 'setPriority';
   id: TorrentId;
   level: number;
+  fileIdxs: number[];
+}
+
+export interface SetWantedMessage {
+  action: 'setWanted';
+  id: TorrentId;
+  wanted: boolean;
   fileIdxs: number[];
 }
 

@@ -954,5 +954,8 @@
     },
     "noGroupsYet": {
         "message": "Групп пропускной способности пока нет"
+    },
+    "downloadFile": {
+        "message": "Загружать"
     }
 }

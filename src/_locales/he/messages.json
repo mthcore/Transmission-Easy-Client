@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "אין עדיין קבוצות רוחב פס"
+    },
+    "downloadFile": {
+        "message": "הורדה"
     }
 }

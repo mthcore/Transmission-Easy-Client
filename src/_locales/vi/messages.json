@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Chưa có nhóm băng thông nào"
+    },
+    "downloadFile": {
+        "message": "Tải xuống"
     }
 }

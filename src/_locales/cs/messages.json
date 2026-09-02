@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Zatím žádné skupiny šířky pásma"
+    },
+    "downloadFile": {
+        "message": "Stáhnout"
     }
 }

@@ -3,13 +3,14 @@ import FileService from '../FileService';
 import { FILE_PRIORITY_CHUNK_SIZE } from '../../constants';
 
 /**
- * FileService decides WHAT THE DAEMON DOWNLOADS: setPriority issues torrent-set
- * writes that mark files wanted or unwanted. These tests pin what it does today
- * so the behaviour cannot drift unnoticed under a refactor.
+ * FileService decides WHAT THE DAEMON DOWNLOADS.
  *
- * Where the current behaviour looks wrong it is pinned as-is and flagged rather
- * than corrected here: changing it is a separate decision, and a test that only
- * passes after the fix would not protect the refactor.
+ * `wanted` and `priority` are INDEPENDENT here, as they are on the daemon. They
+ * used to be collapsed into one 0..3 scale where 0 meant "not wanted", so
+ * excluding a file discarded its priority and re-including it silently returned
+ * it to normal. The assertions below pin the split. The ones that previously
+ * pinned the conflation were rewritten deliberately, as part of that change —
+ * not because they became inconvenient.
  */
 
 type SendAction = ReturnType<typeof vi.fn>;
@@ -75,6 +76,7 @@ describe('FileService.getFileList', () => {
         size: 1000,
         downloaded: 400,
         priority: 2,
+        wanted: true,
       },
     ]);
   });
@@ -87,9 +89,9 @@ describe('FileService.getFileList', () => {
     { wanted: true, priority: -1, expected: 1, label: 'low' },
     { wanted: true, priority: 0, expected: 2, label: 'normal' },
     { wanted: true, priority: 1, expected: 3, label: 'high' },
-    { wanted: false, priority: -1, expected: 0, label: 'unwanted (low discarded)' },
-    { wanted: false, priority: 0, expected: 0, label: 'unwanted (normal discarded)' },
-    { wanted: false, priority: 1, expected: 0, label: 'unwanted (HIGH discarded)' },
+    { wanted: false, priority: -1, expected: 1, label: 'excluded, still low' },
+    { wanted: false, priority: 0, expected: 2, label: 'excluded, still normal' },
+    { wanted: false, priority: 1, expected: 3, label: 'excluded, still HIGH' },
   ])('maps wanted=$wanted priority=$priority to $expected ($label)', async (row) => {
     transport = createTransport({
       result: 'success',
@@ -107,9 +109,10 @@ describe('FileService.getFileList', () => {
 
     const files = await service.getFileList(1);
     expect(files[0].priority).toBe(row.expected);
+    expect(files[0].wanted).toBe(row.wanted);
   });
 
-  it('loses the priority of an unwanted file — the cost of the conflation', async () => {
+  it('keeps the priority of an excluded file', async () => {
     transport = createTransport({
       result: 'success',
       arguments: {
@@ -128,9 +131,11 @@ describe('FileService.getFileList', () => {
     const service = new FileService(transport as never);
 
     const files = await service.getFileList(1);
-    // Both files are HIGH priority on the daemon; the second reads as 0 here,
-    // indistinguishable from "unwanted and low". Pinned as current behaviour.
-    expect(files.map((f) => f.priority)).toEqual([3, 0]);
+    // Both are HIGH on the daemon and both read as HIGH here; only `wanted`
+    // tells them apart. Under the old scale the second read as 0, which was
+    // indistinguishable from "excluded and low".
+    expect(files.map((f) => f.priority)).toEqual([3, 3]);
+    expect(files.map((f) => f.wanted)).toEqual([true, false]);
   });
 
   it('pairs files with fileStats by index', async () => {
@@ -153,10 +158,10 @@ describe('FileService.getFileList', () => {
     const service = new FileService(transport as never);
 
     const files = await service.getFileList(1);
-    expect(files.map((f) => [f.name, f.priority, f.downloaded])).toEqual([
-      ['a', 3, 10],
-      ['b', 0, 0],
-      ['c', 1, 15],
+    expect(files.map((f) => [f.name, f.priority, f.wanted, f.downloaded])).toEqual([
+      ['a', 3, true, 10],
+      ['b', 2, false, 0],
+      ['c', 1, true, 15],
     ]);
   });
 
@@ -243,43 +248,48 @@ describe('FileService.setPriority', () => {
     { level: 1, key: 'priority-low' },
     { level: 2, key: 'priority-normal' },
     { level: 3, key: 'priority-high' },
-  ])('level $level sends files-wanted plus $key', async ({ level, key }) => {
+  ])('level $level sends $key ALONE, without touching wanted', async ({ level, key }) => {
     const service = new FileService(transport as never);
 
     await service.setPriority(4, level, [0, 1, 2]);
 
     expect(transport.sendAction).toHaveBeenCalledTimes(1);
     expect(transport.sendAction.mock.calls[0][0].method).toBe('torrent-set');
-    expect(args(0)).toEqual({
-      ids: [4],
-      'files-wanted': [0, 1, 2],
-      [key]: [0, 1, 2],
-    });
+    // Setting a priority must NOT re-include an excluded file: that is the
+    // whole point of separating the two.
+    expect(args(0)).toEqual({ ids: [4], [key]: [0, 1, 2] });
   });
 
-  it('level 0 sends files-unwanted ONLY — no files-wanted, no priority key', async () => {
-    const service = new FileService(transport as never);
-
-    await service.setPriority(4, 0, [5, 6]);
-
-    expect(args(0)).toEqual({ ids: [4], 'files-unwanted': [5, 6] });
-  });
-
-  it('KNOWN GAP: an unknown level marks files wanted with no priority at all', async () => {
-    // The switch has no default, so level 4 (or any out-of-range value) silently
-    // sends files-wanted alone. Pinned as current behaviour — a caller bug would
-    // pass unnoticed rather than throwing.
+  it('an out-of-range level falls back to normal rather than sending nothing', async () => {
     const service = new FileService(transport as never);
 
     await service.setPriority(4, 42, [1]);
 
-    expect(args(0)).toEqual({ ids: [4], 'files-wanted': [1] });
+    expect(args(0)).toEqual({ ids: [4], 'priority-normal': [1] });
   });
 
-  it('sends nothing at all for an empty index list', async () => {
+  it('setWanted sends files-wanted or files-unwanted, and no priority key', async () => {
     const service = new FileService(transport as never);
 
-    await expect(service.setPriority(4, 3, [])).resolves.toEqual([]);
+    await service.setWanted(4, true, [1, 2]);
+    expect(args(0)).toEqual({ ids: [4], 'files-wanted': [1, 2] });
+
+    transport.sendAction.mockClear();
+    await service.setWanted(4, false, [3]);
+    expect(args(0)).toEqual({ ids: [4], 'files-unwanted': [3] });
+  });
+
+  it('setWanted chunks and skips an empty list like setPriority', async () => {
+    const service = new FileService(transport as never);
+    await service.setWanted(
+      1,
+      true,
+      Array.from({ length: 501 }, (_, i) => i)
+    );
+    expect(transport.sendAction).toHaveBeenCalledTimes(3);
+
+    transport.sendAction.mockClear();
+    await expect(service.setWanted(1, false, [])).resolves.toEqual([]);
     expect(transport.sendAction).not.toHaveBeenCalled();
   });
 
@@ -291,13 +301,11 @@ describe('FileService.setPriority', () => {
 
     // 501 = 250 + 250 + 1
     expect(transport.sendAction).toHaveBeenCalledTimes(3);
-    expect(args(0)['files-wanted']).toHaveLength(FILE_PRIORITY_CHUNK_SIZE);
-    expect(args(1)['files-wanted']).toHaveLength(FILE_PRIORITY_CHUNK_SIZE);
-    expect(args(2)['files-wanted']).toEqual([500]);
-    // Every chunk addresses the same torrent and carries the priority key
+    expect(args(0)['priority-normal']).toHaveLength(FILE_PRIORITY_CHUNK_SIZE);
+    expect(args(1)['priority-normal']).toHaveLength(FILE_PRIORITY_CHUNK_SIZE);
+    expect(args(2)['priority-normal']).toEqual([500]);
     for (let i = 0; i < 3; i++) {
       expect(args(i).ids).toEqual([9]);
-      expect(args(i)['priority-normal']).toEqual(args(i)['files-wanted']);
     }
   });
 
@@ -305,7 +313,7 @@ describe('FileService.setPriority', () => {
     const service = new FileService(transport as never);
     const idxs = Array.from({ length: FILE_PRIORITY_CHUNK_SIZE + 3 }, (_, i) => i * 2);
 
-    await service.setPriority(1, 0, idxs);
+    await service.setWanted(1, false, idxs);
 
     const sent = transport.sendAction.mock.calls.flatMap(
       (call) => call[0].arguments['files-unwanted'] as number[]

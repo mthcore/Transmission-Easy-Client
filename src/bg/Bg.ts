@@ -241,6 +241,12 @@ class Bg {
         );
         break;
       }
+      case 'setWanted': {
+        promise = this.whenReady().then(() =>
+          this.requireClient().setWanted(message.id, message.wanted, message.fileIdxs)
+        );
+        break;
+      }
       case 'getFileList': {
         promise = this.whenReady().then(() => this.requireClient().getFileList(message.id));
         break;

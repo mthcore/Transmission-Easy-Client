@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Belum ada grup bandwidth"
+    },
+    "downloadFile": {
+        "message": "Unduh"
     }
 }

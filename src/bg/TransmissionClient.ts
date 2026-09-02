@@ -232,6 +232,9 @@ class TransmissionClient {
   setPriority(id: TorrentId, level: number, idxs: number[]): Promise<unknown[]> {
     return this.fileService.setPriority(id, level, idxs);
   }
+  setWanted(id: TorrentId, wanted: boolean, idxs: number[]): Promise<unknown[]> {
+    return this.fileService.setWanted(id, wanted, idxs);
+  }
 
   // Settings operations
   updateSettings(): Promise<void> {

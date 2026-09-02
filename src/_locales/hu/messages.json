@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Még nincsenek sávszélesség-csoportok"
+    },
+    "downloadFile": {
+        "message": "Letöltés"
     }
 }

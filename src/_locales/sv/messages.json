@@ -914,5 +914,8 @@
     },
     "noGroupsYet": {
         "message": "Inga bandbreddsgrupper ännu"
+    },
+    "downloadFile": {
+        "message": "Ladda ner"
     }
 }

@@ -106,9 +106,10 @@ const PutFilesDialog = observer(({ dialogStore }: PutFilesDialogProps) => {
     [client, config, dialogStore]
   );
 
-  // Auto-submit when no directory selection is needed. Guarded to the first
-  // render: config.folders is live-synced, so an empty folder list arriving
-  // later would submit the files without the user asking.
+  // Auto-submit when there is no directory to choose. The ref, not the empty
+  // dependency array, is what makes this idempotent: React runs a mount effect
+  // twice under StrictMode, preserving refs across the remount, and a second
+  // submit here uploads the same torrents again.
   useEffect(() => {
     if (!hasDirectorySelect && !autoSubmittedRef.current) {
       autoSubmittedRef.current = true;

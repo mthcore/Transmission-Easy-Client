@@ -63,7 +63,7 @@ class Daemon {
     // updates and notifications after the next alarm loss
     // Math.max(n, NaN) is NaN, which chrome.alarms.create rejects outright —
     // background polling would then never start at all
-    const configured = Number(this.bgStore.config.backgroundUpdateInterval);
+    const configured = Number(this.bgStore.requireConfig().backgroundUpdateInterval);
     const intervalMs = Math.max(
       MIN_BG_UPDATE_INTERVAL,
       Number.isFinite(configured) ? configured : BG_UPDATE_INTERVAL

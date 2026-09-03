@@ -29,7 +29,7 @@ function createMenu(): ContextMenu {
   torrentErrorNotify = vi.fn();
   const bg = {
     bgStore: {
-      config: {
+      requireConfig: () => ({
         folders: [],
         treeViewContextMenu: true,
         putDefaultPathInContextMenu: false,
@@ -37,7 +37,7 @@ function createMenu(): ContextMenu {
         hasFolder: vi.fn(),
         addFolder: vi.fn(),
         setSelectedLabel: vi.fn(),
-      },
+      }),
     },
     client: { putTorrent },
     whenReady: vi.fn().mockResolvedValue(undefined),

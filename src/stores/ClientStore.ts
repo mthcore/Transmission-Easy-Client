@@ -1,4 +1,4 @@
-import { getRoot, types, Instance, cast } from 'mobx-state-tree';
+import { getRoot, types, Instance, cast, type SnapshotIn } from 'mobx-state-tree';
 import SpeedRollStore from './SpeedRollStore';
 import { speedToStr, formatBytes } from '../tools/format';
 import TorrentStore, { ITorrentStore } from './TorrentStore';
@@ -186,8 +186,13 @@ const ClientStore = types
         });
         self.torrents = cast(torrentsObj);
       },
-      setSettings(settings: ISettingsStore) {
-        self.settings = settings;
+      // A snapshot, not an instance: what actually arrives is the daemon's
+      // session-get after normalisation, and MST builds the node from it. The
+      // instance type demanded every optional field be present, which the
+      // caller cannot promise — an older daemon omits the session stats — so
+      // the two disagreed and the cast at the wiring site settled it.
+      setSettings(settings: SnapshotIn<typeof SettingsStore>) {
+        self.settings = cast(settings);
       },
       setLastErrorMessage(message: string | undefined) {
         self.lastErrorMessage = message;

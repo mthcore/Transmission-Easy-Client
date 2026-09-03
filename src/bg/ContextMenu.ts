@@ -161,8 +161,8 @@ class ContextMenu {
       logger.error('onSendLink: putTorrent error', err);
       return;
     }
-    if (this.bgStore.config.selectDownloadCategoryAfterPutTorrentFromContextMenu) {
-      this.bgStore.config.setSelectedLabel('DL', true);
+    if (this.bgStore.requireConfig().selectDownloadCategoryAfterPutTorrentFromContextMenu) {
+      this.bgStore.requireConfig().setSelectedLabel('DL', true);
     }
 
     // Refresh only — the torrent is already added, so a failure here must not
@@ -212,7 +212,7 @@ class ContextMenu {
         case 'folder': {
           await this.bg.whenReady();
           if (!tab?.id || itemInfo.index === undefined) return;
-          const folder = this.bgStore.config.folders[itemInfo.index];
+          const folder = this.bgStore.requireConfig().folders[itemInfo.index];
           if (!folder) {
             // The folder list changed after this menu was built: sending the
             // torrent to the daemon's default directory would be silent and
@@ -247,8 +247,8 @@ class ContextMenu {
   }
 
   async createFolderMenu(parentId: string): Promise<void> {
-    const folders = this.bgStore.config.folders;
-    if (this.bgStore.config.treeViewContextMenu) {
+    const folders = this.bgStore.requireConfig().folders;
+    if (this.bgStore.requireConfig().treeViewContextMenu) {
       await Promise.all(
         transformFoldersToTree(folders).map((menuItem) => {
           let name = menuItem.name;
@@ -277,7 +277,7 @@ class ContextMenu {
     }
 
     if (folders.length) {
-      if (this.bgStore.config.putDefaultPathInContextMenu) {
+      if (this.bgStore.requireConfig().putDefaultPathInContextMenu) {
         await contextMenusCreate({
           id: JSON.stringify({ type: 'action', name: 'default', source: 'folder' }),
           parentId: parentId,

@@ -12,11 +12,14 @@ type Torrent = {
 
 /** Stub store keeping the pieces of TorrentStore the service reads */
 function createClientStore() {
-  const torrents = new Map<number, Torrent>();
+  // Keyed by string, as MST maps are. It used to be keyed by number here,
+  // which is a shape the real store never had — the fake was agreeing with the
+  // service's declared contract rather than with the store it stands in for.
+  const torrents = new Map<string, Torrent>();
   return {
     torrents,
     get torrentIds() {
-      return Array.from(torrents.keys());
+      return Array.from(torrents.values()).map((t) => t.id);
     },
     get incompleteTorrentIds() {
       return Array.from(torrents.values())
@@ -27,7 +30,7 @@ function createClientStore() {
     syncChanges: vi.fn(),
     sync: vi.fn((incoming: Torrent[]) => {
       torrents.clear();
-      for (const t of incoming) torrents.set(t.id, t);
+      for (const t of incoming) torrents.set(String(t.id), t);
     }),
     currentSpeed: { downloadSpeed: 0, uploadSpeed: 0 },
     speedRoll: { add: vi.fn(), setData: vi.fn(), data: [] },

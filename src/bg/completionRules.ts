@@ -40,17 +40,24 @@ export interface NotifiedState {
   known: string[];
 }
 
-/** The current list, reduced to what the rules need */
-export interface CompletionCensus {
+/**
+ * The current list, reduced to what the rules need.
+ *
+ * Generic in the torrent, because the rules read three fields and hand the
+ * very same objects back. Fixing the type at what they read threw away
+ * everything else on the way through — and the caller announces those
+ * torrents, which takes an id and a name.
+ */
+export interface CompletionCensus<T extends NotifiableTorrent = NotifiableTorrent> {
   /** Every hash currently listed, complete or not */
   known: string[];
   /** The complete ones, in list order */
-  completed: { hash: string; torrent: NotifiableTorrent }[];
+  completed: { hash: string; torrent: T }[];
 }
 
-export interface CompletionOutcome {
+export interface CompletionOutcome<T extends NotifiableTorrent = NotifiableTorrent> {
   /** Torrents to announce, in list order */
-  notify: NotifiableTorrent[];
+  notify: T[];
   nextState: NotifiedState;
   /** False when the state is unchanged, so an idle poll writes nothing */
   shouldPersist: boolean;
@@ -76,13 +83,13 @@ function sameHashSet(a: string[] | null, b: string[]): boolean {
  * @param previous the last persisted bookkeeping, or null when there is none
  * @param now seconds since the epoch, from the same clock as completedTime
  */
-export function decideCompletions(
+export function decideCompletions<T extends NotifiableTorrent>(
   previous: NotifiedState | null,
-  census: CompletionCensus,
+  census: CompletionCensus<T>,
   url: string,
   now: number
-): CompletionOutcome {
-  const notify: NotifiableTorrent[] = [];
+): CompletionOutcome<T> {
+  const notify: T[] = [];
 
   // A different server (or no state yet) means nothing here was ever "just
   // completed" — stay silent for one cycle instead of announcing every

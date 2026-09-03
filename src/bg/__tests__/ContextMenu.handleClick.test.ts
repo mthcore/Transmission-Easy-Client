@@ -37,7 +37,7 @@ function createMenu(): ContextMenu {
   whenReady = vi.fn().mockResolvedValue(undefined);
   const bg = {
     bgStore: {
-      config: {
+      requireConfig: () => ({
         folders,
         treeViewContextMenu: true,
         putDefaultPathInContextMenu: false,
@@ -45,7 +45,7 @@ function createMenu(): ContextMenu {
         hasFolder: vi.fn(),
         addFolder: vi.fn(),
         setSelectedLabel: vi.fn(),
-      },
+      }),
     },
     client: { putTorrent },
     whenReady,

@@ -29,22 +29,34 @@ export interface IBg {
   torrentErrorNotify(message: string): void;
 }
 
-// Narrowed interface for Daemon (only needs subset of Bg)
+/**
+ * What Daemon needs from Bg.
+ *
+ * Narrow on purpose, and asking for `requireConfig()` rather than `config`.
+ * The store's `config` is `maybe`; stating it here as a plain field made this
+ * interface disagree with the real store, and the disagreement was settled
+ * with a cast at the construction site — which also stopped the compiler
+ * checking every other field named below.
+ *
+ * A narrow list only stays honest while something compares it against the
+ * store. That something is `new Daemon(this)` in Bg.init, uncast: rename a
+ * field here or there and it no longer compiles.
+ */
 export interface IBgForDaemon {
   bgStore: {
-    config: {
+    requireConfig(): {
       backgroundUpdateInterval: number;
     };
   };
   client: {
-    updateTorrents(): Promise<void>;
+    updateTorrents(): Promise<unknown>;
   } | null;
 }
 
-// Narrowed interface for ContextMenu
+/** What ContextMenu needs from Bg. See IBgForDaemon on the shape of it. */
 export interface IBgForContextMenu {
   bgStore: {
-    config: {
+    requireConfig(): {
       folders: Folder[];
       treeViewContextMenu: boolean;
       putDefaultPathInContextMenu: boolean;
@@ -55,8 +67,8 @@ export interface IBgForContextMenu {
     };
   };
   client: {
-    putTorrent(data: { blob?: Blob; url?: string }, directory?: string): Promise<void>;
-    updateTorrents(): Promise<void>;
+    putTorrent(data: { blob?: Blob; url?: string }, directory?: string): Promise<unknown>;
+    updateTorrents(): Promise<unknown>;
   } | null;
   whenReady(): Promise<void>;
   torrentErrorNotify(message: string): void;

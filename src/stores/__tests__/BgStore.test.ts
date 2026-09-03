@@ -56,3 +56,58 @@ describe('BgStore.fetchConfig', () => {
     destroy(store);
   });
 });
+
+/**
+ * `config` is `maybe`, because the store is built synchronously when the
+ * service worker starts and the settings are read from storage afterwards.
+ * Everything the background wires up — the daemon, the context menu, the
+ * transmission client — is built after that read and depends on it having
+ * finished.
+ *
+ * Each of the three used to assert that with a cast at its construction site,
+ * and a cast does not assert one fact: it silences every other disagreement at
+ * that seam too. Saying it here instead is what let those casts go.
+ */
+describe('BgStore.requireConfig', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    runtime.lastError = null;
+  });
+
+  it('hands back the config once it is loaded', async () => {
+    const store = BgStore.create({});
+    await store.fetchConfig();
+
+    expect(store.requireConfig()).toBe(store.config);
+    destroy(store);
+  });
+
+  it('still hands one back when the storage read failed', async () => {
+    // fetchConfig promises a default config on failure, so the consumers built
+    // after it are entitled to one either way.
+    vi.mocked(chrome.storage.local.get).mockImplementation(((
+      _query: unknown,
+      cb: (items: Record<string, unknown>) => void
+    ) => {
+      runtime.lastError = { message: 'Storage backend error' };
+      cb({});
+      runtime.lastError = null;
+    }) as never);
+
+    const store = BgStore.create({});
+    await store.fetchConfig();
+
+    expect(store.requireConfig().port).toBe(9091);
+    destroy(store);
+  });
+
+  it('names the mistake when read before the config is loaded', () => {
+    // Reached only by something wired up too early. Without the check the
+    // failure is a TypeError from deep inside whichever getter ran first, in a
+    // service worker with no console open.
+    const store = BgStore.create({});
+
+    expect(() => store.requireConfig()).toThrow(/before fetchConfig/);
+    destroy(store);
+  });
+});

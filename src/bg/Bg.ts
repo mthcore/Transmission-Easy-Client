@@ -66,9 +66,8 @@ class Bg {
     chrome.alarms.onAlarm.addListener(this.handleAlarm);
     // Clicking a notification used to do nothing at all
     chrome.notifications.onClicked.addListener(this.handleNotificationClick);
-    // Cast needed because MST types with 'maybe' are complex
-    this.daemon = new Daemon(this as unknown as IBgForDaemon);
-    this.contextMenu = new ContextMenu(this as unknown as IBgForContextMenu);
+    this.daemon = new Daemon(this);
+    this.contextMenu = new ContextMenu(this);
 
     return (this.initPromise = this.bgStore.fetchConfig().then(() => {
       const autorunLogger = getLogger('autorun');
@@ -93,8 +92,7 @@ class Bg {
 
         if (dep.length) {
           this.bgStore.flushClient();
-          // Cast needed for TransmissionClient's Bg interface expectations
-          this.client = new TransmissionClient(this as never);
+          this.client = new TransmissionClient(this);
           // session-get first so the daemon's rpc-version is known before the
           // first torrent-get; still poll torrents if session-get fails
           this.client

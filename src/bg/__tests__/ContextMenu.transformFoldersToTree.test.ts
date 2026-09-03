@@ -33,7 +33,7 @@ interface Options {
 function createMenu(folders: Folder[], options: Options = {}): ContextMenu {
   const bg = {
     bgStore: {
-      config: {
+      requireConfig: () => ({
         folders,
         treeViewContextMenu: options.treeView ?? true,
         putDefaultPathInContextMenu: options.putDefaultPath ?? false,
@@ -41,7 +41,7 @@ function createMenu(folders: Folder[], options: Options = {}): ContextMenu {
         hasFolder: vi.fn(),
         addFolder: vi.fn(),
         setSelectedLabel: vi.fn(),
-      },
+      }),
     },
     client: null,
     whenReady: vi.fn().mockResolvedValue(undefined),

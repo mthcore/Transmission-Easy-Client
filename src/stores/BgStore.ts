@@ -18,6 +18,33 @@ const BgStore = types
     config: types.maybe(ConfigStore),
     client: types.optional(ClientStore, {}),
   })
+  .views((self) => ({
+    /**
+     * The config, once loading has finished.
+     *
+     * It is `maybe` because the store is built synchronously when the service
+     * worker starts and the settings are read from storage afterwards. From
+     * the moment `fetchConfig` resolves it is defined and stays defined: both
+     * its success and its failure path assign a node, and nothing ever clears
+     * one. Everything built after that point depends on this.
+     *
+     * Saying so here is the point. Each of the three consumers used to assert
+     * it with a cast at the seam where it was constructed, and a cast does not
+     * assert one fact — it silences every other disagreement at that seam too,
+     * so the place where the whole background wires itself together was the
+     * one place the compiler checked nothing.
+     */
+    requireConfig(): IConfigStore {
+      if (!self.config) {
+        // Reached only by a consumer built before init() finished, which is a
+        // wiring mistake rather than a runtime condition. Named, because the
+        // alternative is a TypeError from deep inside whichever getter ran
+        // first, in a service worker with no console open.
+        throw new Error('BgStore.config read before fetchConfig resolved');
+      }
+      return self.config;
+    },
+  }))
   .actions((self) => {
     return {
       fetchConfig: flow(function* () {
@@ -73,5 +100,6 @@ const BgStore = types
     };
   });
 
+export type IConfigStore = Instance<typeof ConfigStore>;
 export type IBgStore = Instance<typeof BgStore>;
 export default BgStore;

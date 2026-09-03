@@ -2,7 +2,8 @@ import TransmissionTransport from './TransmissionTransport';
 import type { TorrentId } from '../types';
 import type { TransmissionResponse } from './TransmissionTransport';
 import TorrentService, {
-  type NormalizedTorrent,
+  type TorrentStore,
+  type TorrentNotifier,
   type PeerData,
   type TorrentDetailData,
   type TorrentAddOptions,
@@ -15,7 +16,14 @@ import SettingsService, {
 } from './SettingsService';
 
 interface BgStore {
-  config: {
+  /**
+   * Asked for rather than read, because `config` is `maybe` on the real store
+   * and this class is only ever built once it is loaded. Stating that as a
+   * plain field made the type disagree with the store, and the disagreement
+   * was settled with a cast at the construction site — which also stopped the
+   * compiler checking everything else below.
+   */
+  requireConfig(): {
     url: string;
     authenticationRequired: boolean;
     login: string;
@@ -23,35 +31,29 @@ interface BgStore {
     showDownloadCompleteNotifications: boolean;
     needsTrackerStats: boolean;
   };
-  client: {
-    incompleteTorrentIds: number[];
-    downloadingCount: number;
-    torrentIds: number[];
-    removeTorrentByIds: (ids: TorrentId[]) => void;
-    syncChanges: (torrents: NormalizedTorrent[]) => void;
-    sync: (torrents: NormalizedTorrent[]) => void;
-    torrents: Map<
-      number,
-      { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
-    >;
-    currentSpeed: { downloadSpeed: number; uploadSpeed: number };
-    speedRoll: {
-      add: (download: number, upload: number) => void;
-      setData: (data: { download: number; upload: number; time: number }[]) => void;
-      data: { download: number; upload: number; time: number }[];
-    };
-    setSettings: (settings: NormalizedSettings) => void;
-  };
+  /**
+   * Derived from the services' own contracts rather than restated. This class
+   * hands the very same object to both, so a copy here is a second statement
+   * of what they already declare — and the two had already drifted apart over
+   * the torrent id type and the map's key.
+   */
+  client: TorrentStore & { setSettings: (settings: NormalizedSettings) => void };
   flushClient: () => void;
 }
 
 interface Bg {
   bgStore: BgStore;
-  daemon: { isActive: boolean; start: () => void };
-  torrentCompleteNotify: (torrent: { stateText: string }) => void;
-  torrentAddedNotify: (torrent: { id: number; name?: string }) => void;
-  torrentIsExistsNotify: (torrent: { id: number; name?: string }) => void;
-  torrentErrorNotify: (message: string) => void;
+  // Nullable, as it really is. Bg builds the daemon before it ever builds this
+  // class, so it is there in practice — but that was an unstated invariant
+  // being held up by a cast, and a cast holds up everything else too.
+  daemon: { isActive: boolean; start: () => void } | null;
+  // The notifications, derived rather than restated: this class passes itself
+  // straight through as the notifier, so a copy here was a second statement of
+  // what TorrentService already declares.
+  torrentCompleteNotify: TorrentNotifier['torrentCompleteNotify'];
+  torrentAddedNotify: TorrentNotifier['torrentAddedNotify'];
+  torrentIsExistsNotify: TorrentNotifier['torrentIsExistsNotify'];
+  torrentErrorNotify: TorrentNotifier['torrentErrorNotify'];
 }
 
 class TransmissionClient {
@@ -64,10 +66,10 @@ class TransmissionClient {
     const bgStore = bg.bgStore;
 
     this.transport = new TransmissionTransport({
-      url: bgStore.config.url,
-      getConfig: () => bgStore.config,
+      url: bgStore.requireConfig().url,
+      getConfig: () => bgStore.requireConfig(),
       onConnected: () => {
-        if (!bg.daemon.isActive) {
+        if (bg.daemon && !bg.daemon.isActive) {
           bg.daemon.start();
         }
       },
@@ -80,9 +82,9 @@ class TransmissionClient {
       transport: this.transport,
       clientStore: bgStore.client,
       notifier: bg,
-      getShowNotifications: () => bgStore.config.showDownloadCompleteNotifications,
+      getShowNotifications: () => bgStore.requireConfig().showDownloadCompleteNotifications,
       // Only pay for trackerStats when a column that displays it is visible
-      getNeedsTrackerStats: () => bgStore.config.needsTrackerStats,
+      getNeedsTrackerStats: () => bgStore.requireConfig().needsTrackerStats,
     });
 
     this.fileService = new FileService(this.transport);

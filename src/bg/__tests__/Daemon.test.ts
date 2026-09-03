@@ -2,18 +2,19 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Daemon, { ALARM_NAME } from '../Daemon';
 import type { IBgForDaemon } from '../../types';
 
+/** The one config field Daemon reads, mutable so a case can change it. */
+let interval = 120000;
+
 function createMockBg(overrides?: Partial<IBgForDaemon>): IBgForDaemon {
   return {
     client: {
       updateTorrents: vi.fn().mockResolvedValue(undefined),
     },
     bgStore: {
-      config: {
-        backgroundUpdateInterval: 120000, // 2 minutes
-      },
+      requireConfig: () => ({ backgroundUpdateInterval: interval }),
     },
     ...overrides,
-  } as unknown as IBgForDaemon;
+  } satisfies IBgForDaemon;
 }
 
 describe('Daemon', () => {
@@ -47,9 +48,8 @@ describe('Daemon', () => {
     });
 
     it('enforces minimum 1 minute period', () => {
-      const bg = createMockBg();
-      (bg.bgStore.config as { backgroundUpdateInterval: number }).backgroundUpdateInterval = 30000; // 30 seconds
-      const daemon = new Daemon(bg);
+      interval = 30000; // 30 seconds
+      const daemon = new Daemon(createMockBg());
       daemon.start();
       expect(chrome.alarms.create).toHaveBeenCalledWith(ALARM_NAME, {
         delayInMinutes: 1,
@@ -58,9 +58,8 @@ describe('Daemon', () => {
     });
 
     it('clamps sub-second intervals instead of leaving polling dead', () => {
-      const bg = createMockBg();
-      (bg.bgStore.config as { backgroundUpdateInterval: number }).backgroundUpdateInterval = 500;
-      const daemon = new Daemon(bg);
+      interval = 500;
+      const daemon = new Daemon(createMockBg());
       daemon.start();
       expect(chrome.alarms.create).toHaveBeenCalledWith(ALARM_NAME, {
         delayInMinutes: 1,

@@ -117,7 +117,16 @@ export interface TorrentDetailData {
   primaryMimeType?: string;
 }
 
-export interface NormalizedTorrent {
+/**
+ * A type alias rather than an interface, deliberately.
+ *
+ * The stores take a torrent snapshot as `{ id: number; [key: string]: unknown }`,
+ * because that is what MST applies. TypeScript gives an implicit index
+ * signature to a type alias and not to an interface, so as an interface this
+ * was not assignable to the very thing it is built to be handed to — and the
+ * cast at the construction site was what let the two sit side by side.
+ */
+export type NormalizedTorrent = {
   id: number;
   statusCode: number;
   errorCode: number;
@@ -161,18 +170,41 @@ export interface NormalizedTorrent {
   labels: string[];
   bandwidthPriority: number;
   sequentialDownload?: boolean;
+};
+
+/**
+ * What this service needs from the store it syncs into.
+ *
+ * Exported because TransmissionClient hands it exactly this object, and used
+ * to restate the same shape to say so. Two statements of one contract drift,
+ * and this one had: it asked for string torrent ids and a numeric-keyed map,
+ * neither of which the real store offers.
+ */
+/** A torrent as the store holds it, reduced to the fields read on this side. */
+export interface StoredTorrent {
+  id: number;
+  name: string;
+  stateText: string;
+  hashString?: string;
+  downloaded?: number;
+  completedTime?: number;
 }
 
-interface TorrentStore {
+export interface TorrentStore {
   incompleteTorrentIds: number[];
   torrentIds: number[];
-  removeTorrentByIds: (ids: TorrentId[]) => void;
+  // number[], not TorrentId[]: the only caller passes the daemon's `removed`
+  // list, which is numeric. Asking for the wider type demanded a store that
+  // accepts string ids, which the real one does not — a requirement nothing
+  // needed, that no longer held, and that the cast at the construction site
+  // kept quiet.
+  removeTorrentByIds: (ids: number[]) => void;
   syncChanges: (torrents: NormalizedTorrent[]) => void;
   sync: (torrents: NormalizedTorrent[]) => void;
-  torrents: Map<
-    number,
-    { stateText: string; hashString?: string; downloaded?: number; completedTime?: number }
-  >;
+  // Keyed by string, as every MST map is, and read-only here. `Map<number, …>`
+  // described neither: it asked for a numeric key the real map does not take,
+  // and for a mutable map nothing on this side has any business writing to.
+  torrents: { get(key: string): StoredTorrent | undefined };
   currentSpeed: { downloadSpeed: number; uploadSpeed: number };
   speedRoll: {
     add: (download: number, upload: number) => void;
@@ -194,10 +226,18 @@ const SPEED_ROLL_STORAGE_KEY = '_speedRoll';
  */
 const SPEED_ROLL_PERSIST_INTERVAL = 10_000;
 
-interface TorrentNotifier {
-  torrentCompleteNotify: (torrent: { stateText: string }) => void;
-  torrentAddedNotify: (torrent: { id: number; name?: string }) => void;
-  torrentIsExistsNotify: (torrent: { id: number; name?: string }) => void;
+/**
+ * The notifications this service raises.
+ *
+ * Every one of these ends up as an OS toast built from the torrent's id and
+ * name. Asking for less than that — a completion was declared as
+ * `{ stateText }` alone — did not make the dependency smaller, it only stopped
+ * the compiler seeing it.
+ */
+export interface TorrentNotifier {
+  torrentCompleteNotify: (torrent: { id: number; name: string; stateText?: string }) => void;
+  torrentAddedNotify: (torrent: { id: number; name: string }) => void;
+  torrentIsExistsNotify: (torrent: { id: number; name: string }) => void;
   torrentErrorNotify: (message: string) => void;
 }
 
@@ -453,9 +493,12 @@ class TorrentService {
         // rules were interleaved here, which is what made this the hardest
         // code in the file to follow.
         const incompleteIds = new Set(this.clientStore.incompleteTorrentIds);
-        const census: CompletionCensus = { known: [], completed: [] };
+        // Typed by what the store holds, not by what the rules read: the
+        // rules hand these same objects back and the toast needs the id and
+        // the name.
+        const census: CompletionCensus<StoredTorrent> = { known: [], completed: [] };
         for (const id of this.clientStore.torrentIds) {
-          const torrent = this.clientStore.torrents.get(id);
+          const torrent = this.clientStore.torrents.get(String(id));
           const hash = torrent?.hashString;
           if (!torrent || !hash) continue;
           census.known.push(hash);

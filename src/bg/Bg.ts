@@ -14,7 +14,7 @@ import {
   describeSetting,
   type DispatchableSetting,
   type SettingAction,
-} from './settingDescriptors';
+} from '../protocol/settings';
 
 const logger = getLogger('background');
 

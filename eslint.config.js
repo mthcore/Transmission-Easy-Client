@@ -48,7 +48,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      'react': reactPlugin,
+      react: reactPlugin,
       'react-hooks': reactHooksPlugin,
     },
     rules: {
@@ -133,7 +133,15 @@ export default [
     },
   },
   {
-    files: ['src/components/**/*.{ts,tsx}', 'src/hooks/**/*.{ts,tsx}', 'src/pages/**/*.{ts,tsx}'],
+    // stores/ is in here now that the settings table has moved to protocol/.
+    // It was the one UI-side layer that could import bg/ and pass lint, which
+    // is how ClientStore came to restate what the table already declared.
+    files: [
+      'src/components/**/*.{ts,tsx}',
+      'src/hooks/**/*.{ts,tsx}',
+      'src/pages/**/*.{ts,tsx}',
+      'src/stores/**/*.{ts,tsx}',
+    ],
     rules: {
       '@typescript-eslint/no-restricted-imports': [
         'error',

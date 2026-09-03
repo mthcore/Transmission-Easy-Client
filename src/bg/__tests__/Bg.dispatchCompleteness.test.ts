@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import type { BgMessage } from '../../types';
-import { SETTING_DESCRIPTORS, describeSetting } from '../settingDescriptors';
+import { SETTING_DESCRIPTORS, describeSetting } from '../../protocol/settings';
 
 vi.mock('../TransmissionClient');
 import bgSingleton from '../Bg';

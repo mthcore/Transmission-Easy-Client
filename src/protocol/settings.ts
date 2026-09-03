@@ -1,7 +1,13 @@
 import { RPC_VERSION_4 } from '../tools/rpcCompat';
 
 /**
- * Every uniform session-set setting, in one table.
+ * Every uniform session-set setting, in one table — the shared description of
+ * the settings protocol.
+ *
+ * It lives here rather than under bg/ because BOTH independently built halves
+ * read it: the service worker to build the daemon payload, and the UI store to
+ * know which message field carries the value. Once two units have to agree on
+ * something, that something is the contract, not either one's implementation.
  *
  * These ~40 settings differ only in three facts: which key the daemon expects,
  * what type the value is, and whether writing it also flips a companion flag.

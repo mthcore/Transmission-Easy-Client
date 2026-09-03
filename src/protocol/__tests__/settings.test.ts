@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { SETTING_DESCRIPTORS, describeSetting } from '../settingDescriptors';
+import { SETTING_DESCRIPTORS, describeSetting } from '../settings';
 
 /**
  * The table says which message field carries each setting's value. Nothing at

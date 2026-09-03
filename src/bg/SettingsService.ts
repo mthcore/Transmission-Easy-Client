@@ -1,6 +1,6 @@
 import type TransmissionTransport from './TransmissionTransport';
 import { readKey, assertRpcVersion, RPC_VERSION_4, RPC_VERSION_4_1 } from '../tools/rpcCompat';
-import { SETTING_DESCRIPTORS, type SettingDescriptor } from './settingDescriptors';
+import { SETTING_DESCRIPTORS, type SettingDescriptor } from '../protocol/settings';
 import ErrorWithCode from '../tools/ErrorWithCode';
 import { BLOCKLIST_UPDATE_TIMEOUT } from '../constants';
 import type { SessionStatistics, BandwidthGroup } from '../types/transmission';

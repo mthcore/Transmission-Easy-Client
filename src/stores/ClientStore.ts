@@ -3,6 +3,7 @@ import SpeedRollStore from './SpeedRollStore';
 import { speedToStr, formatBytes } from '../tools/format';
 import TorrentStore, { ITorrentStore } from './TorrentStore';
 import callApi from '../tools/callApi';
+import { describeSetting } from '../protocol/settings';
 import getLogger from '../tools/getLogger';
 import { getRpcFeatures, type RpcFeatures } from '../tools/rpcCompat';
 import type { PeerData, TorrentDetailData } from '../bg/TorrentService';
@@ -313,6 +314,24 @@ const ClientStore = types
       return (self as IClientStoreViews).syncClient().then(() => result);
     };
 
+    /**
+     * A session setting, addressed by its action name. Which message field
+     * carries the value is read from the protocol table rather than restated
+     * here — the background dispatcher reads the same entry to build the
+     * daemon payload, so the two cannot drift.
+     */
+    const createSetting =
+      <T extends boolean | number | string>(action: string) =>
+      (value: T): Promise<unknown> => {
+        const setting = describeSetting(action);
+        if (!setting) {
+          return Promise.reject(new Error(`Unknown setting: ${action}`));
+        }
+        return callApi({ action, [setting.arg]: value })
+          .then(...exceptionLog())
+          .then(thenSyncClient);
+      };
+
     // ids accept hashes too: destructive dialogs send hashStrings, which stay
     // valid across a daemon restart while numeric ids get reassigned
     const createTorrentAction =
@@ -339,229 +358,57 @@ const ClientStore = types
       filesSetWanted(id: number, fileIdxs: number[], wanted: boolean): Promise<unknown> {
         return callApi({ action: 'setWanted', id, fileIdxs, wanted }).then(...exceptionLog());
       },
-      setDownloadSpeedLimitEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setDownloadSpeedLimitEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setDownloadSpeedLimit(speed: number): Promise<unknown> {
-        return callApi({ action: 'setDownloadSpeedLimit', speed })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setUploadSpeedLimitEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setUploadSpeedLimitEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setUploadSpeedLimit(speed: number): Promise<unknown> {
-        return callApi({ action: 'setUploadSpeedLimit', speed })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltSpeedEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setAltSpeedEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltDownloadSpeedLimit(speed: number): Promise<unknown> {
-        return callApi({ action: 'setAltDownloadSpeedLimit', speed })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltUploadSpeedLimit(speed: number): Promise<unknown> {
-        return callApi({ action: 'setAltUploadSpeedLimit', speed })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setBlocklistEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setBlocklistEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setDefaultTrackers(trackers: string): Promise<unknown> {
-        return callApi({ action: 'setDefaultTrackers', trackers })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setBlocklistUrl(url: string): Promise<unknown> {
-        return callApi({ action: 'setBlocklistUrl', url })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setSeedRatioLimited(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setSeedRatioLimited', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setIdleSeedingLimitEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setIdleSeedingLimitEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setPortForwardingEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setPortForwardingEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setDhtEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setDhtEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setPexEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setPexEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setLpdEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setLpdEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setUtpEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setUtpEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setIncompleteDirEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setIncompleteDirEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setIncompleteDir(dir: string): Promise<unknown> {
-        return callApi({ action: 'setIncompleteDir', dir })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setRenamePartialFiles(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setRenamePartialFiles', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setDownloadQueueEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setDownloadQueueEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setDownloadQueueSize(size: number): Promise<unknown> {
-        return callApi({ action: 'setDownloadQueueSize', value: size })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setSeedQueueEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setSeedQueueEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setSeedQueueSize(size: number): Promise<unknown> {
-        return callApi({ action: 'setSeedQueueSize', value: size })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setQueueStalledEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setQueueStalledEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setQueueStalledMinutes(minutes: number): Promise<unknown> {
-        return callApi({ action: 'setQueueStalledMinutes', value: minutes })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setStartAddedTorrents(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setStartAddedTorrents', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setTrashOriginalTorrentFiles(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setTrashOriginalTorrentFiles', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltSpeedTimeEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setAltSpeedTimeEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltSpeedTimeBegin(minutes: number): Promise<unknown> {
-        return callApi({ action: 'setAltSpeedTimeBegin', value: minutes })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltSpeedTimeEnd(minutes: number): Promise<unknown> {
-        return callApi({ action: 'setAltSpeedTimeEnd', value: minutes })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setAltSpeedTimeDay(day: number): Promise<unknown> {
-        return callApi({ action: 'setAltSpeedTimeDay', value: day })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentDoneEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentDoneEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentDoneFilename(filename: string): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentDoneFilename', filename })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentAddedEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentAddedEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentAddedFilename(filename: string): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentAddedFilename', filename })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentDoneSeedingEnabled(enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentDoneSeedingEnabled', enabled })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setScriptTorrentDoneSeedingFilename(filename: string): Promise<unknown> {
-        return callApi({ action: 'setScriptTorrentDoneSeedingFilename', filename })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
+      setDownloadSpeedLimitEnabled: createSetting<boolean>('setDownloadSpeedLimitEnabled'),
+      setDownloadSpeedLimit: createSetting<number>('setDownloadSpeedLimit'),
+      setUploadSpeedLimitEnabled: createSetting<boolean>('setUploadSpeedLimitEnabled'),
+      setUploadSpeedLimit: createSetting<number>('setUploadSpeedLimit'),
+      setAltSpeedEnabled: createSetting<boolean>('setAltSpeedEnabled'),
+      setAltDownloadSpeedLimit: createSetting<number>('setAltDownloadSpeedLimit'),
+      setAltUploadSpeedLimit: createSetting<number>('setAltUploadSpeedLimit'),
+      setBlocklistEnabled: createSetting<boolean>('setBlocklistEnabled'),
+      setDefaultTrackers: createSetting<string>('setDefaultTrackers'),
+      setBlocklistUrl: createSetting<string>('setBlocklistUrl'),
+      setSeedRatioLimited: createSetting<boolean>('setSeedRatioLimited'),
+      setIdleSeedingLimitEnabled: createSetting<boolean>('setIdleSeedingLimitEnabled'),
+      setPortForwardingEnabled: createSetting<boolean>('setPortForwardingEnabled'),
+      setDhtEnabled: createSetting<boolean>('setDhtEnabled'),
+      setPexEnabled: createSetting<boolean>('setPexEnabled'),
+      setLpdEnabled: createSetting<boolean>('setLpdEnabled'),
+      setUtpEnabled: createSetting<boolean>('setUtpEnabled'),
+      setIncompleteDirEnabled: createSetting<boolean>('setIncompleteDirEnabled'),
+      setIncompleteDir: createSetting<string>('setIncompleteDir'),
+      setRenamePartialFiles: createSetting<boolean>('setRenamePartialFiles'),
+      setDownloadQueueEnabled: createSetting<boolean>('setDownloadQueueEnabled'),
+      setDownloadQueueSize: createSetting<number>('setDownloadQueueSize'),
+      setSeedQueueEnabled: createSetting<boolean>('setSeedQueueEnabled'),
+      setSeedQueueSize: createSetting<number>('setSeedQueueSize'),
+      setQueueStalledEnabled: createSetting<boolean>('setQueueStalledEnabled'),
+      setQueueStalledMinutes: createSetting<number>('setQueueStalledMinutes'),
+      setStartAddedTorrents: createSetting<boolean>('setStartAddedTorrents'),
+      setTrashOriginalTorrentFiles: createSetting<boolean>('setTrashOriginalTorrentFiles'),
+      setAltSpeedTimeEnabled: createSetting<boolean>('setAltSpeedTimeEnabled'),
+      setAltSpeedTimeBegin: createSetting<number>('setAltSpeedTimeBegin'),
+      setAltSpeedTimeEnd: createSetting<number>('setAltSpeedTimeEnd'),
+      setAltSpeedTimeDay: createSetting<number>('setAltSpeedTimeDay'),
+      setScriptTorrentDoneEnabled: createSetting<boolean>('setScriptTorrentDoneEnabled'),
+      setScriptTorrentDoneFilename: createSetting<string>('setScriptTorrentDoneFilename'),
+      setScriptTorrentAddedEnabled: createSetting<boolean>('setScriptTorrentAddedEnabled'),
+      setScriptTorrentAddedFilename: createSetting<string>('setScriptTorrentAddedFilename'),
+      setScriptTorrentDoneSeedingEnabled: createSetting<boolean>(
+        'setScriptTorrentDoneSeedingEnabled'
+      ),
+      setScriptTorrentDoneSeedingFilename: createSetting<string>(
+        'setScriptTorrentDoneSeedingFilename'
+      ),
       portTest(): Promise<boolean> {
         return callApi<boolean>({ action: 'portTest' }).then(...exceptionLog()) as Promise<boolean>;
       },
-      setPeerLimitGlobal(limit: number): Promise<unknown> {
-        return callApi({ action: 'setPeerLimitGlobal', value: limit })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setPeerLimitPerTorrent(limit: number): Promise<unknown> {
-        return callApi({ action: 'setPeerLimitPerTorrent', value: limit })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setSeedRatioLimit(limit: number): Promise<unknown> {
-        return callApi({ action: 'setSeedRatioLimit', value: limit })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setIdleSeedingLimit(limit: number): Promise<unknown> {
-        return callApi({ action: 'setIdleSeedingLimit', value: limit })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setPeerPort(port: number): Promise<unknown> {
-        return callApi({ action: 'setPeerPort', value: port })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
-      setEncryption(mode: string): Promise<unknown> {
-        return callApi({ action: 'setEncryption', mode })
-          .then(...exceptionLog())
-          .then(thenSyncClient);
-      },
+      setPeerLimitGlobal: createSetting<number>('setPeerLimitGlobal'),
+      setPeerLimitPerTorrent: createSetting<number>('setPeerLimitPerTorrent'),
+      setSeedRatioLimit: createSetting<number>('setSeedRatioLimit'),
+      setIdleSeedingLimit: createSetting<number>('setIdleSeedingLimit'),
+      setPeerPort: createSetting<number>('setPeerPort'),
+      setEncryption: createSetting<string>('setEncryption'),
       blocklistUpdate(): Promise<{ blocklistSize: number }> {
         return callApi<{ blocklistSize: number }>({ action: 'blocklistUpdate' })
           .then(...exceptionLog())

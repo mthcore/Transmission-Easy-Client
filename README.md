@@ -11,7 +11,7 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
   JavaScript download buttons of modern trackers
 - Real-time torrent status monitoring
 - Speed graphs and statistics
-- File priority management
+- File priority management, with search and actions that apply to a whole folder
 - Label/category organization
 - Multiple download directories support
 - Notifications on download completion
@@ -21,13 +21,15 @@ A browser extension that adds a Transmission WebUI directly in your web browser.
 - **Search/filter** torrents by name
 - **Keyboard shortcuts** for power users
 - **Transmission 4.x support** - sequential download toggle, daemon version display, file count/content type in torrent details, while staying fully compatible with older 2.x/3.x daemons
-- **Torrent Details dialog** with tabbed info, tracker management, and per-torrent seed limits
+- **Torrent Details dialog** with tabbed info, tracker management, and per-torrent seed and bandwidth limits
+- **Bandwidth groups** - assign a torrent to a group from its context menu, create and edit groups from the Server tab (Transmission 4.0+)
+- **Diagnostics tab** - recent warnings and errors, redacted and ready to paste into a bug report
 - Secure Web UI login (no credentials in the URL) and hardened backup/restore
 
 ## Supported Browsers
 
-- Google Chrome (101+)
-- Mozilla Firefox (140+)
+- Google Chrome (111+)
+- Mozilla Firefox (140+), Firefox for Android (142+)
 - Opera
 
 ## Supported Languages
@@ -107,6 +109,22 @@ The built extension will be in the `./dist` folder.
 ## Changelog
 
 > See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the full release history.
+
+### Version 3.5.0 (September 2026)
+
+- **Features the daemon already spoke** — bandwidth groups, per-torrent speed and peer
+  limits, and the default tracker list were implemented in the background and reachable
+  from no page; they now have interfaces
+- **File list** — draws only the rows on screen, so a season pack opens at once, and
+  gains a name filter and actions that apply to a whole folder
+- **Excluding a file no longer discards its priority** — the one deliberate change in
+  behaviour
+- **Diagnostics tab** — warnings and errors were compiled out of every released build,
+  so a failure was observable by nobody; recent ones are kept and can be copied into a
+  bug report with the extension, browser and daemon versions
+- **"Add to Transmission" on modern trackers** whose download button runs JavaScript
+  instead of linking to a .torrent file
+- 1851 tests (up from 490)
 
 ### Version 3.4.0 (August 2026)
 

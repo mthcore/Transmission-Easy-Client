@@ -83,7 +83,7 @@ from 490 to 1812, which is what made the rest of this list safe to change.
   the code that had quietly stopped being true; the labelled switch used across
   the options panes is stated once instead of thirty-three times; the layering
   rules and the Firefox API rule are enforced by the linter rather than by
-  memory; and mobx-state-tree moved to 7.4
+  memory; and the state libraries moved to their current majors
 - **Build and release** - every check now runs before anything reaches the
   stores, and each of the three published bundles is loaded and smoke-tested
   after it is built, so a package that cannot start cannot be published

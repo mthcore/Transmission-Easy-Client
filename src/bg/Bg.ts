@@ -8,7 +8,7 @@ import updateWebUiAuthRule from './webUiAuthRule';
 import MobxPatchLine from '../tools/MobxPatchLine';
 import { serializeError } from 'serialize-error';
 import stripBidiControls from '../tools/stripBidiControls';
-import type { BgMessage, IBgForDaemon, IBgForContextMenu } from '../types';
+import type { BgMessage } from '../types';
 import { getSnapshot } from 'mobx-state-tree';
 import {
   describeSetting,

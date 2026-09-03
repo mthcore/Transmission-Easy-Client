@@ -37,7 +37,7 @@ const LabelSelect = observer(() => {
   const options = filters.map(({ label, custom: isCustom }) => {
     const id = JSON.stringify({ label, custom: isCustom });
 
-    let text: string | null = null;
+    let text: string;
     if (isCustom) {
       // Falling back to the raw label matters for the ghost entry above: a
       // built-in persisted by another build has no translation here, and an
@@ -49,11 +49,11 @@ const LabelSelect = observer(() => {
       text = label;
     }
 
-    let dataImage: string | null = null;
+    // Scoped to the branch that uses it rather than declared above and left
+    // null for every built-in entry.
     let image: React.ReactNode = null;
     if (isCustom) {
-      dataImage = label;
-      image = <span className="image" data-image={dataImage} />;
+      image = <span className="image" data-image={label} />;
     }
 
     if (selectedLabel.id === id) {

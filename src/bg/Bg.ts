@@ -222,7 +222,9 @@ class Bg {
       );
     }
 
-    let promise: Promise<unknown> | null = null;
+    // No initialiser: every case below assigns, the default one included, so
+    // a null here was a value nothing could read.
+    let promise: Promise<unknown> | null;
 
     // Type narrowing happens automatically in each case block
     switch (message.action) {

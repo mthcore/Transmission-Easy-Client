@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
@@ -48,7 +47,6 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      react: reactPlugin,
       'react-hooks': reactHooksPlugin,
     },
     rules: {
@@ -60,8 +58,11 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'warn',
 
       // React rules
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
+      //
+      // eslint-plugin-react is deliberately not installed. The only two of its
+      // rules this config ever named were both switched off — one because the
+      // new JSX transform makes it wrong, the other because TypeScript already
+      // does the job — so it contributed nothing while capping eslint at 9.
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
 
@@ -71,11 +72,6 @@ export default [
       'no-undef': 'off', // TypeScript handles this
       'prefer-const': 'warn',
       'no-var': 'error',
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
     },
   },
   {

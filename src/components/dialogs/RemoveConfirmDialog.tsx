@@ -62,7 +62,7 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
     [client, dialogStore, removalIds]
   );
 
-  let label: React.ReactNode = null;
+  let label: React.ReactNode;
   let filename: React.ReactNode = null;
 
   const count = dialogStore.torrentIds.length;

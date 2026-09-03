@@ -62,7 +62,7 @@ const TableHeadColumnRenderer = observer((props: TableHeadColumnRendererProps) =
 
   const isFixedColumn = fixedColumns.includes(column.column);
 
-  let body: React.ReactNode = null;
+  let body: React.ReactNode;
   if (column.column === 'checkbox') {
     body = (
       <div>

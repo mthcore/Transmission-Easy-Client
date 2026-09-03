@@ -43,7 +43,8 @@ declare global {
         _sender: chrome.runtime.MessageSender,
         response: (result: { result?: FetchResult; error?: unknown }) => void
       ) => {
-        let promise: Promise<FetchResult> | null = null;
+        // No initialiser: the cases assign and the default returns.
+        let promise: Promise<FetchResult> | null;
 
         switch (message && message.action) {
           case 'fetchUrl': {

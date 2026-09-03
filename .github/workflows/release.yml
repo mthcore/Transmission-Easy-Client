@@ -222,7 +222,7 @@ jobs:
         # taking it means a new repository secret from the Partner Center as
         # well as the inputs below. Merging the bump on its own publishes
         # nothing — it fails the job on unknown inputs.
-        uses: wdzeng/edge-addon@e307af4adb6d4e1c12387dc7d6bd545dcd075909 # v1
+        uses: wdzeng/edge-addon@9881f57720358040d079eaa06a4596dc9c273eb6 # v2.1.1
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}

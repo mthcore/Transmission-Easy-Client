@@ -60,7 +60,12 @@ let client: ReturnType<typeof makeClient>;
 
 beforeEach(() => {
   showError.mockClear();
-  store.createDialog.mockClear();
+  // A dialog stub by default: the handler calls setFiles/setReady on whatever
+  // createDialog returns, and it runs inside a DOM event listener — a throw
+  // there is an uncaught exception, not a failed assertion, so a test that
+  // does not care about the dialog still has to provide one.
+  store.createDialog.mockReset();
+  store.createDialog.mockReturnValue({ setFiles: vi.fn(), setReady: vi.fn() });
   store.setRefreshing.mockClear();
   store.isRefreshing = false;
   store.dialogs = new Map();

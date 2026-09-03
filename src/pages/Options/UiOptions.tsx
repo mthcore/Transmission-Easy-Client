@@ -1,6 +1,7 @@
 import React, { useCallback, type ChangeEvent } from 'react';
 import { observer } from 'mobx-react';
 import { useOptionsPage } from '../../hooks/useOptionsPage';
+import SettingToggle from '../../components/SettingToggle';
 
 interface ConfigStore {
   theme: string;
@@ -33,54 +34,30 @@ const UiOptions = observer(() => {
           <option value="dark">{chrome.i18n.getMessage('themeDark')}</option>
         </select>
       </label>
-      <label>
-        <span>{chrome.i18n.getMessage('showFreeSpace')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            name="showFreeSpace"
-            type="checkbox"
-            defaultChecked={configStore.showFreeSpace}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('hideSeedStatusItem')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            name="hideSeedingTorrents"
-            type="checkbox"
-            defaultChecked={configStore.hideSeedingTorrents}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('hideFinishStatusItem')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            name="hideFinishedTorrents"
-            type="checkbox"
-            defaultChecked={configStore.hideFinishedTorrents}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('showSpeedGraph')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            name="showSpeedGraph"
-            type="checkbox"
-            defaultChecked={configStore.showSpeedGraph}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="showFreeSpace"
+        onChange={handleChange}
+        name="showFreeSpace"
+        defaultChecked={configStore.showFreeSpace}
+      />
+      <SettingToggle
+        label="hideSeedStatusItem"
+        onChange={handleChange}
+        name="hideSeedingTorrents"
+        defaultChecked={configStore.hideSeedingTorrents}
+      />
+      <SettingToggle
+        label="hideFinishStatusItem"
+        onChange={handleChange}
+        name="hideFinishedTorrents"
+        defaultChecked={configStore.hideFinishedTorrents}
+      />
+      <SettingToggle
+        label="showSpeedGraph"
+        onChange={handleChange}
+        name="showSpeedGraph"
+        defaultChecked={configStore.showSpeedGraph}
+      />
       <label>
         <span>{chrome.i18n.getMessage('popupUpdateInterval')}</span>
         <input

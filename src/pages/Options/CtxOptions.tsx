@@ -9,6 +9,7 @@ import React, {
 import { observer } from 'mobx-react';
 import { useOptionsPage } from '../../hooks/useOptionsPage';
 import type { Folder } from '../../types/bg';
+import SettingToggle from '../../components/SettingToggle';
 
 interface ConfigStore {
   folders: Folder[];
@@ -159,42 +160,24 @@ const CtxOptionsDirs = observer(({ configStore, handleChange }: CtxOptionsDirsPr
         </div>
       </div>
       <h3>{chrome.i18n.getMessage('options')}</h3>
-      <label>
-        <span>{chrome.i18n.getMessage('treeViewContextMenu')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            defaultChecked={configStore.treeViewContextMenu}
-            type="checkbox"
-            name="treeViewContextMenu"
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('showDefaultFolderContextMenuItem')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            defaultChecked={configStore.putDefaultPathInContextMenu}
-            type="checkbox"
-            name="putDefaultPathInContextMenu"
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('selectDownloadCategoryOnAddItemFromContextMenu')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleChange}
-            defaultChecked={configStore.selectDownloadCategoryAfterPutTorrentFromContextMenu}
-            type="checkbox"
-            name="selectDownloadCategoryAfterPutTorrentFromContextMenu"
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="treeViewContextMenu"
+        onChange={handleChange}
+        defaultChecked={configStore.treeViewContextMenu}
+        name="treeViewContextMenu"
+      />
+      <SettingToggle
+        label="showDefaultFolderContextMenuItem"
+        onChange={handleChange}
+        defaultChecked={configStore.putDefaultPathInContextMenu}
+        name="putDefaultPathInContextMenu"
+      />
+      <SettingToggle
+        label="selectDownloadCategoryOnAddItemFromContextMenu"
+        onChange={handleChange}
+        defaultChecked={configStore.selectDownloadCategoryAfterPutTorrentFromContextMenu}
+        name="selectDownloadCategoryAfterPutTorrentFromContextMenu"
+      />
     </div>
   );
 });

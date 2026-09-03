@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { observer } from 'mobx-react';
 import useRootStore from '../../hooks/useRootStore';
 import BandwidthGroups from './BandwidthGroups';
+import SettingToggle from '../../components/SettingToggle';
 
 const ALT_SPEED_DAYS = [
   { bit: 1, key: 'daySunday' },
@@ -336,32 +337,20 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('generalSettings')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('startAddedTorrents')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setStartAddedTorrents, settings.startAddedTorrents)}
-            type="checkbox"
-            checked={settings.startAddedTorrents}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="startAddedTorrents"
+        onChange={handleToggle(client.setStartAddedTorrents, settings.startAddedTorrents)}
+        checked={settings.startAddedTorrents}
+      />
 
-      <label>
-        <span>{chrome.i18n.getMessage('trashOriginalTorrentFiles')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(
-              client.setTrashOriginalTorrentFiles,
-              settings.trashOriginalTorrentFiles
-            )}
-            type="checkbox"
-            checked={settings.trashOriginalTorrentFiles}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="trashOriginalTorrentFiles"
+        onChange={handleToggle(
+          client.setTrashOriginalTorrentFiles,
+          settings.trashOriginalTorrentFiles
+        )}
+        checked={settings.trashOriginalTorrentFiles}
+      />
 
       <h3>{chrome.i18n.getMessage('peerSettings')}</h3>
 
@@ -389,17 +378,11 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('seedingSettings')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('seedRatioLimited')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setSeedRatioLimited, settings.seedRatioLimited)}
-            type="checkbox"
-            checked={settings.seedRatioLimited}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="seedRatioLimited"
+        onChange={handleToggle(client.setSeedRatioLimited, settings.seedRatioLimited)}
+        checked={settings.seedRatioLimited}
+      />
 
       {settings.seedRatioLimited && (
         <label>
@@ -415,20 +398,11 @@ const ServerOptions = observer(() => {
         </label>
       )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('idleSeedingLimitEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(
-              client.setIdleSeedingLimitEnabled,
-              settings.idleSeedingLimitEnabled
-            )}
-            type="checkbox"
-            checked={settings.idleSeedingLimitEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="idleSeedingLimitEnabled"
+        onChange={handleToggle(client.setIdleSeedingLimitEnabled, settings.idleSeedingLimitEnabled)}
+        checked={settings.idleSeedingLimitEnabled}
+      />
 
       {settings.idleSeedingLimitEnabled && (
         <label>
@@ -446,17 +420,11 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('queueSettings')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('downloadQueueEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setDownloadQueueEnabled, settings.downloadQueueEnabled)}
-            type="checkbox"
-            checked={settings.downloadQueueEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="downloadQueueEnabled"
+        onChange={handleToggle(client.setDownloadQueueEnabled, settings.downloadQueueEnabled)}
+        checked={settings.downloadQueueEnabled}
+      />
 
       {settings.downloadQueueEnabled && (
         <label>
@@ -471,17 +439,11 @@ const ServerOptions = observer(() => {
         </label>
       )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('seedQueueEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setSeedQueueEnabled, settings.seedQueueEnabled)}
-            type="checkbox"
-            checked={settings.seedQueueEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="seedQueueEnabled"
+        onChange={handleToggle(client.setSeedQueueEnabled, settings.seedQueueEnabled)}
+        checked={settings.seedQueueEnabled}
+      />
 
       {settings.seedQueueEnabled && (
         <label>
@@ -496,17 +458,11 @@ const ServerOptions = observer(() => {
         </label>
       )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('queueStalledEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setQueueStalledEnabled, settings.queueStalledEnabled)}
-            type="checkbox"
-            checked={settings.queueStalledEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="queueStalledEnabled"
+        onChange={handleToggle(client.setQueueStalledEnabled, settings.queueStalledEnabled)}
+        checked={settings.queueStalledEnabled}
+      />
 
       {settings.queueStalledEnabled && (
         <label>
@@ -524,17 +480,11 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('incompleteDirSettings')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('incompleteDirEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setIncompleteDirEnabled, settings.incompleteDirEnabled)}
-            type="checkbox"
-            checked={settings.incompleteDirEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="incompleteDirEnabled"
+        onChange={handleToggle(client.setIncompleteDirEnabled, settings.incompleteDirEnabled)}
+        checked={settings.incompleteDirEnabled}
+      />
 
       {settings.incompleteDirEnabled && (
         <label>
@@ -548,17 +498,11 @@ const ServerOptions = observer(() => {
         </label>
       )}
 
-      <label>
-        <span>{chrome.i18n.getMessage('renamePartialFiles')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setRenamePartialFiles, settings.renamePartialFiles)}
-            type="checkbox"
-            checked={settings.renamePartialFiles}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="renamePartialFiles"
+        onChange={handleToggle(client.setRenamePartialFiles, settings.renamePartialFiles)}
+        checked={settings.renamePartialFiles}
+      />
 
       <h3>{chrome.i18n.getMessage('networkSettings')}</h3>
 
@@ -595,17 +539,11 @@ const ServerOptions = observer(() => {
         </span>
       </label>
 
-      <label>
-        <span>{chrome.i18n.getMessage('portForwardingEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setPortForwardingEnabled, settings.portForwardingEnabled)}
-            type="checkbox"
-            checked={settings.portForwardingEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="portForwardingEnabled"
+        onChange={handleToggle(client.setPortForwardingEnabled, settings.portForwardingEnabled)}
+        checked={settings.portForwardingEnabled}
+      />
 
       <label>
         <span>{chrome.i18n.getMessage('encryption')}</span>
@@ -616,67 +554,37 @@ const ServerOptions = observer(() => {
         </select>
       </label>
 
-      <label>
-        <span>{chrome.i18n.getMessage('dhtEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setDhtEnabled, settings.dhtEnabled)}
-            type="checkbox"
-            checked={settings.dhtEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="dhtEnabled"
+        onChange={handleToggle(client.setDhtEnabled, settings.dhtEnabled)}
+        checked={settings.dhtEnabled}
+      />
 
-      <label>
-        <span>{chrome.i18n.getMessage('pexEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setPexEnabled, settings.pexEnabled)}
-            type="checkbox"
-            checked={settings.pexEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="pexEnabled"
+        onChange={handleToggle(client.setPexEnabled, settings.pexEnabled)}
+        checked={settings.pexEnabled}
+      />
 
-      <label>
-        <span>{chrome.i18n.getMessage('lpdEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setLpdEnabled, settings.lpdEnabled)}
-            type="checkbox"
-            checked={settings.lpdEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="lpdEnabled"
+        onChange={handleToggle(client.setLpdEnabled, settings.lpdEnabled)}
+        checked={settings.lpdEnabled}
+      />
 
-      <label>
-        <span>{chrome.i18n.getMessage('utpEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setUtpEnabled, settings.utpEnabled)}
-            type="checkbox"
-            checked={settings.utpEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="utpEnabled"
+        onChange={handleToggle(client.setUtpEnabled, settings.utpEnabled)}
+        checked={settings.utpEnabled}
+      />
 
       <h3>{chrome.i18n.getMessage('altSpeedSchedule')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('altSpeedTimeEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setAltSpeedTimeEnabled, settings.altSpeedTimeEnabled)}
-            type="checkbox"
-            checked={settings.altSpeedTimeEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="altSpeedTimeEnabled"
+        onChange={handleToggle(client.setAltSpeedTimeEnabled, settings.altSpeedTimeEnabled)}
+        checked={settings.altSpeedTimeEnabled}
+      />
 
       {settings.altSpeedTimeEnabled && (
         <>
@@ -718,20 +626,14 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('scriptSettings')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('scriptTorrentDoneEnabled')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(
-              client.setScriptTorrentDoneEnabled,
-              settings.scriptTorrentDoneEnabled
-            )}
-            type="checkbox"
-            checked={settings.scriptTorrentDoneEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="scriptTorrentDoneEnabled"
+        onChange={handleToggle(
+          client.setScriptTorrentDoneEnabled,
+          settings.scriptTorrentDoneEnabled
+        )}
+        checked={settings.scriptTorrentDoneEnabled}
+      />
 
       {settings.scriptTorrentDoneEnabled && (
         <label>
@@ -767,20 +669,14 @@ const ServerOptions = observer(() => {
       {/* script-torrent-added / done-seeding need Transmission 4.0+ (rpc 17) */}
       {settings.features.scriptTorrentAdded && (
         <>
-          <label>
-            <span>{chrome.i18n.getMessage('scriptTorrentAddedEnabled')}</span>
-            <span className="toggle-switch">
-              <input
-                onChange={handleToggle(
-                  client.setScriptTorrentAddedEnabled,
-                  settings.scriptTorrentAddedEnabled
-                )}
-                type="checkbox"
-                checked={settings.scriptTorrentAddedEnabled}
-              />
-              <span className="toggle-slider"></span>
-            </span>
-          </label>
+          <SettingToggle
+            label="scriptTorrentAddedEnabled"
+            onChange={handleToggle(
+              client.setScriptTorrentAddedEnabled,
+              settings.scriptTorrentAddedEnabled
+            )}
+            checked={settings.scriptTorrentAddedEnabled}
+          />
 
           {settings.scriptTorrentAddedEnabled && (
             <label>
@@ -798,20 +694,14 @@ const ServerOptions = observer(() => {
             </label>
           )}
 
-          <label>
-            <span>{chrome.i18n.getMessage('scriptTorrentDoneSeedingEnabled')}</span>
-            <span className="toggle-switch">
-              <input
-                onChange={handleToggle(
-                  client.setScriptTorrentDoneSeedingEnabled,
-                  settings.scriptTorrentDoneSeedingEnabled
-                )}
-                type="checkbox"
-                checked={settings.scriptTorrentDoneSeedingEnabled}
-              />
-              <span className="toggle-slider"></span>
-            </span>
-          </label>
+          <SettingToggle
+            label="scriptTorrentDoneSeedingEnabled"
+            onChange={handleToggle(
+              client.setScriptTorrentDoneSeedingEnabled,
+              settings.scriptTorrentDoneSeedingEnabled
+            )}
+            checked={settings.scriptTorrentDoneSeedingEnabled}
+          />
 
           {settings.scriptTorrentDoneSeedingEnabled && (
             <label>
@@ -833,17 +723,11 @@ const ServerOptions = observer(() => {
 
       <h3>{chrome.i18n.getMessage('blocklist')}</h3>
 
-      <label>
-        <span>{chrome.i18n.getMessage('blocklistEnable')}</span>
-        <span className="toggle-switch">
-          <input
-            onChange={handleToggle(client.setBlocklistEnabled, settings.blocklistEnabled)}
-            type="checkbox"
-            checked={settings.blocklistEnabled}
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="blocklistEnable"
+        onChange={handleToggle(client.setBlocklistEnabled, settings.blocklistEnabled)}
+        checked={settings.blocklistEnabled}
+      />
 
       <label>
         <span>{chrome.i18n.getMessage('blocklistUrl')}</span>

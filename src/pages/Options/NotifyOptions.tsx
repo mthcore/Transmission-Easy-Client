@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { RgbColorPicker, RgbColor } from 'react-colorful';
 import { Popover } from 'react-tiny-popover';
 import { useOptionsPage } from '../../hooks/useOptionsPage';
+import SettingToggle from '../../components/SettingToggle';
 
 interface ConfigStore {
   showDownloadCompleteNotifications: boolean;
@@ -67,30 +68,18 @@ const NotifyOptions = observer(() => {
   return (
     <div className="page notify">
       <h2>{chrome.i18n.getMessage('optNotify')}</h2>
-      <label>
-        <span>{chrome.i18n.getMessage('showNotificationOnDownloadComplete')}</span>
-        <span className="toggle-switch">
-          <input
-            defaultChecked={configStore.showDownloadCompleteNotifications}
-            onChange={handleChange}
-            type="checkbox"
-            name="showDownloadCompleteNotifications"
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
-      <label>
-        <span>{chrome.i18n.getMessage('displayActiveTorrentCountIcon')}</span>
-        <span className="toggle-switch">
-          <input
-            defaultChecked={configStore.showActiveCountBadge}
-            onChange={handleChange}
-            type="checkbox"
-            name="showActiveCountBadge"
-          />
-          <span className="toggle-slider"></span>
-        </span>
-      </label>
+      <SettingToggle
+        label="showNotificationOnDownloadComplete"
+        defaultChecked={configStore.showDownloadCompleteNotifications}
+        onChange={handleChange}
+        name="showDownloadCompleteNotifications"
+      />
+      <SettingToggle
+        label="displayActiveTorrentCountIcon"
+        defaultChecked={configStore.showActiveCountBadge}
+        onChange={handleChange}
+        name="showActiveCountBadge"
+      />
       <label>
         <span>{chrome.i18n.getMessage('badgeColor')}</span>
         <Popover

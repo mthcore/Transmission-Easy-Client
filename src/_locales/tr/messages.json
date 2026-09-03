@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "En fazla eş sayısı"
+    },
+    "optDiagnostic": {
+        "message": "Tanılama"
+    },
+    "diagnosticIntro": {
+        "message": "Bir sorunu bildirebilmeniz için saklanan son uyarılar ve hatalar. Sunucu adresi ve kimlik bilgileri kaldırılır, ancak paylaşmadan önce raporu okuyun."
+    },
+    "diagnosticEmpty": {
+        "message": "Henüz kayıt yok."
+    },
+    "diagnosticCopied": {
+        "message": "Kopyalandı"
+    },
+    "diagnosticClear": {
+        "message": "Günlüğü temizle"
     }
 }

@@ -179,7 +179,13 @@ describe('BackupRestoreOptions — restoring', () => {
       fireEvent.click(button('toRestore')!);
     });
 
-    expect(storageSet).not.toHaveBeenCalled();
+    // No CONFIG is written. Not "nothing is written": the logger records
+    // warnings and errors for the Diagnostics pane, so a reported failure now
+    // legitimately puts one entry in its own '_'-prefixed key. Asserting on the
+    // keys says what this case is actually about — a bad backup must not touch
+    // the settings — and keeps saying it whatever else learns to write.
+    const written = storageSet.mock.calls.flatMap((call) => Object.keys(call[0] ?? {}));
+    expect(written.filter((key) => !key.startsWith('_'))).toEqual([]);
     expect(document.body.textContent?.toLowerCase()).toMatch(/error|erreur|json|token/i);
   });
 

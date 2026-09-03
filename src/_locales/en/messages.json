@@ -956,5 +956,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maximum peers"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostics"
+    },
+    "diagnosticIntro": {
+        "message": "Recent warnings and errors, kept so you can report a problem. The server address and credentials are removed, but please read the report before sharing it."
+    },
+    "diagnosticEmpty": {
+        "message": "Nothing recorded yet."
+    },
+    "diagnosticCopied": {
+        "message": "Copied"
+    },
+    "diagnosticClear": {
+        "message": "Clear log"
     }
 }

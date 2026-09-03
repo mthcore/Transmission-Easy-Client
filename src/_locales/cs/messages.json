@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maximální počet protějšků"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostika"
+    },
+    "diagnosticIntro": {
+        "message": "Nedávná varování a chyby, uchovaná pro nahlášení problému. Adresa serveru a přihlašovací údaje jsou odstraněny, ale před sdílením si zprávu přečtěte."
+    },
+    "diagnosticEmpty": {
+        "message": "Zatím nic nezaznamenáno."
+    },
+    "diagnosticCopied": {
+        "message": "Zkopírováno"
+    },
+    "diagnosticClear": {
+        "message": "Vymazat záznam"
     }
 }

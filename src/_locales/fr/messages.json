@@ -956,5 +956,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Nombre maximal de pairs"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostic"
+    },
+    "diagnosticIntro": {
+        "message": "Avertissements et erreurs récents, conservés pour vous permettre de signaler un problème. L'adresse du serveur et les identifiants sont retirés, mais relisez le rapport avant de le partager."
+    },
+    "diagnosticEmpty": {
+        "message": "Rien d'enregistré pour l'instant."
+    },
+    "diagnosticCopied": {
+        "message": "Copié"
+    },
+    "diagnosticClear": {
+        "message": "Effacer le journal"
     }
 }

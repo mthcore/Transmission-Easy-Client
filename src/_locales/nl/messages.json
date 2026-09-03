@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maximum aantal peers"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostiek"
+    },
+    "diagnosticIntro": {
+        "message": "Recente waarschuwingen en fouten, bewaard zodat je een probleem kunt melden. Het serveradres en de inloggegevens worden verwijderd, maar lees het rapport voordat je het deelt."
+    },
+    "diagnosticEmpty": {
+        "message": "Nog niets vastgelegd."
+    },
+    "diagnosticCopied": {
+        "message": "Gekopieerd"
+    },
+    "diagnosticClear": {
+        "message": "Logboek wissen"
     }
 }

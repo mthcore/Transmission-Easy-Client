@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maksimalt antal peers"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostik"
+    },
+    "diagnosticIntro": {
+        "message": "Seneste advarsler og fejl, gemt så du kan rapportere et problem. Serveradressen og loginoplysningerne er fjernet, men læs rapporten, før du deler den."
+    },
+    "diagnosticEmpty": {
+        "message": "Intet registreret endnu."
+    },
+    "diagnosticCopied": {
+        "message": "Kopieret"
+    },
+    "diagnosticClear": {
+        "message": "Ryd log"
     }
 }

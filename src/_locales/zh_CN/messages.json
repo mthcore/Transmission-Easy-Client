@@ -956,5 +956,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "最大连接数"
+    },
+    "optDiagnostic": {
+        "message": "诊断"
+    },
+    "diagnosticIntro": {
+        "message": "最近的警告和错误，用于报告问题。服务器地址和凭据已被移除，但分享前请先阅读报告。"
+    },
+    "diagnosticEmpty": {
+        "message": "暂无记录。"
+    },
+    "diagnosticCopied": {
+        "message": "已复制"
+    },
+    "diagnosticClear": {
+        "message": "清除日志"
     }
 }

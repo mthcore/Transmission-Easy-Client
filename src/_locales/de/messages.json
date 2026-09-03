@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maximale Anzahl Peers"
+    },
+    "optDiagnostic": {
+        "message": "Diagnose"
+    },
+    "diagnosticIntro": {
+        "message": "Aktuelle Warnungen und Fehler, gespeichert zum Melden eines Problems. Serveradresse und Zugangsdaten werden entfernt – lies den Bericht dennoch, bevor du ihn weitergibst."
+    },
+    "diagnosticEmpty": {
+        "message": "Noch nichts aufgezeichnet."
+    },
+    "diagnosticCopied": {
+        "message": "Kopiert"
+    },
+    "diagnosticClear": {
+        "message": "Protokoll leeren"
     }
 }

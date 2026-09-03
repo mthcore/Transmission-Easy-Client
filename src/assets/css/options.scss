@@ -692,6 +692,40 @@ ol.help li {
   }
 }
 
+// Diagnostics
+// The report is a plain textarea rather than a rendered table on purpose: it is
+// exactly the text the Copy button writes, it can be selected by hand when the
+// clipboard is unavailable, and it is read before it is shared.
+.diagnostic {
+  .diagnostic-report {
+    width: 100%;
+    min-height: 260px;
+    font-family: monospace;
+    font-size: 12px;
+    // Long daemon errors arrive as one line; wrapping keeps them readable
+    // without a horizontal scrollbar under the buttons.
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .diagnostic-empty {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .diagnostic-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+
+    button {
+      min-width: 120px;
+    }
+  }
+}
+
 // Shown when the initial background sync failed and startup could not finish.
 // (Duplicated from _dialogs.scss, which this page does not import.)
 .startup-error {

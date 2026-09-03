@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Högsta antal peers"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostik"
+    },
+    "diagnosticIntro": {
+        "message": "Senaste varningar och fel, sparade så att du kan rapportera ett problem. Serveradressen och inloggningsuppgifterna tas bort, men läs rapporten innan du delar den."
+    },
+    "diagnosticEmpty": {
+        "message": "Inget registrerat ännu."
+    },
+    "diagnosticCopied": {
+        "message": "Kopierat"
+    },
+    "diagnosticClear": {
+        "message": "Rensa logg"
     }
 }

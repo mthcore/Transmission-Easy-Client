@@ -956,5 +956,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Máximo de pares"
+    },
+    "optDiagnostic": {
+        "message": "Diagnóstico"
+    },
+    "diagnosticIntro": {
+        "message": "Avisos e erros recentes, guardados para você relatar um problema. O endereço do servidor e as credenciais são removidos, mas leia o relatório antes de compartilhá-lo."
+    },
+    "diagnosticEmpty": {
+        "message": "Nada registrado ainda."
+    },
+    "diagnosticCopied": {
+        "message": "Copiado"
+    },
+    "diagnosticClear": {
+        "message": "Limpar registro"
     }
 }

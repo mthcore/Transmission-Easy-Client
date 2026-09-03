@@ -13,6 +13,7 @@ import UiOptions from './UiOptions';
 import NotifyOptions from './NotifyOptions';
 import CtxOptions from './CtxOptions';
 import BackupRestoreOptions from './BackupRestoreOptions';
+import DiagnosticOptions from './DiagnosticOptions';
 import ServerOptions from './ServerOptions';
 
 // Before React renders, so an explicit theme doesn't flash the OS one first
@@ -76,6 +77,9 @@ const Options = observer(() => {
             <NavLink to="/backup" className={({ isActive }) => (isActive ? 'active' : '')}>
               {chrome.i18n.getMessage('backupRestore')}
             </NavLink>
+            <NavLink to="/diagnostic" className={({ isActive }) => (isActive ? 'active' : '')}>
+              {chrome.i18n.getMessage('optDiagnostic')}
+            </NavLink>
           </div>
           <div className="right">
             <Routes>
@@ -85,6 +89,7 @@ const Options = observer(() => {
               <Route path="/ctx" element={<CtxOptions />} />
               <Route path="/server" element={<ServerOptions />} />
               <Route path="/backup" element={<BackupRestoreOptions />} />
+              <Route path="/diagnostic" element={<DiagnosticOptions />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>

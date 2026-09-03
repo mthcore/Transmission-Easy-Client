@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Peer maksimum"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostik"
+    },
+    "diagnosticIntro": {
+        "message": "Peringatan dan galat terbaru, disimpan agar Anda dapat melaporkan masalah. Alamat server dan kredensial dihapus, tetapi harap baca laporan sebelum membagikannya."
+    },
+    "diagnosticEmpty": {
+        "message": "Belum ada catatan."
+    },
+    "diagnosticCopied": {
+        "message": "Disalin"
+    },
+    "diagnosticClear": {
+        "message": "Hapus log"
     }
 }

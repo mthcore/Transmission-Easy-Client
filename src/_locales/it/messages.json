@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Numero massimo di peer"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostica"
+    },
+    "diagnosticIntro": {
+        "message": "Avvisi ed errori recenti, conservati per segnalare un problema. L'indirizzo del server e le credenziali vengono rimossi, ma leggi il rapporto prima di condividerlo."
+    },
+    "diagnosticEmpty": {
+        "message": "Nessuna registrazione."
+    },
+    "diagnosticCopied": {
+        "message": "Copiato"
+    },
+    "diagnosticClear": {
+        "message": "Cancella registro"
     }
 }

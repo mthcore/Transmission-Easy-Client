@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Partnerek maximális száma"
+    },
+    "optDiagnostic": {
+        "message": "Diagnosztika"
+    },
+    "diagnosticIntro": {
+        "message": "Legutóbbi figyelmeztetések és hibák, hogy jelenthess egy problémát. A kiszolgáló címe és a belépési adatok eltávolításra kerülnek, de olvasd el a jelentést a megosztás előtt."
+    },
+    "diagnosticEmpty": {
+        "message": "Még nincs rögzített bejegyzés."
+    },
+    "diagnosticCopied": {
+        "message": "Másolva"
+    },
+    "diagnosticClear": {
+        "message": "Napló törlése"
     }
 }

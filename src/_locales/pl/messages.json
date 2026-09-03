@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Maksymalna liczba peerów"
+    },
+    "optDiagnostic": {
+        "message": "Diagnostyka"
+    },
+    "diagnosticIntro": {
+        "message": "Ostatnie ostrzeżenia i błędy, zachowane, abyś mógł zgłosić problem. Adres serwera i dane logowania są usuwane, ale przeczytaj raport przed udostępnieniem."
+    },
+    "diagnosticEmpty": {
+        "message": "Nic jeszcze nie zarejestrowano."
+    },
+    "diagnosticCopied": {
+        "message": "Skopiowano"
+    },
+    "diagnosticClear": {
+        "message": "Wyczyść dziennik"
     }
 }

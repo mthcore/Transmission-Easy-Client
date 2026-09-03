@@ -24,6 +24,9 @@ const chromeMock = {
     sendMessage: vi.fn(),
     lastError: null as chrome.runtime.LastError | null,
     getURL: (path: string) => `chrome-extension://test-extension-id/${path}`,
+    // Obviously not a real version, so a test that ends up asserting on it
+    // says so rather than looking like it checked the shipped one.
+    getManifest: () => ({ version: '0.0.0-test' }) as chrome.runtime.Manifest,
     openOptionsPage: vi.fn(),
     onMessage: {
       addListener: vi.fn(),

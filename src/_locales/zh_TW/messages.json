@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "最大連線數"
+    },
+    "optDiagnostic": {
+        "message": "診斷"
+    },
+    "diagnosticIntro": {
+        "message": "最近的警告與錯誤，用於回報問題。伺服器位址與憑證已移除，但分享前請先閱讀報告。"
+    },
+    "diagnosticEmpty": {
+        "message": "尚無記錄。"
+    },
+    "diagnosticCopied": {
+        "message": "已複製"
+    },
+    "diagnosticClear": {
+        "message": "清除日誌"
     }
 }

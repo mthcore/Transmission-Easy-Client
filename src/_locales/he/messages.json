@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "מספר עמיתים מרבי"
+    },
+    "optDiagnostic": {
+        "message": "אבחון"
+    },
+    "diagnosticIntro": {
+        "message": "אזהרות ושגיאות אחרונות, נשמרות כדי לאפשר דיווח על תקלה. כתובת השרת ופרטי ההתחברות מוסרים, אך יש לקרוא את הדוח לפני שיתופו."
+    },
+    "diagnosticEmpty": {
+        "message": "לא נרשם דבר עדיין."
+    },
+    "diagnosticCopied": {
+        "message": "הועתק"
+    },
+    "diagnosticClear": {
+        "message": "נקה יומן"
     }
 }

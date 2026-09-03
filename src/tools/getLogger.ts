@@ -1,7 +1,10 @@
+import { recordDiagnostic } from './diagnosticLog';
+
 declare const BUILD_ENV: {
   browser: string;
   mode: string;
   outputPath: string;
+  /** Chatter: log, info and debug. Compiled out of a production build. */
   FLAG_ENABLE_LOGGER?: boolean;
 };
 
@@ -119,26 +122,47 @@ function serializeArgs(...args: unknown[]): unknown[] {
   });
 }
 
+/**
+ * Two levels, and only one of them is optional.
+ *
+ * The chatter — log, info, debug — is a development aid: one line per poll,
+ * per autorun, per request. It is compiled out of a production build and
+ * should stay that way.
+ *
+ * Warnings and errors are not chatter, and used to be silenced with it. That
+ * left a shipped extension whose failures were observable by nobody: not by
+ * the user, who sees an action quietly not happen, and not by the developer,
+ * because the service worker that held the console was torn down minutes
+ * before the bug report was written. They now always emit, and are recorded
+ * for the Diagnostics pane to hand back.
+ */
 const getLogger = (name: string): Logger => {
-  let fn: Logger;
-  if (typeof BUILD_ENV !== 'undefined' && BUILD_ENV.FLAG_ENABLE_LOGGER) {
-    const colorArgs: string[] = [];
-    if (BUILD_ENV.mode === 'development') {
-      colorArgs.push(`%c${name}`, `color: ${selectColor(name)}`);
-    } else {
-      colorArgs.push(name);
-    }
-    fn = ((...args: unknown[]) => console.log(...colorArgs, ...serializeArgs(...args))) as Logger;
-    fn.log = fn;
-    fn.info = (...args: unknown[]) => console.info(...colorArgs, ...serializeArgs(...args));
-    fn.warn = (...args: unknown[]) => console.warn(...colorArgs, ...serializeArgs(...args));
-    fn.error = (...args: unknown[]) => console.error(...colorArgs, ...serializeArgs(...args));
-    fn.debug = (...args: unknown[]) => console.debug(...colorArgs, ...serializeArgs(...args));
+  const verbose = typeof BUILD_ENV !== 'undefined' && Boolean(BUILD_ENV.FLAG_ENABLE_LOGGER);
+  const colorArgs: string[] = [];
+  if (verbose && typeof BUILD_ENV !== 'undefined' && BUILD_ENV.mode === 'development') {
+    colorArgs.push(`%c${name}`, `color: ${selectColor(name)}`);
   } else {
-    const noop = () => {};
-    fn = noop as Logger;
-    fn.log = fn.info = fn.warn = fn.error = fn.debug = noop;
+    colorArgs.push(name);
   }
+
+  const noop = () => {};
+  const chatter =
+    (method: 'log' | 'info' | 'debug') =>
+    (...args: unknown[]) =>
+      console[method](...colorArgs, ...serializeArgs(...args));
+
+  const fn = (verbose ? chatter('log') : noop) as Logger;
+  fn.log = fn;
+  fn.info = verbose ? chatter('info') : noop;
+  fn.debug = verbose ? chatter('debug') : noop;
+  fn.warn = (...args: unknown[]) => {
+    console.warn(...colorArgs, ...serializeArgs(...args));
+    recordDiagnostic('warn', name, args);
+  };
+  fn.error = (...args: unknown[]) => {
+    console.error(...colorArgs, ...serializeArgs(...args));
+    recordDiagnostic('error', name, args);
+  };
   return fn;
 };
 

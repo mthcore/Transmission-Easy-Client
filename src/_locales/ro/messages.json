@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Număr maxim de parteneri"
+    },
+    "optDiagnostic": {
+        "message": "Diagnosticare"
+    },
+    "diagnosticIntro": {
+        "message": "Avertismente și erori recente, păstrate pentru a raporta o problemă. Adresa serverului și datele de autentificare sunt eliminate, dar citiți raportul înainte de a-l partaja."
+    },
+    "diagnosticEmpty": {
+        "message": "Nimic înregistrat încă."
+    },
+    "diagnosticCopied": {
+        "message": "Copiat"
+    },
+    "diagnosticClear": {
+        "message": "Șterge jurnalul"
     }
 }

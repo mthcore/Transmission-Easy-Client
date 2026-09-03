@@ -929,5 +929,20 @@
     },
     "DT_PEER_LIMIT": {
         "message": "Số peer tối đa"
+    },
+    "optDiagnostic": {
+        "message": "Chẩn đoán"
+    },
+    "diagnosticIntro": {
+        "message": "Cảnh báo và lỗi gần đây, được lưu để bạn báo cáo sự cố. Địa chỉ máy chủ và thông tin đăng nhập đã được loại bỏ, nhưng hãy đọc báo cáo trước khi chia sẻ."
+    },
+    "diagnosticEmpty": {
+        "message": "Chưa ghi nhận gì."
+    },
+    "diagnosticCopied": {
+        "message": "Đã sao chép"
+    },
+    "diagnosticClear": {
+        "message": "Xóa nhật ký"
     }
 }

@@ -217,12 +217,19 @@ jobs:
         # wdzeng/edge-addon (same author as the Firefox action) takes the
         # same inputs in its v1 API.
         #
-        # Held at v1 deliberately. v2 moved to the Edge Add-ons API v1.1: it
-        # drops client-secret and access-token-url for a single api-key, so
-        # taking it means a new repository secret from the Partner Center as
-        # well as the inputs below. Merging the bump on its own publishes
-        # nothing — it fails the job on unknown inputs.
-        uses: wdzeng/edge-addon@9881f57720358040d079eaa06a4596dc9c273eb6 # v2.1.1
+        # Held at v1 deliberately, and this has already been merged once by
+        # mistake and reverted. v2 moved to the Edge Add-ons API v1.1: read its
+        # action.yml and api-key is required while client-secret and
+        # access-token-url are gone entirely. A bump on its own therefore
+        # leaves this step passing two inputs that no longer exist and missing
+        # the one that does — it publishes nothing, and only says so at the
+        # moment of a release.
+        #
+        # Taking v2 is two changes, not one: the inputs below become
+        # api-key: ${{ secrets.EDGE_API_KEY }}, AND that secret has to be
+        # created from the Partner Center first. EDGE_CLIENT_SECRET cannot be
+        # reused for it — the v1.1 API replaces the OAuth flow with a key.
+        uses: wdzeng/edge-addon@e307af4adb6d4e1c12387dc7d6bd545dcd075909 # v1
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}

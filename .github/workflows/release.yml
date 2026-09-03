@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Get version from tag
         id: get_version
@@ -123,25 +123,25 @@ jobs:
           fi
 
       - name: Upload Chrome artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: chrome-extension
           path: transmission-chrome-${{ github.ref_name }}.zip
 
       - name: Upload Firefox artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: firefox-extension
           path: transmission-firefox-${{ github.ref_name }}.zip
 
       - name: Upload Firefox source archive
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: firefox-source
           path: dist/firefox/*-source.zip
 
       - name: Upload Opera artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: opera-extension
           path: transmission-opera-${{ github.ref_name }}.zip
@@ -154,14 +154,14 @@ jobs:
 
     steps:
       - name: Download Chrome artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: chrome-extension
 
       - name: Upload to Chrome Web Store
         # Pinned to a full commit SHA: these jobs receive store-publishing
         # secrets, and mutable tags could be repointed at malicious code
-        uses: mnao305/chrome-extension-upload@4008e29e13c144d0f6725462cbd49b7c291b4928 # v5.0.0
+        uses: mnao305/chrome-extension-upload@fdfe79400af990f5145a319e834aee64907ccff4 # v6.0.0
         with:
           file-path: transmission-chrome-${{ github.ref_name }}.zip
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
@@ -178,12 +178,12 @@ jobs:
 
     steps:
       - name: Download Firefox artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: firefox-extension
 
       - name: Download Firefox source archive
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: firefox-source
           path: source
@@ -208,14 +208,20 @@ jobs:
 
     steps:
       - name: Download Chrome artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: chrome-extension
 
       - name: Upload to Edge Add-ons
         # aspect-labs/edge-addon-action no longer exists on GitHub (404);
         # wdzeng/edge-addon (same author as the Firefox action) takes the
-        # same inputs in its v1 API
+        # same inputs in its v1 API.
+        #
+        # Held at v1 deliberately. v2 moved to the Edge Add-ons API v1.1: it
+        # drops client-secret and access-token-url for a single api-key, so
+        # taking it means a new repository secret from the Partner Center as
+        # well as the inputs below. Merging the bump on its own publishes
+        # nothing — it fails the job on unknown inputs.
         uses: wdzeng/edge-addon@e307af4adb6d4e1c12387dc7d6bd545dcd075909 # v1
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}

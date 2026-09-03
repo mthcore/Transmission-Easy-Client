@@ -51,12 +51,9 @@ function generatePath(
   valueKey: 'upload' | 'download'
 ): string {
   if (!data || data.length === 0) return '';
-  if (data.length === 1) {
-    const x = xScale(data[0].time);
-    const y = yScale(data[0][valueKey]);
-    return `M${x},${y}`;
-  }
 
+  // A single sample needs no special case: the loop below does not run, and
+  // the move command alone is exactly what one used to be spelled out for.
   let path = `M${xScale(data[0].time)},${yScale(data[0][valueKey])}`;
 
   for (let i = 1; i < data.length; i++) {

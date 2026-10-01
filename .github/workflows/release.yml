@@ -229,7 +229,7 @@ jobs:
         # api-key: ${{ secrets.EDGE_API_KEY }}, AND that secret has to be
         # created from the Partner Center first. EDGE_CLIENT_SECRET cannot be
         # reused for it — the v1.1 API replaces the OAuth flow with a key.
-        uses: wdzeng/edge-addon@e307af4adb6d4e1c12387dc7d6bd545dcd075909 # v1
+        uses: wdzeng/edge-addon@9881f57720358040d079eaa06a4596dc9c273eb6 # v2.1.1
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}

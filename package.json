@@ -51,10 +51,10 @@
     "serialize-error": "^13.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.1",
-    "@babel/preset-env": "^8.0.2",
+    "@babel/core": "^8.0.9",
+    "@babel/preset-env": "^8.0.7",
     "@babel/preset-react": "^8.0.1",
-    "@babel/preset-typescript": "^8.0.1",
+    "@babel/preset-typescript": "^8.0.7",
     "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -81,13 +81,13 @@
     "mini-css-extract-plugin": "^2.10.2",
     "prettier": "^3.9.6",
     "process": "^0.11.10",
-    "sass": "^1.103.1",
-    "sass-loader": "^17.0.1",
+    "sass": "^1.106.1",
+    "sass-loader": "^17.1.0",
     "terser-webpack-plugin": "^5.6.1",
     "typescript": "^6.0.3",
     "url": "^0.11.4",
     "vitest": "^5.0.0",
-    "webpack": "^5.110.3",
+    "webpack": "^5.112.2",
     "webpack-cli": "^7.2.3"
   }
 }

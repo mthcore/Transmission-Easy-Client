@@ -428,12 +428,19 @@ class Bg {
     // The popup can't be opened programmatically on every browser, so fall
     // back to the extension page in a tab
     const openPage = () => chrome.tabs.create({ url: '/index.html' });
-    const action = chrome.action as typeof chrome.action & {
-      openPopup?: () => Promise<void>;
-    };
-    if (typeof action.openPopup === 'function') {
-      Promise.resolve(action.openPopup()).catch(openPage);
-    } else {
+    const action = chrome.action as Partial<Pick<typeof chrome.action, 'openPopup'>>;
+    if (typeof action.openPopup !== 'function') {
+      openPage();
+      return;
+    }
+    // Callback form, not Promise.resolve(openPopup()).catch(): Firefox's
+    // chrome.* returns undefined, so the refusal arrived through lastError and
+    // the fallback never ran — clicking a notification did nothing there
+    try {
+      action.openPopup(() => {
+        if (chrome.runtime.lastError) openPage();
+      });
+    } catch {
       openPage();
     }
   };

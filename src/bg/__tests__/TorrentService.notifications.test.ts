@@ -312,3 +312,55 @@ describe('TorrentService completion notifications', () => {
     expect(requests).toContain(undefined);
   });
 });
+
+describe('TorrentService — when a delta is allowed', () => {
+  /**
+   * 'recently-active' only updates torrents already in the store, so it is
+   * only correct on top of a full list this instance applied itself, within
+   * the current daemon session.
+   */
+  it('asks for the full list first, even on a periodic poll', async () => {
+    // A woken service worker starts with an empty store. The delta it used to
+    // ask for held only active torrents, and completion tracking forgot the rest
+    const { service, requests } = makeService('http://nas:9091/rpc', [rawTorrent(1, 'aaa', 1)]);
+    await service.updateTorrents(false);
+    expect(requests).toEqual([undefined]);
+  });
+
+  it('switches to deltas once a full list was applied', async () => {
+    const { service, requests } = makeService('http://nas:9091/rpc', [rawTorrent(1, 'aaa', 1)]);
+    await service.updateTorrents(false);
+    await service.updateTorrents(false);
+    expect(requests).toEqual([undefined, 'recently-active']);
+  });
+
+  it('goes back to a full list after a daemon session change', async () => {
+    const { service, requests } = makeService('http://nas:9091/rpc', [rawTorrent(1, 'aaa', 1)]);
+    await service.updateTorrents(false);
+    service.resetResponseTime();
+    await service.updateTorrents(false);
+    expect(requests).toEqual([undefined, undefined]);
+  });
+
+  it('does not let a delta in flight across the session change reopen the window', async () => {
+    // The request that met the 409 is re-sent unchanged, so its answer used to
+    // re-stamp the window the token refresh had just closed. Idle torrents then
+    // kept ids the restarted daemon had given to other torrents.
+    const { service, requests, release } = makeService(
+      'http://nas:9091/rpc',
+      [rawTorrent(1, 'aaa', 1)],
+      { deferResponse: true }
+    );
+    const first = service.updateTorrents(false);
+    release();
+    await first;
+    const delta = service.updateTorrents(false);
+    service.resetResponseTime(); // the token refresh, mid-request
+    release();
+    await delta;
+    const next = service.updateTorrents(false);
+    release();
+    await next;
+    expect(requests).toEqual([undefined, 'recently-active', undefined]);
+  });
+});

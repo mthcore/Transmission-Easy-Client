@@ -213,7 +213,7 @@ export interface TorrentStore {
   };
 }
 
-/** Session-scoped, so the recently-active window survives an SW restart */
+/** Written by earlier versions; removed on start, see hasFullList */
 const RESPONSE_TIME_STORAGE_KEY = '_torrentsResponseTime';
 
 /** Session-scoped speed-graph history, restored after an SW restart */
@@ -257,6 +257,14 @@ class TorrentService {
   private getShowNotifications: () => boolean;
   private getNeedsTrackerStats: () => boolean;
   private torrentsResponseTime: number;
+  /**
+   * Whether THIS instance has applied a full list since the daemon session
+   * began. A 'recently-active' delta only updates torrents already in the
+   * store, so it is only meaningful on top of a full list.
+   */
+  private hasFullList = false;
+  /** Bumped by resetResponseTime, so a response to an older request can tell */
+  private sessionEpoch = 0;
   private _notifiedStatePromise: Promise<NotifiedState | null>;
   private _inFlightUpdate: Promise<TransmissionResponse> | null = null;
   /** Monotonic request counter, so out-of-order responses can be dropped */
@@ -275,17 +283,13 @@ class TorrentService {
     this.getNeedsTrackerStats = options.getNeedsTrackerStats ?? (() => false);
     this.torrentsResponseTime = 0;
 
-    // Restore the recently-active window across service-worker restarts. The
-    // MV3 worker is killed after ~30s idle, so an instance-only value meant the
-    // 2-minute background poll ALWAYS refetched the full list.
-    storageGet<Record<string, number | undefined>>(RESPONSE_TIME_STORAGE_KEY, 'session')
-      .then((data) => {
-        const stored = data[RESPONSE_TIME_STORAGE_KEY];
-        if (typeof stored === 'number' && stored > this.torrentsResponseTime) {
-          this.torrentsResponseTime = stored;
-        }
-      })
-      .catch(() => {});
+    // The recently-active window used to be restored from session storage
+    // across service-worker restarts. The torrent list is not: a woken worker
+    // starts with an empty store, so the delta it then asked for only ever held
+    // the active torrents. Completion tracking forgot every idle one and, on
+    // the next full poll, saw recent completions for the first time and
+    // notified them a second time.
+    storageRemove(RESPONSE_TIME_STORAGE_KEY, 'session').catch(() => {});
 
     // Restore the speed-graph history the previous worker generation collected
     storageGet<Record<string, { download: number; upload: number; time: number }[] | undefined>>(
@@ -316,7 +320,8 @@ class TorrentService {
 
   resetResponseTime(): void {
     this.torrentsResponseTime = 0;
-    storageRemove(RESPONSE_TIME_STORAGE_KEY, 'session').catch(() => {});
+    this.hasFullList = false;
+    this.sessionEpoch++;
   }
 
   /**
@@ -365,6 +370,7 @@ class TorrentService {
     // never be applied on top of a newer one, or it resurrects torrents the
     // user just removed.
     const requestSeq = ++this._requestSeq;
+    const epoch = this.sessionEpoch;
 
     // Toggling the Seeds/Peers column changes WHICH fields we ask for, and a
     // recently-active delta only refreshes active torrents: without one full
@@ -377,7 +383,12 @@ class TorrentService {
     // for the new field set again and idle torrents kept showing 0 seeds.
 
     let isRecently = false;
-    if (!full && !fieldsChanged && now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD) {
+    if (
+      !full &&
+      !fieldsChanged &&
+      this.hasFullList &&
+      now - this.torrentsResponseTime < RECENTLY_ACTIVE_THRESHOLD
+    ) {
       isRecently = true;
     }
 
@@ -453,9 +464,18 @@ class TorrentService {
         }
         this._lastAppliedSeq = requestSeq;
         this._lastNeedsTrackerStats = needsTrackerStats;
-        if (now > this.torrentsResponseTime) {
-          this.torrentsResponseTime = now;
-          storageSet({ [RESPONSE_TIME_STORAGE_KEY]: now }, 'session').catch(() => {});
+        // A new daemon session (token refresh, i.e. a restart) began while this
+        // was in flight. Its answer must not reopen the recently-active window:
+        // the request that met the 409 was re-sent unchanged, so stamping it
+        // undid the reset, and torrents idle since the restart kept the ids the
+        // old session gave them — ids that now name other torrents.
+        if (epoch === this.sessionEpoch) {
+          if (now > this.torrentsResponseTime) {
+            this.torrentsResponseTime = now;
+          }
+          if (!isRecently) {
+            this.hasFullList = true;
+          }
         }
 
         if (isRecently) {

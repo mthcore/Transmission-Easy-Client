@@ -4,6 +4,7 @@ import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import useCapturedTorrentIds from '../../hooks/useCapturedTorrentIds';
 import stripBidiControls from '../../tools/stripBidiControls';
 
 interface RemoveConfirmDialogStore {
@@ -21,18 +22,10 @@ const RemoveConfirmDialog = observer(({ dialogStore }: RemoveConfirmDialogProps)
   const client = rootStore?.client;
   const handleClose = useDialogClose(dialogStore);
 
-  // Hashes captured the moment the dialog opens: numeric ids are session
-  // scoped, so a daemon restart while this confirmation sits open can hand
-  // the same id to a DIFFERENT torrent — and "delete with data" would then
-  // destroy that torrent's files. The hash addresses the torrent immutably;
-  // the RPC accepts both forms in `ids`.
-  const [removalIds] = useState<(number | string)[]>(() =>
-    dialogStore.torrentIds.map((id) => {
-      const hash = (rootStore?.client?.torrents.get(id) as { hashString?: string } | undefined)
-        ?.hashString;
-      return hash ?? id;
-    })
-  );
+  // Hashes captured the moment the dialog opens — see useCapturedTorrentIds.
+  // Here the stake is highest: "delete with data" on a reassigned id would
+  // destroy a different torrent's files.
+  const removalIds = useCapturedTorrentIds(dialogStore.torrentIds);
 
   // Frozen for the same reason as removalIds. Read live, the name came from
   // whatever torrent currently holds that id — so in the exact case the hash

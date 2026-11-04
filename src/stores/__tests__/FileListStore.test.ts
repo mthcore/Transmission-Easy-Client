@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { types, destroy, Instance } from 'mobx-state-tree';
 import FileListStore from '../FileListStore';
+import TorrentStore from '../TorrentStore';
 
 /**
  * Filtering and sorting of the file list.
@@ -162,5 +163,78 @@ describe('FileListStore — folder-wide targets', () => {
   it('covers every file when no filter is set', () => {
     const list = makeList(FILES);
     expect(list.visibleIndexes).toHaveLength(FILES.length);
+  });
+});
+
+describe('FileListStore — the torrent it belongs to', () => {
+  /**
+   * Numeric ids are session scoped: after a daemon restart, id 1 can be a
+   * different torrent. The list must then stop resolving it, so it closes
+   * rather than sending priority / wanted changes to that other torrent.
+   */
+  const torrent = (hashString: string) => ({
+    id: 1,
+    hashString,
+    statusCode: 4,
+    errorCode: 0,
+    errorString: '',
+    name: 'Test',
+    size: 1000,
+    percentDone: 0.5,
+    recheckProgress: 0,
+    downloaded: 500,
+    uploaded: 250,
+    shared: 500,
+    uploadSpeed: 0,
+    downloadSpeed: 1024,
+    eta: 100,
+    activePeers: 2,
+    peers: 5,
+    activeSeeds: 1,
+    seeds: 3,
+    order: 1,
+    addedTime: 1700000000,
+    completedTime: 0,
+    labels: [],
+    bandwidthPriority: 0,
+  });
+
+  const WithTorrents = types
+    .model('WithTorrents', {
+      config: types.optional(
+        types.model({
+          filesSort: types.optional(types.model({ by: types.string, direction: types.number }), {
+            by: 'name',
+            direction: 1,
+          }),
+        }),
+        {}
+      ),
+      torrents: types.map(TorrentStore),
+      fileList: types.maybe(FileListStore),
+    })
+    .actions((self) => ({
+      replaceTorrent(hashString: string) {
+        self.torrents.put(torrent(hashString));
+      },
+    }));
+
+  it('resolves its torrent while the hash still matches', () => {
+    const tree = WithTorrents.create({
+      torrents: { '1': torrent('aaa') },
+      fileList: { id: 1, hashString: 'aaa' },
+    });
+    expect(tree.fileList!.torrent?.hashString).toBe('aaa');
+    destroy(tree);
+  });
+
+  it('stops resolving it once the id belongs to another torrent', () => {
+    const tree = WithTorrents.create({
+      torrents: { '1': torrent('aaa') },
+      fileList: { id: 1, hashString: 'aaa' },
+    });
+    tree.replaceTorrent('OTHER');
+    expect(tree.fileList!.torrent).toBeUndefined();
+    destroy(tree);
   });
 });

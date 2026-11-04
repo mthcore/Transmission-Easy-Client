@@ -4,6 +4,7 @@ import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import useCapturedTorrentIds from '../../hooks/useCapturedTorrentIds';
 
 interface RenameDialogStore {
   close: () => void;
@@ -20,6 +21,7 @@ const RenameDialog = observer(({ dialogStore }: RenameDialogProps) => {
   const rootStore = useRootStore();
   const client = rootStore?.client;
   const handleClose = useDialogClose(dialogStore);
+  const targetIds = useCapturedTorrentIds(dialogStore.torrentIds);
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -45,13 +47,13 @@ const RenameDialog = observer(({ dialogStore }: RenameDialogProps) => {
         return;
       }
 
-      client?.rename(dialogStore.torrentIds, dialogStore.path, name).catch((err) => {
+      client?.rename(targetIds, dialogStore.path, name).catch((err) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to rename', err);
       });
 
       dialogStore.close();
     },
-    [client, dialogStore]
+    [client, dialogStore, targetIds]
   );
 
   return (

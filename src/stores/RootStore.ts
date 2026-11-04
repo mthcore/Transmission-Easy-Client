@@ -122,7 +122,9 @@ const RootStore = types
         return self.torrentList;
       },
       createFileList(id: number): IFileListStore {
-        self.fileList = cast({ id });
+        // Pinned to the torrent's hash as well: see FileListStore.torrent
+        const hashString = self.client?.torrents.get(id)?.hashString || undefined;
+        self.fileList = cast({ id, hashString });
         const fileList = self.fileList;
         if (!fileList) throw new Error('FileList creation failed');
         return fileList;

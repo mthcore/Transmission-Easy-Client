@@ -453,18 +453,18 @@ const ClientStore = types
         // mirror holds, so the caller re-reads the groups instead.
         return callApi({ action: 'setSessionGroup', name, options }).then(...exceptionLog());
       },
-      setTorrentGroup(ids: number[], group: string): Promise<unknown> {
+      setTorrentGroup(ids: (number | string)[], group: string): Promise<unknown> {
         return callApi({ action: 'setTorrentGroup', ids, group })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
-      setTrackerList(ids: number[], trackerList: string): Promise<unknown> {
+      setTrackerList(ids: (number | string)[], trackerList: string): Promise<unknown> {
         return callApi({ action: 'setTrackerList', ids, trackerList })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       setTorrentLimits(
-        ids: number[],
+        ids: (number | string)[],
         limits: {
           honorsSessionLimits: boolean;
           downloadLimited: boolean;
@@ -479,7 +479,7 @@ const ClientStore = types
           .then(thenSyncClient);
       },
       setSeedLimits(
-        ids: number[],
+        ids: (number | string)[],
         seedRatioMode: number,
         seedRatioLimit: number,
         seedIdleMode: number,
@@ -511,25 +511,25 @@ const ClientStore = types
           ...exceptionLog()
         ) as Promise<{ path: string; sizeBytes: number }>;
       },
-      reannounce(ids: number[]): Promise<unknown> {
+      reannounce(ids: (number | string)[]): Promise<unknown> {
         return callApi({ action: 'reannounce', ids }).then(...exceptionLog());
       },
-      rename(ids: number[], path: string, name: string): Promise<unknown> {
+      rename(ids: (number | string)[], path: string, name: string): Promise<unknown> {
         return callApi({ action: 'rename', ids, path, name })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
-      torrentSetLocation(ids: number[], location: string): Promise<unknown> {
+      torrentSetLocation(ids: (number | string)[], location: string): Promise<unknown> {
         return callApi({ action: 'torrentSetLocation', ids, location })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
-      setLabels(ids: number[], labels: string[]): Promise<unknown> {
+      setLabels(ids: (number | string)[], labels: string[]): Promise<unknown> {
         return callApi({ action: 'setLabels', ids, labels })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
-      setBandwidthPriority(ids: number[], priority: number): Promise<unknown> {
+      setBandwidthPriority(ids: (number | string)[], priority: number): Promise<unknown> {
         return callApi({ action: 'setBandwidthPriority', ids, priority })
           .then(...exceptionLog())
           .then(thenSyncClient);

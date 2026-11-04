@@ -147,3 +147,68 @@ describe('TorrentDetailsDialog — the bandwidth tab', () => {
     );
   });
 });
+
+describe('TorrentDetailsDialog — after a daemon restart while open', () => {
+  /**
+   * Numeric ids are session scoped. When id 7 comes back as another torrent,
+   * the dialog used to show that one while its forms still held the first
+   * one's limits — and Apply wrote them onto the wrong torrent.
+   */
+  function renderWith(torrent: object, close: () => void, rootStore: object) {
+    return (
+      <RootStoreCtx.Provider value={rootStore as never}>
+        <TorrentDetailsDialog dialogStore={{ close, torrent } as never} />
+      </RootStoreCtx.Provider>
+    );
+  }
+
+  function makeRootStore() {
+    return {
+      client: {
+        settings: { features: { trackerList: true } },
+        getPeers: vi.fn().mockResolvedValue([]),
+        getTorrentDetails: vi.fn().mockResolvedValue(DETAILS),
+        setTrackerList: vi.fn().mockResolvedValue(undefined),
+        setSeedLimits: vi.fn().mockResolvedValue(undefined),
+        setTorrentLimits: vi.fn().mockResolvedValue(undefined),
+      },
+      config: {
+        detailPeerWidths: {},
+        detailTrackerWidths: {},
+        setDetailPeerWidths: vi.fn(),
+        setDetailTrackerWidths: vi.fn(),
+      },
+    };
+  }
+
+  it('addresses writes by the hash captured at open', async () => {
+    const rootStore = makeRootStore();
+    await act(async () => {
+      render(renderWith({ ...TORRENT, hashString: 'aaa7' }, vi.fn(), rootStore));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('DT_TAB_BANDWIDTH'));
+    });
+    await act(async () => {
+      fireEvent.click(applyButton());
+    });
+
+    expect(rootStore.client.setTorrentLimits).toHaveBeenCalledWith(['aaa7'], expect.any(Object));
+  });
+
+  it('closes when its id now belongs to a different torrent', async () => {
+    const rootStore = makeRootStore();
+    const close = vi.fn();
+    let view!: ReturnType<typeof render>;
+    await act(async () => {
+      view = render(renderWith({ ...TORRENT, hashString: 'aaa7' }, close, rootStore));
+    });
+    expect(close).not.toHaveBeenCalled();
+
+    await act(async () => {
+      view.rerender(renderWith({ ...TORRENT, hashString: 'OTHER' }, close, rootStore));
+    });
+
+    expect(close).toHaveBeenCalled();
+  });
+});

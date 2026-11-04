@@ -24,6 +24,8 @@ const FileListStore = types
     ListSelectStore,
     types.model({
       id: types.identifierNumber,
+      /** Hash of the torrent at open; numeric ids are session scoped. */
+      hashString: types.maybe(types.string),
       removeSelectOnHide: types.optional(types.boolean, false),
       state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
       files: types.array(FileStore),
@@ -85,7 +87,15 @@ const FileListStore = types
         return null;
       },
       get torrent(): ITorrentStore | undefined {
-        return resolveIdentifier(TorrentStore, self, self.id);
+        const torrent = resolveIdentifier(TorrentStore, self, self.id);
+        // After a daemon restart the id can belong to a DIFFERENT torrent. The
+        // list then showed that one's files under the old selection, and
+        // priority / wanted changes landed on it. Treat it as gone, which
+        // closes the list.
+        if (torrent && self.hashString && torrent.hashString !== self.hashString) {
+          return undefined;
+        }
+        return torrent;
       },
       get filteredFiles(): IFileStore[] {
         let files: IFileStore[];

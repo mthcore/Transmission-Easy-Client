@@ -5,6 +5,7 @@ import DirectorySelect from '../DirectorySelect';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import useCapturedTorrentIds from '../../hooks/useCapturedTorrentIds';
 import type { Folder } from '../../types/bg';
 
 interface MoveDialogStore {
@@ -23,6 +24,7 @@ const MoveDialog = observer(({ dialogStore }: MoveDialogProps) => {
   const handleClose = useDialogClose(dialogStore);
   const client = rootStore?.client;
   const config = rootStore?.config;
+  const targetIds = useCapturedTorrentIds(dialogStore.torrentIds);
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -59,13 +61,13 @@ const MoveDialog = observer(({ dialogStore }: MoveDialogProps) => {
         return;
       }
 
-      client?.torrentSetLocation(dialogStore.torrentIds, location).catch((err) => {
+      client?.torrentSetLocation(targetIds, location).catch((err) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to move torrent', err);
       });
 
       dialogStore.close();
     },
-    [client, config, dialogStore]
+    [client, config, dialogStore, targetIds]
   );
 
   const handleChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {

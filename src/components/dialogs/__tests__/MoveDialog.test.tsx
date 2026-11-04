@@ -213,3 +213,19 @@ describe('MoveDialog — with no folders configured', () => {
     expect(client.torrentSetLocation).toHaveBeenCalledWith([4, 5], '/mnt/new');
   });
 });
+
+describe('after a daemon restart while open', () => {
+  it('acts on the torrents captured at open, not whatever now holds their ids', () => {
+    // Numeric ids are session scoped: a restart can hand them to other torrents
+    const torrents = new Map<number, { hashString: string }>();
+    (client as unknown as { torrents: typeof torrents }).torrents = torrents;
+    torrents.set(4, { hashString: 'aaa4' });
+    torrents.set(5, { hashString: 'aaa5' });
+    open();
+    for (const id of torrents.keys()) torrents.set(id, { hashString: `OTHER${id}` });
+    fireEvent.change(select(), { target: { value: String(CUSTOM_PATH_INDEX) } });
+    fireEvent.change(locationField()!, { target: { value: '/mnt/new' } });
+    submit();
+    expect(client.torrentSetLocation).toHaveBeenCalledWith(['aaa4', 'aaa5'], '/mnt/new');
+  });
+});

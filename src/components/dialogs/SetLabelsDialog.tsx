@@ -4,6 +4,7 @@ import Dialog from './Dialog';
 import useRootStore from '../../hooks/useRootStore';
 import showError from '../../tools/showError';
 import { useDialogClose } from '../../hooks/useDialogClose';
+import useCapturedTorrentIds from '../../hooks/useCapturedTorrentIds';
 
 interface SetLabelsDialogStore {
   close: () => void;
@@ -19,6 +20,7 @@ const SetLabelsDialog = observer(({ dialogStore }: SetLabelsDialogProps) => {
   const rootStore = useRootStore();
   const client = rootStore?.client;
   const handleClose = useDialogClose(dialogStore);
+  const targetIds = useCapturedTorrentIds(dialogStore.torrentIds);
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -39,13 +41,13 @@ const SetLabelsDialog = observer(({ dialogStore }: SetLabelsDialogProps) => {
           )
         : [];
 
-      client?.setLabels(dialogStore.torrentIds, labels).catch((err: Error) => {
+      client?.setLabels(targetIds, labels).catch((err: Error) => {
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to set labels', err);
       });
 
       dialogStore.close();
     },
-    [client, dialogStore]
+    [client, dialogStore, targetIds]
   );
 
   return (

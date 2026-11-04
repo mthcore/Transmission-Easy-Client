@@ -12,21 +12,22 @@ import TorrentDetailsBandwidthTab, {
   type BandwidthTabValues,
 } from './tabs/TorrentDetailsBandwidthTab';
 import showError from '../../tools/showError';
+import type { TorrentId } from '../../types';
 
 interface RootStore {
   client: {
     settings: { features: { trackerList: boolean } } | null;
     getPeers: (id: number) => Promise<PeerData[]>;
     getTorrentDetails: (id: number) => Promise<TorrentDetailData>;
-    setTrackerList: (ids: number[], trackerList: string) => Promise<void>;
+    setTrackerList: (ids: TorrentId[], trackerList: string) => Promise<void>;
     setSeedLimits: (
-      ids: number[],
+      ids: TorrentId[],
       seedRatioMode: number,
       seedRatioLimit: number,
       seedIdleMode: number,
       seedIdleLimit: number
     ) => Promise<void>;
-    setTorrentLimits: (ids: number[], limits: BandwidthTabValues) => Promise<void>;
+    setTorrentLimits: (ids: TorrentId[], limits: BandwidthTabValues) => Promise<void>;
   };
   config: {
     detailPeerWidths: Record<string, number>;
@@ -38,6 +39,7 @@ interface RootStore {
 
 interface Torrent {
   id: number;
+  hashString?: string;
   name: string;
   sizeStr: string;
   sizeWhenDoneStr: string;
@@ -148,6 +150,23 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
     }
   }, [torrent, handleClose, rootStore?.client]);
 
+  // Numeric ids are session scoped: after a daemon restart the id this dialog
+  // was opened on can belong to a DIFFERENT torrent. The dialog then showed the
+  // new one while its forms still held the old one's trackers and limits, and
+  // "Apply" wrote them onto the wrong torrent. Close instead, and address every
+  // write by the hash captured at open.
+  const [openedHash] = useState(() => torrent?.hashString);
+  const currentHash = torrent?.hashString;
+  useEffect(() => {
+    if (openedHash && currentHash && currentHash !== openedHash) {
+      handleClose();
+    }
+  }, [openedHash, currentHash, handleClose]);
+  const writeIds = useMemo<TorrentId[]>(
+    () => (openedHash ? [openedHash] : torrentId != null ? [torrentId] : []),
+    [openedHash, torrentId]
+  );
+
   useEffect(() => {
     if (torrentId == null) return;
     setPeersLoading(true);
@@ -205,7 +224,7 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   const handleApplyTrackers = useCallback(() => {
     if (torrentId == null) return;
     setTrackerSaving(true);
-    rootStore.client?.setTrackerList([torrentId], trackerListText).then(
+    rootStore.client?.setTrackerList(writeIds, trackerListText).then(
       () => {
         setTrackerSaving(false);
         // The tracker table above the editor reads the one-shot details
@@ -218,13 +237,13 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
       }
     );
-  }, [torrentId, trackerListText, rootStore.client, fetchDetails]);
+  }, [torrentId, writeIds, trackerListText, rootStore.client, fetchDetails]);
 
   const handleApplySeedLimits = useCallback(() => {
     if (torrentId == null) return;
     setSeedSaving(true);
     rootStore.client
-      ?.setSeedLimits([torrentId], seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit)
+      ?.setSeedLimits(writeIds, seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit)
       .then(
         () => setSeedSaving(false),
         (err) => {
@@ -232,7 +251,15 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
           showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
         }
       );
-  }, [torrentId, seedRatioMode, seedRatioLimit, seedIdleMode, seedIdleLimit, rootStore.client]);
+  }, [
+    torrentId,
+    writeIds,
+    seedRatioMode,
+    seedRatioLimit,
+    seedIdleMode,
+    seedIdleLimit,
+    rootStore.client,
+  ]);
 
   const handleBandwidthChange = useCallback((patch: Partial<BandwidthTabValues>) => {
     setBandwidth((current) => ({ ...current, ...patch }));
@@ -241,14 +268,14 @@ const TorrentDetailsDialog = observer(({ dialogStore }: TorrentDetailsDialogProp
   const handleApplyBandwidth = useCallback(() => {
     if (torrentId == null) return;
     setBandwidthSaving(true);
-    rootStore.client?.setTorrentLimits([torrentId], bandwidth).then(
+    rootStore.client?.setTorrentLimits(writeIds, bandwidth).then(
       () => setBandwidthSaving(false),
       (err) => {
         setBandwidthSaving(false);
         showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Apply failed', err as Error);
       }
     );
-  }, [torrentId, bandwidth, rootStore.client]);
+  }, [torrentId, writeIds, bandwidth, rootStore.client]);
 
   if (!torrent) {
     return null;

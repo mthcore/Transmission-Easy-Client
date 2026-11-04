@@ -135,3 +135,17 @@ describe('RenameDialog', () => {
     expect(dialogStore.close).toHaveBeenCalled();
   });
 });
+
+describe('after a daemon restart while open', () => {
+  it('acts on the torrents captured at open, not whatever now holds their ids', () => {
+    // Numeric ids are session scoped: a restart can hand them to other torrents
+    const torrents = new Map<number, { hashString: string }>();
+    (client as unknown as { torrents: typeof torrents }).torrents = torrents;
+    torrents.set(3, { hashString: 'aaa3' });
+    open();
+    for (const id of torrents.keys()) torrents.set(id, { hashString: `OTHER${id}` });
+    fireEvent.change(field(), { target: { value: 'ep01-fr.mkv' } });
+    submit();
+    expect(client.rename).toHaveBeenCalledWith(['aaa3'], 'pack/ep01.mkv', 'ep01-fr.mkv');
+  });
+});

@@ -139,3 +139,18 @@ describe('SetLabelsDialog — sending', () => {
     expect(dialogStore.close).toHaveBeenCalled();
   });
 });
+
+describe('after a daemon restart while open', () => {
+  it('acts on the torrents captured at open, not whatever now holds their ids', () => {
+    // Numeric ids are session scoped: a restart can hand them to other torrents
+    const torrents = new Map<number, { hashString: string }>();
+    (client as unknown as { torrents: typeof torrents }).torrents = torrents;
+    torrents.set(8, { hashString: 'aaa8' });
+    torrents.set(9, { hashString: 'aaa9' });
+    open();
+    for (const id of torrents.keys()) torrents.set(id, { hashString: `OTHER${id}` });
+    fireEvent.change(field(), { target: { value: 'movies' } });
+    submit();
+    expect(client.setLabels).toHaveBeenCalledWith(['aaa8', 'aaa9'], ['movies']);
+  });
+});

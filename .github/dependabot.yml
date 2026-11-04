@@ -27,6 +27,15 @@ updates:
           - '*-webpack-plugin'
           - 'sass*'
           - 'css-loader'
+      # react-dom throws at load (minified error #527) unless it is the exact
+      # version of react. Grouped only by react and @types/react, the 19.3.0
+      # bump left react-dom behind and no built page mounted.
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
     ignore:
       # Majors of the MobX family are handled deliberately: the 5 -> 7 bump
       # silently broke column reordering and was only caught once the store had

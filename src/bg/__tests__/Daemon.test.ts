@@ -129,15 +129,63 @@ describe('Daemon', () => {
       expect(daemon.retryCount).toBe(1);
     });
 
-    it('stops after exceeding max retries', async () => {
+    it('backs off instead of stopping after exceeding max retries', async () => {
+      interval = 120000;
       const bg = createMockBg();
       vi.mocked(bg.client!.updateTorrents).mockRejectedValue(new Error('Network error'));
       const daemon = new Daemon(bg);
+      daemon.start();
       daemon.retryCount = 3; // Already at max
       daemon.handleFire();
       await vi.waitFor(() => expect(daemon.inProgress).toBe(false));
-      expect(daemon.isActive).toBe(false);
-      expect(chrome.alarms.clear).toHaveBeenCalledWith(ALARM_NAME);
+      // The alarm must survive: nothing else restarts polling with no page open
+      expect(daemon.isActive).toBe(true);
+      expect(daemon.isBackedOff).toBe(true);
+      expect(chrome.alarms.clear).not.toHaveBeenCalled();
+      expect(chrome.alarms.create).toHaveBeenLastCalledWith(ALARM_NAME, {
+        delayInMinutes: 15,
+        periodInMinutes: 15,
+      });
+    });
+
+    it('does not recreate the back-off alarm on every further failure', async () => {
+      const bg = createMockBg();
+      vi.mocked(bg.client!.updateTorrents).mockRejectedValue(new Error('Network error'));
+      const daemon = new Daemon(bg);
+      daemon.start();
+      daemon.retryCount = 3;
+      daemon.handleFire();
+      await vi.waitFor(() => expect(daemon.isBackedOff).toBe(true));
+      vi.mocked(chrome.alarms.create).mockClear();
+      daemon.handleFire();
+      await vi.waitFor(() => expect(daemon.inProgress).toBe(false));
+      // Recreating would push the next attempt back by a full period each time
+      expect(chrome.alarms.create).not.toHaveBeenCalled();
+    });
+
+    it('returns to the configured period on the first success after a back-off', async () => {
+      interval = 120000;
+      const bg = createMockBg();
+      const daemon = new Daemon(bg);
+      daemon.start();
+      daemon.backOff();
+      daemon.handleFire();
+      await vi.waitFor(() => expect(daemon.isBackedOff).toBe(false));
+      expect(chrome.alarms.create).toHaveBeenLastCalledWith(ALARM_NAME, {
+        delayInMinutes: 2,
+        periodInMinutes: 2,
+      });
+    });
+
+    it('never backs off below the configured period', () => {
+      interval = 30 * 60000;
+      const daemon = new Daemon(createMockBg());
+      daemon.start();
+      daemon.backOff();
+      expect(chrome.alarms.create).toHaveBeenLastCalledWith(ALARM_NAME, {
+        delayInMinutes: 30,
+        periodInMinutes: 30,
+      });
     });
 
     it('sets inProgress during execution', () => {

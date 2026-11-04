@@ -53,6 +53,10 @@ export const MESSAGE_TIMEOUT = 210_000;
 
 // Daemon
 export const DAEMON_MAX_RETRIES = 3;
+// Period background polling falls back to once DAEMON_MAX_RETRIES is exceeded.
+// It must never fall to zero: nothing but a successful request can restart a
+// stopped daemon, and with no page open nothing sends one.
+export const DAEMON_BACKOFF_PERIOD_MINUTES = 15;
 
 // Tables — shared by both resize implementations (header columns and the
 // torrent-details peer/tracker tables)

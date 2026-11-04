@@ -32,6 +32,9 @@ const chromeMock = {
       addListener: vi.fn(),
       removeListener: vi.fn(),
     },
+    onStartup: {
+      addListener: vi.fn(),
+    },
   },
   // Callback-style by default, like the real API on both Chrome and Firefox
   // (the chrome.* namespace has no promise support on Firefox, so production

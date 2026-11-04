@@ -46,7 +46,7 @@ interface Bg {
   // Nullable, as it really is. Bg builds the daemon before it ever builds this
   // class, so it is there in practice — but that was an unstated invariant
   // being held up by a cast, and a cast holds up everything else too.
-  daemon: { isActive: boolean; start: () => void } | null;
+  daemon: { isActive: boolean; isBackedOff: boolean; start: () => void } | null;
   // The notifications, derived rather than restated: this class passes itself
   // straight through as the notifier, so a copy here was a second statement of
   // what TorrentService already declares.
@@ -69,7 +69,9 @@ class TransmissionClient {
       url: bgStore.requireConfig().url,
       getConfig: () => bgStore.requireConfig(),
       onConnected: () => {
-        if (bg.daemon && !bg.daemon.isActive) {
+        // A page reaching the daemon again ends a back-off, so background
+        // polling returns to its configured period without waiting 15 minutes
+        if (bg.daemon && (!bg.daemon.isActive || bg.daemon.isBackedOff)) {
           bg.daemon.start();
         }
       },

@@ -66,6 +66,12 @@ class Bg {
     chrome.alarms.onAlarm.addListener(this.handleAlarm);
     // Clicking a notification used to do nothing at all
     chrome.notifications.onClicked.addListener(this.handleNotificationClick);
+    // Nothing else wakes the worker when the browser starts. Alarms are not
+    // guaranteed to survive a browser restart, and without this the background
+    // poll (badge, completion notifications) waited for the popup to be opened.
+    // The listener is empty on purpose: waking the worker runs init(), whose
+    // daemon autorun recreates the alarm.
+    chrome.runtime.onStartup.addListener(() => {});
     this.daemon = new Daemon(this);
     this.contextMenu = new ContextMenu(this);
 
@@ -166,7 +172,9 @@ class Bg {
         ];
 
         if (dep.length) {
-          this.contextMenu?.create();
+          this.contextMenu?.create().catch((err) => {
+            autorunLogger.error('contextMenu', 'create error', err);
+          });
         }
       });
     }));

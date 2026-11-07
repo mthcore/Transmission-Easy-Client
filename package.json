@@ -64,7 +64,7 @@
     "@types/react-dom": "^19.2.7",
     "@typescript-eslint/eslint-plugin": "^8.72.1",
     "@typescript-eslint/parser": "^8.69.0",
-    "@vitest/coverage-v8": "^5.0.5",
+    "@vitest/coverage-v8": "^5.1.0",
     "archiver": "^8.0.0",
     "babel-loader": "^10.1.1",
     "clean-webpack-plugin": "^4.0.0",

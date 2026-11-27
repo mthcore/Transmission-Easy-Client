@@ -337,12 +337,24 @@ const ClientStore = types
           .then(thenSyncClient);
       };
 
-    // ids accept hashes too: destructive dialogs send hashStrings, which stay
-    // valid across a daemon restart while numeric ids get reassigned
+    // Every action leaves here addressed by hashString. Numeric ids are session
+    // scoped, and the transport re-sends a request unchanged when the daemon
+    // answers 409 — which is the daemon saying it restarted and may have handed
+    // those ids to other torrents. For a second or so after a restart the list
+    // on screen still carries the old ids, so a click in that window started,
+    // stopped or re-prioritised a different torrent. Dialogs capture hashes when
+    // they open (useCapturedTorrentIds); this covers everything else. An id
+    // with no known torrent is passed through unchanged.
+    const stableId = (id: number | string): number | string => {
+      if (typeof id !== 'number') return id;
+      return self.torrents.get(String(id))?.hashString || id;
+    };
+    const stableIds = (ids: (number | string)[]): (number | string)[] => ids.map(stableId);
+
     const createTorrentAction =
       (action: string, sync = true) =>
       (ids: (number | string)[]): Promise<unknown> => {
-        const promise = callApi({ action, ids }).then(...exceptionLog());
+        const promise = callApi({ action, ids: stableIds(ids) }).then(...exceptionLog());
         return sync ? promise.then(thenSyncClient) : promise;
       };
 
@@ -358,10 +370,14 @@ const ClientStore = types
       torrentsQueueDown: createTorrentAction('queueDown'),
       torrentsQueueBottom: createTorrentAction('queueBottom'),
       filesSetPriority(id: number, fileIdxs: number[], level: number): Promise<unknown> {
-        return callApi({ action: 'setPriority', level, id, fileIdxs }).then(...exceptionLog());
+        return callApi({ action: 'setPriority', level, id: stableId(id), fileIdxs }).then(
+          ...exceptionLog()
+        );
       },
       filesSetWanted(id: number, fileIdxs: number[], wanted: boolean): Promise<unknown> {
-        return callApi({ action: 'setWanted', id, fileIdxs, wanted }).then(...exceptionLog());
+        return callApi({ action: 'setWanted', id: stableId(id), fileIdxs, wanted }).then(
+          ...exceptionLog()
+        );
       },
       setDownloadSpeedLimitEnabled: createSetting<boolean>('setDownloadSpeedLimitEnabled'),
       setDownloadSpeedLimit: createSetting<number>('setDownloadSpeedLimit'),
@@ -454,12 +470,12 @@ const ClientStore = types
         return callApi({ action: 'setSessionGroup', name, options }).then(...exceptionLog());
       },
       setTorrentGroup(ids: (number | string)[], group: string): Promise<unknown> {
-        return callApi({ action: 'setTorrentGroup', ids, group })
+        return callApi({ action: 'setTorrentGroup', ids: stableIds(ids), group })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       setTrackerList(ids: (number | string)[], trackerList: string): Promise<unknown> {
-        return callApi({ action: 'setTrackerList', ids, trackerList })
+        return callApi({ action: 'setTrackerList', ids: stableIds(ids), trackerList })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
@@ -474,7 +490,7 @@ const ClientStore = types
           peerLimit: number;
         }
       ): Promise<unknown> {
-        return callApi({ action: 'setTorrentLimits', ids, limits })
+        return callApi({ action: 'setTorrentLimits', ids: stableIds(ids), limits })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
@@ -487,7 +503,7 @@ const ClientStore = types
       ): Promise<unknown> {
         return callApi({
           action: 'setSeedLimits',
-          ids,
+          ids: stableIds(ids),
           seedRatioMode,
           seedRatioLimit,
           seedIdleMode,
@@ -512,30 +528,30 @@ const ClientStore = types
         ) as Promise<{ path: string; sizeBytes: number }>;
       },
       reannounce(ids: (number | string)[]): Promise<unknown> {
-        return callApi({ action: 'reannounce', ids }).then(...exceptionLog());
+        return callApi({ action: 'reannounce', ids: stableIds(ids) }).then(...exceptionLog());
       },
       rename(ids: (number | string)[], path: string, name: string): Promise<unknown> {
-        return callApi({ action: 'rename', ids, path, name })
+        return callApi({ action: 'rename', ids: stableIds(ids), path, name })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       torrentSetLocation(ids: (number | string)[], location: string): Promise<unknown> {
-        return callApi({ action: 'torrentSetLocation', ids, location })
+        return callApi({ action: 'torrentSetLocation', ids: stableIds(ids), location })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       setLabels(ids: (number | string)[], labels: string[]): Promise<unknown> {
-        return callApi({ action: 'setLabels', ids, labels })
+        return callApi({ action: 'setLabels', ids: stableIds(ids), labels })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       setBandwidthPriority(ids: (number | string)[], priority: number): Promise<unknown> {
-        return callApi({ action: 'setBandwidthPriority', ids, priority })
+        return callApi({ action: 'setBandwidthPriority', ids: stableIds(ids), priority })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },
       setSequentialDownload(ids: number[], enabled: boolean): Promise<unknown> {
-        return callApi({ action: 'setSequentialDownload', ids, enabled })
+        return callApi({ action: 'setSequentialDownload', ids: stableIds(ids), enabled })
           .then(...exceptionLog())
           .then(thenSyncClient);
       },

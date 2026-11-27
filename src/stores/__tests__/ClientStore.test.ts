@@ -457,3 +457,40 @@ describe('ClientStore — file wanted vs priority', () => {
     expect(r.client.lastErrorMessage).toMatch(/daemon refused/);
   });
 });
+
+describe('ClientStore — how actions address torrents', () => {
+  /**
+   * Numeric ids are session scoped, and the transport re-sends a request
+   * unchanged after a 409 — the daemon saying it restarted. An action sent with
+   * the id on screen could then land on whichever torrent got that id.
+   */
+  const sent = () =>
+    (chrome.runtime.sendMessage as ReturnType<typeof vi.fn>).mock.calls.map(([msg]) => msg);
+
+  it('sends the hash of each torrent it knows', async () => {
+    const r = createRoot([
+      makeTorrent({ id: 1, hashString: 'aaa' }),
+      makeTorrent({ id: 2, hashString: 'bbb' }),
+    ]);
+    stubApiResult();
+    await r.client.torrentsStop([1, 2]);
+
+    expect(sent()[0]).toMatchObject({ action: 'stop', ids: ['aaa', 'bbb'] });
+  });
+
+  it('addresses file changes by hash too', async () => {
+    const r = createRoot([makeTorrent({ id: 1, hashString: 'aaa' })]);
+    stubApiResult();
+    await r.client.filesSetWanted(1, [0, 2], false);
+
+    expect(sent()[0]).toMatchObject({ action: 'setWanted', id: 'aaa', fileIdxs: [0, 2] });
+  });
+
+  it('passes through an id it has no torrent for, and a hash it was given', async () => {
+    const r = createRoot([makeTorrent({ id: 1, hashString: 'aaa' })]);
+    stubApiResult();
+    await r.client.setBandwidthPriority([9, 'ccc' as never], 1);
+
+    expect(sent()[0]).toMatchObject({ action: 'setBandwidthPriority', ids: [9, 'ccc'] });
+  });
+});

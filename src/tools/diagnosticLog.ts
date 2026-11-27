@@ -48,24 +48,45 @@ export const DEDUPE_WINDOW_MS = 60_000;
  * the sensitive text never sits in storage either.
  *
  * These patterns catch what this extension actually handles: the daemon URL
- * (which may carry credentials inline), the Basic-auth header, and the session
- * token. They cannot catch a torrent name inside a free-form message, and
- * pretending otherwise would be the more dangerous claim — the real safeguard
- * is that the Diagnostics pane shows the log on screen, so what is copied has
- * been read first.
+ * (which may carry credentials inline), the Basic-auth header, the session
+ * token, and download links (which on a private tracker carry a passkey). They
+ * cannot catch a torrent name inside a free-form message, and pretending
+ * otherwise would be the more dangerous claim — the real safeguard is that the
+ * Diagnostics pane shows the log on screen, so what is copied has been read
+ * first.
  */
 export function redact(text: string): string {
   return (
     text
       // Keep the scheme, the port and the path: which RPC path failed, and on
       // which port, is most of the diagnostic value. The host is not.
-      .replace(/\b(https?):\/\/(?:[^\s/@]+@)?[^\s/:?#]+/gi, '$1://<host>')
+      .replace(
+        /\b(https?):\/\/(?:[^\s/@]+@)?[^\s/:?#]+([^\s"'<>]*)/gi,
+        (_url, scheme: string, tail: string) => `${scheme}://<host>${redactUrlTail(tail)}`
+      )
+      // A magnet link is all query, and its tr= entries are announce URLs
+      .replace(/\bmagnet:\?[^\s"'<>]+/gi, 'magnet:?<redacted>')
       .replace(/\bBasic\s+[A-Za-z0-9+/=]+/gi, 'Basic <redacted>')
       .replace(
-        /\b(password|passwd|pwd|token|session-?id)(["']?\s*[:=]\s*["']?)([^\s,"'}&]+)/gi,
+        /\b(password|passwd|pwd|token|session-?id|pass-?key|auth-?key|torrent_pass|api[-_]?key|secret)(["']?\s*[:=]\s*["']?)([^\s,"'}&]+)/gi,
         '$1$2<redacted>'
       )
   );
+}
+
+/**
+ * A link the user sent to the daemon is logged when the add fails, and on a
+ * private tracker that link IS a credential: `download.php?id=1&passkey=…`, or
+ * the key as a path segment of an RSS download URL. The host being gone does
+ * not make the key safe to paste into a public issue. So the query and the
+ * fragment go entirely, and so does any path segment long and opaque enough to
+ * be a key — '/transmission/rpc' and the like are untouched.
+ */
+function redactUrlTail(tail: string): string {
+  const cut = tail.search(/[?#]/);
+  const path = cut === -1 ? tail : tail.slice(0, cut);
+  const redactedPath = path.replace(/[A-Za-z0-9_-]{16,}/g, '<redacted>');
+  return cut === -1 ? redactedPath : `${redactedPath}${tail[cut]}<redacted>`;
 }
 
 /** One line per argument, errors reduced to name and message. */

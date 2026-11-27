@@ -111,6 +111,40 @@ describe('redact — what must not reach a public issue', () => {
     expect(out).not.toContain('aBcD1234EfGh5678');
   });
 
+  it('drops the query of a download link, where a private tracker puts the passkey', () => {
+    // sendFile logs the link when the add fails
+    const out = redact(
+      'sendFile error https://tracker.example.org/download.php?id=42&passkey=abcdef0123456789'
+    );
+
+    expect(out).not.toContain('abcdef0123456789');
+    expect(out).toContain('/download.php');
+  });
+
+  it('drops a key carried as a path segment', () => {
+    const out = redact(
+      'https://tracker.example.org/rss/download/42/abcdef0123456789abcd/a.torrent'
+    );
+
+    expect(out).not.toContain('abcdef0123456789abcd');
+    expect(out).toContain('/rss/download/42/');
+  });
+
+  it('drops a magnet link, whose trackers carry the passkey too', () => {
+    const out = redact(
+      'add failed magnet:?xt=urn:btih:abc&tr=https%3A%2F%2Ft.example%2FSECRETKEY%2Fannounce'
+    );
+
+    expect(out).not.toContain('SECRETKEY');
+    expect(out).toContain('magnet:');
+  });
+
+  it('drops a tracker key named outside a URL', () => {
+    const out = redact('rejected: passkey=abc123 authkey: def456 torrent_pass=ghi789');
+
+    expect(out).not.toMatch(/abc123|def456|ghi789/);
+  });
+
   it('leaves an ordinary message alone', () => {
     // Over-redaction costs as much as under-redaction: a report that says
     // <redacted> everywhere is not a report.

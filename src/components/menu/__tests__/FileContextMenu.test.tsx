@@ -258,3 +258,27 @@ describe('FileContextMenu — when the daemon refuses', () => {
     expect(showError).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('FileContextMenu — showing what it just changed', () => {
+  it('refetches the list after a change, which polling skips on a paused torrent', async () => {
+    // The list is only polled while the torrent transfers. On a paused or
+    // finished one the ticks never moved and the action looked like a failure.
+    const fetchFiles = vi.fn();
+    store.fileList = makeFileList({ a: file() }, { fetchFiles });
+    open();
+    fireEvent.click(byText('MF_DONT')!);
+
+    await vi.waitFor(() => expect(fetchFiles).toHaveBeenCalledTimes(1));
+  });
+
+  it('does not refetch when the daemon refused the change', async () => {
+    const fetchFiles = vi.fn();
+    client.filesSetWanted.mockRejectedValue(new Error('refused'));
+    store.fileList = makeFileList({ a: file() }, { fetchFiles });
+    open();
+    fireEvent.click(byText('MF_DONT')!);
+
+    await vi.waitFor(() => expect(showError).toHaveBeenCalled());
+    expect(fetchFiles).not.toHaveBeenCalled();
+  });
+});

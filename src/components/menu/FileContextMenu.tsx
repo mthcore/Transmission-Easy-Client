@@ -16,6 +16,7 @@ interface FileListStore {
   resetSelectedIds: () => void;
   addSelectedId: (id: string | number) => void;
   getFileById: (id: string) => FileEntry | undefined;
+  fetchFiles?: () => Promise<unknown> | void;
   id: number;
   selectedIndexes: number[];
   visibleIndexes: number[];
@@ -59,14 +60,28 @@ const FileMenuContent = observer(() => {
 
   const firstFile = selectedIds.length > 0 ? fileListStore.getFileById(selectedIds[0]) : null;
 
+  // The list is only polled while the torrent is transferring, so on a paused
+  // or finished one nothing else would ever show the change: the ticks stayed
+  // where they were and the action looked like it had failed.
+  const thenRefresh = (action: Promise<unknown>) =>
+    action.then(() => {
+      fileListStore.fetchFiles?.();
+    });
+
   const handleSetPriority = (priority: number) => {
-    report(client.filesSetPriority(fileListStore.id, fileListStore.selectedIndexes, priority));
+    report(
+      thenRefresh(
+        client.filesSetPriority(fileListStore.id, fileListStore.selectedIndexes, priority)
+      )
+    );
   };
 
   // Independent of priority: excluding a file leaves the priority it will have
   // if it is included again.
   const handleSetWanted = (wanted: boolean) => {
-    report(client.filesSetWanted(fileListStore.id, fileListStore.selectedIndexes, wanted));
+    report(
+      thenRefresh(client.filesSetWanted(fileListStore.id, fileListStore.selectedIndexes, wanted))
+    );
   };
 
   // The list is flat: drilling into a folder sets a filter rather than showing
@@ -75,10 +90,10 @@ const FileMenuContent = observer(() => {
   // select several thousand rows first is the whole point.
   const visible = fileListStore.visibleIndexes;
   const handleFolderPriority = (priority: number) => {
-    report(client.filesSetPriority(fileListStore.id, visible, priority));
+    report(thenRefresh(client.filesSetPriority(fileListStore.id, visible, priority)));
   };
   const handleFolderWanted = (wanted: boolean) => {
-    report(client.filesSetWanted(fileListStore.id, visible, wanted));
+    report(thenRefresh(client.filesSetWanted(fileListStore.id, visible, wanted)));
   };
 
   const handleRename = () => {

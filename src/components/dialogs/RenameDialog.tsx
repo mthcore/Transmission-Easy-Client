@@ -47,13 +47,23 @@ const RenameDialog = observer(({ dialogStore }: RenameDialogProps) => {
         return;
       }
 
-      client?.rename(targetIds, dialogStore.path, name).catch((err) => {
-        showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to rename', err);
-      });
+      client
+        ?.rename(targetIds, dialogStore.path, name)
+        .then(() => {
+          // An open file list is not polled on a paused or finished torrent:
+          // it kept the old name, and renaming again sent a path that no
+          // longer existed
+          (
+            rootStore as { fileList?: { fetchFiles?: () => unknown } } | null
+          )?.fileList?.fetchFiles?.();
+        })
+        .catch((err) => {
+          showError(chrome.i18n.getMessage('OV_FL_ERROR') || 'Failed to rename', err);
+        });
 
       dialogStore.close();
     },
-    [client, dialogStore, targetIds]
+    [client, dialogStore, targetIds, rootStore]
   );
 
   return (

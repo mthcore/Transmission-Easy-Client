@@ -10,6 +10,7 @@ import { serializeError } from 'serialize-error';
 import stripBidiControls from '../tools/stripBidiControls';
 import type { BgMessage } from '../types';
 import { getSnapshot } from 'mobx-state-tree';
+import { FIRST_LIST_WAIT_MS } from '../constants';
 import {
   describeSetting,
   type DispatchableSetting,
@@ -42,6 +43,19 @@ class Bg {
   daemon: Daemon | null;
   contextMenu: ContextMenu | null;
   initPromise: Promise<void> | null;
+  /**
+   * Settles once the current client's first torrent list has been applied, or
+   * has failed. Until then the store holds an EMPTY list that says nothing
+   * about the daemon.
+   *
+   * A page that outlives the service worker (a full-page view left in a
+   * background tab for more than ~30s) comes back holding a cursor from the
+   * previous worker, so it is answered with a snapshot — and the snapshot used
+   * to be taken at once, from that empty store. The page's selection was
+   * cleared, its file panel and its properties dialog closed with whatever was
+   * being edited in them, and the list blinked before filling again.
+   */
+  firstListSettled: Promise<void> = Promise.resolve();
 
   constructor() {
     this.bgStore = BgStore.create();
@@ -101,7 +115,7 @@ class Bg {
           this.client = new TransmissionClient(this);
           // session-get first so the daemon's rpc-version is known before the
           // first torrent-get; still poll torrents if session-get fails
-          this.client
+          this.firstListSettled = this.client
             .updateSettings()
             .catch((err) => {
               autorunLogger.error('client', 'updateSettings error', err);
@@ -109,7 +123,8 @@ class Bg {
             .then(() => this.client?.updateTorrents())
             .catch((err) => {
               autorunLogger.error('client', 'updateTorrents error', err);
-            });
+            })
+            .then(() => undefined);
         }
       });
 
@@ -238,7 +253,22 @@ class Bg {
     switch (message.action) {
       case 'getBgStoreDelta': {
         promise = this.whenReady().then(() => {
-          return this.bgStorePathLine.getDelta(message.id, message.patchId);
+          const getDelta = () => this.bgStorePathLine.getDelta(message.id, message.patchId);
+          // Only a page that already shows a list waits: one opening for the
+          // first time sends no id, has nothing to lose, and should not sit on
+          // a spinner while a slow daemon answers. The wait is bounded, and a
+          // failed first list ends it at once — with the daemon gone, an empty
+          // list is the truth.
+          const outlivedWorker =
+            typeof message.id === 'number' && message.id !== this.bgStorePathLine.id;
+          if (!outlivedWorker) return getDelta();
+          return new Promise<void>((resolve) => {
+            const timer = setTimeout(resolve, FIRST_LIST_WAIT_MS);
+            this.firstListSettled.then(() => {
+              clearTimeout(timer);
+              resolve();
+            });
+          }).then(getDelta);
         });
         break;
       }

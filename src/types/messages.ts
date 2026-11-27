@@ -57,7 +57,8 @@ export type BgMessage =
 // Store sync messages
 export interface GetBgStoreDeltaMessage {
   action: 'getBgStoreDelta';
-  id: number;
+  /** The worker generation the page last synced with; null on its first sync */
+  id: number | null;
   patchId: number | null;
 }
 

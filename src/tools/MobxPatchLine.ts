@@ -67,7 +67,7 @@ class MobxPatchLine {
     return this.idLine[this.idLine.length - 1] ?? null;
   }
 
-  getDelta(id: number, fromPatchId: number | null): DeltaResult {
+  getDelta(id: number | null, fromPatchId: number | null): DeltaResult {
     const patchId = this.lastPatchId;
     try {
       if (id !== this.id) {

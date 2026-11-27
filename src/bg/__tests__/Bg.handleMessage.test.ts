@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import ConfigStore from '../../stores/ConfigStore';
 import type { BgMessage } from '../../types';
 
@@ -516,5 +516,73 @@ describe('Bg.handleMessage — init gating', () => {
 
     expect(returned).toBe(true);
     expect(response.error).toMatchObject({ message: 'Client not initialized' });
+  });
+});
+
+describe('Bg.handleMessage — a page that outlived the service worker', () => {
+  /**
+   * Such a page holds a cursor from the previous worker, so it gets a snapshot.
+   * Taken at once, that snapshot came from a store whose first list had not
+   * arrived: the page's selection, file panel and open dialog were wiped by an
+   * empty list that said nothing about the daemon.
+   */
+  const handle = bg as unknown as {
+    firstListSettled: Promise<void>;
+    bgStorePathLine: { id?: number; getDelta: Mock };
+  };
+
+  afterEach(() => {
+    vi.useRealTimers();
+    handle.firstListSettled = Promise.resolve();
+  });
+
+  const flush = async () => {
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+  };
+
+  it('is answered only once the first list of this worker has settled', async () => {
+    let settle!: () => void;
+    handle.firstListSettled = new Promise<void>((resolve) => {
+      settle = resolve;
+    });
+    handle.bgStorePathLine.id = 999;
+
+    const { responded } = dispatch({ action: 'getBgStoreDelta', id: 12, patchId: 4 });
+    await flush();
+    expect(handle.bgStorePathLine.getDelta).not.toHaveBeenCalled();
+
+    settle();
+    await responded;
+    expect(handle.bgStorePathLine.getDelta).toHaveBeenCalledWith(12, 4);
+  });
+
+  it('does not wait forever on a daemon that never answers', async () => {
+    vi.useFakeTimers();
+    handle.firstListSettled = new Promise<void>(() => {});
+    handle.bgStorePathLine.id = 999;
+
+    const { responded } = dispatch({ action: 'getBgStoreDelta', id: 12, patchId: 4 });
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await expect(responded).resolves.toHaveProperty('result');
+  });
+
+  it('answers a page on its first sync at once', async () => {
+    // Nothing on screen to lose, and no reason to sit on a spinner
+    handle.firstListSettled = new Promise<void>(() => {});
+    handle.bgStorePathLine.id = 999;
+
+    const { responded } = dispatch({ action: 'getBgStoreDelta', id: null, patchId: null });
+
+    await expect(responded).resolves.toHaveProperty('result');
+  });
+
+  it('answers a page of the current worker at once', async () => {
+    handle.firstListSettled = new Promise<void>(() => {});
+    handle.bgStorePathLine.id = 12;
+
+    const { responded } = dispatch({ action: 'getBgStoreDelta', id: 12, patchId: 4 });
+
+    await expect(responded).resolves.toHaveProperty('result');
   });
 });

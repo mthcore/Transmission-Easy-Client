@@ -51,6 +51,11 @@ export const BLOCKLIST_UPDATE_TIMEOUT = 120_000; // 2 minutes
 // harmful retries.
 export const MESSAGE_TIMEOUT = 210_000;
 
+// How long a page that outlived the service worker waits for the new worker's
+// first torrent list before being handed whatever the store holds. See
+// Bg.firstListSettled.
+export const FIRST_LIST_WAIT_MS = 10_000;
+
 // Daemon
 export const DAEMON_MAX_RETRIES = 3;
 // Period background polling falls back to once DAEMON_MAX_RETRIES is exceeded.

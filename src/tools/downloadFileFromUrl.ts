@@ -26,7 +26,7 @@ function isRedirectedToPrivateHost(requestedUrl: string, finalUrl: string): bool
 }
 
 async function downloadFileFromUrl(url: string): Promise<DownloadResult> {
-  if (!/^(blob|https?):/.test(url)) {
+  if (!/^(blob|https?):/i.test(url)) {
     throw new ErrorWithCode('Link is not supported', 'LINK_IS_NOT_SUPPORTED');
   }
 

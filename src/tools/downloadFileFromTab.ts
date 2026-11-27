@@ -28,7 +28,7 @@ async function downloadFileFromTab(
   tabId: number,
   frameId?: number
 ): Promise<DownloadResult> {
-  if (!/^https?:/.test(url)) {
+  if (!/^https?:/i.test(url)) {
     throw new ErrorWithCode('Link is not supported', 'LINK_IS_NOT_SUPPORTED');
   }
 
